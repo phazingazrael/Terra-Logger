@@ -1,8 +1,7 @@
 # Terra-Logger
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ![Electron.js](https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white)
-
-
+![GitHub](https://img.shields.io/github/license/phazingazrael/terra-logger?style=plastic) ![GitHub all releases](https://img.shields.io/github/downloads/phazingazrael/terra-logger/total?style=plastic) ![GitHub all releases](https://img.shields.io/github/downloads/phazingazrael/terra-logger/total?style=plastic) ![Electron.js](https://img.shields.io/badge/Uses-Electron.js-<COLOR>)
+ 
 Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. 
 
 ## Table of Contents
