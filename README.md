@@ -15,7 +15,7 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 
 ## Introduction
 
-Terra-Logger is a powerful tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
+Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
 Please note: This is a one way process, Changes made to exported files will not sync to your map.
 
 ## Features

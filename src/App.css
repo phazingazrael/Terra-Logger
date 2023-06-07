@@ -1,0 +1,11 @@
+header {
+  margin-bottom: 5vh;
+}
+
+header h2 {
+  text-align: center !important;
+}
+
+.MuiPaper-root {
+  text-align: left !important;
+}
