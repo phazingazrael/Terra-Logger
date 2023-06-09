@@ -3,7 +3,7 @@
   "productName": "terra-logger",
   "version": "0.5.0",
   "description": "Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator.",
-  "descriptionFull":"Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.",
+  "descriptionFull": "Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -40,6 +40,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
     "electron-squirrel-startup": "^1.0.0",
+    "invert-color": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

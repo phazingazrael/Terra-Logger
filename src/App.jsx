@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Package from "../package.json";
 import './App.css';
+import { useState, useEffect } from 'react';
 
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -8,6 +9,9 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import InfoCard from "./component/infocard/infoCard.jsx"
+
+import UploadForm from './component/uploadForm/index.jsx';
+
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: 'rgba(193, 197, 195, 0.6)',
@@ -19,7 +23,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function App() {
-    console.log(Package.version);
+    console.log(JSON.stringify(Package));
+    let mapParsed = localStorage.getItem("mapParsed");
+
+    const [map, setMap] = useState(
+        JSON.parse(mapParsed)
+    )
 
 
 
@@ -38,12 +47,49 @@ function App() {
             </AppBar>
             <Container maxWidth="xl">
                 <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <Item>xs=4</Item>
-                    </Grid>
-                    <Grid item xs={8}>
+                    <Grid item lg={3} xs={5}>
                         <Item>
-                            <InfoCard />
+                            {/*
+                            map
+                                ? <SiteNav map={map} setMap={setMap} />
+                                : <UploadForm />
+                        */
+
+                                map
+                                    ? <div>
+                                        <table>
+                                            <tr>
+                                                <td>Map Name</td>
+                                                <td>{map.info.mapName}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>AFMG Version</td>
+                                                <td>{map.info.version}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Description</td>
+                                                <td>Azgaar&#39;S Fantasy Map Generator Output: Azgaar.github.io/Fantasy-Map-Generator</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Exported At</td>
+                                                <td>2023-05-10T06:47:29.071Z</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Seed</td>
+                                                <td>847928648</td>
+                                            </tr>
+                                            <tr>
+                                                <td>MapId</td>
+                                                <td>1683700513562</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    : <UploadForm />}
+                        </Item>
+                    </Grid>
+                    <Grid item lg={9} xs={5}>
+                        <Item>
+                            <InfoCard map={map} setMap={setMap} />
                         </Item>
 
                     </Grid>
