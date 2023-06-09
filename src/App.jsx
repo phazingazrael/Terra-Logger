@@ -68,19 +68,19 @@ function App() {
                                             </tr>
                                             <tr>
                                                 <td>Description</td>
-                                                <td>Azgaar&#39;S Fantasy Map Generator Output: Azgaar.github.io/Fantasy-Map-Generator</td>
+                                                <td>{map.info.description}</td>
                                             </tr>
                                             <tr>
                                                 <td>Exported At</td>
-                                                <td>2023-05-10T06:47:29.071Z</td>
+                                                <td>{map.info.exportedAt}</td>
                                             </tr>
                                             <tr>
-                                                <td>Seed</td>
-                                                <td>847928648</td>
+                                                <td>Map Seed</td>
+                                                <td>{map.info.seed}</td>
                                             </tr>
                                             <tr>
-                                                <td>MapId</td>
-                                                <td>1683700513562</td>
+                                                <td>Map ID</td>
+                                                <td>{map.info.mapId}</td>
                                             </tr>
                                         </table>
                                     </div>
