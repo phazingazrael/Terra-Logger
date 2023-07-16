@@ -6,11 +6,19 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { PrismaneProvider } from "@prismane/core";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const Paper = {
+  spacing: "5px",
+  backgroundColor: 'rgba(193, 197, 195, 0.6)',
+  padding: "5px"
+};
 root.render(
   <React.StrictMode>
-    <App />
+    <PrismaneProvider>
+      <App />
+    </PrismaneProvider>
   </React.StrictMode>
 );
 

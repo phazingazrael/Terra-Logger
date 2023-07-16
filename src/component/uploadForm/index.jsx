@@ -1,15 +1,309 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { nanoid } from 'nanoid';
 
-const UploadForm = () => {
+const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
+
 
     const readJSON = (e) => {
         const fileReader = new FileReader();
+
         fileReader.readAsText(e.target.files[0], "UTF-8");
         fileReader.onload = e => {
-            let result = e.target.result;
-            localStorage.setItem("mapParsed", result);
+            let result = JSON.parse(e.target.result);
+
+            localStorage.setItem("rawMap", JSON.stringify(result));
+
+            console.log(result.info);
+
+            const states = result.cells.states;
+            const cities = result.cells.burgs;
+            const provinces = result.cells.provinces;
+            const cultures = result.cells.cultures;
+            const features = result.cells.features;
+            const religions = result.cells.religions;
+            var cityArray = cities.filter((value) => Object.keys(value).length !== 0);
+            var stateArray = states.filter((value) => Object.keys(value).length !== 0);
+            var religionArray = religions.filter(
+                (value) => Object.keys(value).length !== 0
+            );
+
+            let mapData = {
+                mapInfo: {
+                    info: result.info,
+                    settings: result.settings,
+                    coords: result.coords
+                },
+                notes: result.notes,
+                nameBases: result.nameBases,
+                Locations: {
+                    cities: [],
+                    countries: [],
+                    provinces: []
+                }
+            }
+
+
+
+
+            cityArray.map((City) => {
+
+
+                let cityObj = {
+                    "_id": "",
+                    "capital": null,
+                    "coa": {},
+                    "country": {},
+                    "culture": null,
+                    "features": [],
+                    "i": null,
+                    "isCapital": null,
+                    "mapLink": null,
+                    "name": null,
+                    "population": null,
+                    "size": null,
+                    "type": null
+                };
+
+
+
+                cityObj.name = City.name;
+                cityObj.i = City.i;
+
+
+                let cityState = City.state;
+                let country = states[cityState];
+
+
+                cityObj.country = {
+                    name: country.name || "",
+                    "nameFull": country.fullName || "",
+                    "govForm": country.form || "",
+                    "govName": country.formName || "",
+                    "cid": country.i || "0",
+                    "c_id": "",
+                };
+
+
+
+                if (City.capital === true) {
+                    cityObj.capital = "Yes";
+                    cityObj.isCapital = true;
+                    cityObj.features.push("Capital")
+                } else {
+                    cityObj.capital = "No";
+                    cityObj.isCapital = false;
+                }
+                if (City.citadel === 1) {
+                    cityObj.features.push("Citadel");
+                }
+                if (City.port === 1) {
+                    cityObj.features.push("Port");
+                }
+                if (City.plaza === 1) {
+                    cityObj.features.push("Plaza");
+                }
+                if (City.walls === 1) {
+                    cityObj.features.push("Walls");
+                }
+                if (City.shanty === 1) {
+                    cityObj.features.push("Shanty Town");
+                }
+                if (City.temple === 1) {
+                    cityObj.features.push("Temple");
+                }
+
+
+                cityObj.features.sort((a, b) => a.localeCompare(b));
+
+
+                cityObj.culture = cultures[City.culture].name;
+
+                cityObj.coa = City.coa || undefined;
+
+                if (City.link !== undefined) {
+                    cityObj.mapLink = City.link;
+                }
+
+
+                const populationvalue = Math.round(
+                    City.population * mapData.mapInfo.settings.populationRate * mapData.mapInfo.settings.urbanization
+                );
+
+                cityObj.population = populationvalue.toLocaleString("en-US");
+
+                if (populationvalue < 21) {
+                    cityObj.size = "Thorp";
+                } else if ((populationvalue > 21, populationvalue < 60)) {
+                    cityObj.size = "Hamlet";
+                } else if ((populationvalue > 61, populationvalue < 200)) {
+                    cityObj.size = "Village";
+                } else if ((populationvalue > 201, populationvalue < 2000)) {
+                    cityObj.size = "Small Town";
+                } else if ((populationvalue > 2001, populationvalue < 5000)) {
+                    cityObj.size = "Large Town";
+                } else if ((populationvalue > 5001, populationvalue < 10000)) {
+                    cityObj.size = "Small City";
+                } else if ((populationvalue > 10001, populationvalue < 25000)) {
+                    cityObj.size = "Large City";
+                } else if (populationvalue > 25000) {
+                    cityObj.size = "Metropolis";
+                }
+                cityObj.type = "City - " + cityObj.size;
+
+
+                mapData.Locations.cities.push(cityObj);
+
+
+
+            });
+
+            states.map((State) => {
+
+                let countryObj = {
+                    _id: "",
+                    coa: {},
+                    color: "",
+                    culture: "",
+                    diplomacy: [],
+                    form: "",
+                    formName: "",
+                    fullName: "",
+                    i: "",
+                    military: [],
+                    name: "",
+                    neighbors: [],
+                    population: {
+                        rural: "",
+                        urban: "",
+                        total: ""
+                    },
+                    type: "",
+                    warCampaigns: []
+                }
+
+                countryObj.name = State.name || "";
+                countryObj.fullName = State.fullName || State.name;
+                countryObj.warCampaigns = State.campaigns || "";
+                countryObj.color = State.color || "#231e39";
+                countryObj.form = State.form || "";
+                countryObj.formName = State.formName || "";
+                countryObj.i = State.i || "";
+                countryObj._id = nanoid();
+                countryObj.coa = State.coa || undefined;
+                countryObj.military = State.military || "";
+
+
+
+                State.Settlement = "Country";
+                countryObj.type = State.Settlement;
+
+
+                State.diplomacy.map((Diplomat, index) => {
+                    if (Diplomat === "Suspicion") {
+                        Diplomat = "Suspicious"
+                    }
+
+                    let dipObj = {
+                        name: states[index].fullName || states[index].name,
+                        status: Diplomat
+                    }
+                    countryObj.diplomacy.push(dipObj);
+
+                });
+
+                State.neighbors.map((neighbor, index) => {
+
+                    let nObj = {
+                        name: states[neighbor].fullName || states[neighbor].name
+                    }
+                    countryObj.neighbors.push(nObj);
+
+                });
+
+
+                countryObj.diplomacy.sort((a, b) => a.name.localeCompare(b.name));
+
+                if (cultures[State.culture] === undefined) {
+                    cultures[State.culture] = 0;
+                }
+
+                countryObj.culture = cultures[State.culture].name || "";
+
+
+                const urbanvalue = Math.round(
+                    State.urban * mapData.mapInfo.settings.populationRate * mapData.mapInfo.settings.urbanization
+                );
+                countryObj.population.urban = urbanvalue.toLocaleString("en-US") || "";
+                State.urbanPop = urbanvalue.toLocaleString("en-US");
+
+                const ruralvalue = Math.round(State.rural * mapData.mapInfo.settings.populationRate);
+
+                State.ruralPop = ruralvalue.toLocaleString("en-US");
+                countryObj.population.rural = ruralvalue.toLocaleString("en-US") || "";
+
+                State.populationout = Math.round(ruralvalue + urbanvalue);
+                State.populationout = State.populationout.toLocaleString("en-US");
+                countryObj.population.total = State.populationout || "";
+
+                mapData.Locations.countries.push(countryObj);
+
+
+
+            });
+
+
+            religions.map((Religion) => {
+                const urbanvalue = Math.round(
+                    Religion.urban * mapData.mapInfo.settings.populationRate * mapData.mapInfo.settings.urbanization
+                ).toLocaleString("en-US");
+                Religion.urbanPop = urbanvalue;
+
+                const ruralvalue = Math.round(
+                    Religion.rural * mapData.mapInfo.settings.populationRate
+                ).toLocaleString("en-US");
+                Religion.ruralPop = ruralvalue;
+
+                let religObj = {
+                    i: Religion.i || "",
+                    name: Religion.name || "",
+                    color: Religion.color || "",
+                    culture: Religion.culture || "",
+                    type: Religion.type || "",
+                    form: Religion.form || "",
+                    deity: Religion.deity || "",
+                    center: Religion.center || "",
+                    origins: Religion.origins || "",
+                    code: Religion.code || "",
+                };
+            });
+
+
+            localStorage.setItem("mapParsed", JSON.stringify(mapData));
+        };
+        fileReader.onloadend = e => {
+            let mapParsed = JSON.parse(localStorage.getItem("mapParsed"));
+            console.log("it's The Map");
+            console.log(mapParsed);
+
+            mapParsed.Locations.countries.map((Country) => {
+                Country.cities = [];
+
+                mapParsed.Locations.cities.filter(obj => {
+                    return obj.country.cid === Country.i
+                }).map((city) => {
+                    Country.cities.push(city);
+
+                });
+            });
+            localStorage.setItem("mapParsed", JSON.stringify(mapParsed))
+            setMap(mapParsed);
         };
     }
+
+    useEffect(() => {
+
+    }, [mapData, isLoading, setLoading, setMap]);
 
     return (
         <div className="uploadForm">
@@ -25,8 +319,8 @@ const UploadForm = () => {
                     accept='.json'
                     onChange={readJSON}
                 />
-            </div >
-        </div >
+            </div>
+        </div>
     );
 }
 

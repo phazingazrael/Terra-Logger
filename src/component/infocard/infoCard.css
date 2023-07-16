@@ -30,19 +30,14 @@ p {
 }
 
 .card-container {
-  background-color: #231e39;
+  /*background-color: #231e39;*/
   border-radius: 5px;
   box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.75);
-  color: #b3b8cd;
   padding-top: 30px;
   position: relative;
   width: 250px;
   max-width: 100%;
   text-align: center;
-  -webkit-border-radius: ;
-  -moz-border-radius: ;
-  -ms-border-radius: ;
-  -o-border-radius: ;
   float: left;
   margin: 0.16em;
 }
@@ -57,6 +52,10 @@ p {
   position: absolute;
   top: 30px;
   left: 30px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
 }
 
 .card-container .round {
@@ -82,6 +81,7 @@ button.primary.ghost {
 
 .skills {
   background-color: #1f1a36;
+  color: #b3b8cd;
   text-align: left;
   padding: 15px;
   margin-top: 30px;
@@ -100,8 +100,17 @@ button.primary.ghost {
   font-size: 12px;
   margin: 0 7px 7px 0;
   padding: 7px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
 }
 
 .coa {
   max-width: 128px;
+  margin: 0px auto;
+}
+
+.CardHead {
+  min-height: 9vh;
 }
