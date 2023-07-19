@@ -1,9 +1,33 @@
+.App {
+  height: 91vh;
+}
+
 header {
   margin-bottom: 5vh;
 }
 
-header h2 {
-  text-align: center !important;
+.Header {
+  min-height: 8.72vh;
+  padding-left: 3em;
+}
+
+.Header h1 {
+  width: 80%;
+  float: left;
+  font-weight: 300;
+}
+
+.MapName {
+  top: 3vh;
+  float: right;
+  margin-right: 5em !important;
+}
+
+.Navigation {
+}
+
+.Content {
+  max-height: 75vh;
 }
 
 .MuiPaper-root {

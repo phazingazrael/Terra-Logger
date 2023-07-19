@@ -1,6 +1,18 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
+import { LoremIpsum } from "lorem-ipsum";
+
+const lorem = new LoremIpsum({
+    sentencesPerParagraph: {
+        max: 8,
+        min: 4
+    },
+    wordsPerSentence: {
+        max: 16,
+        min: 4
+    }
+});
 
 const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
 
@@ -29,6 +41,11 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
             );
 
             let mapData = {
+                Locations: {
+                    cities: [],
+                    countries: [],
+                    provinces: []
+                },
                 mapInfo: {
                     info: result.info,
                     settings: result.settings,
@@ -36,12 +53,11 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                 },
                 notes: result.notes,
                 nameBases: result.nameBases,
-                Locations: {
-                    cities: [],
-                    countries: [],
-                    provinces: []
-                }
+                religions: []
             }
+            let Cities = [];
+            let Countries = [];
+            let Provinces = [];
 
 
 
@@ -152,47 +168,56 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                 cityObj.type = "City - " + cityObj.size;
 
 
+                Cities.push(cityObj);
                 mapData.Locations.cities.push(cityObj);
 
 
 
             });
+            localStorage.setItem("cities", JSON.stringify(Cities));
 
             states.map((State) => {
 
                 let countryObj = {
-                    _id: "",
-                    coa: {},
-                    color: "",
-                    culture: "",
-                    diplomacy: [],
-                    form: "",
-                    formName: "",
-                    fullName: "",
-                    i: "",
-                    military: [],
-                    name: "",
-                    neighbors: [],
-                    population: {
-                        rural: "",
-                        urban: "",
-                        total: ""
+                    "_id": "",
+                    "coa": {},
+                    "color": "",
+                    "culture": "",
+                    "description": "",
+                    "fullName": "",
+                    "i": "",
+                    "name": "",
+                    "political": {
+                        "diplomacy": [],
+                        "form": "",
+                        "formName": "",
+                        "military": [],
+                        "neighbors": [],
+                        "ruler": "",
+                        "leaders": []
                     },
-                    type: "",
-                    warCampaigns: []
+                    "population": {
+                        "rural": "",
+                        "total": "",
+                        "urban": ""
+                    },
+                    "tags": [],
+                    "type": "",
+                    "warCampaigns": []
                 }
 
                 countryObj.name = State.name || "";
                 countryObj.fullName = State.fullName || State.name;
                 countryObj.warCampaigns = State.campaigns || "";
                 countryObj.color = State.color || "#231e39";
-                countryObj.form = State.form || "";
-                countryObj.formName = State.formName || "";
+                countryObj.political.form = State.form || "";
+                countryObj.political.formName = State.formName || "";
                 countryObj.i = State.i || "";
                 countryObj._id = nanoid();
                 countryObj.coa = State.coa || undefined;
-                countryObj.military = State.military || "";
+                countryObj.political.military = State.military || "";
 
+                countryObj.description = lorem.generateParagraphs(7);
 
 
                 State.Settlement = "Country";
@@ -208,7 +233,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                         name: states[index].fullName || states[index].name,
                         status: Diplomat
                     }
-                    countryObj.diplomacy.push(dipObj);
+                    countryObj.political.diplomacy.push(dipObj);
 
                 });
 
@@ -217,12 +242,12 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                     let nObj = {
                         name: states[neighbor].fullName || states[neighbor].name
                     }
-                    countryObj.neighbors.push(nObj);
+                    countryObj.political.neighbors.push(nObj);
 
                 });
 
 
-                countryObj.diplomacy.sort((a, b) => a.name.localeCompare(b.name));
+                countryObj.political.diplomacy.sort((a, b) => a.name.localeCompare(b.name));
 
                 if (cultures[State.culture] === undefined) {
                     cultures[State.culture] = 0;
@@ -246,12 +271,14 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                 State.populationout = State.populationout.toLocaleString("en-US");
                 countryObj.population.total = State.populationout || "";
 
+                Countries.push(countryObj);
                 mapData.Locations.countries.push(countryObj);
 
 
 
             });
 
+            localStorage.setItem("countries", JSON.stringify(Countries));
 
             religions.map((Religion) => {
                 const urbanvalue = Math.round(
@@ -282,22 +309,26 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
             localStorage.setItem("mapParsed", JSON.stringify(mapData));
         };
         fileReader.onloadend = e => {
-            let mapParsed = JSON.parse(localStorage.getItem("mapParsed"));
-            console.log("it's The Map");
-            console.log(mapParsed);
+            let mapData = JSON.parse(localStorage.getItem("mapParsed"));
+            let Countries = JSON.parse(localStorage.getItem("countries"));
+            let Cities = JSON.parse(localStorage.getItem("cities"));
 
-            mapParsed.Locations.countries.map((Country) => {
+
+            Countries.map((Country) => {
                 Country.cities = [];
-
-                mapParsed.Locations.cities.filter(obj => {
+                Country.tags.push(Country.type)
+                Cities.filter(obj => {
                     return obj.country.cid === Country.i
                 }).map((city) => {
                     Country.cities.push(city);
-
                 });
+
             });
-            localStorage.setItem("mapParsed", JSON.stringify(mapParsed))
-            setMap(mapParsed);
+
+            mapData.Locations.cities = Cities;
+            mapData.Locations.countries = Countries;
+            localStorage.setItem("countries", JSON.stringify(Countries))
+            setMap(mapData)
         };
     }
 

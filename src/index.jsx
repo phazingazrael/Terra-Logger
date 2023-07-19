@@ -2,23 +2,48 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import { PrismaneProvider } from "@prismane/core";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+
+const theme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#8B97F2',
+    },
+    secondary: {
+      main: '#508CB9',
+    },
+    text: {
+      primary: '#1B1D22',
+      secondary: '#8d8d90',
+    },
+    success: {
+      main: '#4da570',
+    },
+    info: {
+      main: '#29414d',
+    },
+    warning: {
+      main: '#cb9438',
+    },
+    error: {
+      main: '#f44336',
+    },
+    divider: '#29414D',
+  },
+});
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const Paper = {
-  spacing: "5px",
-  backgroundColor: 'rgba(193, 197, 195, 0.6)',
-  padding: "5px"
-};
 root.render(
   <React.StrictMode>
-    <PrismaneProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
-    </PrismaneProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

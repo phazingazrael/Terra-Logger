@@ -37,16 +37,23 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.2",
+    "@fontsource/yatra-one": "^5.0.5",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
     "@phosphor-icons/react": "^2.0.10",
     "@prismane/core": "^0.1.19",
     "electron-squirrel-startup": "^1.0.0",
     "invert-color": "^2.0.0",
+    "localforage": "^1.10.0",
+    "lorem-ipsum": "^2.0.8",
+    "match-sorter": "^6.3.1",
     "nanoid": "^4.0.2",
     "opacify": "^1.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-ui-cards": "^3.1.0"
+    "react-router-dom": "^6.14.1",
+    "react-ui-cards": "^3.1.0",
+    "reactjs-flip-card": "^2.0.3",
+    "sort-by": "^1.2.0"
   }
 }

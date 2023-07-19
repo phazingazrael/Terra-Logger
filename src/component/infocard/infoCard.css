@@ -1,85 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Montserrat, sans-serif;
-  min-height: 100vh;
-  margin: 0;
-}
-
-h3 {
-  margin: 10px 0;
-}
-
-h6 {
-  margin: 5px 0;
-  text-transform: uppercase;
-}
-
-p {
-  font-size: 14px;
-  line-height: 21px;
-}
-
-.container {
-  height: 77vh;
-  overflow: auto;
-}
-
-.card-container {
-  /*background-color: #231e39;*/
-  border-radius: 5px;
-  box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.75);
-  padding-top: 30px;
-  position: relative;
-  width: 250px;
-  max-width: 100%;
-  text-align: center;
-  float: left;
-  margin: 0.16em;
-}
-
-.card-container .pro {
-  color: #231e39;
-  background-color: #febb0b;
-  border-radius: 3px;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 3px 7px;
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-}
-
-.card-container .round {
-  border: 1px solid #03bfcb;
-  border-radius: 50%;
-  padding: 7px;
-}
-
-button.primary {
-  background-color: #03bfcb;
-  border: 1px solid #03bfcb;
-  border-radius: 3px;
-  color: #231e39;
-  font-family: Montserrat, sans-serif;
-  font-weight: 500;
-  padding: 10px 25px;
-}
-
-button.primary.ghost {
-  background-color: transparent;
-  color: #02899c;
-}
-
-.skills {
+.details {
   background-color: #1f1a36;
   color: #b3b8cd;
   text-align: left;
@@ -87,13 +6,13 @@ button.primary.ghost {
   margin-top: 30px;
 }
 
-.skills ul {
+.details ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-.skills ul li {
+.details ul li {
   border: 1px solid #2d2747;
   border-radius: 2px;
   display: inline-block;
@@ -111,6 +30,115 @@ button.primary.ghost {
   margin: 0px auto;
 }
 
-.CardHead {
-  min-height: 9vh;
+.cardContainer {
+  padding-right: 2em;
+}
+
+.cardGrid {
+  margin: 0px !important;
+  width: 100% !important;
+}
+
+.countryCard {
+}
+
+.front {
+}
+
+.back {
+}
+
+.countryCard.back {
+  min-height: 59vh;
+}
+
+.cardHead {
+}
+
+.cardHead .MuiCardHeader-subheader {
+  font-size: 1em !important;
+}
+
+.cardMedia {
+}
+
+.cardContent {
+}
+
+.front .cardContent p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.back .cardContent {
+  padding-top: 0px;
+}
+
+.back .cardContent p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
+}
+
+.cardActions {
+}
+
+.cardActions .actionItem {
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 12;
+  color: grey;
+  font-weight: 500;
+  font-family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
+  margin: 0;
+}
+
+.statValue {
+  font-size: 20;
+  font-weight: "bold";
+  margin-bottom: 4;
+  letter-spacing: "1px";
+}
+
+.border-gradient {
+  border-top: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  border-color: rgba(51, 51, 51, 1);
+  border-image: linear-gradient(
+    rgba(51, 51, 51, 0) 0,
+    rgba(51, 51, 51, 0) 25%,
+    rgba(51, 51, 51, 1) 50%,
+    rgba(51, 51, 51, 0) 75%,
+    rgba(51, 51, 51, 0) 100%
+  );
+  border-left: 1px solid;
+  border-image-slice: 1;
+  border-width: 1px;
+}
+
+.ReactFlipCard__container {
+  width: auto;
+  min-height: 58vh;
+}
+
+.back .cardList{
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.back .cardListItem {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.back .cardActions.buttons{
+  z-index: 5;
 }

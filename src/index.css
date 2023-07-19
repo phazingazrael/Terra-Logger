@@ -8,20 +8,6 @@ body {
   padding: 2rem;
   background-image: url("bg.svg");
   background-attachment: fixed;
-  background-position: center;
+  background-position: center; 
   background-size: cover;
-}
-
-.App {
-  height: 91vh;
-}
-
-.Header h1 {
-  width: 70%;
-  float: left;
-}
-
-.MapName svg {
-  position: relative;
-  top: 0.2vh;
 }

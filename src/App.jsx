@@ -3,95 +3,221 @@ import Package from "../package.json";
 import './App.css';
 import { useState, useEffect } from 'react';
 
-import { Paper, Grid, fr, Button, GridProps, Chip } from "@prismane/core";
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Link,
+    Outlet,
+    useLoaderData
+} from "react-router-dom";
 
-import { Planet } from "@phosphor-icons/react";
+import { Paper, Grid, AppBar, Container, Chip, Popover, MenuList, MenuItem, ListItemText, ListItemIcon, Typography, Divider } from "@mui/material/";
+import { House } from "@phosphor-icons/react";
 
 import { styled } from '@mui/material/styles';
 
-import InfoCard from "./component/infocard/countryInfoCard.jsx";
-import UploadForm from './component/uploadForm/index.jsx';
+import Root, { loader as rootLoader } from './routes/root.jsx';
+import ErrorPage from './routes/error.jsx';
+import CountryView, { loader as countryLoader } from './routes/countryView.jsx';
 
+
+import SideBar from './component/sideBar/index.jsx';
+import UploadForm from './component/uploadForm/index.jsx';
+import CountryCard from "./component/infocard/countryInfoCard.jsx";
+
+let mapParsed = JSON.parse(localStorage.getItem("mapParsed"));
+let Countries = JSON.parse(localStorage.getItem("countries"));
+let Cities = JSON.parse(localStorage.getItem("cities"));
+
+const router = createBrowserRouter([
+    { basename: "/main_window" },
+    {
+        path: "/main_window",
+        element: <App />,
+        loader: rootLoader,
+        children: [
+            {
+                path: "",
+                element: <Root mapData={mapParsed} />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: "country",
+                element: <Country />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                loader: countryLoader,
+                path: "countries/:_id/view",
+                element: <CountryView />,
+                errorElement: <ErrorPage />,
+            }
+        ]
+    }
+]);
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: 'rgba(193, 197, 195, 0.6)',
     ...theme.typography.body2,
     padding: theme.spacing(1),
-    //textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
+    overflow: "auto"
 }));
 
+function Country() {
+    return (
+        mapParsed ? (<CountryCard Countries={Countries} />) : ""
+    );
+}
 
-function App() {
+
+function App({ Countries }) {
     const [isLoading, setLoading] = useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
-    let mapParsed = JSON.parse(localStorage.getItem("mapParsed"));
+    Countries = useLoaderData();
+
+    const openMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
 
     const [mapData, setMap] = useState(
         mapParsed
     )
+
+
     //console.log(mapData);
 
     useEffect(() => {
         setLoading(false);
-        setMap(JSON.parse(localStorage.getItem("mapParsed")));
     }, [mapData, isLoading, setLoading, setMap]);
 
 
 
     return (
         <div className="App">
-            <Grid gap={fr(3)} templateColumns={11}>
-                <Grid.Item columnStart={1} columnEnd={12} rowStart={1} rowEnd={2}>
-                    <Item className="Header">
-                        <span className="HeaderText">
-                            <h1>
-                                Terra-Logger. Azgaar's Fantasy Map Generator to structured Markdown.
-                            </h1>
+            <AppBar position="static" className="Header">
+                <div className="HeaderText">
+                    <h1>
+                        Terra-Logger. Azgaar's Fantasy Map Generator to structured Markdown.
+                    </h1>
 
-                            {mapData ?
-                                (<Chip className="MapName" size="lg" color="emerald"><Planet size={16} pt={2} /> Current Map Loaded: {mapData.mapInfo.info.mapName}</Chip>) : ""}
-                        </span>
-                    </Item>
-                </Grid.Item>
-                <Grid.Item columnStart={1} columnEnd={3} rowStart={2} rowEnd={12}>
-                    <Item className="Navigation">
-                        {
-                            mapData
-                                ? (<div>
-                                    <ul>
-                                        {Object.entries(mapData.mapInfo.info).map(([key, value]) => <li key={key}>{key.replace(/([A-Z])/g, ' $1')
-                                            // uppercase the first character
-                                            .replace(/^./, (str) => str.toUpperCase())}: {value}</li>)}
-                                    </ul>
-                                </div>)
-                                : <UploadForm mapData={mapData} setMap={setMap} isLoading={isLoading} setLoading={setLoading} Package={Package} />
-                        }
-                        {/*
+                    {mapData ?
+                        (
+                            <Chip variant="outlined" onClick={openMenu} label={"Current Map Loaded: " + mapData.mapInfo.info.mapName} className="MapName" size="lg" />
+                        ) : ""}
+                </div>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <MenuList>
+                        <MenuItem>
+                            <ListItemIcon>
+
+                            </ListItemIcon>
+                            <ListItemText>Cut</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘X
+                            </Typography>
+                        </MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+
+                            </ListItemIcon>
+                            <ListItemText>Copy</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘C
+                            </Typography>
+                        </MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+
+                            </ListItemIcon>
+                            <ListItemText>Paste</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘V
+                            </Typography>
+                        </MenuItem>
+                        <Divider />
+                        <Link to={"/main_window"} onClick={() => {
+                            console.log("Clearing Storage");
+                            localStorage.removeItem("mapParsed");
+                            setMap();
+                            handleClose();
+                        }} color="warning.main">
+                            <MenuItem >
+                                <ListItemIcon>
+
+                                </ListItemIcon>
+                                <ListItemText>Delete Map Data</ListItemText>
+                            </MenuItem>
+                        </Link>
+                    </MenuList>
+                </Popover>
+            </AppBar>
+            <Container maxWidth="xl">
+                <Grid container spacing={2}>
+                    <Grid item lg={3} md={2} xs={2}>
+                        <Item className="Navigation">
+                            {
+                                mapData
+                                    ? (
+                                        <div>
+                                            <div>
+                                                <SideBar router={router} />
+                                            </div>
+                                            <ul>
+                                                {Object.entries(mapData.mapInfo.info).map(([key, value]) => <li key={key}>{key.replace(/([A-Z])/g, ' $1')
+                                                    // uppercase the first character
+                                                    .replace(/^./, (str) => str.toUpperCase())}: {value}</li>)}
+                                            </ul>
+                                        </div>
+                                    )
+                                    : <UploadForm mapData={mapData} setMap={setMap} isLoading={isLoading} setLoading={setLoading} Package={Package} />
+                            }
+                            {/*
                             mapData
                                 ? <SiteNav mapData={mapData} setMap={setMap} />
                                 : <UploadForm />
                             */}
-                    </Item>
-                    <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => {
-                            console.log("Clearing Storage");
-                            localStorage.removeItem("mapParsed")
-                        }}>
-                        Clear Saved Data - WARNING YOU WILL LOSE ALL DATA
-                    </Button>
-                </Grid.Item>
-                <Grid.Item columnStart={3} columnEnd={12} rowStart={2} rowEnd={12} >
-                    <Item className="Content">
-                        {mapData ? (<InfoCard mapData={mapData} setMap={setMap} />) : ""}
-                    </Item>
-                </Grid.Item>
-            </Grid>
+                        </Item>
+                    </Grid>
+                    <Grid item lg={9} md={10} xs={10}>
+                        <Item className='Content'>
+                            <Outlet />
+                        </Item>
+                    </Grid>
+                </Grid>
+            </Container>
         </div>
-    );
+    )
+}
+
+function RouteOut() {
+    return (
+        <RouterProvider router={router} />
+    )
 }
 
 
-export default App;
+
+export default RouteOut;
