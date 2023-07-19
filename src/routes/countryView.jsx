@@ -20,12 +20,11 @@ const CountryView = () => {
     const { country } = useLoaderData();
     return (
         <Box style={{ backgroundColor: 'rgba(193, 197, 195, 0.7)' }}>
-
             <div id="main">
                 <div className="inner countryPage">
 
 
-                    <header id="header">
+                    <header id="header" style={{ borderBottom: "solid 5px " + country.color }}>
                         <h1 className="logo"><strong>{country.fullName}</strong> ({country.name})</h1>
                         <ul className="icons">
                             <li><span className="icon brands fa-twitter"><span className="label">Twitter</span></span></li>
@@ -52,7 +51,7 @@ const CountryView = () => {
 
 
                     <section>
-                        <header className="major">
+                        <header className="major" style={{ borderBottom: "solid 5px " + country.color }}>
                             <h2>Replace this with Features</h2>
                         </header>
                         <div className="features">
@@ -89,7 +88,7 @@ const CountryView = () => {
 
 
                     <section>
-                        <header className="major">
+                        <header className="major" style={{ borderBottom: "solid 5px " + country.color }}>
                             <h2>Replace this section with cities.map</h2>
                         </header>
                         <div className="posts">

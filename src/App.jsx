@@ -1,14 +1,15 @@
 import * as React from 'react';
 import Package from "../package.json";
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 
 import {
     createBrowserRouter,
     RouterProvider,
     Link,
     Outlet,
-    useLoaderData
+    useLoaderData,
+    useLocation
 } from "react-router-dom";
 
 import { Paper, Grid, AppBar, Container, Chip, Popover, MenuList, MenuItem, ListItemText, ListItemIcon, Typography, Divider } from "@mui/material/";
@@ -56,6 +57,8 @@ const router = createBrowserRouter([
     }
 ]);
 
+
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: 'rgba(193, 197, 195, 0.6)',
     ...theme.typography.body2,
@@ -68,6 +71,14 @@ function Country() {
     return (
         mapParsed ? (<CountryCard Countries={Countries} />) : ""
     );
+}
+
+const Wrapper = ({ children }) => {
+    const location = useLocation();
+    useLayoutEffect(() => {
+        document.getElementById("Content").scrollTo(0, 0);
+    }, [location.pathname]);
+    return children
 }
 
 
@@ -202,8 +213,10 @@ function App({ Countries }) {
                         </Item>
                     </Grid>
                     <Grid item lg={9} md={10} xs={10}>
-                        <Item className='Content'>
-                            <Outlet />
+                        <Item className='Content' id="Content">
+                            <Wrapper>
+                                <Outlet />
+                            </Wrapper>
                         </Item>
                     </Grid>
                 </Grid>
