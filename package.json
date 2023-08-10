@@ -41,7 +41,7 @@
     "@mui/icons-material": "^5.14.0",
     "@mui/material": "^5.14.0",
     "@phosphor-icons/react": "^2.0.10",
-    "@prismane/core": "^0.1.19",
+    "@prismane/core": "^0.2.1",
     "electron-squirrel-startup": "^1.0.0",
     "invert-color": "^2.0.0",
     "localforage": "^1.10.0",
