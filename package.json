@@ -39,7 +39,7 @@
     "@fontsource/roboto": "^5.0.5",
     "@fontsource/yatra-one": "^5.0.5",
     "@mui/icons-material": "^5.14.0",
-    "@mui/material": "^5.14.0",
+    "@mui/material": "^5.14.1",
     "@phosphor-icons/react": "^2.0.10",
     "@prismane/core": "^0.1.19",
     "electron-squirrel-startup": "^1.0.0",
