@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import './index.css';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+
+import "./public/index.css";
+import "../node_modules/rpg-awesome/css/rpg-awesome.min.css";
 
 
 const theme = createTheme({
@@ -33,6 +35,28 @@ const theme = createTheme({
     },
     divider: '#29414D',
   },
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#8B97F2',
+    },
+    secondary: {
+      main: '#508CB9',
+    },
+    success: {
+      main: '#4da570',
+    },
+    info: {
+      main: '#29414d',
+    },
+    warning: {
+      main: '#cb9438',
+    },
+    error: {
+      main: '#f44336',
+    },
+    divider: '#29414D',
+  },
 });
 
 
@@ -46,6 +70,3 @@ root.render(
     </ThemeProvider>
   </React.StrictMode>
 );
-
-
-render();

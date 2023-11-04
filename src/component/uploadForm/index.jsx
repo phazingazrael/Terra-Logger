@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { LoremIpsum } from "lorem-ipsum";
 
+
 const lorem = new LoremIpsum({
     sentencesPerParagraph: {
         max: 8,
@@ -24,7 +25,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
         fileReader.onload = e => {
             let result = JSON.parse(e.target.result);
 
-            localStorage.setItem("rawMap", JSON.stringify(result));
+            //localStorage.setItem("rawMap", JSON.stringify(result));
 
             console.log(result.info);
 
@@ -78,6 +79,10 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                     "name": null,
                     "population": null,
                     "size": null,
+                    "tags": [{
+                        "_id": "1IZunX27kOFP-ff4kpeLQ",
+                        "tag": "City"
+                    }],
                     "type": null
                 };
 
@@ -85,7 +90,8 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
 
                 cityObj.name = City.name;
                 cityObj.i = City.i;
-
+                cityObj._id = nanoid();
+                cityObj.description = lorem.generateParagraphs(2);
 
                 let cityState = City.state;
                 let country = states[cityState];
@@ -96,8 +102,8 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                     "nameFull": country.fullName || "",
                     "govForm": country.form || "",
                     "govName": country.formName || "",
-                    "cid": country.i || "0",
-                    "c_id": "",
+                    "id": country.i || "0",
+                    "_id": "",
                 };
 
 
@@ -106,27 +112,55 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                     cityObj.capital = "Yes";
                     cityObj.isCapital = true;
                     cityObj.features.push("Capital")
+                    cityObj.tags.push({
+                        "_id": "77eqKucwMaNXbgw_v-810",
+                        "tag": "Capital"
+                    });
                 } else {
                     cityObj.capital = "No";
                     cityObj.isCapital = false;
                 }
                 if (City.citadel === 1) {
                     cityObj.features.push("Citadel");
+                    cityObj.tags.push({
+                        "_id": "lTnDEGrVvLDS2feESzZPV",
+                        "tag": "Citadel"
+                    });
                 }
                 if (City.port === 1) {
                     cityObj.features.push("Port");
+                    cityObj.tags.push({
+                        "_id": "3OVpUylcH9JCUZMSX9nK4",
+                        "tag": "Port"
+                    })
                 }
                 if (City.plaza === 1) {
                     cityObj.features.push("Plaza");
+                    cityObj.tags.push({
+                        "_id": "4CoOX8cSxMIjSBOzlcWzT",
+                        "tag": "Plaza"
+                    })
                 }
                 if (City.walls === 1) {
                     cityObj.features.push("Walls");
+                    cityObj.tags.push({
+                        "_id": "7SfAGH2dfmCZVsaU8JNbt",
+                        "tag": "Walls"
+                    })
                 }
                 if (City.shanty === 1) {
                     cityObj.features.push("Shanty Town");
+                    cityObj.tags.push({
+                        "_id": "tgFP5-2syOFdgXGQS11hB",
+                        "tag": "Shanty Town"
+                    })
                 }
                 if (City.temple === 1) {
                     cityObj.features.push("Temple");
+                    cityObj.tags.push({
+                        "_id": "FeS5jSkiM7N6-yhVccuwZ",
+                        "tag": "Temple"
+                    })
                 }
 
 
@@ -294,7 +328,6 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                 let religObj = {
                     i: Religion.i || "",
                     name: Religion.name || "",
-                    color: Religion.color || "",
                     culture: Religion.culture || "",
                     type: Religion.type || "",
                     form: Religion.form || "",
@@ -315,19 +348,33 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
 
 
             Countries.map((Country) => {
+                console.log(Country)
                 Country.cities = [];
-                Country.tags.push(Country.type)
+                Country.tags.push({
+                    "_id": "a2SL9gJ2vyTg4_oVlOKAv",
+                    "tag": "Country"
+                })
                 Cities.filter(obj => {
-                    return obj.country.cid === Country.i
+                    return obj.country.id === Country.i
                 }).map((city) => {
-                    Country.cities.push(city);
+                    Country.cities.push(city._id);
+                    //console.log(city)
                 });
-
             });
+
+            Cities.map((City) => {
+                Countries.filter(obj => {
+                    return obj.i === City.country.id
+                }).map((obj) => {
+                    console.log(obj._id);
+                    City.country._id = obj._id
+                })
+            })
 
             mapData.Locations.cities = Cities;
             mapData.Locations.countries = Countries;
             localStorage.setItem("countries", JSON.stringify(Countries))
+            localStorage.setItem("cities", JSON.stringify(Cities))
             setMap(mapData)
         };
     }

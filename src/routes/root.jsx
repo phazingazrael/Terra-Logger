@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCountries } from "../countries.jsx";
+import { getCountries } from "../data/countries.jsx";
 
 export async function loader() {
     const countries = await getCountries();

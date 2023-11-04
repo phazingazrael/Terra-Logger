@@ -1,20 +1,39 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
+const { screen } = require('electron')
 
 const Package = require('../package.json');
+
+const generateLicenseFile = require("generate-license-file");
+
+// todo, generate 3rd party licenses and merge with existing license
+generateLicenseFile
+  .getProjectLicenses("./package.json")
+  .then(licenses => {
+    //console.log(licenses)
+  })
+  .catch(error => {
+    // Do stuff with error...
+  });
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+
 const createWindow = () => {
-  // Create the browser window.
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width, height } = primaryDisplay.workAreaSize
+
   const mainWindow = new BrowserWindow({
     title: "Terra-Logger v" + Package.version,
-    width: 800,
-    height: 600,
+    width: width,
+    height: height,
+    //width: 1800,
+    //height: 900,
     autoHideMenuBar: true,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,

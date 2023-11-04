@@ -152,8 +152,10 @@ const CountryInfoCard = ({ Countries }) => {
 									</List>
 								</CardContent>
 								<CardActions disableSpacing className='cardActions buttons'>
-									<Button variant="contained" color="success" onClick={() => console.log("edit")}>Edit</Button>
-									<Link to={"/main_window/countries/"+`${element._id}`+"/view"}>
+									<Link to={"/main_window/countries/" + `${element._id}` + "/edit"}>
+										<Button variant="contained" color="success" onClick={() => console.log("edit")}>Edit</Button>
+									</Link>
+									<Link to={"/main_window/countries/" + `${element._id}` + "/view"}>
 										<Button variant="contained" onClick={() => console.log("/country/" + element._id + "/view")}>View</Button>
 									</Link>
 									<Button variant="contained" color="error" onClick={() => (
@@ -169,7 +171,7 @@ const CountryInfoCard = ({ Countries }) => {
 				))
 				}
 			</Grid>
-		</div >
+		</div>
 	);
 }
 

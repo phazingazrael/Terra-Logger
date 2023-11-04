@@ -272,7 +272,7 @@ body {
 }
 
 .countryPage header.major > :last-child {
-  border-bottom: solid 3px #f56a6a;
+  border-bottom: solid 3px;
   display: inline-block;
   margin: 0 0 2em 0;
   padding: 0 0.75em 0.5em 0;
@@ -336,8 +336,7 @@ body {
 .countryPage input[type="url"]:focus,
 .countryPage select:focus,
 .countryPage textarea:focus {
-  border-color: #f56a6a;
-  box-shadow: 0 0 0 1px #f56a6a;
+  box-shadow: 0 0 0 1px;
 }
 
 .countryPage select {
@@ -437,8 +436,7 @@ body {
 }
 .countryPage input[type="checkbox"]:focus + label:before,
 .countryPage input[type="radio"]:focus + label:before {
-  border-color: #f56a6a;
-  box-shadow: 0 0 0 1px #f56a6a;
+  box-shadow: 0 0 0 1px;
 }
 
 .countryPage input[type="checkbox"] + label:before {
@@ -514,8 +512,14 @@ body {
 .countryPage .icon.solid:before {
   font-weight: 900;
 }
-.countryPage .icon.brands:before {
-  font-family: "Font Awesome 5 Brands";
+
+.countryPage .brands {
+  height: 10vh;
+  display: block;
+  width: 5vw;
+  border-radius: 54px;
+  text-align: center;
+  padding-top: 1.6vh;
 }
 
 /* Image */
@@ -601,9 +605,10 @@ body {
 .countryPage ul.alt {
   list-style: none;
   padding-left: 0;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 .countryPage ul.alt li {
-  border-top: solid 1px rgba(210, 215, 217, 0.75);
+  border-top: solid 1px rgba(210, 215, 217, 0.7);
   padding: 0.5em 0;
 }
 .countryPage ul.alt li:first-child {
@@ -831,7 +836,6 @@ body {
   width: 10em;
 }
 .countryPage .features article .icon:before {
-  color: #f56a6a;
   font-size: 2.75rem;
   position: relative;
   top: 0.05em;
@@ -868,61 +872,60 @@ body {
 }
 
 /* Posts */
-.countryPage .posts {
-  display: -moz-flex;
-  display: -webkit-flex;
-  display: -ms-flex;
-  display: flex;
-  -moz-flex-wrap: wrap;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin: 0 0 2em -6em;
-  width: calc(100% + 6em);
+
+.countryPage .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 20px;
 }
-.countryPage .posts article {
-  -moz-flex-grow: 0;
-  -webkit-flex-grow: 0;
-  -ms-flex-grow: 0;
-  flex-grow: 0;
-  -moz-flex-shrink: 1;
-  -webkit-flex-shrink: 1;
-  -ms-flex-shrink: 1;
-  flex-shrink: 1;
-  margin: 0 0 6em 6em;
-  position: relative;
-  width: calc(33.33333% - 6em);
+
+.grid > * {
+  position: relative; /* Parent must be positioned for aboslute positioning of pseudo-elements to work */
+  overflow: visible; /* overflow: hidden will hide borders */
 }
-.countryPage .posts article:before {
-  background: rgba(210, 215, 217, 0.75);
+
+/* Vertical lines to the left of cells in the top row */
+.grid > :nth-child(2)::before,
+.grid > :nth-child(3)::before {
   content: "";
-  display: block;
-  height: calc(100% + 6em);
-  left: -3em;
   position: absolute;
   top: 0;
-  width: 1px;
+  left: -10px;
+  height: 100%;
+  border-left: 1px solid rgba(51, 51, 51, 0.2);
 }
-.countryPage .posts article:after {
-  background: rgba(210, 215, 217, 0.75);
-  bottom: -3em;
+
+/* Vertical lines to the left of cells in all other rows */
+.grid > :nth-child(3n + 5)::before,
+.grid > :nth-child(3n + 6)::before {
   content: "";
-  display: block;
-  height: 1px;
   position: absolute;
-  right: 0;
-  width: calc(100% + 6em);
+  top: -20px;
+  left: -10px;
+  height: calc(100% + 20px);
+  border-left: 1px solid rgba(51, 51, 51, 0.2);
 }
-.countryPage .posts article > :last-child {
-  margin-bottom: 0;
-}
-.countryPage .posts article .image {
-  display: block;
-  margin: 0 0 2em 0;
-}
-.countryPage .posts article .image img {
-  display: block;
+
+/* Horizontal lines above cells in the first column */
+.grid > :nth-child(3n + 4)::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
   width: 100%;
+  border-top: 1px solid rgba(51, 51, 51, 0.2);
+}
+
+/* Horizontal lines above cells in all other columns */
+.grid > :nth-child(3n + 5)::after,
+.grid > :nth-child(3n + 6)::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -20px;
+  width: calc(100% + 20px);
+  border-top: 1px solid rgba(51, 51, 51, 0.2);
 }
 
 /* Wrapper */
@@ -956,8 +959,8 @@ body {
   max-width: 110em;
 }
 #main > .inner.countryPage > section {
-  padding: 6em 0 4em 0;
-  border-top: solid 2px rgba(210, 215, 217, 0.75);
+  padding-bottom: 4em;
+  border-top: solid 0px rgba(210, 215, 217, 0.75);
 }
 #main > .inner.countryPage > section:first-of-type {
   border-top: 0 !important;
@@ -969,7 +972,7 @@ body {
   display: -webkit-flex;
   display: -ms-flex;
   display: flex;
-  border-bottom: solid 5px #f56a6a;
+  border-bottom: solid 5px;
   padding: 2em 0 1em 0;
   position: relative;
 }
@@ -992,7 +995,7 @@ body {
 
 /* Banner */
 .countryPage #banner {
-  padding: 6em 0 4em 0;
+  padding-bottom: 4em;
   display: -moz-flex;
   display: -webkit-flex;
   display: -ms-flex;
@@ -1012,6 +1015,18 @@ body {
   flex-shrink: 1;
   width: 50%;
 }
+
+.countryPage #banner .content .description,
+.countryPage #banner .content .object {
+  float: left;
+  min-width: 45%;
+  max-width: 50%;
+}
+
+.image-coa {
+  width: 100%;
+}
+
 .countryPage #banner .image {
   -moz-flex-grow: 0;
   -webkit-flex-grow: 0;
@@ -1026,14 +1041,59 @@ body {
   width: 50%;
 }
 .countryPage #banner .image img {
-  height: 100%;
-  -moz-object-fit: cover;
-  -webkit-object-fit: cover;
-  -ms-object-fit: cover;
-  object-fit: cover;
   -moz-object-position: center;
   -webkit-object-position: center;
   -ms-object-position: center;
   object-position: center;
   width: 100%;
+}
+
+.countryPage .cityCard {
+}
+
+.countryPage .cityCard img {
+  width: 50%;
+  display: block;
+  margin: 0px auto;
+}
+
+.cityCard p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* countryEdit.css consolidate */
+.my-custom-view-wrapper {
+  position: relative;
+}
+
+.textArea-view-wrapper div:last-child {
+  /* Here we are styling the button container. */
+  justify-content: center;
+  align-items: top;
+  margin-top: 5px;
+}
+
+.textArea-edit-button,
+.textArea-cancel-button,
+.textArea-save-button {
+  border-radius: 1px;
+  outline: none;
+  padding: 0.6em;
+  min-width: 30px;
+  height: 100%;
+  border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+  border-style: solid;
+  border-width: 1px;
+}
+
+.textArea-edit-button {
+  position: inherit;
+}
+
+.banner.content {
+  min-width: 50%;
 }

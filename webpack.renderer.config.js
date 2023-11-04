@@ -10,4 +10,7 @@ module.exports = {
   module: {
     rules,
   },
+  plugins: [
+    require('unplugin-icons/webpack')({ compiler: 'jsx', jsx: 'react' }),
+  ],
 };

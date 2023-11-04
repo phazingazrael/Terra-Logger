@@ -20,6 +20,7 @@ import { styled } from '@mui/material/styles';
 import Root, { loader as rootLoader } from './routes/root.jsx';
 import ErrorPage from './routes/error.jsx';
 import CountryView, { loader as countryLoader } from './routes/countryView.jsx';
+import CountryEdit, { loader as countryEditLoader } from './routes/countryEdit.jsx';
 
 
 import SideBar from './component/sideBar/index.jsx';
@@ -51,6 +52,12 @@ const router = createBrowserRouter([
                 loader: countryLoader,
                 path: "countries/:_id/view",
                 element: <CountryView />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                loader: countryEditLoader,
+                path: "countries/:_id/edit",
+                element: <CountryEdit />,
                 errorElement: <ErrorPage />,
             }
         ]
@@ -172,6 +179,9 @@ function App({ Countries }) {
                         <Link to={"/main_window"} onClick={() => {
                             console.log("Clearing Storage");
                             localStorage.removeItem("mapParsed");
+                            localStorage.removeItem("cities");
+                            localStorage.removeItem("countries");
+                            localStorage.removeItem("rawMap");
                             setMap();
                             handleClose();
                         }} color="warning.main">

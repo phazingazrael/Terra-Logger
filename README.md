@@ -1,8 +1,8 @@
 # Terra-Logger
 
 ![GitHub](https://img.shields.io/github/license/phazingazrael/terra-logger?style=plastic) ![GitHub all releases](https://img.shields.io/github/downloads/phazingazrael/terra-logger/total?style=plastic) ![Electron.js](https://img.shields.io/badge/Uses-Electron.js-blue?style=plastic)
- 
-Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. 
+
+Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator.
 
 ## Table of Contents
 
@@ -10,13 +10,14 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Future Plans](#future-plans)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
 
 Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
-Please note: This is a one way process, Changes made to exported files will not sync to your map.
+**Please note: This is a one-way process, and changes made to exported files will not sync to your map.**
 
 ## Features
 
@@ -24,7 +25,6 @@ Please note: This is a one way process, Changes made to exported files will not 
 - Automatically organize the information for cities, provinces, countries, religious details, and more.
 - Display all available information for easy editing before exporting files.
 - Future plans to include customizable templates for Markdown files, allowing you to further tailor the output to your specific needs.
-
 
 ## Installation
 
@@ -40,6 +40,34 @@ To use Terra-Logger, follow these steps:
 4. Edit and customize the details as needed.
 5. Export the organized individual Markdown files for each location and detail.
 
+## Future Plans
+
+We have exciting plans for future versions of Terra-Logger:
+
+### Version 1.0 (Release)
+
+- Importing json file fom Azgaar's Fantasy Map Generator.
+- Exporting of simple markdown files for imported data.
+- Ability to modify data prior to export.
+- Automatically include relevant Emblems or Coat of Arms as an SVG file.
+- Select location for exported files
+
+### Version 1.1.0
+
+- Ability to choose between multiple Markdown Templates.
+- Customize how exported files are organized.
+
+### Version 1.2.0
+
+- Re-Write import feature to load .map file from Azgaar's Fantasy Map Generator.
+- Use the included SVG from the .map file to render the actual map as the program's background.
+
+### Version 1.3.0
+
+- Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
+
+Stay tuned for updates and new releases to experience the latest features and enhancements!
+
 ## Contributing
 
 We appreciate your interest in contributing to Terra-Logger! If you have any ideas for improvements, new features, or bug reports, please follow these steps:
@@ -54,7 +82,6 @@ By utilizing the issue tracker, we can keep track of all contributions, discussi
 
 We value your feedback and contributions to make Terra-Logger better. Thank you for helping us improve the software!
 
-
 ## License
 
 Terra-Logger is licensed under the [MIT License](LICENSE). You can find the full text of the license in the [LICENSE](LICENSE) file.
@@ -62,3 +89,7 @@ Terra-Logger is licensed under the [MIT License](LICENSE). You can find the full
 ## Acknowledgments
 
 We would like to express our gratitude to the developers of [Azgaar's Fantasy Map Generator](https://github.com/Azgaar/Fantasy-Map-Generator) for their fantastic tool, which inspired and provided the foundation for Terra-Logger.
+
+### Pending Permission
+
+Terra-Logger plans to utilize [Map Icons](https://www.patreon.com/posts/23978869) by [Caeora](https://www.patreon.com/caeora).

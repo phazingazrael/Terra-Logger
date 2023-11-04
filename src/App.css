@@ -29,6 +29,10 @@ header {
 .Content {
   max-height: 75vh;
 }
+.contentMain {
+  max-height: 68vh;
+  overflow: auto;
+}
 
 .MuiPaper-root {
   text-align: left !important;
