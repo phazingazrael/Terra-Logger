@@ -19,8 +19,8 @@ import { styled } from '@mui/material/styles';
 
 import Root, { loader as rootLoader } from './routes/root.jsx';
 import ErrorPage from './routes/error.jsx';
-import CountryView, { loader as countryLoader } from './routes/countryView.jsx';
-import CountryEdit, { loader as countryEditLoader } from './routes/countryEdit.jsx';
+import CountryView, { loader as countryLoader } from './routes/countryView/countryView.jsx';
+import CityView, { loader as cityLoader } from './routes/cityView/cityView.jsx';
 
 
 import SideBar from './component/sideBar/index.jsx';
@@ -55,9 +55,9 @@ const router = createBrowserRouter([
                 errorElement: <ErrorPage />,
             },
             {
-                loader: countryEditLoader,
-                path: "countries/:_id/edit",
-                element: <CountryEdit />,
+                loader: cityLoader,
+                path: "cities/:_id",
+                element: <CityView />,
                 errorElement: <ErrorPage />,
             }
         ]

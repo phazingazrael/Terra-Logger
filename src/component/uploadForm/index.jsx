@@ -348,7 +348,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
 
 
             Countries.map((Country) => {
-                console.log(Country)
+                //console.log(Country)
                 Country.cities = [];
                 Country.tags.push({
                     "_id": "a2SL9gJ2vyTg4_oVlOKAv",
@@ -358,6 +358,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                     return obj.country.id === Country.i
                 }).map((city) => {
                     Country.cities.push(city._id);
+                    city.color === Country.color;
                     //console.log(city)
                 });
             });
@@ -366,7 +367,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
                 Countries.filter(obj => {
                     return obj.i === City.country.id
                 }).map((obj) => {
-                    console.log(obj._id);
+                    //console.log(obj._id);
                     City.country._id = obj._id
                 })
             })
@@ -376,6 +377,7 @@ const UploadForm = ({ isLoading, setLoading, mapData, setMap }) => {
             localStorage.setItem("countries", JSON.stringify(Countries))
             localStorage.setItem("cities", JSON.stringify(Cities))
             setMap(mapData)
+            setLoading(false);
         };
     }
 

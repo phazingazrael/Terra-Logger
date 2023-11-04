@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { useLoaderData } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
@@ -10,9 +10,9 @@ import EdiText from 'react-editext';
 
 import Sketch from '@uiw/react-color-sketch';
 
-import { getCountry } from "../data/countries.jsx";
+import { getCountry } from "../../data/countries.jsx";
 
-import "./countryView/main.css";
+import "./main.css";
 
 
 export async function loader({ params }) {
@@ -32,7 +32,6 @@ const CountryView = () => {
     const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
     const [hex, setHex] = useState(country.color);
-    const [disableAlpha, setDisableAlpha] = useState(false);
 
     const [mapData, setMap] = useState(
         JSON.parse(localStorage.getItem("mapParsed"))
@@ -47,12 +46,13 @@ const CountryView = () => {
         let toMap = mapData;
         tMap.splice(upd_obj, 1, data);
         toMap.Locations.countries.splice(upd_obj, 1, data);
-        //localStorage.setItem("countries", JSON.stringify(tMap));
-        //localStorage.setItem("mapParsed", JSON.stringify(toMap));
+        localStorage.setItem("countries", JSON.stringify(tMap));
+        localStorage.setItem("mapParsed", JSON.stringify(toMap));
         setMap(toMap);
         forceUpdate();
         //console.log(data)
     }
+
 
     const delCountry = (data) => {
         console.log('saving data');
@@ -65,6 +65,10 @@ const CountryView = () => {
         setMap(JSON.parse(localStorage.getItem("mapParsed")));
         setLoading(false);
     };
+
+    useEffect(() => {
+        forceUpdate()
+    }, []);
 
     return (
         <div>
@@ -167,16 +171,14 @@ const CountryView = () => {
                                                 <Sketch
                                                     style={{ marginLeft: 20 }}
                                                     color={hex}
-                                                    disableAlpha={disableAlpha}
+                                                    disableAlpha="false"
                                                     onChange={(color) => {
-                                                        setHex(color.hex);
+                                                        //setHex(color.hex);
                                                         country.color = color.hex;
                                                         saveCountry(country);
+
                                                     }}
                                                 />
-                                                <button onClick={() => setDisableAlpha(!disableAlpha)}>
-                                                    disableAlpha={disableAlpha.toString()}
-                                                </button>
                                             </div>
                                         )
                                         : ""
@@ -221,7 +223,7 @@ const CountryView = () => {
                                             <p>{city.description}</p>
                                             <ul className="actions">
                                                 <li>
-                                                    <Link to={"/main_window/cities/" + `${city._id}` + "/view"}>More</Link>
+                                                    <Link to={"/main_window/cities/" + `${city._id}`}>More</Link>
                                                 </li>
                                             </ul>
                                         </article>
