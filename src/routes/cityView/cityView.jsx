@@ -74,6 +74,7 @@ const CityView = () => {
 
         console.log(JSON.stringify(country))
         city.color = country.color;
+        console.log(city);
         forceUpdate()
     }, []);
 
@@ -161,13 +162,7 @@ const CityView = () => {
                                         <h6>Population:</h6>
                                         <ul className="alt">
                                             <li>
-                                                Rural: {city.population.rural}
-                                            </li>
-                                            <li>
-                                                Urban: {city.population.urban}
-                                            </li>
-                                            <li>
-                                                Total: {city.population.total}
+                                                {city.size} - Population: {city.population}
                                             </li>
                                         </ul>
                                     </div>
