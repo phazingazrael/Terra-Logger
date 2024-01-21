@@ -16,7 +16,7 @@
     "preview": "electron-vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@lexical/react": "^0.12.4",
     "@mui/icons-material": "^5.14.18",
