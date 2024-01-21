@@ -1,0 +1,476 @@
+[
+  {
+    "_id": "eIBl7agFZ8OszsjN5t8xD",
+    "Name": "WorldOverview",
+    "Type": "WorldOverview",
+    "Description": "The overall description and framework of the world."
+  },
+  {
+    "_id": "kgMSkVVBZhWOVcf4PaXqB",
+    "Name": "Setting",
+    "Type": "WorldOverview",
+    "Description": "The environment and backdrop where the story or world is situated."
+  },
+  {
+    "_id": "3za6JbQcWqraNj0guhnqk",
+    "Name": "Culture",
+    "Type": "WorldOverview",
+    "Description": "The customs, arts, social institutions, and achievements of the world's inhabitants."
+  },
+  {
+    "_id": "JGlNPhpwLpwQNUUcmZuB4",
+    "Name": "Society",
+    "Type": "WorldOverview",
+    "Description": "The organized community and social structures within the world."
+  },
+  {
+    "_id": "FBGjfyGNWxWAabHxJKh_0",
+    "Name": "Ecosystem",
+    "Type": "WorldOverview",
+    "Description": "The interdependent system of living organisms and their environment."
+  },
+  {
+    "_id": "Dnmcq7Tkg9oTAK4--Y0N9",
+    "Name": "Map",
+    "Type": "Maps",
+    "Description": "A visual representation of the geographical features of the world."
+  },
+  {
+    "_id": "NyWNQQhNaTRGphtAsXgof",
+    "Name": "Province",
+    "Type": "Maps",
+    "Description": "Administrative divisions within a larger region or territory. Provinces often have distinct boundaries and governance structures, serving as subunits of a country or larger political entity. They can vary in size, significance, and cultural characteristics, playing a crucial role in the overall organization of the world."
+  },
+  {
+    "_id": "GTNJ75sjj6swlFr9s-zrU",
+    "Name": "Geography",
+    "Type": "Maps",
+    "Description": "The study and depiction of the physical features of the world."
+  },
+  {
+    "_id": "0gTtm-ilACQ-hFKptzjrr",
+    "Name": "Regions",
+    "Type": "Maps",
+    "Description": "Distinctive areas or divisions within the world with specific characteristics."
+  },
+  {
+    "_id": "23Icj3FQkIr_8pQjhNpOW",
+    "Name": "Landmarks",
+    "Type": "Maps",
+    "Description": "Prominent and recognizable features in the world's landscape."
+  },
+  {
+    "_id": "77eqKucwMaNXbgw_v-810",
+    "Name": "Capital",
+    "Type": "Maps",
+    "Description": "The primary city or town serving as the seat of government and administrative center."
+  },
+  {
+    "_id": "lTnDEGrVvLDS2feESzZPV",
+    "Name": "Citadel",
+    "Type": "Maps",
+    "Description": "A fortress, typically on high ground, protecting or dominating a city."
+  },
+  {
+    "_id": "4CoOX8cSxMIjSBOzlcWzT",
+    "Name": "Plaza",
+    "Type": "Maps",
+    "Description": "An open public square, especially in a city or town."
+  },
+  {
+    "_id": "3OVpUylcH9JCUZMSX9nK4",
+    "Name": "Port",
+    "Type": "Maps",
+    "Description": "Locations designated for harboring and facilitating the arrival, departure, and storage of ships and vessels. Ports are key points of trade, transportation, and naval activities within the world, often situated along coastlines or major waterways."
+  },
+  {
+    "_id": "7SfAGH2dfmCZVsaU8JNbt",
+    "Name": "Walls",
+    "Type": "Maps",
+    "Description": "Defensive barriers or fortifications enclosing a city or settlement."
+  },
+  {
+    "_id": "tgFP5-2syOFdgXGQS11hB",
+    "Name": "Shanty Town",
+    "Type": "Maps",
+    "Description": "A deprived area on the outskirts of a town consisting of makeshift dwellings."
+  },
+  {
+    "_id": "FeS5jSkiM7N6-yhVccuwZ",
+    "Name": "Temple",
+    "Type": "Maps",
+    "Description": "A building dedicated to the worship of deities or a place of religious practices."
+  },
+  {
+    "_id": "T8hat8NC6ZogBlDYu3Q07",
+    "Name": "Characters",
+    "Type": "Characters",
+    "Description": "Individuals within the world, each with unique attributes, roles, and stories."
+  },
+  {
+    "_id": "H66DK3s9ECt99akk2w8eC",
+    "Name": "CharacterProfiles",
+    "Type": "Characters",
+    "Description": "Detailed information and background of individual characters in the world."
+  },
+  {
+    "_id": "lbBSVdaiXwQ5lyafEuo_o",
+    "Name": "Backstories",
+    "Type": "Characters",
+    "Description": "The personal histories and narratives of characters within the world."
+  },
+  {
+    "_id": "Ix9pglvAKyu1cqr5ntwT4",
+    "Name": "Races",
+    "Type": "Characters",
+    "Description": "Distinct groups of sentient beings, each with its own characteristics and attributes."
+  },
+  {
+    "_id": "i9VxlQxE-STQIgsHyUkPs",
+    "Name": "Factions",
+    "Type": "Characters",
+    "Description": "Organized groups or factions within the world, each with its own goals and ideologies."
+  },
+  {
+    "_id": "q2mDesdsn5mDhOi2epcZt",
+    "Name": "Technology",
+    "Type": "Technology",
+    "Description": "Advancements, innovations, and tools developed within the world."
+  },
+  {
+    "_id": "CdEWfQV89xG830EKg-Vx2",
+    "Name": "Inventions",
+    "Type": "Technology",
+    "Description": "New and creative devices or processes introduced within the world."
+  },
+  {
+    "_id": "i0hK428YR7BH9C3MWua5b",
+    "Name": "Tools",
+    "Type": "Technology",
+    "Description": "Implements or devices used by characters or societies within the world."
+  },
+  {
+    "_id": "cUVL1ye1EThxpPPRE0AcW",
+    "Name": "Weapons",
+    "Type": "Technology",
+    "Description": "Arms and equipment used for defense or offense within the world."
+  },
+  {
+    "_id": "kHviQKSZ36zVRTiI6kCxB",
+    "Name": "Machines",
+    "Type": "Technology",
+    "Description": "Mechanical devices or contrivances introduced within the world."
+  },
+  {
+    "_id": "X_VvFaGQtU2-paTKvyeZf",
+    "Name": "MagicSystem",
+    "Type": "MagicSystem",
+    "Description": "The system governing the magical elements within the world."
+  },
+  {
+    "_id": "hHLNwxlQRRwnLxhsVPVhU",
+    "Name": "Spells",
+    "Type": "MagicSystem",
+    "Description": "Incantations or rituals with magical effects within the world."
+  },
+  {
+    "_id": "2B-Bej7gwb5ZPeBuwM9tZ",
+    "Name": "MagicalBeings",
+    "Type": "MagicSystem",
+    "Description": "Beings with magical abilities or origins within the world."
+  },
+  {
+    "_id": "-XhJPulVnlWzkQljv5LRU",
+    "Name": "Artifacts",
+    "Type": "MagicSystem",
+    "Description": "Objects imbued with magical properties or significance within the world."
+  },
+  {
+    "_id": "JuA9moba7uMe1dv4jiFLv",
+    "Name": "Religions",
+    "Type": "ReligionsAndMythology",
+    "Description": "Systems of beliefs and practices centered around deities or higher powers."
+  },
+  {
+    "_id": "2ERpg2SbDRqSQbrWXhPCo",
+    "Name": "Mythology",
+    "Type": "ReligionsAndMythology",
+    "Description": "The collection of myths, legends, and stories within the world."
+  },
+  {
+    "_id": "f-LJJz6UTPEWcVLguF_Km",
+    "Name": "Deities",
+    "Type": "ReligionsAndMythology",
+    "Description": "Supernatural beings or gods worshiped within the world."
+  },
+  {
+    "_id": "krPYEkr1mutwvUv3fHFM0",
+    "Name": "Rituals",
+    "Type": "ReligionsAndMythology",
+    "Description": "Formal ceremonies or practices within religious or magical contexts."
+  },
+  {
+    "_id": "4devVLgu9-ZPo5GAPgwpY",
+    "Name": "Economy",
+    "Type": "Economy",
+    "Description": "The system of production, distribution, and consumption of resources within the world."
+  },
+  {
+    "_id": "QpPpJn0-WrZzbxvVp6tVN",
+    "Name": "Trade",
+    "Type": "Economy",
+    "Description": "The exchange of goods and services between different entities within the world."
+  },
+  {
+    "_id": "1Ef-gLdI8xSYK9Azmu6c4",
+    "Name": "Currencies",
+    "Type": "Economy",
+    "Description": "The forms of money or currency used within the economic system of the world."
+  },
+  {
+    "_id": "q1rqMLMv2gajFJT_H5-of",
+    "Name": "Resources",
+    "Type": "Economy",
+    "Description": "The raw materials or assets available within the world for production and trade."
+  },
+  {
+    "_id": "3wYJzBppfdHQadKaUFdhz",
+    "Name": "Politics",
+    "Type": "Politics",
+    "Description": "The activities, actions, and policies governing the world and its entities."
+  },
+  {
+    "_id": "lNpJ0GuRXQqmQ041EyGOB",
+    "Name": "Governments",
+    "Type": "Politics",
+    "Description": "The systems or entities in charge of decision-making and administration within the world."
+  },
+  {
+    "_id": "IQ4mTGXKRw-oL1varYZe2",
+    "Name": "Leadership",
+    "Type": "Politics",
+    "Description": "The individuals or figures in positions of leadership within the political structures of the world."
+  },
+  {
+    "_id": "1oQKiwgFgsv6g1DNWusRY",
+    "Name": "Laws",
+    "Type": "Politics",
+    "Description": "The rules and regulations governing behavior and conduct within the world."
+  },
+  {
+    "_id": "Wv3MtCbUvkwOzK504FoBa",
+    "Name": "Time",
+    "Type": "TimeAndCalendar",
+    "Description": "The concept of time and its measurement within the world."
+  },
+  {
+    "_id": "kVW8MX8TPEi4ZM-6NyR0I",
+    "Name": "Calendar",
+    "Type": "TimeAndCalendar",
+    "Description": "A system of organizing and measuring time within the world."
+  },
+  {
+    "_id": "GGOriSRtFfzWMGx_CSt-G",
+    "Name": "Seasons",
+    "Type": "TimeAndCalendar",
+    "Description": "Distinct periods of the year characterized by specific weather conditions within the world."
+  },
+  {
+    "_id": "Vz17dlwiVO3UxY6fJ2dN-",
+    "Name": "Holidays",
+    "Type": "TimeAndCalendar",
+    "Description": "Special days or occasions celebrated within the world."
+  },
+  {
+    "_id": "T-LHeHYDcan2M3-l6QAL4",
+    "Name": "Creatures",
+    "Type": "CreaturesAndFlora",
+    "Description": "Living beings within the world, each with its own characteristics and behaviors."
+  },
+  {
+    "_id": "uJzWkwi5b9ViZDZmgID8A",
+    "Name": "Flora",
+    "Type": "CreaturesAndFlora",
+    "Description": "Plant life and vegetation within the world."
+  },
+  {
+    "_id": "gBMDqht2XLg4DMZK2TALq",
+    "Name": "Fauna",
+    "Type": "CreaturesAndFlora",
+    "Description": "Animal life and creatures within the world."
+  },
+  {
+    "_id": "cEXGS22P3xID2XADTVYg_",
+    "Name": "Monsters",
+    "Type": "CreaturesAndFlora",
+    "Description": "Dangerous or mythical creatures within the world, often with supernatural attributes."
+  },
+  {
+    "_id": "twAnEY4-KZ1bnMoponH4S",
+    "Name": "Locations",
+    "Type": "Locations",
+    "Description": "Geographical areas or sites within the world, each with its own significance."
+  },
+  {
+    "_id": "TJaHO2uqBFZcoXWIfc5hJ",
+    "Name": "Country",
+    "Type": "Locations",
+    "Description": "A distinct and sovereign nation within the world, often with defined borders."
+  },
+  {
+    "_id": "1IZunX27kOFP-ff4kpeLQ",
+    "Name": "City",
+    "Type": "Locations",
+    "Description": "A large and permanent human settlement within the world."
+  },
+  {
+    "_id": "PUnkFCYQe8ELfmDdLnQ9j",
+    "Name": "Thorp",
+    "Type": "Locations",
+    "Description": "A small village or hamlet within the world."
+  },
+  {
+    "_id": "E8a2ZY3L1YMejfutQ-SSX",
+    "Name": "Hamlet",
+    "Type": "Locations",
+    "Description": "A small settlement, often smaller than a village, within the world."
+  },
+  {
+    "_id": "VdgVjS1N0DGbOe1rPAwOU",
+    "Name": "Village",
+    "Type": "Locations",
+    "Description": "A clustered human settlement larger than a hamlet but smaller than a town."
+  },
+  {
+    "_id": "vlcbcyj423BS-BNTdD3ba",
+    "Name": "Small Town",
+    "Type": "Locations",
+    "Description": "A compact and organized human settlement, larger than a village but smaller than a large town."
+  },
+  {
+    "_id": "dA8K690AX0izlvr53lB6z",
+    "Name": "Large Town",
+    "Type": "Locations",
+    "Description": "A sizable and populated human settlement, larger than a small town but smaller than a city."
+  },
+  {
+    "_id": "fHIeZ74EP4dDv5kzIG2w4",
+    "Name": "Small City",
+    "Type": "Locations",
+    "Description": "A compact and urbanized human settlement, larger than a large town but smaller than a metropolis."
+  },
+  {
+    "_id": "grZI1ZhAH783TnF3lgOqv",
+    "Name": "Large City",
+    "Type": "Locations",
+    "Description": "A densely populated and highly developed urban center within the world."
+  },
+  {
+    "_id": "9Zx94oEYkSJ1gncBTfPMt",
+    "Name": "Metropolis",
+    "Type": "Locations",
+    "Description": "An extremely large and highly populated urban center, often a major hub of commerce and culture."
+  },
+  {
+    "_id": "j1Z23pBCowZP1knAyX7oh",
+    "Name": "Landscapes",
+    "Type": "Locations",
+    "Description": "The physical features and scenery of the land within the world, encompassing diverse terrains."
+  },
+  {
+    "_id": "wbL8kbpOdUi_NiYrpkeDk",
+    "Name": "Artifact",
+    "Type": "CulturalArtifacts",
+    "Description": "An object of historical, cultural, or magical significance within the world."
+  },
+  {
+    "_id": "LS0fgoptQjkS77Gll98h7",
+    "Name": "CulturalItems",
+    "Type": "CulturalArtifacts",
+    "Description": "Items or objects with cultural importance within the world."
+  },
+  {
+    "_id": "vWPxHVM6sM1jyFLPsq22d",
+    "Name": "Relics",
+    "Type": "CulturalArtifacts",
+    "Description": "Objects or artifacts considered sacred or revered within the world."
+  },
+  {
+    "_id": "CoNpf6VruyvgvW6DcXDQg",
+    "Name": "Treasures",
+    "Type": "CulturalArtifacts",
+    "Description": "Valuable and often rare items of great significance or wealth within the world."
+  },
+  {
+    "_id": "EjDB1P0Webjz5kMaI6v8l",
+    "Name": "Education",
+    "Type": "EducationAndKnowledge",
+    "Description": "The process of acquiring knowledge, skills, and values within the world."
+  },
+  {
+    "_id": "IjNbxbqBxshO6Y6MFI9Jw",
+    "Name": "Knowledge",
+    "Type": "EducationAndKnowledge",
+    "Description": "Information, understanding, and awareness gained through learning and experience."
+  },
+  {
+    "_id": "T3sICxcbuZ8LsmrnwZuiJ",
+    "Name": "Libraries",
+    "Type": "EducationAndKnowledge",
+    "Description": "Institutions housing collections of books, documents, and other forms of knowledge within the world."
+  },
+  {
+    "_id": "JW7sRi-B9-a8zyW6bWteQ",
+    "Name": "Scholarship",
+    "Type": "EducationAndKnowledge",
+    "Description": "The pursuit of knowledge through academic study, research, and intellectual inquiry."
+  },
+  {
+    "_id": "g4qRdTcCOy2oNX2N9IiKw",
+    "Name": "Events",
+    "Type": "EventsAndHistory",
+    "Description": "Significant occurrences or happenings within the world, often shaping its history."
+  },
+  {
+    "_id": "V3Oqt1UlVz6zi_0-qYpXL",
+    "Name": "History",
+    "Type": "EventsAndHistory",
+    "Description": "The recorded and remembered past events, developments, and experiences within the world."
+  },
+  {
+    "_id": "NQ7Icqkt8640U5Q7g_w11",
+    "Name": "Timeline",
+    "Type": "EventsAndHistory",
+    "Description": "A chronological sequence of events and occurrences within the history of the world."
+  },
+  {
+    "_id": "QNzDsA0qdnz-Ty31ep-WU",
+    "Name": "Wars",
+    "Type": "EventsAndHistory",
+    "Description": "Armed conflicts and battles with significant impact on the world's history."
+  },
+  {
+    "_id": "Lj0Glwf25bgUDGtvymReu",
+    "Name": "WorldBuilding",
+    "Type": "Miscellaneous",
+    "Description": "The creative process of constructing and detailing the fictional world."
+  },
+  {
+    "_id": "OJVlJFUeDX3lKLUWGdLil",
+    "Name": "Notes",
+    "Type": "Miscellaneous",
+    "Description": "Written or recorded remarks, observations, or reminders related to the world."
+  },
+  {
+    "_id": "8yWoI-zj_yFJW6wSvqkhB",
+    "Name": "Ideas",
+    "Type": "Miscellaneous",
+    "Description": "Concepts, thoughts, or creative notions for potential development within the world."
+  },
+  {
+    "_id": "xUNUDt4HUM0xBKpJiTBZq",
+    "Name": "Reference",
+    "Type": "Miscellaneous",
+    "Description": "Resources or materials used for consultation and guidance within the world-building process."
+  }
+]

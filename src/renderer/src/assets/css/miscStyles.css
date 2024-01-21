@@ -1,0 +1,123 @@
+/* Tags Styles */
+
+.tag-container {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.tag-content {
+  padding: 1rem;
+}
+
+.tag-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tag-description {
+  font-size: 0.875rem;
+  color: #4b5563; /* Gray 600 */
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.tag-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tag-posts {
+  font-size: 0.875rem;
+  color: #718096; /* Gray 500 */
+}
+
+.tag-button {
+  height: 2.5rem;
+  padding: 0.5rem 1rem !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+/* Category Styles */
+
+.category-container {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.category-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.category-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.category-description {
+  font-size: 0.875rem;
+  color: #4b5563; /* Gray 600 */
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.category-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-posts {
+  font-size: 0.875rem;
+  color: #718096; /* Gray 500 */
+}
+
+.category-button {
+  height: 2.5rem;
+  padding: 0.5rem 1rem !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.category-button:hover {
+  background-color: #63b3ed; /* Accent color */
+  color: #fff; /* Accent foreground color */
+}
+
+.tagWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0; /* Input border color */
+  background-color: #edf2f7; /* Background color */
+  color: #2d3748; /* Text color */
+  cursor: pointer;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tagWrap:hover {
+  background-color: #63b3ed; /* Accent color */
+  color: #fff; /* Accent foreground color */
+}
+
+.custom-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+}

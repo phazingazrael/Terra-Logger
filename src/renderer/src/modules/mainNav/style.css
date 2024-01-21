@@ -1,0 +1,8 @@
+.Navigation a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.Navigation .subMenu {
+  padding-left: 2vw;
+}

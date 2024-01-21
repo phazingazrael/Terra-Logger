@@ -1,0 +1,196 @@
+#map {
+  background-color: #000000;
+  mask-mode: alpha;
+  mask-clip: no-clip;
+  fill-rule: evenodd;
+  user-select: none;
+}
+
+#prec text {
+  font-size: 32px;
+  stroke: none;
+  text-shadow: 1px 1px 1px #9daac9;
+  user-select: none;
+}
+
+#population,
+#cells,
+#compass {
+  fill: none;
+}
+
+#biomes {
+  stroke-width: 0.7;
+}
+
+#landmass {
+  mask: url(#land);
+  fill-rule: evenodd;
+}
+
+#lakes,
+#coastline,
+#armies,
+#ice,
+#emblems {
+  cursor: pointer;
+}
+
+#temperature {
+  font-family: var(--sans-serif);
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  text-shadow: 0px 0px 10px white;
+  fill-rule: evenodd;
+}
+
+#oceanLayers,
+#terrs {
+  fill-rule: evenodd;
+}
+
+#coastline {
+  fill: none;
+  stroke-linejoin: round;
+}
+
+t,
+#regions,
+#cults,
+#relig,
+#biomes,
+#provincesBody,
+#terrs,
+#tooltip,
+#temperature,
+#texture,
+#landmass,
+#vignette,
+#fogging {
+  pointer-events: none;
+}
+
+#armies text {
+  pointer-events: none;
+  user-select: none;
+  stroke: none;
+  fill: #fff;
+  text-shadow: 0 0 4px #000;
+  dominant-baseline: central;
+  text-anchor: middle;
+  font-family: var(--sans-serif);
+  fill-opacity: 1;
+}
+
+#armies text.regimentIcon {
+  font-size: 0.8em;
+}
+
+#statesBody {
+  stroke-width: 3;
+}
+
+#statesHalo {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#provincesBody {
+  stroke-width: 0.2;
+}
+
+#statesBody,
+#provincesBody,
+#relig,
+#biomes,
+#cults {
+  stroke-linejoin: round;
+  fill-rule: evenodd;
+}
+
+#statesBody,
+#provincesBody,
+#relig,
+#cults {
+  mask: url(#land);
+}
+
+#borders {
+  stroke-linejoin: round;
+  fill: none;
+}
+
+#rivers {
+  stroke: none;
+  mask: url(#land);
+  cursor: pointer;
+  fill-rule: nonzero;
+}
+
+#anchors {
+  pointer-events: none;
+}
+
+#terrain,
+#burgIcons {
+  cursor: pointer;
+}
+
+.strokes {
+  stroke-width: 0.08px;
+  width: 2px;
+  stroke: #5c5c70;
+  stroke-dasharray: 0.5, 0.7;
+  stroke-linecap: round;
+}
+
+#routes {
+  fill: none;
+  cursor: pointer;
+}
+
+#labels {
+  text-anchor: middle;
+  dominant-baseline: central;
+  cursor: pointer;
+}
+
+#provinceLabels,
+#burgLabels {
+  dominant-baseline: alphabetic;
+  text-anchor: middle;
+}
+
+#routeLength,
+#coastlineArea {
+  background-color: #eeeeee;
+  border: 1px solid #a5a5a5;
+  line-height: 1.3em;
+  cursor: default;
+}
+
+.glow {
+  animation: glowing 3s infinite ease-in-out;
+}
+
+@keyframes glowing {
+  0% {
+    box-shadow: 0 0 1px #f44336;
+  }
+  50% {
+    box-shadow: 0 0 10px #f44336;
+  }
+  100% {
+    box-shadow: 0 0 1px #f44336;
+  }
+}
+
+.highlighted {
+  outline-width: 2px;
+  outline-style: dashed;
+  outline-color: #0da6ff;
+  outline-offset: 100px;
+  fill: none;
+}
