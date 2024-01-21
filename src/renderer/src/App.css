@@ -49,6 +49,11 @@ header {
   text-align: left !important;
 }
 
+/* only shows if map is smaller than screen size */
+.svgScaled {
+  transform: scaleY(1.11);
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   /* Your styles for extra small devices go here */

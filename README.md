@@ -47,7 +47,7 @@ We have exciting plans for future versions of Terra-Logger:
 ### Version 1.0 (Release)
 
 - ~~Importing .map file from Azgaar's Fantasy Map Generator.~~
-- ~~Use the included SVG from the .map file to render the actual map as the program's background.~~ (Needs Tweaking.)
+- ~~Use the included SVG from the .map file to render the actual map as the program's background.~~
 - Exporting of simple markdown files for imported data.
 - Ability to modify data prior to export.
 - Automatically include relevant Emblems or Coat of Arms as an SVG file.

@@ -345,7 +345,7 @@ export const parseLoadedData = (data, appData) => {
             Country.populationout = Math.round(ruralvalue + urbanvalue);
             Country.populationout = Country.populationout.toLocaleString("en-US");
             countryObj.population.total = Country.populationout || "";
-            
+
 
 
             rawMap.countries.push(countryObj);
@@ -597,8 +597,15 @@ export const parseLoadedData = (data, appData) => {
             // Use the smaller scaling factor to ensure the SVG fits within the window
             const minScale = Math.min(widthScale, heightScale);
 
+            // Calculate the scale needed to fill the window height exactly
+            const heightFillScale = windowHeight / originalHeight;
+
+            // Use the larger scaling factor if it ensures the SVG fills the window height
+            const finalScale = Math.max(minScale, heightFillScale);
+
             // Replace the original SVG string with the modified one
             const modifiedSvgString = new XMLSerializer().serializeToString(svgElement);
+
 
             // Now 'modifiedSvgString' contains the scaled SVG code
 
@@ -608,10 +615,22 @@ export const parseLoadedData = (data, appData) => {
 
             let map = document.getElementById("map");
             let viewBox = document.getElementById("viewbox");
+
             map.setAttribute("height", innerHeight);
             map.setAttribute("width", innerWidth);
+            //map.setAttribute("width", originalWidth * finalScale);
+            //map.setAttribute("height", originalHeight * finalScale);
 
+            console.log(originalHeight);
+            console.log(innerHeight);
+            if (innerHeight > originalHeight) {
+                viewBox.classList.add("svgScaled");
+            }
+            // Apply transformation to scale content
             viewBox.setAttribute("transform", `scale(${minScale})`);
+            //viewBox.setAttribute("transform", `scale(${finalScale})`);
+            viewBox.setAttribute("height", innerHeight + "!important")
+
             localStorage.setItem("svgMod", new XMLSerializer().serializeToString(map));
         }
 
