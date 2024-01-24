@@ -32,7 +32,6 @@ const MainNav = ({ data, setMap }) => {
     const handleClear = () => {
         console.log("Clearing Storage");
         localStorage.removeItem("SVG");
-        localStorage.removeItem("biomesData");
         localStorage.removeItem("cities");
         localStorage.removeItem("countries");
         localStorage.removeItem("cultures");

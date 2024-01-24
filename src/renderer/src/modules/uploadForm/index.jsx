@@ -27,15 +27,11 @@ const lorem = new LoremIpsum({
 });
 
 let rawMap = {
-    "biomesData": {},
     "cities": [],
     "countries": [],
-    "grid": {},
     "info": {},
-    "mapCoordinates": {},
     "nameBases": [],
     "notes": [],
-    "pack": {},
     "religions": [],
     "settings": {},
     "SVG": null

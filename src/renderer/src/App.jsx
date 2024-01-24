@@ -119,6 +119,7 @@ function App() {
 
   const [mapData, setMap] = useState();
   const [appInfo, setAppInfo] = useState({
+    "_id": Package.version,
     "application": {
       "name": Package.name,
       "version": Package.version,
@@ -148,19 +149,70 @@ function App() {
     }
   });
 
+
+  const fetchDataFromAllRoutes = async () => {
+    try {
+      // Fetch data from the Cities routes
+      const citiesResponse = await fetch('http://localhost:3000/api/cities');
+      const citiesData = await citiesResponse.json();
+      console.log('Data from /cities:', citiesData);
+
+      // Fetch data from the Namebases route
+      const namebasesResponse = await fetch('http://localhost:3000/api/namebases');
+      const namebasesData = await namebasesResponse.json();
+      console.log('Data from /namebases:', namebasesData);
+
+      // Fetch data from the Notes route
+      const notesResponse = await fetch('http://localhost:3000/api/notes');
+      const notesData = await notesResponse.json();
+      console.log('Data from /notes:', notesData);
+
+      // Fetch data from the Info route
+      const infoResponse = await fetch('http://localhost:3000/api/info');
+      const infoData = await infoResponse.json();
+      console.log('Data from /info:', infoData);
+
+      // Fetch data from the Settings route
+      const settingsResponse = await fetch('http://localhost:3000/api/settings');
+      const settingsData = await settingsResponse.json();
+      console.log('Data from /settings:', settingsData);
+
+      // Fetch data from the Application route
+      const applicationResponse = await fetch('http://localhost:3000/api/application');
+      const applicationData = await applicationResponse.json();
+      console.log('Data from /application:', applicationData);
+
+      // Fetch data from the SVG route
+      const svgResponse = await fetch('http://localhost:3000/api/SVG');
+      const svgData = await svgResponse.json();
+      console.log('Data from /SVG:', svgData);
+
+      // Fetch data from the svgMod route
+      const svgModResponse = await fetch('http://localhost:3000/api/svgMod');
+      const svgModData = await svgModResponse.json();
+      console.log('Data from /svgMod:', svgModData);
+
+      // Add additional fetch requests for new routes as needed
+
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+
+
+
+
+
   useEffect(() => {
 
-
+    // Call the function to fetch data from all routes
+    //fetchDataFromAllRoutes();
     let map = {
-      "biomesData": JSON.parse(localStorage.getItem("biomesData")),
       "cities": JSON.parse(localStorage.getItem("cities")),
       "countries": JSON.parse(localStorage.getItem("countries")),
-      "grid": JSON.parse(localStorage.getItem("grid")),
       "info": JSON.parse(localStorage.getItem("info")),
-      "mapCoordinates": JSON.parse(localStorage.getItem("mapCoordinates")),
       "nameBases": JSON.parse(localStorage.getItem("nameBases")),
       "notes": JSON.parse(localStorage.getItem("notes")),
-      "pack": JSON.parse(localStorage.getItem("pack")),
       "religions": JSON.parse(localStorage.getItem("religions")),
       "settings": JSON.parse(localStorage.getItem("settings")),
       "SVG": null,
