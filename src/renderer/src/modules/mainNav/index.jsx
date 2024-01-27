@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MenuList, MenuItem, ListItemText, ListItemIcon, Divider, Popover, Typography } from "@mui/material/";
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { IconContext } from "react-icons";
+import { TiBook, TiClipboard, TiCog, TiDocumentText, TiGlobe, TiHome, TiTags } from "react-icons/ti";
+import { ImDiamonds } from "react-icons/im"
+
 
 import {
     AutoStoriesOutlined,
     HomeOutlined,
     LanguageOutlined,
     DescriptionOutlined,
-    ClassOutlined,
     SellOutlined,
     TuneOutlined
 } from '@mui/icons-material';
@@ -19,7 +22,8 @@ import './style.css';
 
 
 const MainNav = ({ data, setMap }) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+
 
     const openMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -53,144 +57,184 @@ const MainNav = ({ data, setMap }) => {
 
     return (
         <MenuList>
-            <MenuItem onClick={openMenu}>
-                <ListItemIcon>
-                    <LanguageOutlined />
-                </ListItemIcon>
-                <ListItemText>
-                    {data ?
-                        (
-                            <span className="mapName">
-                                {data.info.mapName}
-                            </span>
-                        ) : "No Map Loaded"}
-                </ListItemText>
-            </MenuItem>
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-            >
-                <div className="mapDetails"></div>
-                <MenuList>
-                    <MenuItem>
-                        <ListItemIcon>
-
-                        </ListItemIcon>
-                        <ListItemText>Cut</ListItemText>
-                        <Typography variant="body2" color="text.secondary">
-                            ⌘X
-                        </Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <ListItemIcon>
-
-                        </ListItemIcon>
-                        <ListItemText>Copy</ListItemText>
-                        <Typography variant="body2" color="text.secondary">
-                            ⌘C
-                        </Typography>
-                    </MenuItem>
-                    <MenuItem>
-                        <ListItemIcon>
-
-                        </ListItemIcon>
-                        <ListItemText>Paste</ListItemText>
-                        <Typography variant="body2" color="text.secondary">
-                            ⌘V
-                        </Typography>
-                    </MenuItem>
-                    <Divider />
-
-                    <a href="/" onClick={() => {
-                        handleClose();
-                        handleClear();
-                    }} color="warning.main">
-
-                        <MenuItem >
+            <IconContext.Provider value={{ size: "1.75rem" }}>
+                <MenuItem onClick={openMenu}>
+                    <ListItemIcon>
+                        <TiGlobe />
+                    </ListItemIcon>
+                    <ListItemText>
+                        {data ?
+                            (
+                                <span className="mapName">
+                                    {data.info.mapName}
+                                </span>
+                            ) : "No Map Loaded"}
+                    </ListItemText>
+                </MenuItem>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <div className="mapDetails"></div>
+                    <MenuList>
+                        <MenuItem>
                             <ListItemIcon>
 
                             </ListItemIcon>
-                            <ListItemText>Delete Map Data</ListItemText>
+                            <ListItemText>Cut</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘X
+                            </Typography>
                         </MenuItem>
-                    </a>
+                        <MenuItem>
+                            <ListItemIcon>
 
-                </MenuList>
-            </Popover>
-            <Divider />
-            <Link to={"/"}>
-                <MenuItem>
-                    <ListItemIcon>
-                        <HomeOutlined />
-                    </ListItemIcon>
-                    <ListItemText>Home</ListItemText>
-                </MenuItem>
-            </Link>
-            <Link to={"/overview"}>
-                <MenuItem>
-                    <ListItemIcon>
-                        <AutoStoriesOutlined />
-                    </ListItemIcon>
-                    <ListItemText>Overview</ListItemText>
-                </MenuItem>
-            </Link>
-            <MenuItem>
-                <ListItemIcon>
-                    <DescriptionOutlined />
-                </ListItemIcon>
-                <ListItemText>Entries</ListItemText>
-            </MenuItem>
-            <div className="subMenu">
-                <Link to={"/countries"}>
-                    <MenuItem >
-                        <ListItemIcon>
-                            <ClassOutlined />
-                        </ListItemIcon>
-                        <ListItemText>Countries</ListItemText>
-                    </MenuItem>
-                </Link>
-                <Link to={"/cities"}>
-                    <MenuItem >
-                        <ListItemIcon>
-                            <ClassOutlined />
-                        </ListItemIcon>
-                        <ListItemText>Cities</ListItemText>
-                    </MenuItem>
-                </Link>
-                <Link to={"/religions"}>
-                    <MenuItem >
-                        <ListItemIcon>
-                            <ClassOutlined />
-                        </ListItemIcon>
-                        <ListItemText>Religions</ListItemText>
-                    </MenuItem>
-                </Link>
-                <Link to={"/tags"}>
+                            </ListItemIcon>
+                            <ListItemText>Copy</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘C
+                            </Typography>
+                        </MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+
+                            </ListItemIcon>
+                            <ListItemText>Paste</ListItemText>
+                            <Typography variant="body2" color="text.secondary">
+                                ⌘V
+                            </Typography>
+                        </MenuItem>
+                        <Divider />
+
+                        <a href="/" onClick={() => {
+                            handleClose();
+                            handleClear();
+                        }} color="warning.main">
+
+                            <MenuItem >
+                                <ListItemIcon>
+
+                                </ListItemIcon>
+                                <ListItemText>Delete Map Data</ListItemText>
+                            </MenuItem>
+                        </a>
+
+                    </MenuList>
+                </Popover>
+                <Divider />
+                <NavLink to={"/"} className={({ isActive }) =>
+                    isActive ? "active" : ""
+                }>
                     <MenuItem>
                         <ListItemIcon>
-                            <SellOutlined />
+                            <TiHome />
                         </ListItemIcon>
-                        <ListItemText>Tags</ListItemText>
+                        <ListItemText>Home</ListItemText>
+                        <ListItemIcon className="inactive">
+                            <ImDiamonds />
+                        </ListItemIcon>
                     </MenuItem>
-                </Link>
-            </div>
-            <Link to={"/settings"}>
+                </NavLink>
+                <NavLink to={"/overview"} className={({ isActive }) =>
+                    isActive ? "active" : ""
+                }>
+                    <MenuItem>
+                        <ListItemIcon>
+                            <TiBook />
+                        </ListItemIcon>
+                        <ListItemText>Overview</ListItemText>
+                        <ListItemIcon className="inactive">
+                            <ImDiamonds />
+                        </ListItemIcon>
+                    </MenuItem>
+                </NavLink>
                 <MenuItem>
                     <ListItemIcon>
-                        <TuneOutlined />
+                        <TiClipboard />
                     </ListItemIcon>
-                    <ListItemText>Settings</ListItemText>
+                    <ListItemText>Entries</ListItemText>
+                    <ListItemIcon className="inactive">
+                        <ImDiamonds />
+                    </ListItemIcon>
                 </MenuItem>
-            </Link>
+                <div className="subMenu">
+                    <NavLink to={"/countries"} className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }>
+                        <MenuItem >
+                            <ListItemIcon>
+                                <TiDocumentText />
+                            </ListItemIcon>
+                            <ListItemText>Countries</ListItemText>
+                            <ListItemIcon className="inactive">
+                                <ImDiamonds />
+                            </ListItemIcon>
+                        </MenuItem>
+                    </NavLink>
+                    <NavLink to={"/cities"} className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <TiDocumentText />
+                            </ListItemIcon>
+                            <ListItemText>Cities</ListItemText>
+                            <ListItemIcon className="inactive">
+                                <ImDiamonds />
+                            </ListItemIcon>
+                        </MenuItem>
+                    </NavLink>
+                    <NavLink to={"/religions"} className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }>
+                        <MenuItem >
+                            <ListItemIcon>
+                                <TiDocumentText />
+                            </ListItemIcon>
+                            <ListItemText>Religions</ListItemText>
+                            <ListItemIcon className="inactive">
+                                <ImDiamonds />
+                            </ListItemIcon>
+                        </MenuItem>
+                    </NavLink>
+                    <NavLink to={"/tags"} className={({ isActive }) =>
+                        isActive ? "active" : ""
+                    }>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <TiTags />
+                            </ListItemIcon>
+                            <ListItemText>Tags</ListItemText>
+                            <ListItemIcon className="inactive">
+                                <ImDiamonds />
+                            </ListItemIcon>
+                        </MenuItem>
+                    </NavLink>
+                </div>
+                <NavLink to={"/settings"} className={({ isActive }) =>
+                    isActive ? "active" : ""
+                }>
+                    <MenuItem>
+                        <ListItemIcon>
+                            <TiCog />
+                        </ListItemIcon>
+                        <ListItemText>Settings</ListItemText>
+                        <ListItemIcon className="inactive">
+                            <ImDiamonds />
+                        </ListItemIcon>
+                    </MenuItem>
+                </NavLink>
+            </IconContext.Provider>
         </MenuList>
     );
 }
