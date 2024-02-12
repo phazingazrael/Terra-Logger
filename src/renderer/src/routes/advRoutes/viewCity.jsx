@@ -14,7 +14,7 @@ import {
   Avatar
 } from '@mui/material';
 
-
+console.log("test");
 
 import { FaMapLocation, FaPeopleGroup, FaCrown, FaMoneyBillTransfer, FaHouse, FaBook, FaUsers, FaUser } from "react-icons/fa6";
 
