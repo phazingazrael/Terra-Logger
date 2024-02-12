@@ -1,10 +1,10 @@
 global.shared = {
-  settings: {
-    version: '',
-    targetLanguage: 'eng',
-    activeLanguage: 'eng',
-    os: {}
-  }
+    settings: {
+        version: '',
+        targetLanguage: 'eng',
+        activeLanguage: 'eng',
+        os:{}
+    }
 
-}
-export default global
+};
+export default global;

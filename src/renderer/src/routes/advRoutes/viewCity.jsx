@@ -1,234 +1,49 @@
-import React from 'react'
-import { useOutletContext } from 'react-router-dom'
-import { IconContext } from 'react-icons'
+import React from 'react';
 
-import {
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Avatar
-} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Paper } from '@mui/material';
+import { SellOutlined } from '@mui/icons-material';
 
 
+import './viewStyles.css';
 
-import { FaMapLocation, FaPeopleGroup, FaCrown, FaMoneyBillTransfer, FaHouse, FaBook, FaUsers, FaUser } from "react-icons/fa6";
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
 const ViewCity = () => {
-  const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext()
-
-  return (
-    <IconContext.Provider value={{ size: '1.5rem', color: theme.palette.mode == "light" ? theme.palette.primary.dark : theme.palette.text.primary }}>
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h4" gutterBottom>
-                <Avatar variant="square" src="https://picsum.photos/seed/picsum/50/50" style={{ float: "left", marginRight: "1vw" }} />
-                City Name
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-              <Typography variant="subtitle1" paragraph>
-                <ListItemIcon>
-                  <FaMapLocation />
-                </ListItemIcon>
-                Location: Fantasy Region, Fantasy Continent
-              </Typography>
-              <Typography variant="subtitle1" paragraph>
-                <ListItemIcon>
-                  <FaPeopleGroup />
-                </ListItemIcon>
-                Population: 100,000
-              </Typography>
-              <Typography variant="subtitle1" paragraph>
-                <ListItemIcon>
-                  <FaCrown />
-                </ListItemIcon>
-                Ruler: King/Queen Name
-              </Typography>
-              <Typography variant="subtitle1" paragraph>
-                <ListItemIcon>
-                  <FaMoneyBillTransfer />
-                </ListItemIcon>
-                Economy: Thriving trade in magical artifacts and potions
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Government and Politics
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Points of Interest
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaHouse />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Castle" secondary="Residence of the royal family." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaBook />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Library of Wisdom" secondary="Repository of ancient knowledge." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUsers />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Guild Hall" secondary="Center for training and collaboration among artisans and mages." />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Factions of Interest
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Royal Court" secondary="Advisors and officials serving the monarch." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Mage Council" secondary="Custodians of magical knowledge and lore." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="The Merchant Consortium" secondary="Key players in the country's economy." />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Persons of Interest
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="King/Queen Name" secondary="Ruler of the realm." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="Archmage Elminster" secondary="Master of the arcane arts." />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <Avatar>
-                      <FaUser />
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText primary="Lady Catherine" secondary="Renowned diplomat and peacemaker." />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                History
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Culture and Customs
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Architecture
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Notes
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Lorem ips um dolor sit amet, consectetur adipiscing elit. Sed gravida augue quis ipsum lobortis, at rhoncus libero posuere. Nulla facilisi.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </IconContext.Provider>
-  )
+    return (
+        <Item>
+            <div className="content-container" data-id="18">
+                <div className="header" data-id="19">
+                    <h1 className="title" data-id="20">Paris, France</h1>
+                    <button className="edit-button" data-id="21">Edit</button>
+                </div>
+                <div className="card" data-id="22">
+                    <div className="card-header" data-id="23">
+                        <h2 className="card-title" data-id="24">Introduction</h2>
+                        <div className="metadata" data-id="25">
+                            <span className="date" data-id="26">Posted on: 28th November, 2023</span>
+                            <div className="tags" data-id="27">
+                                <SellOutlined width="24" height="24" />
+                                <span className="tag" data-id="29">Culture, History, Geography</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="content" data-id="30">
+                        Paris, France's capital, is a major European city and a global center for art, fashion, gastronomy and culture.
+                        Its 19th-century cityscape is crisscrossed by wide boulevards and the River Seine. Beyond such landmarks as the Eiffel
+                        Tower and the 12th-century, Gothic Notre-Dame cathedral, the city is known for its cafe culture and designer boutiques
+                        along the Rue du Faubourg Saint-Honoré.
+                    </p>
+                </div>
+            </div>
+        </Item>
+    );
 }
 
-export default ViewCity
+export default ViewCity;
