@@ -12,4 +12,4 @@ ipcRenderer.on('main-world-port', async (event) => {
   // We use regular window.postMessage to transfer the port from the isolated
   // world to the main world.
   window.postMessage('main-world-port', '*', event.ports)
-}) 
+})
