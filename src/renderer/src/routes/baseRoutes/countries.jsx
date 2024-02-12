@@ -1,65 +1,76 @@
-import { Unstable_Grid2 as Grid, Button } from '@mui/material';
-import { useOutletContext } from "react-router-dom";
+import { Unstable_Grid2 as Grid, Container, Chip, Typography, Card, CardMedia, CardActions, CardContent, Button } from '@mui/material'
+import { Link, useOutletContext } from 'react-router-dom'
 import LinesEllipsis from 'react-lines-ellipsis'
 
-import { Chip } from '@mui/material';
+import '../../assets/css/countries.css'
 
-import '../../assets/css/countries.css';
-import Place from '../../assets/placeholder.svg';
-
-import '../../assets/css/shortTags.css';
+import '../../assets/css/shortTags.css'
 
 const Countries = () => {
-    const [mapData, setMap] = useOutletContext();
-    console.log(mapData);
+  const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext()
+  console.log(mapInfo)
+  console.log(theme)
 
-    let ImageAlt = "";
-    return (
-        <>
-            <div className="contentSubHead">
-                <h3 className="">Countries</h3>
-            </div>
-            <div className="contentSubBody">
-                <Grid container spacing={2}>
-                    {mapData.countries.map((entry, index) => (
-                        <Grid xs={3} key={index} id={entry._id}>
-                            <div className="country-tile">
-                                <div className="country-tile-image">
-                                    <img src={entry.coa === undefined ? ("https://armoria.herokuapp.com/?size=500&format=svg") : ("https://armoria.herokuapp.com/?coa=" + JSON.stringify(entry.coa))} alt={ImageAlt} />
-                                </div>
-                                <div className="country-tile-content">
-                                    <h2 className="country-tile-title">
-                                        {entry.name}
-                                    </h2>
-                                    <LinesEllipsis
-                                        text={entry.description}
-                                        maxLine='3'
-                                        ellipsis='...'
-                                        trimRight
-                                        basedOn='letters'
-                                        id={'entry.id-' + entry._id}
-                                        className='post-text'
-                                    />
-                                    <div className="country-tile-info">
-                                        <span className="country-tile-category">
-                                            Tags:
-                                            <br />
-                                            {entry.tags.map((tag, index) => (
-                                                <Chip size="small" key={index} label={tag.Name} />
-                                            ))}
-                                        </span>
-                                        <button className="country-tile-button">
-                                            Read More
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </Grid>
+  let ImageAlt = ''
+
+  function rgbToRgba(rgb, opacity) {
+    // Parse the RGB values from the string
+    const [r, g, b] = rgb.match(/\d+/g);
+
+    // Return the RGBA color string with opacity
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+
+  return (
+    <Container>
+      <div className='contentSubHead'>
+        <h3 className=''>Countries</h3>
+      </div>
+      <div className='contentSubBody'>
+        <Grid container spacing={2}>
+          {mapInfo.countries.map((entry, index) => (
+            <Grid xs={3} key={index} id={entry._id}>
+              <Card>
+                <CardMedia
+                  sx={{ backgroundColor: theme ? rgbToRgba(theme.palette.primary.light, 0.5) : "" }}
+                  title={ImageAlt}
+                  dangerouslySetInnerHTML={{ __html: entry.img }}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {entry.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <LinesEllipsis
+                      text={entry.description}
+                      maxLine='2'
+                      ellipsis='...'
+                      trimRight
+                      basedOn='letters'
+                      id={'entry.id-' + entry._id}
+                      className='post-text'
+                    />
+                  </Typography>
+                </CardContent>
+                <CardActions className='country-tile-info'>
+                  <div className='country-tile-category'>
+                    Tags:
+                    <br />
+                    {entry.tags.map((tag, index) => (
+                      <Chip size='small' key={index} label={tag.Name} />
                     ))}
-                </Grid>
-            </div>
-        </>
-    );
+                  </div>
+                  <Link to={"/view_country/" + entry._id}>
+                    <Button className="country-tile-button" color="secondary" variant="contained">View</Button>
+                  </Link>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </Container>
+  )
 }
 
-export default Countries;
+export default Countries
