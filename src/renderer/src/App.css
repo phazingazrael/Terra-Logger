@@ -1,0 +1,92 @@
+.App {
+  height: 97dvh;
+  padding: 1rem 1rem 0rem 1rem;
+  overflow: hidden;
+}
+
+header {
+  margin-bottom: 5vh;
+}
+
+.Header {
+  min-height: 8.72vh;
+  padding-left: 3em;
+}
+
+.Header h1 {
+  float: left;
+  font-weight: 300;
+}
+
+.MapName {
+  top: 3vh;
+  float: right;
+  margin-right: 5em !important;
+}
+
+.Navigation {
+}
+
+.Navigation .MuiMenuItem-gutters {
+  padding-left: 0px;
+}
+
+.Content {
+  max-height: 75vh;
+}
+.contentMain {
+  max-height: 68vh;
+  overflow: auto;
+}
+
+.contentSubBody {
+  max-height: 55dvh;
+  overflow: auto;
+  padding: 0.6em;
+}
+
+.MuiPaper-root {
+  text-align: left !important;
+}
+
+/* only shows if map is smaller than screen size */
+.svgScaled {
+  transform: scaleY(1.11);
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  /* Your styles for extra small devices go here */
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 601px) and (max-width: 768px) {
+  /* Your styles for small devices go here */
+  .Content {
+    max-height: 65vh;
+  }
+}
+
+/* Medium devices (landscape tablets and medium-sized desktops, 769px and up) */
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  /* Your styles for medium devices go here */
+  .Content {
+    max-height: 65vh;
+  }
+}
+
+/* Large devices (large desktops, 1025px and up) */
+@media only screen and (min-width: 1025px) {
+  /* Your styles for large devices go here */
+  .Content {
+    max-height: 65vh;
+  }
+}
+
+/* Extra large devices (large desktops with high resolutions, 1440px and up) */
+@media only screen and (min-width: 1440px) {
+  /* Your styles for extra large devices go here */
+  .Content {
+    max-height: 65vh;
+  }
+}

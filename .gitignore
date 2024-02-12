@@ -147,7 +147,3 @@ dist
 # Misc
 dist-ssr
 *.local
-terra-logger.code-workspace
-.editorconfig
-src/main/examples.js
-src/main/examples.js

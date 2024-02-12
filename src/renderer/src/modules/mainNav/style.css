@@ -1,0 +1,16 @@
+.Navigation a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.Navigation .subMenu {
+  padding-left: 2vw;
+}
+
+.Navigation li .inactive {
+  display: none;
+}
+
+.Navigation .active .inactive {
+  display: inline-flex;
+}
