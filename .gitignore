@@ -147,3 +147,4 @@ dist
 # Misc
 dist-ssr
 *.local
+terra-logger.code-workspace

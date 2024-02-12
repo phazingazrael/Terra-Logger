@@ -1,7 +1,6 @@
 import { useRouteError } from "react-router-dom";
 
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { Typography, Breadcrumbs } from '@mui/joy';
 
 export default function ErrorPage() {
   const error = useRouteError();

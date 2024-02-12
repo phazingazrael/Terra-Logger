@@ -14,7 +14,7 @@
         "dev": "electron-vite dev -w",
         "build": "electron-vite build",
         "preview": "electron-vite preview",
-        "changelog": "auto-changelog -p",
+        "changelog": "auto-changelog --prepend -p",
         "licenses": "generate-license-file --input package.json --output ./out/licenses.txt --overwrite",
         "package": "electron-vite build --outDir=dist && electron-forge package",
         "make": "electron-vite build --outDir=dist && electron-forge make"
