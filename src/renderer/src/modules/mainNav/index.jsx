@@ -55,7 +55,12 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
 
     setMap();
   }
-
+  let mapName = '';
+  let mapLoaded = false;
+  if (typeof app.userSettings.mapInfo.name === 'string' && app.userSettings.mapInfo.name.length > 0) {
+    mapLoaded = true;
+    mapName = app.userSettings.mapInfo.name;
+  }
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
@@ -71,10 +76,10 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
             <TiGlobe />
           </ListItemIcon>
           <ListItemText>
-            {app.userSettings.mapInfo.name.length > 0
+            {mapLoaded
               ? (
                 <span className='mapName'>
-                  {app.userSettings.mapInfo.name}
+                  {mapName}
                 </span>
               )
               : 'No Map Loaded'}
@@ -121,7 +126,7 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
             </ListItemIcon>
           </MenuItem>
         </NavLink>
-        {app.userSettings.mapInfo.name.length > 0
+        {mapLoaded
           ? (
             <>
               <NavLink
