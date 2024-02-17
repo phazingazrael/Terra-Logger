@@ -21,6 +21,7 @@ import { City, cityLoader } from "./routes/advRoutes/"
 
 import ViewCity from "./routes/advRoutes/ViewCity";
 import ViewCountry from "./routes/advRoutes/ViewCountry";
+import { ViewCity, ViewCountry } from "./routes/advRoutes";
 
 import { Paper, Grid, AppBar, Container } from "@mui/material/"
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
