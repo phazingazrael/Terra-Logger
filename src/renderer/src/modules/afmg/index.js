@@ -252,15 +252,18 @@ export const parseLoadedData = (data, appData) => {
         events: []
       },
       img: '',
+      location: '',
       name: Country.name || '',
       political: {
         diplomacy: [],
         form: Country.form || '',
         formName: Country.formName || '',
+        leaders: [],
         military: Country.military || [],
         neighbors: [],
         ruler: '',
-        leaders: []
+        stability: [],
+        system: ''
       },
       population: {
         rural: '',
