@@ -15,12 +15,7 @@ import {
   Settings2 as Settings
 } from "./routes/baseRoutes/"
 
-//import CountryView, { loader as countryLoader } from './routes/countryView/countryView.jsx';
-import { City, cityLoader } from "./routes/advRoutes/"
 
-
-import ViewCity from "./routes/advRoutes/ViewCity";
-import ViewCountry from "./routes/advRoutes/ViewCountry";
 import { ViewCity, ViewCountry } from "./routes/advRoutes";
 
 import { Paper, Grid, AppBar, Container } from "@mui/material/"
@@ -386,7 +381,6 @@ function App() {
           case "settings":
             // Increment totalObjects by 1
             totalObjects += 1;
-            if (responseData.length > 0) {
             if (typeof responseData === 'object' && Object.keys(responseData).length > 0) {
               map.settings = responseData[0].info;
             }
@@ -394,7 +388,6 @@ function App() {
           case "SVG":
             // Increment totalObjects by 1
             totalObjects += 1;
-            if (responseData.length > 0) {
             if (typeof responseData === 'string' && responseData.length > 0) {
               map.SVG = responseData[0].svg;
             }
