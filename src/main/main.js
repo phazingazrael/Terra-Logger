@@ -107,6 +107,59 @@ expressApp.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from Express!' })
 })
 
+// Application
+expressApp.route('/api/application')
+  .get((req, res) => {
+    db.application.find({}, (err, data) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(data);
+      }
+    });
+  })
+  .put(() => { })
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.application.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.application.insert(newData);
+      } else {
+        // Check if the document already exists based on a condition (you may adjust this condition)
+        const existingData = await db.application.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.application.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.application.insert(newData);
+        }
+      }
+
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
+
 // Cities
 expressApp.route('/api/cities')
   .get((req, res) => {
@@ -171,10 +224,44 @@ expressApp.route('/api/countries')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.countries.insert(newData)
-    res.json(newData)
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.countries.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.countries.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.countries.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.countries.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.countries.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
 
 // Cultures
@@ -189,66 +276,44 @@ expressApp.route('/api/cultures')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.cultures.insert(newData)
-    res.json(newData)
-  })
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
 
-// Religions
-expressApp.route('/api/religions')
-  .get((req, res) => {
-    db.religions.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send(err)
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.cultures.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.cultures.insert(newData);
       } else {
-        res.json(data)
+        // Check if the document already exists based _id
+        const existingData = await db.cultures.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.cultures.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.cultures.insert(newData);
+        }
       }
-    })
-  })
-  .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.religions.insert(newData)
-    res.json(newData)
-  })
-
-
-
-// Namebases
-expressApp.route('/api/namebases')
-  .get((req, res) => {
-    db.namebases.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send(err)
-      } else {
-        res.json(data)
-      }
-    })
-  })
-  .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.namebases.insert(newData)
-    res.json(newData)
-  })
-
-// Notes
-expressApp.route('/api/notes')
-  .get((req, res) => {
-    db.notes.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send(err)
-      } else {
-        res.json(data)
-      }
-    })
-  })
-  .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.notes.insert(newData)
-    res.json(newData)
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
 
 // Info
@@ -263,10 +328,200 @@ expressApp.route('/api/info')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.info.insert(newData)
-    res.json(newData)
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.info.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.info.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.info.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.info.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.info.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
+
+// Namebases
+expressApp.route('/api/namebases')
+  .get((req, res) => {
+    db.namebases.find({}, (err, data) => {
+      if (err) {
+        res.status(500).send(err)
+      } else {
+        res.json(data)
+      }
+    })
+  })
+  .put(() => { })
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.namebases.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.namebases.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.namebases.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.namebases.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.namebases.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
+
+// Notes
+expressApp.route('/api/notes')
+  .get((req, res) => {
+    db.notes.find({}, (err, data) => {
+      if (err) {
+        res.status(500).send(err)
+      } else {
+        res.json(data)
+      }
+    })
+  })
+  .put(() => { })
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.notes.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.notes.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.notes.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.notes.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.notes.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  })
+
+// Religions
+expressApp.route('/api/religions')
+  .get((req, res) => {
+    db.religions.find({}, (err, data) => {
+      if (err) {
+        res.status(500).send(err)
+      } else {
+        res.json(data)
+      }
+    })
+  })
+  .put(() => { })
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.religions.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.religions.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.religions.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.religions.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.religions.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
 
 // Settings
@@ -281,31 +536,13 @@ expressApp.route('/api/settings')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.settings.insert(newData)
-    res.json(newData)
-  })
-
-// Application
-expressApp.route('/api/application')
-  .get((req, res) => {
-    db.application.find({}, (err, data) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(data);
-      }
-    });
-  })
-  .put(() => { })
   .post(async (req, res) => {
     try {
       const newData = req.body;
 
       // Check if the database is empty
       const isEmpty = await new Promise((resolve, reject) => {
-        db.application.find({}, (err, docs) => {
+        db.settings.find({}, (err, docs) => {
           if (err) {
             reject(err);
           } else {
@@ -317,22 +554,21 @@ expressApp.route('/api/application')
       if (isEmpty) {
         console.log('Database is empty, inserting...');
         // Database is empty, insert the new document
-        db.application.insert(newData);
+        db.settings.insert(newData);
       } else {
-        // Check if the document already exists based on a condition (you may adjust this condition)
-        const existingData = await db.application.findOne({ _id: newData._id });
+        // Check if the document already exists based _id
+        const existingData = await db.settings.findOne({ _id: newData._id });
 
         if (existingData) {
           console.log('Data exists, updating...');
           // Update the existing document
-          db.application.update({ _id: newData._id }, newData);
+          db.settings.update({ _id: newData._id }, newData);
         } else {
           console.log('Data does not exist, inserting...');
           // Insert a new document
-          db.application.insert(newData);
+          db.settings.insert(newData);
         }
       }
-
       res.json(newData);
     } catch (error) {
       console.error('Error processing POST request:', error);
@@ -352,10 +588,44 @@ expressApp.route('/api/SVG')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.SVG.insert(newData)
-    res.json(newData)
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.SVG.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.SVG.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.SVG.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.SVG.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.SVG.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
 
 // svgMod
@@ -370,10 +640,44 @@ expressApp.route('/api/svgMod')
     })
   })
   .put(() => { })
-  .post((req, res) => {
-    const newData = req.body
-    db.svgMod.insert(newData)
-    res.json(newData)
+  .post(async (req, res) => {
+    try {
+      const newData = req.body;
+
+      // Check if the database is empty
+      const isEmpty = await new Promise((resolve, reject) => {
+        db.svgMod.find({}, (err, docs) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(docs.length === 0);
+          }
+        });
+      });
+
+      if (isEmpty) {
+        console.log('Database is empty, inserting...');
+        // Database is empty, insert the new document
+        db.svgMod.insert(newData);
+      } else {
+        // Check if the document already exists based _id
+        const existingData = await db.svgMod.findOne({ _id: newData._id });
+
+        if (existingData) {
+          console.log('Data exists, updating...');
+          // Update the existing document
+          db.svgMod.update({ _id: newData._id }, newData);
+        } else {
+          console.log('Data does not exist, inserting...');
+          // Insert a new document
+          db.svgMod.insert(newData);
+        }
+      }
+      res.json(newData);
+    } catch (error) {
+      console.error('Error processing POST request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   })
 
 // Tags
@@ -394,9 +698,14 @@ expressApp.route('/api/tags')
     res.json(newData)
   })
 
+
 // Delete all entries route
 expressApp.delete('/api/deleteAll', async (req, res) => {
   try {
+    db.application.remove({}, { multi: true }, (err, numRemoved) => {
+      console.log(`Deleted ${numRemoved} entries.`);
+    });
+
     db.cities.remove({}, { multi: true }, (err, numRemoved) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
@@ -409,7 +718,7 @@ expressApp.delete('/api/deleteAll', async (req, res) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
 
-    db.religions.remove({}, { multi: true }, (err, numRemoved) => {
+    db.info.remove({}, { multi: true }, (err, numRemoved) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
 
@@ -421,15 +730,11 @@ expressApp.delete('/api/deleteAll', async (req, res) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
 
-    db.info.remove({}, { multi: true }, (err, numRemoved) => {
+    db.religions.remove({}, { multi: true }, (err, numRemoved) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
 
     db.settings.remove({}, { multi: true }, (err, numRemoved) => {
-      console.log(`Deleted ${numRemoved} entries.`);
-    });
-
-    db.application.remove({}, { multi: true }, (err, numRemoved) => {
       console.log(`Deleted ${numRemoved} entries.`);
     });
 
@@ -451,6 +756,18 @@ expressApp.delete('/api/deleteAll', async (req, res) => {
     console.error('Error deleting entries:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+  db.application.loadDatabase()
+  db.cities.loadDatabase()
+  db.countries.loadDatabase()
+  db.cultures.loadDatabase()
+  db.info.loadDatabase()
+  db.namebases.loadDatabase()
+  db.notes.loadDatabase()
+  db.religions.loadDatabase()
+  db.settings.loadDatabase()
+  db.SVG.loadDatabase()
+  db.svgMod.loadDatabase()
+  db.tags.loadDatabase()
 });
 
 expressApp.post('/api/export', async (req, res) => {
