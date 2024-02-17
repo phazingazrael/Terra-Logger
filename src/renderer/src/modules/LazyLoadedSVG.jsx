@@ -14,7 +14,14 @@ export const LazyLoadedSVG = ({ coa }) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           // Load SVG when it becomes visible
-          const url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
+          let url = '';
+
+          // Check if coa is an object and not empty
+          if (typeof coa === 'object' && Object.keys(coa).length > 0) {
+            url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
+          } else {
+            url = 'https://armoria.herokuapp.com/?size=500&format=svg';
+          }
           imgRef.current.src = url;
           observer.unobserve(entry.target);
         }
