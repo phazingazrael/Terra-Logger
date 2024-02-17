@@ -23,13 +23,12 @@
         "@emotion/react": "^11.11.3",
         "@emotion/styled": "^11.11.0",
         "@lexical/react": "^0.13.1",
-        "@mui/icons-material": "^5.15.9",
-        "@mui/joy": "^5.0.0-beta.27",
-        "@mui/material": "^5.15.9",
+        "@mui/icons-material": "^5.15.10",
+        "@mui/joy": "^5.0.0-beta.28",
+        "@mui/material": "^5.15.10",
         "body-parser": "^1.20.2",
-        "canvg": "^4.0.1",
         "cors": "^2.8.5",
-        "electron": "^28.2.1",
+        "electron": "^28.2.3",
         "electron-router-dom": "^1.0.5",
         "express": "^4.18.2",
         "lexical": "^0.13.1",
@@ -42,9 +41,7 @@
         "react-icons": "^5.0.1",
         "react-lines-ellipsis": "^0.15.4",
         "react-loader-spinner": "^6.1.6",
-        "react-router-dom": "^6.22.0",
-        "svgo": "^3.2.0",
-        "svgson": "^5.3.1"
+        "react-router-dom": "^6.22.1"
     },
     "devDependencies": {
         "@electron-forge/cli": "^7.2.0",
@@ -61,6 +58,6 @@
         "eslint-plugin-react": "^7.33.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.5",
-        "vite": "^5.1.1"
+        "vite": "^5.1.3"
     }
 }
