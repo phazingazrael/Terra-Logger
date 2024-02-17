@@ -387,6 +387,7 @@ function App() {
             // Increment totalObjects by 1
             totalObjects += 1;
             if (responseData.length > 0) {
+            if (typeof responseData === 'object' && Object.keys(responseData).length > 0) {
               map.settings = responseData[0].info;
             }
             break;
@@ -394,13 +395,14 @@ function App() {
             // Increment totalObjects by 1
             totalObjects += 1;
             if (responseData.length > 0) {
+            if (typeof responseData === 'string' && responseData.length > 0) {
               map.SVG = responseData[0].svg;
             }
             break;
           case "svgMod":
             // Increment totalObjects by 1
             totalObjects += 1;
-            if (responseData.length > 0) {
+            if (typeof responseData === 'string' && responseData.length > 0) {
               map.svgMod = responseData[0].svg;
             }
             break;
