@@ -2,6 +2,8 @@ import { Unstable_Grid2 as Grid, Container, Chip, Typography, Card, CardMedia, C
 import { Link, useOutletContext } from 'react-router-dom'
 import LinesEllipsis from 'react-lines-ellipsis'
 
+import { LazyLoadedSVG } from '../../modules/LazyLoadedSVG'
+
 import '../../assets/css/countries.css'
 
 import '../../assets/css/shortTags.css'
@@ -34,8 +36,9 @@ const Countries = () => {
                 <CardMedia
                   sx={{ backgroundColor: theme ? rgbToRgba(theme.palette.primary.light, 0.5) : "" }}
                   title={ImageAlt}
-                  dangerouslySetInnerHTML={{ __html: entry.img }}
-                />
+                >
+                  <LazyLoadedSVG coa={entry.coa} />
+                </CardMedia>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {entry.name}
