@@ -1,4 +1,3 @@
-import React from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 import { IconContext } from 'react-icons'
 
