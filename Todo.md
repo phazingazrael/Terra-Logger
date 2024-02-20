@@ -4,6 +4,7 @@
 - [X] Importing .map file from Azgaar's Fantasy Map Generator.
 - [X] Use the included SVG from the .map file to render the actual map as the program's background.
 - [-] Exporting of simple markdown files for imported data.
+- [ ] new browser view to upended azgaar fantasy map website if user doesn't have an existing map. 
 - [ ] Rewrite logic, remove NeDB, use either LocalStorage or another option.
 - [ ] Ability to modify data prior to export.
 - [ ] Automatically include relevant Emblems or Coat of Arms as an SVG file.
