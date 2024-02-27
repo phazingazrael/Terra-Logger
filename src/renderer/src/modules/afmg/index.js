@@ -289,7 +289,7 @@ export const parseLoadedData = (data, appData) => {
       countryObj.political.diplomacy.push(dipObj)
     })
 
-    Country.neighbors.map((neighbor, index) => {
+    Country.neighbors.map((neighbor) => {
       const nObj = {
         name: countries[neighbor].fullName || countries[neighbor].name,
         id: countries[neighbor].i
