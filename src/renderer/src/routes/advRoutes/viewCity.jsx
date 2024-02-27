@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom'
 import { IconContext } from 'react-icons'
 
@@ -18,10 +19,17 @@ console.log("test");
 import { FaMapLocation, FaPeopleGroup, FaCrown, FaMoneyBillTransfer, FaHouse, FaBook, FaUsers, FaUser } from "react-icons/fa6";
 
 const ViewCity = () => {
-  const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext()
+  const [, , , theme] = useOutletContext()
+
+  const iconContextValue = useMemo(() => {
+    return {
+      size: '1.5rem',
+      color: theme.palette.mode === "light" ? theme.palette.primary.dark : theme.palette.text.primary
+    };
+  }, [theme]); // Dependency array ensures the object is recreated only when theme changes
 
   return (
-    <IconContext.Provider value={{ size: '1.5rem', color: theme.palette.mode == "light" ? theme.palette.primary.dark : theme.palette.text.primary }}>
+    <IconContext.Provider value={iconContextValue}>
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12} md={6}>
           <Card>
