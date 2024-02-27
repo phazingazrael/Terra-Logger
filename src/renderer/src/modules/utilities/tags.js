@@ -47,7 +47,7 @@ export const getTagByName = (tagName) => {
 
 // Utility function to get all tags
 export const getAllTags = () => {
-    return tagsData.map((tag) => ({ ...tag, Name: formatTagName(tag.Name), Type: formatTagName(tag.Type) }))
+    return tagsData.map((tag) => ({ ...tag, Name: formatTagName(tag.Name) }))
 }
 
 // Utility function to get default tags (you can customize the condition for default tags)
@@ -67,6 +67,14 @@ export const getTagsByType = (type) => {
 
 // Utility function to get a list of all available tag types
 export const getAllTagTypes = () => {
-    const uniqueTypes = [...new Set(tagsData.map((tag) => formatTagName(tag.Type)))]
-    return uniqueTypes.map((type) => ({ Type: type }))
+    // Extract all tag types from the JSON data
+    const tagTypes = tagsData.flatMap(tag => tag.Type);
+
+    // Remove duplicates by converting to Set and back to an array
+    const uniqueTypes = [...new Set(tagTypes)];
+
+    // Log and return the unique tag types
+    //console.log(JSON.stringify(uniqueTypes));
+    return uniqueTypes.map(type => ({ Type: type, Name: formatTagName(type) }));
 }
+

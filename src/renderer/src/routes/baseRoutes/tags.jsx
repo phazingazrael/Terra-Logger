@@ -1,68 +1,112 @@
-import { Unstable_Grid2 as Grid, Button } from '@mui/material';
-import LinesEllipsis from 'react-lines-ellipsis';
+import { useEffect, useState } from 'react';
+import { Unstable_Grid2 as Grid, Button, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useOutletContext } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-// Your React component or other file
 
-import {
-    //getTagById,
-    //getTagByName,
-    getAllTags,
-    //getDefaultTags,
-    //getTagsByType,
-    //getAllTagTypes
-} from '../../modules/';
+import { getAllTags } from '../../modules/';
 
 import '../../assets/css/miscStyles.css';
 
 
+const filterObjectsByTag = (tagId, ...arrays) => {
+    // Use flatMap to combine all arrays into a single array of objects
+    return arrays
+        .flatMap(array => array)
+        // Use filter to keep objects that have the specified tagId in their tags array
+        .filter(object => object.tags && object.tags.some(tag => tag._id === tagId));
+}
+
+
 const Tags = () => {
-    const [mapInfo] = useOutletContext();
-
+    const [tagsList, setTagsList] = useState();
     // Function to filter objects based on a specific tag _id
-    const filterObjectsByTag = (tagId, ...arrays) => {
-        // Use flatMap to combine all arrays into a single array of objects
-        return arrays
-            .flatMap(array => array)
-            // Use filter to keep objects that have the specified tagId in their tags array
-            .filter(object => object.tags && object.tags.some(tag => tag._id === tagId));
-    }
 
+    useEffect(() => {
+        setTagsList(getAllTags);
+    }, []);
 
-    const tagsList = getAllTags();
     return (
         <>
-            <h3 className="text-2xl font-semibold">All Tags</h3>
+            <h3>All Tags</h3>
             <Grid container spacing={2}>
-                {tagsList.map((Tag, index) => (
-                    <Grid key={index} xs={3}>
-                        <div className="tag-container">
-                            <div className="tag-content">
-                                <h2 className="tag-name">{Tag.Name}</h2>
-                                <LinesEllipsis
-                                    text={Tag.Description}
-                                    maxLine='2'
-                                    ellipsis='...'
-                                    trimRight
-                                    basedOn='letters'
-                                    id={'tag.id-' + Tag._id}
-                                    className='tag-description'
-                                />
-                                <div className="tag-info">
-                                    <span className="tag-posts">
-                                        {filterObjectsByTag(Tag._id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length + " Posts"}
-                                    </span>
-                                    <Button variant="contained" className="tag-button">
-                                        View Posts
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </Grid>
-                ))}
+                {tagsList ?
+                    tagsList.sort((a, b) => a.Name.localeCompare(b.Name)).map((Tag, index) => (
+                        <TagType tagType={Tag} key={index} />
+                    ))
+                    : ""}
             </Grid>
         </>
     );
+}
+
+const TagType = (props) => {
+    const tagType = props.tagType;
+    const Tags = tagType.Tags;
+    const [mapInfo, , , ,] = useOutletContext();
+
+    return (
+        Tags.some((tag) => filterObjectsByTag(tag._id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length !== 0) ?
+            (
+                <Grid xs={4}>
+                
+                    <Accordion defaultExpanded>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1-content"
+                            id="panel1-header"
+                        >
+                            <Typography variant='h6'>{tagType.Name} <span>{tagType.Count+" Items"}</span></Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Grid container spacing={2}>
+                                {Tags.sort((a, b) => a.Name.localeCompare(b.Name)).map((Tag, index) => (
+                                    filterObjectsByTag(Tag._id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length !== 0 ?
+                                        (<TagItem data={Tag} key={index} />) : ""
+                                ))}
+                            </Grid>
+                        </AccordionDetails>
+                    </Accordion>
+                </Grid>
+            ) : ""
+    );
+}
+
+TagType.propTypes = {
+    _id: PropTypes.string,
+    Count: PropTypes.number,
+    Name: PropTypes.string,
+    Tags: PropTypes.array,
+    Type: PropTypes.string
+}
+
+const TagItem = (props) => {
+    const { _id, Default, Name, Type, Description } = props.data;
+    const [mapInfo, , , ,] = useOutletContext();
+    return (
+        <Grid xs={12}>
+            <span>{Name}</span>
+            <div className="tag-info">
+                <span className="tag-posts">
+                    {filterObjectsByTag(_id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length + " Items"}
+                    <br />
+                    {"Default: " + Default}
+                </span>
+                <Button variant="contained" className="tag-button">
+                    View Posts
+                </Button>
+            </div>
+        </Grid>
+    )
+}
+
+TagItem.propTypes = {
+    _id: PropTypes.string,
+    Default: PropTypes.bool,
+    Name: PropTypes.string,
+    Type: PropTypes.string,
+    Description: PropTypes.string
 }
 
 export default Tags;

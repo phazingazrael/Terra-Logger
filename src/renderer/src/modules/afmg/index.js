@@ -180,10 +180,11 @@ export const parseLoadedData = (data, appData) => {
       urbanPop: '',
       ruralPop: '',
       tags: [{
-        _id: '3za6JbQcWqraNj0guhnqk',
-        Name: 'Culture',
-        Type: 'WorldOverview',
-        Description: "The customs, arts, social institutions, and achievements of the world's inhabitants."
+        "_id": "3za6JbQcWqraNj0guhnqk",
+        "Default": true,
+        "Description": "The customs, arts, social institutions, and achievements of the world's inhabitants.",
+        "Name": "Culture",
+        "Type": "WorldOverview"
       }]
     }
 
@@ -267,10 +268,11 @@ export const parseLoadedData = (data, appData) => {
         urban: ''
       },
       tags: [{
-        _id: 'TJaHO2uqBFZcoXWIfc5hJ',
-        Name: 'Country',
-        Type: 'Locations',
-        Description: 'A distinct and sovereign nation within the world, often with defined borders.'
+        "_id": "TJaHO2uqBFZcoXWIfc5hJ",
+        "Default": true,
+        "Description": "A distinct and sovereign nation within the world, often with defined borders.",
+        "Name": "Country",
+        "Type": "Locations"
       }],
       type: ['Country'],
       warCampaigns: Country.campaigns || []
@@ -350,10 +352,11 @@ export const parseLoadedData = (data, appData) => {
       population: null,
       size: null,
       tags: [{
-        _id: '1IZunX27kOFP-ff4kpeLQ',
-        Name: 'City',
-        Type: 'Locations',
-        Description: 'A large and permanent human settlement within the world.'
+        "_id": "1IZunX27kOFP-ff4kpeLQ",
+        "Default": true,
+        "Description": "A large and permanent human settlement within the world.",
+        "Name": "City",
+        "Type": "Locations"
       }],
       type: null
     }
@@ -525,9 +528,9 @@ export const parseLoadedData = (data, appData) => {
 
   const Countries = [...rawMap.countries]
   const Cities = [...rawMap.cities]
-  const Religions = [...rawMap.religions]
+  //const Religions = [...rawMap.religions]
 
-  if (rawMap.cities !== []) {
+  if (Array.isArray(rawMap.cities) && rawMap.cities.length !== 0) {
     Countries.forEach(country => {
 
       const matchingCities = []
@@ -609,10 +612,10 @@ export const parseLoadedData = (data, appData) => {
     const minScale = Math.min(widthScale, heightScale)
 
     // Calculate the scale needed to fill the window height exactly
-    const heightFillScale = windowHeight / originalHeight
+    //const heightFillScale = windowHeight / originalHeight
 
     // Use the larger scaling factor if it ensures the SVG fills the window height
-    const finalScale = Math.max(minScale, heightFillScale)
+    //const finalScale = Math.max(minScale, heightFillScale)
 
     // Replace the original SVG string with the modified one
     const modifiedSvgString = new XMLSerializer().serializeToString(svgElement)
