@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Unstable_Grid2 as Grid, Skeleton, LinearProgress, Alert, AlertTitle, Chip, Container, Card, CardActions, CardMedia, CardContent, Typography, Button } from '@mui/material'
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import { useOutletContext } from 'react-router-dom'
@@ -8,11 +8,10 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import '../../assets/css/countries.css'
 import '../../assets/css/shortTags.css'
 
-import { getAllCities } from '../../modules/utilities/cities'
-import { LazyLoadedSVG } from '../../modules/LazyLoadedSVG'
+import { LazyLoadedSVG } from '../../modules'
 
 const Cities = () => {
-  const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext()
+  const [mapInfo, , , theme] = useOutletContext()
   const [loading, setLoading] = useState(true)
   const [loadedCities, setLoadedCities] = useState([])
   const [loadingProgress, setLoadingProgress] = useState(0)
