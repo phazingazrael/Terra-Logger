@@ -1,22 +1,35 @@
-import defaultTags from './tags.json'
-const tags = await fetch('http://localhost:3000/api/tags')
+import defaultTags from './tags.json';
 
-console.log('default tags:')
+const fetchTags = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/api/tags');
+        const tags = await response.json();
+        return tags || [];
+    } catch (error) {
+        console.error('Error fetching tags:', error);
+        return [];
+    }
+};
 
-let tagsData = []
-tags
-    ? (
-        tagsData = [...defaultTags]
-    )
-    : (
-        tagsData = [...defaultTags, ...tags]
-    )
+const loadTagsData = async () => {
+    const fetchedTags = await fetchTags();
+    return fetchedTags.length > 0 ? fetchedTags : defaultTags;
+};
+
+let tagsData = [];
+loadTagsData().then(data => {
+    tagsData = data;
+});
 
 // Utility function to format tag names and types
 const formatTagName = (tagName) => {
+    if (typeof tagName !== 'string') {
+        // If tagName is not a string, return it as is
+        return tagName;
+    }
     // formatting logic here
     // replace camelCase with space-separated words
-    return tagName.replace(/([a-z])([A-Z])/g, '$1 $2')
+    return tagName.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 
 // Utility function to find a tag by _id
