@@ -1,208 +1,165 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { UploadForm } from '../../modules'
 
-import '../../assets/css/settingsPage.css'
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Container } from '@mui/material'
 
 //import ExportModal from '../../modules/export/export'
 
-const Settings = () => {
+const Settings2 = () => {
   const [mapData, setMap, appInfo] = useOutletContext()
-
-  let appIn = 0
-  let i = 0
 
   useEffect(() => {
 
   }, [mapData, setMap, appInfo])
 
+  const styles = {
+    section: {
+      backgroundColor: '#fff',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      borderRadius: '8px',
+      padding: '12px',
+      marginBottom: '24px',
+    },
+    subSection: {
+      backgroundColor: '#fff',
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      borderRadius: '8px',
+      padding: '12px',
+      marginBottom: '24px',
+    },
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '16px',
+    },
+    checkbox: {
+      width: '20px',
+      height: '20px',
+      marginRight: '8px',
+    },
+    select: {
+      width: '100%',
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      marginBottom: '16px',
+    },
+    input: {
+      width: '100%',
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+    },
+  };
+
+
   return (
-    <div>
-      {appInfo && appInfo.userSettings.mapInfo.name.length > 0
-        ? (
-          <>
-            <h3>
-              Settings
-            </h3>
-            <div className='settings-grid'>
-              <div className='settings-section appInf'>
-                <h4 className='section-title'>General Information</h4>
-                <div className='settings-list'>
-                  {Object.entries(appInfo.application).map(([key, value]) => (
-                    appIn === 0
-                      ? (
-                        <div className='settings-item' key={appIn++}>
-                          <span className='item-label'>
-                            {key.replace(/(^|[\s-])\S/g, function (match) {
-                              return match.toUpperCase()
-                            })}
-                          </span>
-                          <span>{value.replace(/(^|[\s-])\S/g, function (match) {
-                            return match.toUpperCase()
-                          })}
-                          </span>
-                        </div>
-                      )
-                      : (
-                        <div className='settings-item' key={appIn++}>
-                          <span className='item-label'>
-                            {key.replace(/(^|[\s-])\S/g, function (match) {
-                              return match.toUpperCase()
-                            })}
-                          </span>
-                          <span>{value}</span>
-                        </div>)
+    <Container className="Settings">
+      <h3>
+        Settings
+      </h3>
+      <div className='contentSubBody'>
 
-                  ))}
-                </div>
-              </div>
-              <div className='settings-section map-info'>
-                <h4 className='section-title'>General Settings</h4>
-                <div className='section-body'>
-                  <section className='setting-section'>
-                    <h4 className='section-subTitle'>Azgaar&apos;s Fantasy Map Generator Export Details</h4>
-                    <div className='settings-list'>
-                      {Object.entries(mapData.info).map(([key, value]) => (
-                        <div className='settings-item' key={i++}>
-                          <span className='item-label'>
-                            {key.replace(/(^|[\s-])\S/g, function (match) {
-                              return match.toUpperCase()
-                            })}
-                          </span>
-                          <span>{value}</span>
-                        </div>)
 
-                      )}
-                    </div>
-                  </section>
-                  <Divider className='setting-divider' />
-                  <section>
-                    <h4 className='section-subTitle'>Azgaar&apos;s Fantasy Map Generator Export Map Settings</h4>
-                    <div className='settings-list'>
-                      <Accordion className='settings-accordion' sx={{ backgroundColor: '#e4e4e4' }}>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls='panel2a-content'
-                          id='panel2a-header'
-                        >
-                          <Typography sx={{ color: 'text.secondary' }}>Caution, Expands for added data</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          {Object.entries(mapData.settings).map(([key, value]) => (
-                            <div className='settings-item' key={i++}>
-                              <span className='item-label'>
-                                {key.replace(/(^|[\s-])\S/g, function (match) {
-                                  return match.toUpperCase()
-                                })}
-                              </span>
-                              {typeof value === 'object'
-                                ? (
-
-                                  <Accordion sx={{ backgroundColor: '#a6a6a6' }}>
-                                    <AccordionSummary
-                                      expandIcon={<ExpandMoreIcon />}
-                                      aria-controls='panel1a-content'
-                                      id='panel1a-header'
-                                    >
-
-                                      <Typography sx={{ color: 'text.secondary' }}>Caution, Expands for added data</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                      {Object.entries(value).map(([key, value]) => (
-                                        <div key={key}>
-                                          {key}:{typeof value === 'object'
-                                            ? (
-                                              <ol>
-                                                {Object.entries(value).map(([key, value]) => (
-                                                  <div key={key}>
-                                                    {typeof value === 'object'
-                                                      ? (
-                                                        <Grid className='militaryGrid' container spacing={0}>
-                                                          <Grid xs={3} item height='100%' className='militaryIcon militaryItem'>
-                                                            <span>
-                                                              {value.icon}
-                                                            </span>
-                                                            <span className='typeName'>
-                                                              {value.name}
-                                                            </span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Rural Population:&nbsp;</span>
-                                                            <span>{value.rural}</span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Urban Population:&nbsp;</span>
-                                                            <span>{value.urban}</span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Crew:&nbsp;</span>
-                                                            <span>{value.crew}</span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem' />
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Power:&nbsp;</span>
-                                                            <span>{value.power}</span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Type:&nbsp;</span>
-                                                            <span>{value.type}</span>
-                                                          </Grid>
-                                                          <Grid xs={3} item className='militaryItem'>
-                                                            <span>Separate:&nbsp;</span>
-                                                            <span>{value.separate}</span>
-                                                          </Grid>
-                                                        </Grid>
-                                                      )
-                                                      : (value)}
-
-                                                  </div>
-                                                ))}
-                                              </ol>
-                                            )
-                                            : (value)}
-                                        </div>
-                                      ))}
-                                    </AccordionDetails>
-                                  </Accordion>
-                                )
-                                : (<span>{value}</span>)}
-                            </div>)
-                          )}
-                        </AccordionDetails>
-                      </Accordion>
-                    </div>
-                  </section>
-                </div>
-              </div>
-              <div className='settings-section'>
-                <h4 className='section-title'>Advanced Settings</h4>
-                <div className='settings-list'>
-                  <div className='settings-item'>
-                    <span className='item-label'>Notifications:</span>
-                    <span>On</span>
-                  </div>
-                  <div className='settings-item'>
-                    <span className='item-label'>Dark Mode:</span>
-                    <span>Off</span>
-                  </div>
-                  <div className='settings-item'>
-                    <span className='item-label'>Data Usage:</span>
-                    <span>Normal</span>
-                  </div>
-                </div>
-              </div>
-              <ExportModal />
+        {appInfo && appInfo.userSettings.mapInfo.name.length > 0
+          ? (
+            <div style={styles.section}>
+              <h4>Map Settings</h4>
             </div>
-          </>
-        )
-        : (<UploadForm mapData={mapData} setMap={setMap} />)}
+          )
+          : (
+            <div style={styles.section}>
+              <UploadForm mapData={mapData} setMap={setMap} />
+            </div>
+          )}
 
-    </div>
+        <div style={styles.section}>
+          <h4>General & Appearance Settings</h4>
+          <div>
+            <label>Theme</label>
+            <select style={styles.select}>
+              <option>Light</option>
+              <option>Dark</option>
+            </select>
+          </div>
+          <div>
+            <label>Language</label>
+            <select style={styles.select}>
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Dark Mode Toggle</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Language Selector</label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h4>Data Settings</h4>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Enable Data Sync</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Data Backup Options</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Enable Data Importing</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Enable Data Exporting</label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h4>Advanced Settings</h4>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Enable Advanced Features</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Developer Options</label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h4>Accessibility Settings</h4>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Enable Screen Reader Support</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>High Contrast Mode</label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h4>Display Settings</h4>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Grid Lines</label>
+          </div>
+          <div style={styles.checkboxContainer}>
+            <input type="checkbox" style={styles.checkbox} />
+            <label>Show Rulers</label>
+          </div>
+        </div>
+      </div>
+    </Container>
   )
 }
 
-export default Settings
+export default Settings2
