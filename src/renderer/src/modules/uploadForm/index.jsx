@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
-import { ShowMessageDialog } from '../showDialog'
-
-import { parseLoadedResult, uncompress, parseLoadedData } from '../afmg/index'
+import { ShowMessageDialog, parseLoadedResult, parseLoadedData } from '../'
 
 import './upload.css'
 import { Alert, AlertTitle, Stack } from '@mui/material'
