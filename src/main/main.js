@@ -2,16 +2,12 @@ import { app, BrowserWindow } from 'electron'
 import * as path from 'path'
 
 import Package from '../../package.json'
-
-import global from '../renderer/global'
 import { createServer } from 'http'
-const express = require('express')
+import express from 'express';
 
-const fs = require('fs')
-const cors = require('cors')
-const Datastore = require('nedb')
-
-const os = require('node:os')
+// import fs from 'fs';
+import cors from 'cors'
+import Datastore from 'nedb';
 
 // Function to check and create a database if it doesn't exist
 function initializeDatabase(dbFilePath) {
