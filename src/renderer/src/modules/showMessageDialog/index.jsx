@@ -6,7 +6,9 @@ import {
     DialogTitle
 } from "@mui/material";
 
-export const ShowMessageDialog = (props) => {
+import PropTypes from 'prop-types';
+
+const ShowMessageDialog = (props) => {
     const { open, handleClose, handleConfirm, message, title } = props;
 
 
@@ -25,3 +27,21 @@ export const ShowMessageDialog = (props) => {
         </Dialog>
     );
 };
+
+ShowMessageDialog.propTypes = {
+    open: PropTypes.bool.isRequired,
+    handleClose: PropTypes.func,
+    handleConfirm: PropTypes.func,
+    message: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
+};
+
+// Example
+// ShowMessageDialog({
+//     open: true,
+//     handleClose: () => { },
+//     handleConfirm: () => { },
+//     message: 'The file does not look like a valid save file.\nPlease check the data format',
+//     title: 'Invalid file'
+//   })
+export default ShowMessageDialog
