@@ -46,11 +46,9 @@ const ViewCountry = () => {
     const { _id } = useParams();
 
     const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext();
-
     const country = mapInfo.countries.find(country => country._id === _id);
 
     if (!appInfo) console.log(setMapInfo, appInfo);
-    console.log(country.political.military);
 
     function getStatusIcon(status) {
         switch (status) {
@@ -104,24 +102,20 @@ const ViewCountry = () => {
                                 <Typography variant="body1" paragraph>
                                     {country.description}
                                 </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h5" gutterBottom>
+                                    Government and Politics
+                                </Typography>
                                 <Typography variant="subtitle1">
                                     <ListItemIcon>
                                         <FaMapLocation />
                                     </ListItemIcon>
                                     Location: {mapInfo.info.mapName}
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    <ListItemIcon>
-                                        <FaPeopleGroup />
-                                    </ListItemIcon>
-                                    <span>
-                                        Population:
-                                    </span>
-                                    <ListItem className="popList">
-                                        Rural: {country.population.rural}<br />
-                                        Urban: {country.population.urban}<br />
-                                        Total: {country.population.total}
-                                    </ListItem>
                                 </Typography>
                                 <Typography variant="subtitle1">
                                     <ListItemIcon>
@@ -135,25 +129,31 @@ const ViewCountry = () => {
                                     </ListItemIcon>
                                     Economy: {country.economy.description}
                                 </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h5" gutterBottom>
-                                    Government and Politics
+                                <Typography variant="subtitle1" gutterBottom>
+                                    <ListItemIcon>
+                                        <FaPeopleGroup />
+                                    </ListItemIcon>
+                                    Population:
+                                    <ListItem>
+                                        Rural: {country.population.rural}<br />
+                                        Urban: {country.population.urban}<br />
+                                        Total: {country.population.total}
+                                    </ListItem>
                                 </Typography>
-                                <Typography variant="body2">
-                                    <strong>Government Structure:</strong>
+                                <Typography variant="h5" gutterBottom>
+                                    Government Structure:
+                                </Typography>
+                                <Typography>
                                     <List>
                                         <ListItem>
                                             <ListItemText primary={country.political.form + " (" + country.political.formName + ")"} />
                                         </ListItem>
                                     </List>
                                 </Typography>
-                                <Typography variant="body2">
-                                    <strong>Key Figures:</strong>
+                                <Typography variant="h5" gutterBottom>
+                                    Key Figures:
+                                </Typography>
+                                <Typography>
                                     <List>
                                         <ListItem>
                                             <ListItemIcon>
@@ -167,26 +167,6 @@ const ViewCountry = () => {
                                                 <FaUsers />
                                             </ListItemIcon>
                                             <ListItemText primary="Council of Nobles" secondary="Advisory body to the monarch." />
-                                        </ListItem>
-                                    </List>
-                                </Typography>
-                                <Typography variant="body2">
-                                    <strong>Political System:</strong>
-                                    <List>
-                                        <ListItem>
-                                            <ListItemText primary={country.political.system} />
-                                        </ListItem>
-                                    </List>
-                                </Typography>
-                                <Typography variant="body2">
-                                    <strong>Political Stability:</strong>
-                                    <List>
-                                        {/* Map over stability array here */}
-                                        <ListItem>
-                                            <ListItemText primary="Maintained through diplomacy and military strength" />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary="Intrigue and power struggles are common" />
                                         </ListItem>
                                     </List>
                                 </Typography>
@@ -236,7 +216,7 @@ const ViewCountry = () => {
                                 <Typography variant="h5" gutterBottom>
                                     Diplomatic Relations
                                 </Typography>
-                                <List>
+                                <List dense>
                                     {country.political.diplomacy.map((relationship) => (
                                         <ListItem key={relationship.id}>
                                             <ListItemIcon>
@@ -256,9 +236,9 @@ const ViewCountry = () => {
                                 <Typography variant="h5" gutterBottom>
                                     Military Regiments
                                 </Typography>
-                                <List>
+                                <List dense>
                                     {country.political.military.map((unit, index) => (
-                                        <ListItem key={index}>
+                                        <ListItem id={unit._id} key={index}>
                                             <ListItemIcon>
                                                 {getMilitaryIcon(unit.icon)}
                                             </ListItemIcon>
@@ -276,7 +256,7 @@ const ViewCountry = () => {
                                 <Typography variant="h5" gutterBottom>
                                     Neighboring Countries
                                 </Typography>
-                                <List>
+                                <List dense>
                                     {country.political.neighbors.map((neighbor) => (
                                         <ListItem key={neighbor.id}>
                                             <ListItemIcon>
