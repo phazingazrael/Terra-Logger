@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect, useEffect } from "react"
 import "./assets/css/App.css";
 import Package from "../../../package.json"
-import MainNav from "./modules/mainNav"
+import { MainNav } from "./modules"
 
 import {
   Root,
@@ -12,7 +12,7 @@ import {
   Cities,
   Religions,
   Tags,
-  Settings2 as Settings
+  Settings
 } from "./routes/baseRoutes/"
 
 
