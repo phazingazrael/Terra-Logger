@@ -9,18 +9,7 @@ import express from 'express';
 import cors from 'cors'
 import Datastore from 'nedb';
 
-// Function to check and create a database if it doesn't exist
-function initializeDatabase(dbFilePath) {
-  if (!fs.existsSync(dbFilePath)) {
-    // Database doesn't exist, create it
-    const newDatabase = new nedb({ filename: dbFilePath, autoload: true, timestampData: true })
-    console.log(`Created database: ${dbFilePath}`)
-    return newDatabase
-  }
 
-  // Database already exists, load it
-  return new nedb({ filename: dbFilePath, autoload: true })
-}
 
 const db = {}
 db.application = new Datastore('src/main/databases/application.db')
@@ -49,17 +38,6 @@ db.SVG.loadDatabase()
 db.svgMod.loadDatabase()
 db.tags.loadDatabase()
 
-const Globals = global.shared
-
-Globals.settings.version = Package.version
-Globals.settings.os = {
-  architecture: os.arch(),
-  cpu: os.cpus(),
-  platform: os.platform()
-}
-Globals.settings.os.cpu = Globals.settings.os.cpu[0].model
-
-let mainWindow
 
 /**
  * #######################################################################
