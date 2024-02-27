@@ -10,6 +10,5 @@ export { default as PageBase } from './pageBase.jsx';
 export { default as Religions } from './religions.jsx';
 export { default as Root } from './root.jsx';
 export { default as Settings } from './settings.jsx';
-export { default as Settings2 } from './settings2.jsx';
 export { default as Tags } from './tags.jsx';
 

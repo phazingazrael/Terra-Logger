@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useOutletContext } from 'react-router-dom'
 
-import UploadForm from '../../modules/uploadForm'
+import { UploadForm } from '../../modules'
 
 import '../../assets/css/settingsPage.css'
 import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import ExportModal from '../../modules/export/export'
+//import ExportModal from '../../modules/export/export'
 
 const Settings = () => {
   const [mapData, setMap, appInfo] = useOutletContext()

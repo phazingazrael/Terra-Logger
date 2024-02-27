@@ -2,14 +2,14 @@ import { Unstable_Grid2 as Grid, Container, Chip, Typography, Card, CardMedia, C
 import { Link, useOutletContext } from 'react-router-dom'
 import LinesEllipsis from 'react-lines-ellipsis'
 
-import { LazyLoadedSVG } from '../../modules/LazyLoadedSVG'
+import { LazyLoadedSVG } from '../../modules'
 
 import '../../assets/css/countries.css'
 
 import '../../assets/css/shortTags.css'
 
 const Countries = () => {
-  const [mapInfo, setMapInfo, appInfo, theme] = useOutletContext()
+  const [mapInfo, , , theme] = useOutletContext()
   console.log(mapInfo)
   console.log(theme)
 
