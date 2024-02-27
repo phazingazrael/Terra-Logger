@@ -1,21 +1,34 @@
 import { Unstable_Grid2 as Grid, Button } from '@mui/material';
-import LinesEllipsis from 'react-lines-ellipsis'
-
+import LinesEllipsis from 'react-lines-ellipsis';
+import { useOutletContext } from 'react-router-dom';
 
 // Your React component or other file
 
 import {
-    getTagById,
-    getTagByName,
+    //getTagById,
+    //getTagByName,
     getAllTags,
-    getDefaultTags,
-    getTagsByType,
-    getAllTagTypes
-} from '../../modules/utilities/tags';
+    //getDefaultTags,
+    //getTagsByType,
+    //getAllTagTypes
+} from '../../modules/';
 
 import '../../assets/css/miscStyles.css';
 
 const Tags = () => {
+    const [mapInfo] = useOutletContext();
+
+    // Function to filter objects based on a specific tag _id
+    const filterObjectsByTag = (tagId, ...arrays) => {
+        // Use flatMap to combine all arrays into a single array of objects
+        return arrays
+            .flatMap(array => array)
+            // Use filter to keep objects that have the specified tagId in their tags array
+            .filter(object => object.tags && object.tags.some(tag => tag._id === tagId));
+    }
+
+    //const filteredObjects = filterObjectsByTag(, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures);
+
 
     /*     // Example usage
         //const tagId = 'eIBl7agFZ8OszsjN5t8xD';
@@ -69,7 +82,9 @@ const Tags = () => {
                                     className='tag-description'
                                 />
                                 <div className="tag-info">
-                                    <span className="tag-posts">Number of Posts</span>
+                                    <span className="tag-posts">
+                                        {filterObjectsByTag(Tag._id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length + " Posts"}
+                                    </span>
                                     <Button variant="contained" className="tag-button">
                                         View Posts
                                     </Button>
