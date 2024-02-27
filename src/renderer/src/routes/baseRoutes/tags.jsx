@@ -15,6 +15,7 @@ import {
 
 import '../../assets/css/miscStyles.css';
 
+
 const Tags = () => {
     const [mapInfo] = useOutletContext();
 
@@ -30,37 +31,38 @@ const Tags = () => {
     //const filteredObjects = filterObjectsByTag(, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures);
 
 
-    /*     // Example usage
-        //const tagId = 'eIBl7agFZ8OszsjN5t8xD';
-        //const tagById = getTagById(tagId);
+    /*  // Example usage
+        const tagId = 'eIBl7agFZ8OszsjN5t8xD';
+        const tagById = getTagById(tagId);
     
-        //if (tagById) {
-        //    console.log('Found tag by _id:', tagById);
-        //} else {
-        //    console.log('Tag not found');
-        //}
+        if (tagById) {
+            console.log('Found tag by _id:', tagById);
+        } else {
+           console.log('Tag not found');
+        }
     
-        //const tagName = 'WorldOverview';
-        //const tagByName = getTagByName(tagName);
+        const tagName = 'WorldOverview';
+        const tagByName = getTagByName(tagName);
     
-        //if (tagByName) {
-        //    console.log('Found tag by name:', tagByName);
-        //} else {
-        //    console.log('Tag not found');
-        //}
+        if (tagByName) {
+           console.log('Found tag by name:', tagByName);
+        } else {
+           console.log('Tag not found');
+        }
     
-        //const allTags = getAllTags();
-        //console.log('All tags:', allTags);
+        const allTags = getAllTags();
+        console.log('All tags:', allTags);
     
-        //const defaultTags = getDefaultTags();
-        //console.log('Default tags:', defaultTags);
+        const defaultTags = getDefaultTags();
+        console.log('Default tags:', defaultTags);
     
-        //const tagType = 'WorldOverview';
-        //const tagsByType = getTagsByType(tagType);
-        //console.log(`Tags with type '${tagType}':`, tagsByType);
+        const tagType = 'WorldOverview';
+        const tagsByType = getTagsByType(tagType);
+        console.log(`Tags with type '${tagType}':`, tagsByType);
     
-        //const allTagTypes = getAllTagTypes();
-        //console.log('All tag types:', allTagTypes); */
+        const allTagTypes = getAllTagTypes();
+        console.log('All tag types:', allTagTypes); 
+        */
 
     const tagsList = getAllTags();
     return (
