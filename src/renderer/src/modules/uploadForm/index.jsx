@@ -7,10 +7,10 @@ import './upload.css'
 import { Alert, AlertTitle, Stack } from '@mui/material'
 
 const UploadForm = () => {
-  const [mapInfo, setMapInfo, appInfo] = useOutletContext()
+  const [, setMapInfo, appInfo, ,] = useOutletContext()
   // const [loading, setLoading] = useState(true);
 
-  const OLDEST_SUPPORTED_VERSION = 0.7
+  const OLDEST_SUPPORTED_VERSION = 1.95
   const afmgMin = '1.95'
   const currentVersion = parseFloat(appInfo.application.afmgVer)
   // console.log(currentVersion)
@@ -21,7 +21,7 @@ const UploadForm = () => {
     const fileReader = new FileReader()
 
     fileReader.onload = async function (e) {
-
+      console.log(e);
     }
     fileReader.onloadend = async function (e) {
       const result = e.target.result
@@ -101,35 +101,35 @@ const UploadForm = () => {
               <div className='file-input'>
                 <Stack sx={{ width: '100%' }} spacing={2}>
                   <Alert severity='success' className='UploadBox'>
-                      <AlertTitle>Upload your .map File</AlertTitle>
-                      <label htmlFor='map-file-upload'>Select a MAP file</label>
-                      <input
-                        type='file'
-                        name='map-file-upload'
-                        id='map-file-upload'
-                        accept='.map'
-                        onChange={readMAP}
-                      />
-                    </Alert>
+                    <AlertTitle>Upload your .map File</AlertTitle>
+                    <label htmlFor='map-file-upload'>Select a MAP file</label>
+                    <input
+                      type='file'
+                      name='map-file-upload'
+                      id='map-file-upload'
+                      accept='.map'
+                      onChange={readMAP}
+                    />
+                  </Alert>
                   <Alert severity='info'>
-                      <p>
-                        Please note, This will only work with maps exported from versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin} and Newer.
-                        <br />
-                        The current maximum version supported by this program is V{currentVersion}.
-                      </p>
-                    </Alert>
+                    <p>
+                      Please note, This will only work with maps exported from versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin} and Newer.
+                      <br />
+                      The current maximum version supported by this program is V{currentVersion}.
+                    </p>
+                  </Alert>
                 </Stack>
               </div>
               <div className='file-input'>
                 <Alert severity='info'>
                   <AlertTitle>Why use the .map file instead of exported .json?</AlertTitle>
                   <p>
-                      This is a very good question, One of the main reasons to use the map file instead of an exported json file is that the map file itself contains a copy of what your map looked like at the time of save.
-                    </p>
+                    This is a very good question, One of the main reasons to use the map file instead of an exported json file is that the map file itself contains a copy of what your map looked like at the time of save.
+                  </p>
                   <h4>Why does this matter?</h4>
                   <p>
-                      In honesty, It really does not have any effect on how things would be handled but it will make it so that your map is shown in the background of the program as well as exporting an svg copy of the map when you export the rest of the files as well.
-                    </p>
+                    In honesty, It really does not have any effect on how things would be handled but it will make it so that your map is shown in the background of the program as well as exporting an svg copy of the map when you export the rest of the files as well.
+                  </p>
                 </Alert>
               </div>
             </div>
