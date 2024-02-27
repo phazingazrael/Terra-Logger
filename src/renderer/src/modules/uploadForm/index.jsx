@@ -6,28 +6,6 @@ import { ShowMessageDialog, parseLoadedResult, parseLoadedData } from '../'
 import './upload.css'
 import { Alert, AlertTitle, Stack } from '@mui/material'
 
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
-})
-
-const rawMap = {
-  cities: [],
-  countries: [],
-  info: {},
-  nameBases: [],
-  notes: [],
-  religions: [],
-  settings: {},
-  SVG: null
-}
-
 const UploadForm = () => {
   const [mapInfo, setMapInfo, appInfo] = useOutletContext()
   // const [loading, setLoading] = useState(true);
