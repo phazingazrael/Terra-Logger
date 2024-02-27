@@ -1,7 +1,4 @@
-import * as React from 'react'
-import { useState, useEffect } from 'react'
-import { nanoid } from 'nanoid'
-import { LoremIpsum } from 'lorem-ipsum'
+import { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { ShowMessageDialog } from '../showDialog'
