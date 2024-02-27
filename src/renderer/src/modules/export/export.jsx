@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -25,7 +25,7 @@ const defaultOptions = [
   'Coat of Arms SVGs',
 ];
 
-const ExportModal = () => {
+const Export = () => {
   //const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [Defaults, setDefaults] = useState([]);
@@ -130,4 +130,4 @@ const ExportModal = () => {
   );
 };
 
-export default ExportModal;
+export default Export;
