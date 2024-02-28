@@ -231,8 +231,6 @@ function App() {
         const applicationResponse = await fetch("http://localhost:3000/api/application");
         const applicationData = await applicationResponse.json();
 
-        //console.log("Data from /application:", applicationData);
-
         if (!applicationData || applicationData.length === 0) {
           // If data is empty or undefined, make a POST request
           const postResponse = await fetch("http://localhost:3000/api/application", {
@@ -244,8 +242,6 @@ function App() {
           });
 
           console.log("Saving Data...");
-
-
 
           // Fetch the updated data after posting
           const updatedApplicationResponse = await fetch("http://localhost:3000/api/application");
@@ -318,6 +314,7 @@ function App() {
       { key: "info", title: "Map Info", endpoint: "http://localhost:3000/api/info" },
       { key: "nameBases", title: "Name Bases", endpoint: "http://localhost:3000/api/namebases" },
       { key: "notes", title: "Notes", endpoint: "http://localhost:3000/api/notes" },
+      { key: "npcs", title: "NPC's", endpoint: "http://localhost:3000/api/npc" },
       { key: "religions", title: "Religions", endpoint: "http://localhost:3000/api/religions" },
       { key: "settings", title: "Settings", endpoint: "http://localhost:3000/api/settings" },
       { key: "SVG", title: "SVG", endpoint: "http://localhost:3000/api/SVG" },

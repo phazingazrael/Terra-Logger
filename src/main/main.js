@@ -19,6 +19,7 @@ db.cultures = new Datastore('src/main/databases/cultures.db')
 db.info = new Datastore('src/main/databases/info.db')
 db.namebases = new Datastore('src/main/databases/namebases.db')
 db.notes = new Datastore('src/main/databases/notes.db')
+db.npcs = new Datastore('src/main/databases/npcs.db')
 db.religions = new Datastore('src/main/databases/religions.db')
 db.settings = new Datastore('src/main/databases/settings.db')
 db.SVG = new Datastore('src/main/databases/SVG.db')
@@ -32,6 +33,7 @@ db.cultures.loadDatabase()
 db.info.loadDatabase()
 db.namebases.loadDatabase()
 db.notes.loadDatabase()
+db.npcs.loadDatabase()
 db.religions.loadDatabase()
 db.settings.loadDatabase()
 db.SVG.loadDatabase()
@@ -153,8 +155,6 @@ expressApp.route('/api/religions')
     res.json(newData)
   })
 
-
-
 // Namebases
 expressApp.route('/api/namebases')
   .get((req, res) => {
@@ -188,6 +188,24 @@ expressApp.route('/api/notes')
   .post((req, res) => {
     const newData = req.body
     db.notes.insert(newData)
+    res.json(newData)
+  })
+
+// NPC's
+expressApp.route('/api/npc')
+  .get((req, res) => {
+    db.npcs.find({}, (err, data) => {
+      if (err) {
+        res.status(500).send(err)
+      } else {
+        res.json(data)
+      }
+    })
+  })
+  .put(() => { })
+  .post((req, res) => {
+    const newData = req.body
+    db.npcs.insert(newData)
     res.json(newData)
   })
 
