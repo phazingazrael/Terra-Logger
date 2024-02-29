@@ -30,6 +30,10 @@ SOFTWARE.
 import { nanoid } from 'nanoid'
 import { LoremIpsum } from 'lorem-ipsum'
 
+//import { generateNpc } from '../ttrpgtools'
+
+import { rollRandomNPC, rollDragonborn, rollDwarf, rollElf, rollGnome, rollGoblin, rollGoliath, rollHalfElf, rollHalfling, rollHuman, rollLizard, rollOrc, rollTiefling } from '../ssng/ssng';
+
 const rawMap = {
   cities: [],
   countries: [],
@@ -37,6 +41,7 @@ const rawMap = {
   info: {},
   nameBases: [],
   notes: [],
+  npcs: [],
   religions: [],
   settings: {},
   SVG: null,
@@ -224,9 +229,10 @@ export const parseLoadedData = (data, appData) => {
 
     rawMap.cultures.push(culObj)
   })
-
   const countryArray = countries.filter((value) => Object.keys(value).length !== 0)
   countryArray.map((Country) => {
+    let cityLeader = rollRandomNPC();
+    console.log(cityLeader)
     const countryObj = {
       _id: nanoid(),
       cities: [],
