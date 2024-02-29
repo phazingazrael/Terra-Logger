@@ -28,13 +28,6 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
 
-    app.userSettings.mapInfo.name = "";
-    app.userSettings.mapInfo.seed = "";
-    const mapInfoData = {
-      name: "",
-      seed: ""
-    };
-
     // Remove map background
     const mapElement = document.getElementById('map');
     if (mapElement) {
@@ -48,7 +41,8 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
         ...prevAppInfo.userSettings,
         mapInfo: {
           ...prevAppInfo.userSettings.mapInfo,
-          ...mapInfoData
+          name: "",
+          seed: ""
         }
       }
     }));

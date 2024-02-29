@@ -355,6 +355,9 @@ expressApp.route('/api/tags')
 // Delete all entries route
 expressApp.delete('/api/deleteAll', async (req, res) => {
   try {
+    // Remove all documents from each collection
+    db.application.remove({}, { multi: true }, (err, numRemoved) => { err ? console.log(err) : console.log(`Deleted ${numRemoved} entries.`); });
+
     db.cities.remove({}, { multi: true }, (err, numRemoved) => { err ? console.log(err) : console.log(`Deleted ${numRemoved} entries.`); });
 
     db.countries.remove({}, { multi: true }, (err, numRemoved) => { err ? console.log(err) : console.log(`Deleted ${numRemoved} entries.`); });
@@ -383,6 +386,19 @@ expressApp.delete('/api/deleteAll', async (req, res) => {
     console.error('Error deleting entries:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+  db.application.loadDatabase()
+  db.cities.loadDatabase()
+  db.countries.loadDatabase()
+  db.cultures.loadDatabase()
+  db.info.loadDatabase()
+  db.namebases.loadDatabase()
+  db.notes.loadDatabase()
+  db.npcs.loadDatabase()
+  db.religions.loadDatabase()
+  db.settings.loadDatabase()
+  db.SVG.loadDatabase()
+  db.svgMod.loadDatabase()
+  db.tags.loadDatabase()
 });
 
 expressApp.post('/api/export', async (req, res) => {

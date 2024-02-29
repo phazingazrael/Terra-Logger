@@ -323,13 +323,10 @@ function App() {
 
     // Total number of API calls
     const totalApiCalls = apiCalls.length;
-    // Total number of objects to be loaded from API calls
-    let totalObjects = 0;
     // Number of completed API calls
     let completedApiCalls = 0;
 
     // Function to handle each API call
-    const handleApiCall = async ({ key, title, endpoint }, index) => {
       try {
         // Introduce a delay of 1 second (1000 milliseconds) between API calls
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -341,57 +338,40 @@ function App() {
         // Process the response based on the key
         switch (key) {
           case "cities":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.cities = responseData;
             break;
           case "countries":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.countries = responseData;
             break;
           case "cultures":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.cultures = responseData;
             break;
           case "info":
-            // Increment totalObjects by 1
-            totalObjects += 1;
             map.info = responseData[0]
             break;
           case "nameBases":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.nameBases = responseData;
             break;
           case "notes":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.notes = responseData;
             break;
+          case "npcs":
+            map.npcs = responseData;
+            break;
           case "religions":
-            // Increment totalObjects with the length of responseData
-            totalObjects += responseData.length;
             map.religions = responseData;
             break;
           case "settings":
-            // Increment totalObjects by 1
-            totalObjects += 1;
             if (typeof responseData === 'object' && Object.keys(responseData).length > 0) {
               map.settings = responseData[0].info;
             }
             break;
           case "SVG":
-            // Increment totalObjects by 1
-            totalObjects += 1;
             if (typeof responseData === 'string' && responseData.length > 0) {
               map.SVG = responseData[0].svg;
             }
             break;
           case "svgMod":
-            // Increment totalObjects by 1
-            totalObjects += 1;
             if (typeof responseData === 'string' && responseData.length > 0) {
               map.svgMod = responseData[0].svg;
             }
@@ -419,18 +399,16 @@ function App() {
               document.body.insertAdjacentHTML("afterbegin", map.svgMod);
             }
           }
-          //document.getElementById("map").attr("width", window.innerWidth)
         }
       } catch (error) {
         console.error("Error in API call:", error);
-        // Handle errors as needed
       }
     };
 
     // Sequentially start the API calls
     const sequentialApiCalls = async () => {
-      for (let i = 0; i < apiCalls.length; i++) {
-        await handleApiCall(apiCalls[i], i);
+      for (const apiCall of apiCalls) {
+        await handleApiCall(apiCall);
       }
     };
 
