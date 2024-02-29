@@ -7,3 +7,4 @@ export { default as UploadForm } from './uploadForm';
 export { parseLoadedResult, uncompress, parseLoadedData } from './uploadForm/afmgImport.js';
 export { default as Icons } from './uploadForm/afmgIcons.js';
 export { getTagById, getTagByName, getAllTags, getDefaultTags, getTagsByType, getAllTagTypes } from './utilities/tags.js';
+export { rollDragonborn, rollDwarf, rollElf, rollGnome, rollGoblin, rollGoliath, rollHalfElf, rollHalfling, rollHuman, rollLizard, rollOrc, rollTiefling, rollRandomNPC } from "./ssng/ssng.js";

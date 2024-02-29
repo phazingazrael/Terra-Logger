@@ -85,3 +85,5 @@ Terra-Logger is licensed under the [MIT License](LICENSE). You can find the full
 ## Acknowledgments
 
 We would like to express our gratitude to the developers of [Azgaar's Fantasy Map Generator](https://github.com/Azgaar/Fantasy-Map-Generator) for their fantastic tool, which inspired and provided the foundation for Terra-Logger.
+
+We would like to express our gratitude to [Shuggaloaf](https://github.com/Shuggaloaf/) for their [System Agnostic RPG NPC Generator](https://github.com/Shuggaloaf/Simple_NPC_Generator/). Currently implemented in basic format to provide basic npc data when loading map. Will be extended with customization later.
