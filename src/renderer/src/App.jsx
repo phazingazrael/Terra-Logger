@@ -240,7 +240,7 @@ function App() {
             },
             body: JSON.stringify(appInfo)
           });
-
+          console.log("POST response:", postResponse);
           console.log("Saving Data...");
 
           // Fetch the updated data after posting
@@ -298,6 +298,7 @@ function App() {
     "info": {},
     "nameBases": [],
     "notes": [],
+    "npcs": [],
     "religions": [],
     "settings": {},
     "SVG": "",
@@ -327,6 +328,7 @@ function App() {
     let completedApiCalls = 0;
 
     // Function to handle each API call
+    const handleApiCall = async ({ key, title, endpoint }) => {
       try {
         // Introduce a delay of 1 second (1000 milliseconds) between API calls
         await new Promise(resolve => setTimeout(resolve, 1000));
