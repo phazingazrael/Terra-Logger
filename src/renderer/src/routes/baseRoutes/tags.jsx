@@ -50,14 +50,13 @@ const TagType = (props) => {
         Tags.some((tag) => filterObjectsByTag(tag._id, mapInfo.countries, mapInfo.cities, mapInfo.religions, mapInfo.cultures).length !== 0) ?
             (
                 <Grid xs={4}>
-                
                     <Accordion defaultExpanded>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
                         >
-                            <Typography variant='h6'>{tagType.Name} <span>{tagType.Count+" Items"}</span></Typography>
+                            <Typography variant='h6'>{tagType.Name} <span>{tagType.Count + " Items"}</span></Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid container spacing={2}>
@@ -74,15 +73,17 @@ const TagType = (props) => {
 }
 
 TagType.propTypes = {
-    _id: PropTypes.string,
-    Count: PropTypes.number,
-    Name: PropTypes.string,
-    Tags: PropTypes.array,
-    Type: PropTypes.string
+    tagType: PropTypes.shape({
+        _id: PropTypes.string,
+        Count: PropTypes.number,
+        Name: PropTypes.string,
+        Tags: PropTypes.array,
+        Type: PropTypes.string
+    })
 }
 
 const TagItem = (props) => {
-    const { _id, Default, Name, Type, Description } = props.data;
+    const { _id, Default, Name } = props.data;
     const [mapInfo, , , ,] = useOutletContext();
     return (
         <Grid xs={12}>
@@ -102,11 +103,13 @@ const TagItem = (props) => {
 }
 
 TagItem.propTypes = {
-    _id: PropTypes.string,
-    Default: PropTypes.bool,
-    Name: PropTypes.string,
-    Type: PropTypes.string,
-    Description: PropTypes.string
+    data: PropTypes.shape({
+        _id: PropTypes.string,
+        Default: PropTypes.bool,
+        Name: PropTypes.string,
+        Type: PropTypes.string,
+        Description: PropTypes.string
+    }),
 }
 
 export default Tags;
