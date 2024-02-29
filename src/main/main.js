@@ -47,18 +47,6 @@ db.tags.loadDatabase()
  * #######################################################################
  */
 
-// Serialize function
-const serializeData = (data) => {
-  // Assuming the data is a single object
-  return JSON.stringify(data)
-}
-
-// Deserialize function
-const deserializeData = (data) => {
-  // Assuming the data is a single object
-  return JSON.parse(data)
-}
-
 // Create an Express app
 const expressApp = express()
 const expressServer = createServer(expressApp)
