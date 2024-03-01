@@ -11,6 +11,7 @@
 - [ ] Ability to modify data prior to export.
 - [ ] Automatically include relevant Emblems or Coat of Arms as an SVG file.
 - [ ] Select location for exported files.
+- [ ] https://restcountries.com/v3.1/all
 
 **Version 1.1.0**
 - [ ] Ability to choose between multiple Markdown Templates.
