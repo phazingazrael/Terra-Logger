@@ -1,35 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Package from "../package.json";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import HomePage from "./pages/HomePage";
+import Settings from "./pages/Settings";
 
-function App() {
-  const [count, setCount] = useState(0)
+import "./App.css";
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <MainLayout />,
+        // errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "/",
+                element: <HomePage />,
+                // errorElement: <ErrorPage />,
+            },
+            // {
+            //     path: "overview",
+            //     element: <Overview />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "cities",
+            //     element: <Cities />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "countries",
+            //     element: <Countries />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "entries",
+            //     element: <Entries />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "religions",
+            //     element: <Religions />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "tags",
+            //     element: <Tags />,
+            //     errorElement: <ErrorPage />,
+            // },
+            {
+                path: "settings",
+                element: <Settings {...Package} />,
+                //     errorElement: <ErrorPage />,
+            },
+            // {
+            //     path: "view_city",
+            //     element: <ViewCity />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "view_country/:_id",
+            //     element: <ViewCountry />,
+            //     errorElement: <ErrorPage />,
+            // },
+            // {
+            //     path: "view_country",
+            //     element: <ViewCountry />,
+            //     errorElement: <ErrorPage />,
+            // },
+        ],
+    },
+]);
 
-export default App
+const App = () => {
+    return (
+        <div>
+            <RouterProvider router={router} />
+        </div>
+    );
+};
+
+export default App;
