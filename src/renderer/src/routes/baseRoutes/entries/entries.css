@@ -1,0 +1,60 @@
+.filter-menu {
+  height: 3rem; /* 12 tailwind units */
+  padding: 0.75rem 1rem; /* py-3 px-4 tailwind units */
+  border-radius: 9999px; /* rounded-full */
+  background-color: #e2e8f0; /* bg-gray-200 */
+  width: 50%; /* w-1/2 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-menu span {
+  color: white;
+  font-size: 0.75rem; /* text-xs */
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0; /* py-2 */
+}
+
+.button {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 200; /* font-thin */
+  padding: 0.25rem; /* p-1 */
+  border: 2px solid white; /* border-2 */
+  color: white;
+  border-radius: 9999px; /* rounded-full */
+  width: 6rem; /* custom width, as w-24 in tailwind might not directly translate */
+  margin-right: 1rem; /* mr-4 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem; /* py-1 px-2 */
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+
+.confirmed,
+.pending,
+.cancelled {
+  opacity: 0.5;
+}
+
+.confirmed img,
+.pending img,
+.cancelled img {
+  padding-left: 0.25rem; /* pl-1 */
+  height: 1rem; /* h-4, except for the last which is h-3 */
+  width: 1rem; /* w-4, except for the last which is w-3 */
+}
+
+.cancelled img {
+  height: 0.75rem; /* h-3 */
+  width: 0.75rem; /* w-3 */
+}

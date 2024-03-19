@@ -8,7 +8,7 @@ import {
 
 import PropTypes from 'prop-types';
 
-const ShowMessageDialog = (props) => {
+export const ShowMessageDialog = (props) => {
     const { open, handleClose, handleConfirm, message, title } = props;
 
 
@@ -44,4 +44,3 @@ ShowMessageDialog.propTypes = {
 //     message: 'The file does not look like a valid save file.\nPlease check the data format',
 //     title: 'Invalid file'
 //   })
-export default ShowMessageDialog

@@ -1,0 +1,55 @@
+appId: com.terralogger.app
+productName: TerraLogger
+directories:
+  buildResources: build
+files:
+  - 'out/**/*'
+  - 'build/**/*'
+  - 'package.json'
+  - 'LICENSE'
+  - 'README.md'
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+copyright: Copyright © 2024 Cameren Dessert
+asarUnpack:
+  - resources/**
+win:
+  executableName: TerraLogger
+  artifactName: ${productName}-${version}.${ext}
+  target:
+    - nsis
+    - zip
+    - squirrel
+  icon: build/icon.ico
+nsis:
+  artifactName: ${productName}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  installerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  category: public.app-category.utilities
+  extendInfo:
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  target: dmg
+  icon: build/icon.icns
+dmg:
+  artifactName: ${productName}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+  icon: build/icon.png
+appImage:
+  artifactName: ${productName}-${version}.${ext}
+npmRebuild: true

@@ -1,4 +1,4 @@
-// Code within this file is modified code from Azgaar's Fantasy Map Generator
+// This file contains modified code from Azgaar's Fantasy Map Generator
 // Modifications made are to enable the loaded .map file and extraction of map information and the map svg for rendering.
 // Additional modifications made to make code work with terra-logger codebase.
 
@@ -32,7 +32,8 @@ import { LoremIpsum } from 'lorem-ipsum'
 
 //import { generateNpc } from '../ttrpgtools'
 
-import { rollRandomNPC, rollDragonborn, rollDwarf, rollElf, rollGnome, rollGoblin, rollGoliath, rollHalfElf, rollHalfling, rollHuman, rollLizard, rollOrc, rollTiefling } from '../ssng/ssng';
+import { rollRandomNPC } from '../ssng/ssng';
+// rollRandomNPC(string or object{ Form: "String", FormType: "string", FormLeader: true/false })
 
 const rawMap = {
   cities: [],
@@ -101,7 +102,7 @@ export const parseLoadedData = (data, appData) => {
 
   if (params[3]) {
     const seed = params[3]
-    appInfo.userSettings.mapInfo.seed = seed
+    appInfo.mapInfo.seed = seed
     rawMap.info.seed = seed
   }
 
@@ -115,7 +116,7 @@ export const parseLoadedData = (data, appData) => {
   // Get Map Name and Save to Settings & Info objects//
   if (settings[20]) {
     rawMap.settings.mapName = rawMap.info.mapName = settings[20]
-    appInfo.userSettings.mapInfo.name = settings[20]
+    appInfo.mapInfo.name = settings[20]
   }
 
   if (settings[0]) rawMap.settings.distanceUnit = settings[0]
@@ -231,8 +232,6 @@ export const parseLoadedData = (data, appData) => {
   })
   const countryArray = countries.filter((value) => Object.keys(value).length !== 0)
   countryArray.map((Country) => {
-    let cityLeader = rollRandomNPC();
-    console.log(cityLeader)
     const countryObj = {
       _id: nanoid(),
       cities: [],
@@ -256,6 +255,7 @@ export const parseLoadedData = (data, appData) => {
       },
       img: '',
       location: '',
+      languages: [],
       name: Country.name || '',
       political: {
         diplomacy: [],
@@ -264,7 +264,7 @@ export const parseLoadedData = (data, appData) => {
         leaders: [],
         military: Country.military || [],
         neighbors: [],
-        ruler: '',
+        ruler: [],
         stability: [],
         system: ''
       },
@@ -302,11 +302,9 @@ export const parseLoadedData = (data, appData) => {
         name: countries[neighbor].fullName || countries[neighbor].name,
         id: countries[neighbor].i
       }
-      //console.log(countries[neighbor])
       countryObj.political.neighbors.push(nObj)
 
     })
-    console.log(countryObj.political.diplomacy)
     countryObj.political.diplomacy.sort((a, b) => a.name.localeCompare(b.name))
 
     if (cultures[Country.culture] === undefined) {
@@ -536,6 +534,7 @@ export const parseLoadedData = (data, appData) => {
   const Cities = [...rawMap.cities]
   //const Religions = [...rawMap.religions]
 
+
   if (Array.isArray(rawMap.cities) && rawMap.cities.length !== 0) {
     Countries.forEach(country => {
 
@@ -550,6 +549,7 @@ export const parseLoadedData = (data, appData) => {
         country.cities.push(city._id)
         city.country._id = country._id
       })
+
       // Update data for countries
       fetch('http://localhost:3000/api/countries', {
         method: 'POST',
@@ -570,6 +570,550 @@ export const parseLoadedData = (data, appData) => {
       })
     })
   }
+
+  Countries.forEach(country => {
+    if (country.form === "Monarchy") {
+      // 1. Monarchy:
+      if (country.formName === "Duchy") {
+        // Duchy: Ruled by a Duke or Duchess, with advisors such as Court Wizard, Knight, Royal Steward, Master-at-Arms, and Royal Huntsman.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            setTimeout(() => {
+              country.political.ruler.push(npc);
+            }, 1000);
+          });
+
+        // Advisors
+        const advisors = ["Court Wizard", "Knight", "Royal Steward", "Master-at-Arms", "Royal Huntsman"]
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Grand Duchy") {
+        // Grand Duchy: Similar to a Duchy but with additional advisors due to its larger size and complexity.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            setTimeout(() => {
+              country.political.ruler.push(npc);
+            }, 1000);
+          });
+
+        // Advisors
+        const advisors = ["Archmage", "Royal Treasurer", "High Commander", "Grand Inquisitor", "Master Diplomat"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Principality") {
+        // Principality: Ruled by a Prince or Princess, with advisors like High Priest/Priestess, Chancellor, Spymaster, Royal Architect, and Master Merchant.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            setTimeout(() => {
+              country.political.ruler.push(npc);
+            }, 1000);
+          });
+
+        // Advisors
+        const advisors = ["High Priest/Priestess", "Chancellor", "Spymaster", "Royal Architect", "Master Merchant"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Kingdom") {
+        // Kingdom: Ruled by a King or Queen, with advisors such as Royal Sage, Lord/Lady Chamberlain, Royal Admiral, Royal Historian, and Royal Executioner.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            setTimeout(() => {
+              country.political.ruler.push(npc);
+            }, 1000);
+          });
+
+        // Advisors
+        const advisors = ["Royal Sage", "Lord/Lady Chamberlain", "Royal Admiral", "Royal Historian", "Royal Executioner"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Empire") {
+        // Empire: Governed by an Emperor or Empress, with advisors including Imperial Grand Vizier, Imperial High Priest/Priestess, Imperial Warlord, Imperial Chancellor, and Imperial Spymaster.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            setTimeout(() => {
+              country.political.ruler.push(npc);
+            }, 1000);
+          });
+
+        // Advisors
+        const advisors = ["Imperial Grand Vizier", "Imperial High Priest/Priestess", "Imperial Warlord", "Imperial Chancellor", "Imperial Spymaster"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      }
+      // Marches: Ruled by a Marquis or Marchioness, with advisors such as Border Wardens, Military Commanders, Intelligence Officers, and Infrastructure Overseers.
+      // Dominion: Governed by a Lord or Lady, with advisors including Stewards, Justiciars, Chamberlains, and Master Builders.
+      // Protectorate: Led by a Protector, with advisors like Governors, Diplomats, Spies, and Cultural Liaisons.
+      // Khaganate: Ruled by a Khagan or Khagana, with advisors such as Khanates, Tarkhans, Shamans, and Horse Lords.
+      // Tsardom: Governed by a Tsar or Tsaritsa, with advisors including Boyars, Princes, Archbishops, and Grand Dukes.
+      // Shogunate: Led by a Shogun, with advisors like Daimyos, Samurai, Ninja, and Zen Masters.
+      // Caliphate: Ruled by a Caliph, with advisors such as Viziers, Imams, Qadis, and Grand Muftis.
+      // Emirate: Governed by an Emir or Emira, with advisors including Sheikhs, Sultans, Mullahs, and Grand Viziers.
+      // Despotate: Led by a Despot, with advisors like Viceroys, Regents, Ministers, and Court Astrologers.
+      // Ulus: Ruled by a Khan or Khatun, with advisors such as Tribal Chiefs, Shamans, Khans, and Clan Elders.
+      // Horde: Governed by a Khan or Khagan, with advisors including Warlords, Chieftains, Shaman-Kings, and Khans.
+      // Satrapy: Led by a Satrap, with advisors like Administrators, Tax Collectors, Scribes, and Royal Envoys.
+    } else if (country.form === "Republic") {
+      // 2. Republic:
+      if (country.formName === "Republic") {
+        // Republic: Led by a President, with advisors like Senators, Chief Justice, Public Defender, Mayor, Diplomat, and more depending on the structure.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          });
+
+        // Advisors
+        const advisors = ["Senator", "Chief Justice", "Public Defender", "Mayor", "Diplomat"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Federation") {
+        // Federation: Governed by a Federation Chancellor, with councilors representing member states, Federal Marshal, Trade Envoy, Federation Auditor, and Environmental Commissioner.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          });
+
+        // Advisors
+        const advisors = ["Federal Marshal", "Trade Envoy", "Federation Auditor", "Environmental Commissioner"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Trade Company") {
+        // Trade Company: Headed by a Chairman or Chairwoman, with advisors including Chief Financial Officer, Trade Representative, Logistics Coordinator, Market Analyst, and Security Chief.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          });
+
+        // Advisors
+        const advisors = ["Chief Financial Officer", "Trade Representative", "Logistics Coordinator", "Market Analyst", "Security Chief"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Most Serene Republic") {
+        // Most Serene Republic: Led by a Doge, with advisors such as Patricians, Naval Admiral, Civic Architect, Trade Consul, and Artisan Guildmaster.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          });
+
+        // Advisors
+        const advisors = ["Patrician", "Navy Admiral", "Civic Architect", "Trade Consul", "Artisan Guildmaster"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Oligarchy") {
+        //Oligarchy: Controlled by Oligarchs, with advisors like Councilors, Chief Strategist, Economic Adviser, Security Director, and Legal Counsel.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Councilor", "Chief Strategist", "Economic Adviser", "Security Director", "Legal Counsel"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Tetrarchy") {
+        // Tetrarchy: Ruled by a group of four Tetrarchs, each with Quadrant Governors, Military Tribunes, Civic Planners, Cultural Curators, and Foreign Envoys.
+        // Ruler
+        const rulers = [1, 2, 3, 4];
+        rulers.forEach(ruler => {
+          console.log(ruler);
+          rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+            .then(npc => {
+              country.political.leader.push(npc)
+            });
+        })
+
+        // Advisors
+        const advisors = ["Military Tribune", "Civic Planner", "Cultural Curator", "Foreign Envoy"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Triumvirate") {
+        // Triumvirate: Governed by three Triumvirs, with Joint Magistrates, Public Works Overseers, Trade Liaisons, Cultural Ambassadors, and Emergency Councilors.
+        // Ruler
+        const rulers = [1, 2, 3];
+        rulers.forEach(ruler => {
+          console.log(ruler);
+          rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+            .then(npc => {
+              country.political.leader.push(npc)
+            });
+        })
+
+        // Advisors
+        const advisors = ["Joint Magistrate", "Public Works Overseer", "Trade Liaison", "Cultural Ambassador", "Emergency Councilor"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Diarchy") {
+        // Diarchy: Led by Co-Kings or Co-Queens, with Royal Consorts, Court Astrologers, Guardian of the Realm, Chief Heralds, and Masters of Revels.
+        // Ruler
+        const rulers = [1, 2];
+        rulers.forEach(ruler => {
+          console.log(ruler);
+          rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+            .then(npc => {
+              country.political.leader.push(npc)
+            });
+        })
+
+        // Advisors
+        const advisors = ["Royal Consort", "Court Astrologer", "Guardian of the Realm", "Chief Herald", "Master of Revels"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Junta") {
+        // Junta: Dictated by a Junta Leader, with Field Marshal, Propaganda Minister, Secret Police Chief, Economic Czar, and Labor Overseer.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Field Marshal", "Propaganda Minister", "Secret Police Chief", "Economic Czar", "Labor Overseer"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      }
+      // Free City: Governed by a Burgomaster or Mayor, with advisors including Aldermen, Councilors, Merchants, and Guildmasters.
+      // City-state: Ruled by a Consul or Archon, with advisors such as Senators, Orators, Tribunes, and Strategoi.
+    } else if (country.form === "Theocracy") {
+      // 3. Theocracy:
+      if (country.formName === "Theocracy") {
+        // Theocracy: Led by a High Priest or High Priestess, with Council of Elders, Temple Guardians, Divine Healers, Missionaries, and Religious Scholars.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+      } else if (country.formName === "Brotherhood") {
+        // Brotherhood: Governed by a Brother or Sister, with Monastic Abbot/Abbess, Inquisitors, Scribes, Chaplains, and Cantors.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Monastic Abbot/Abbess", "Inquisitor", "Scribe", "Chaplain", "Cantor"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Thearchy") {
+        // Thearchy: Ruled by a Divine Sovereign, with Oracle, Celestial Council, Guardian Paladin, Divine Artisans, and Spiritual Guides.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Oracle", "Celestial Council", "Guardian Paladin", "Divine Artisan", "Spiritual Guide"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "See") {
+        // See: Headed by a High Bishop or High Priestess, with Council of Cardinals, Exorcists, Sanctuary Keepers, Divine Lawyers, and Pilgrim Guides.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Council of Cardinals", "Exorcist", "Sanctuary Keeper", "Divine Lawyer", "Pilgrim Guide"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Holy State") {
+        // Holy State: Led by a Pontiff, with Holy Council, Crusaders, Divine Emissaries, Miracle Workers, and Monastic Scholars.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Holy Council", "Crusader", "Divine Emissary", "Miracle Worker", "Monastic Scholar"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+        })
+      }
+      // Theocracy: Led by a High Priest or Priestess, with advisors like Hierophants, Cardinals, Abbots, and Grand Inquisitors.
+      // Divine *: Ruled by a Divine Sovereign, with advisors including Prophets, Oracles, Saints, and Divine Emissaries.
+      // Diocese: Governed by a Bishop or Bishopess, with advisors such as Deans, Canons, Presbyters, and Exorcists.
+      // Bishopric: Led by a Bishop, with advisors like Archdeacons, Vicars, Chaplains, and Confessors.
+    } else if (country.form === "Union") {
+      // 4. Union:
+      if (country.formName === "Union") {
+        // Union: Governed by a Union President, with Assembly Delegates, Unity Ambassadors, Border Wardens, Union Treasurers, and Community Organizers.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Assembly Delegate", "Unity Ambassador", "Border Warden", "Union Treasurer", "Community Organizer"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "League") {
+        // League: Led by a League Commissioner, with League Councilors, Athletic directors, Trade Commissioners, Environmental Stewards, and Educational Coordinators.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["League Commissioner", "League Councilor", "Athletic Director", "Trade Commissioner", "Environmental steward", "Educational Coordinator"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Confederation") {
+        // Confederation: Headed by a Confederation Chancellor, with Confederation Ambassadors, Regional Governors, Infrastructure Planners, Equality Advocates, and Health Coordinators.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Confederation Chancellor", "Confederation Ambassador", "Regional Governor", "Infrastructure Planner", "Equality Advocate", "Health Coordinator"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "United Kingdom") {
+        // United Kingdom: Ruled by a Prime Minister, with Parliamentarians, Royal Advisers, Foreign Secretaries, Home Secretaries, and Royal Judges.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Parliamentarian", "Royal Adviser", "Foreign Secretary", "Home Secretary", "Royal Mail"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "United Republic") {
+        // United Republic: Governed by a President, with Congressional Delegates, Union Advocates, Public Health Commissioners, Environmental Regulators, and Educational Directors.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Congressional Delegate", "Union Officials", "Public Health Commissioner", "Environmental Regulator", "Educational Director"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "United Provinces") {
+        // United Provinces: Led by a Governor-General, with Provincial Councilors, Regional Planners, Cultural Liaisons, Trade Inspectors, and Health Coordinators.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Metropolitan Councilor", "Regional Planner", "Cultural Liaison", "Trade Inspector", "Health Coordinator"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Commonwealth") {
+        // Commonwealth: Headed by a Commonwealth President, with Commonwealth Assembly Members, Infrastructure Coordinators, Cultural Ambassadors, Trade Envoys, Environmental Stewards, and Humanitarian Aid Directors.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Commonwealth Assembly Member", "Infrastructure Coordinator", "Cultural Ambassador", "Trade Envoys", "Environmental Steward", "Humanitarian Aid Director"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Heptarchy") {
+        // Heptarchy: Ruled by Heptarchs, with Regional Councilors, Unity Advocates, Master Artisans, Cultural Custodians, Trade Negotiators, and more.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Regional Councilor", "Unity Officials", "Master Artisan", "Cultural Custodian", "Trade Negotiator"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      }
+      // Union: Governed by a Union President, with advisors including Delegates, Union Advocates, Plenipotentiaries, and Ombudsmen.
+    } else if (country.form === "Anarchy") {
+      // 5. Anarchy:
+      if (country.formName === "Free Territory") {
+        // Free Territory: Led by Community Leaders, with Grassroots Organizers, Mediators, Environmental Activists, Self-Defense Coordinators, and Outreach Workers.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Grassroots Organizer", "Mediator", "Environmental Activist", "Self-Defense Coordinator", "Outreach Worker"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Council") {
+        // Council: Governed by Council Elders, with Neighborhood Watch Captains, Community Gardeners, Artisan Craftsmen/Craftswomen, Social Workers, and Youth Mentors.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Neighborhood Watch Captain", "Community Gardener", "Artisan/Craftsman", "Social Worker", "Youth Mentor"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Commune") {
+        // Commune: Ruled by Commune Coordinators, with Commons Stewards, Community Healers, Sustainable Living Advocates, Community Educators, and Volunteer Coordinators.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Commons Steward", "Community Healer", "Sustainable Living Officials", "Community Educator", "Volunteer Coordinator"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      } else if (country.formName === "Community") {
+        // Community: Led by Community Elders, with Local Historians, Neighborhood Organizers, Artisan Craftsmen/Craftswomen, Community Gardeners, and Cultural Liaisons.
+        // Ruler
+        rollRandomNPC({}, { Form: country.form, FormType: country.formName, FormLeader: true })
+          .then(npc => {
+            country.political.leader.push(npc)
+          })
+
+        // Advisors
+        const advisors = ["Local Historian", "Neighborhood Organizer", "Artisan/Craftsman", "Community Gardener", "Cultural Liaison"];
+        advisors.forEach(advisor => {
+          rollRandomNPC(advisor, { Form: country.form, FormType: country.formName, FormLeader: false })
+            .then(npc => {
+              country.political.leaders.push(npc)
+            })
+        })
+      }
+    }
+  })
 
   if (data[31]) {
     const namesDL = data[31].split('/')

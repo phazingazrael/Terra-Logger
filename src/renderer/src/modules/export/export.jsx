@@ -25,7 +25,7 @@ const defaultOptions = [
   'Coat of Arms SVGs',
 ];
 
-const Export = () => {
+export const Export = () => {
   //const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [Defaults, setDefaults] = useState([]);
@@ -52,7 +52,6 @@ const Export = () => {
       .then(response => response.json())
       .then(apiResponse => {
         // Handle the API response, if needed
-        console.log(apiResponse);
         onClose()
       })
       .catch(error => {
@@ -129,5 +128,3 @@ const Export = () => {
     </Dialog>
   );
 };
-
-export default Export;

@@ -3,7 +3,7 @@ import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 
-const LazyLoadedSVG = ({ coa }) => {
+export const LazyLoadedSVG = ({ coa }) => {
   const imgRef = useRef(null);
 
   useEffect(() => {
@@ -42,7 +42,6 @@ const LazyLoadedSVG = ({ coa }) => {
   return <img ref={imgRef} alt="Coat of Arms" />;
 };
 
-
-//LazyLoadedSVG
-
-export default LazyLoadedSVG
+LazyLoadedSVG.propTypes = {
+  coa: PropTypes.object
+}

@@ -1,62 +1,21 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { MenuList, MenuItem, ListItemText, ListItemIcon, Divider, Popover, Typography } from '@mui/material/'
+import { useEffect } from 'react'
+import { MenuList, MenuItem, ListItemText, ListItemIcon, Divider } from '@mui/material/'
 import { NavLink } from 'react-router-dom'
 import { IconContext } from 'react-icons'
 import { TiBook, TiClipboard, TiCog, TiDocumentText, TiGlobe, TiHome, TiTags } from 'react-icons/ti'
 import { ImDiamonds } from 'react-icons/im'
-
-const MainNav = ({ setMap, app, setApp, theme }) => {
-  const [anchorEl, setAnchorEl] = useState(null)
-
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+import PropTypes from 'prop-types';
 
 
-  const handleClear = async () => {
-    console.log('Clearing Storage')
+export const MainNav = ({ app, theme }) => {
 
-    fetch('http://localhost:3000/api/deleteAll', {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-
-    // Remove map background
-    const mapElement = document.getElementById('map');
-    if (mapElement) {
-      mapElement.remove();
-    }
-
-    // Update only the mapInfo fields in appInfo
-    setApp(prevAppInfo => ({
-      ...prevAppInfo,
-      userSettings: {
-        ...prevAppInfo.userSettings,
-        mapInfo: {
-          ...prevAppInfo.userSettings.mapInfo,
-          name: "",
-          seed: ""
-        }
-      }
-    }));
-
-    setMap();
-  }
   let mapName = '';
   let mapLoaded = false;
-  if (typeof app.userSettings.mapInfo.name === 'string' && app.userSettings.mapInfo.name.length > 0) {
+  if (app.mapInfo.name.length > 0) {
     mapLoaded = true;
-    mapName = app.userSettings.mapInfo.name;
+    mapName = app.mapInfo.name;
   }
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
+
 
   useEffect(() => {
 
@@ -65,46 +24,16 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
   return (
     <MenuList style={{ color: theme.palette.mode == "light" ? theme.palette.primary.dark : theme.palette.text.primary }}>
       <IconContext.Provider value={{ size: '1.75rem', color: theme.palette.mode == "light" ? theme.palette.primary.dark : theme.palette.text.primary }}>
-        <MenuItem onClick={openMenu}>
+        <MenuItem>
           <ListItemIcon>
             <TiGlobe />
           </ListItemIcon>
           <ListItemText>
             {mapLoaded
-              ? (
-                <span className='mapName'>
-                  {mapName}
-                </span>
-              )
+              ? mapName
               : 'No Map Loaded'}
           </ListItemText>
         </MenuItem>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center'
-          }}
-        >
-          <div className='mapDetails' />
-          <NavLink
-            to='/' onClick={() => {
-              handleClose()
-              handleClear()
-            }} color='warning.main'>
-            <MenuItem >
-              <ListItemIcon />
-              <ListItemText>Delete Map Data</ListItemText>
-            </MenuItem>
-          </NavLink>
-        </Popover>
         <Divider />
         <NavLink
           to='/' className={({ isActive }) =>
@@ -137,15 +66,20 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
                   </ListItemIcon>
                 </MenuItem>
               </NavLink>
-              <MenuItem>
-                <ListItemIcon>
-                  <TiClipboard />
-                </ListItemIcon>
-                <ListItemText>Entries</ListItemText>
-                <ListItemIcon className='inactive'>
-                  <ImDiamonds />
-                </ListItemIcon>
-              </MenuItem>
+              <NavLink
+                to='/entries' className={({ isActive }) =>
+                  isActive ? 'active' : ''}
+              >
+                <MenuItem>
+                  <ListItemIcon>
+                    <TiClipboard />
+                  </ListItemIcon>
+                  <ListItemText>Entries</ListItemText>
+                  <ListItemIcon className='inactive'>
+                    <ImDiamonds />
+                  </ListItemIcon>
+                </MenuItem>
+              </NavLink>
               <div className='subMenu'>
                 <NavLink
                   to='/countries' className={({ isActive }) =>
@@ -227,4 +161,38 @@ const MainNav = ({ setMap, app, setApp, theme }) => {
   )
 }
 
-export default MainNav
+MainNav.propTypes = {
+  app: PropTypes.shape({
+    id: PropTypes.string,
+    application: PropTypes.shape({
+      name: PropTypes.string,
+      version: PropTypes.string,
+      afmgVer: PropTypes.string,
+      supportedLanguages: PropTypes.array,
+      defaultLanguage: PropTypes.string,
+      onboarding: PropTypes.bool
+    }),
+    userSettings: PropTypes.shape({
+      theme: PropTypes.string,
+      language: PropTypes.string,
+      showWelcomeMessage: PropTypes.bool,
+      fontSize: PropTypes.string,
+      exportOption: PropTypes.string,
+      screen: PropTypes.object
+    }),
+    mapInfo: PropTypes.shape({
+      name: PropTypes.string
+    })
+  }),
+  theme: PropTypes.shape({
+    palette: PropTypes.shape({
+      mode: PropTypes.string,
+      primary: PropTypes.shape({
+        dark: PropTypes.string
+      }),
+      text: PropTypes.shape({
+        primary: PropTypes.string
+      })
+    })
+  }).isRequired
+}

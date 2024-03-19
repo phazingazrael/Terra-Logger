@@ -53,11 +53,3 @@
   height: 5.2vh;
   margin: 0px auto;
 }
-
-.contentSubHead .MuiAlert-root {
-  margin-bottom: 1vh;
-}
-
-.contentSubHead .MuiAlert-message {
-  width: 100%;
-}

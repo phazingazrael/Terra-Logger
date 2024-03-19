@@ -1,4 +1,4 @@
-const icons = [
+export const Icons = [
     "⚔️",
     "🏹",
     "🐴",
@@ -187,5 +187,3 @@ const icons = [
     "🍲",
     "🍷"
 ];
-
-export default icons
