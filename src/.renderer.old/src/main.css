@@ -13,7 +13,7 @@ body {
     Arial, sans-serif;
   margin: 0;
   padding: 0rem;
-  background-image: url("../bg.svg");
+  background-image: url("../assets/bg.svg");
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
