@@ -147,3 +147,4 @@ dist
 dist-ssr
 *.local
 terra-logger.code-workspace
+yarn.lock
