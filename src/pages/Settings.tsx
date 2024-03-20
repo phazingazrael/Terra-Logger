@@ -1,7 +1,32 @@
 import { Container} from '@mui/material'
 import { IconContext } from 'react-icons'
 // import UploadForm from '../components/UploadForm.tsx';
-const Settings = () => {
+
+interface SettingsProperties {
+    name: string;
+    private?: boolean;
+    version: string;
+    description: string;
+    descriptionFull?: string;
+    author?: {
+        name: string;
+        email: string;
+    };
+    type?: string;
+    license: string;
+    scripts?: {
+        dev: string;
+        build: string;
+        lint: string;
+        preview: string;
+        licenses: string;
+        changelog: string;
+    };
+}
+
+const Settings = (props: SettingsProperties) => {
+    const { name, private: isPrivate, version, description, descriptionFull, author, type, license, scripts } = props;
+    console.log({ name, private: isPrivate, version, description, descriptionFull, author, type, license, scripts })
 
     const styles = {
       section: {
