@@ -9,7 +9,6 @@ import { parseLoadedData, parseLoadedResult } from './Parse';
 
 import { useNavigate } from 'react-router-dom';
 
-
 import './UploadMap.css';
 
 function UploadMap() {
@@ -23,7 +22,7 @@ function UploadMap() {
       ]
     >();
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const navigateToMain = () => {
     console.log('Navigating to main');

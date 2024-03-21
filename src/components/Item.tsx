@@ -8,4 +8,4 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: 'auto'
 }));
 
-export default Item
+export default Item;

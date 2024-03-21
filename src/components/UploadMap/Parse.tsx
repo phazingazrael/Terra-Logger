@@ -78,7 +78,8 @@ export const parseLoadedData = (data: string[]) => {
     // setting 16 and 17 (temperature) are part of options now, kept as "" in newer versions for compatibility
     // setting 16 and 17 (temperature) are part of options now, kept as "" in newer versions for compatibility
     if (settings[16]) MapOptions.temperatureEquator = +settings[16];
-    if (settings[17]) MapOptions.temperatureNorthPole = MapOptions.temperatureSouthPole = +settings[17];
+    if (settings[17])
+      MapOptions.temperatureNorthPole = MapOptions.temperatureSouthPole = +settings[17];
   }
   if (settings[20]) mapName = settings[20];
   if (settings[21]) hideLabels = +settings[21];
@@ -95,7 +96,6 @@ export const parseLoadedData = (data: string[]) => {
   if (data[14]) countries = JSON.parse(data[14]) as Country[];
   if (data[15]) cities = JSON.parse(data[15]) as City[];
   if (data[29]) religions = JSON.parse(data[29]) as Religion[];
-
 
   const nameBases: { name: string; min: string; max: string; d: string; m: string; b: string }[] =
     [];
