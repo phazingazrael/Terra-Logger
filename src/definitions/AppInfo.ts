@@ -1,4 +1,9 @@
-export type AppInfo = {
+// src/definitions/AppInfo.ts //
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// visual effects only for eslint-disable //
+
+// Application Information Interface
+interface AppInfo {
   id: string;
   application: {
     name: string;
@@ -23,4 +28,4 @@ export type AppInfo = {
       devicePixelRatio: number;
     };
   };
-};
+}

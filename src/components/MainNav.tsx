@@ -1,5 +1,5 @@
 import { Divider, ListItemIcon, ListItemText, MenuItem, MenuList } from '@mui/material/';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
 import { ImDiamonds } from 'react-icons/im';
 import {
@@ -12,14 +12,21 @@ import {
   TiTags
 } from 'react-icons/ti';
 import { NavLink } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import mapAtom from '../atoms/map';
 
-let mapName;
-let mapLoaded;
-
-const MainNav = () => {
+const MainNav = (): JSX.Element => {
   const iconStyles = useMemo(() => ({ size: '1.75rem' }), []);
-  mapName = '';
-  mapLoaded = false;
+  const [map] = useRecoilState(mapAtom);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapName, setMapName] = useState('');
+
+  useEffect(() => {
+    if (map.info.name !== '') {
+      setMapName(map.info.name);
+      setMapLoaded(true);
+    }
+  }, [map]);
 
   return (
     <MenuList>

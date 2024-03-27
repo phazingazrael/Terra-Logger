@@ -1,26 +1,16 @@
 import { Button, Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material';
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
 import { TiTrash } from 'react-icons/ti';
+import { useRecoilState } from 'recoil';
 
-import { useOutletContext } from 'react-router-dom';
-
-import { AppInfo } from '../../definitions/AppInfo';
-import { MapInfo } from '../../definitions/MapInfo';
 import { SettingsStyles } from './Styles';
 
+import mapAtom from '../../atoms/map';
 import UploadMap from '../../components/UploadMap/UploadMap';
 
 const Settings = () => {
-  const [mapInfo /*appInfo*/, ,] =
-    useOutletContext<
-      [
-        MapInfo,
-        Dispatch<SetStateAction<MapInfo | undefined>>,
-        AppInfo,
-        Dispatch<SetStateAction<AppInfo | undefined>>
-      ]
-    >();
+  const [map, setMap] = useRecoilState(mapAtom);
   const [selectAllDefaults, setSelectAllDefaults] = useState(false);
   const [defaults, setDefaults] = useState<Array<string>>([]);
 
@@ -48,6 +38,76 @@ const Settings = () => {
     setDefaults(updatedDefaults);
   };
 
+  const createEmptyMap = (): MapInfo => {
+    return {
+      cities: [],
+      countries: [],
+      cultures: [],
+      info: {
+        name: '',
+        seed: '',
+        width: 0,
+        height: 0,
+        ID: ''
+      },
+      nameBases: [],
+      notes: [],
+      npcs: [],
+      params: [],
+      religions: [],
+      settings: {
+        mapName: '',
+        distanceUnit: '',
+        distanceScale: '',
+        areaUnit: '',
+        heightUnit: '',
+        heightExponent: '',
+        temperatureScale: '',
+        barSize: '',
+        barLabel: '',
+        barBackOpacity: '',
+        barPosX: '',
+        barPosY: '',
+        populationRate: '',
+        urbanization: '',
+        mapSize: '',
+        latitude0: '',
+        prec: '',
+        options: {
+          pinNotes: false,
+          winds: [],
+          temperatureEquator: 0,
+          temperatureNorthPole: 0,
+          temperatureSouthPole: 0,
+          stateLabelsMode: '',
+          year: 0,
+          era: '',
+          eraShort: '',
+          militaryTypes: [
+            {
+              icon: '',
+              name: '',
+              rural: 0,
+              urban: 0,
+              crew: 0,
+              power: 0,
+              type: '',
+              separate: 0
+            }
+          ]
+        },
+        hideLabels: 0,
+        stylePreset: '',
+        rescaleLabels: 0,
+        urbanDensity: 0
+      },
+      SVG: '',
+      svgMod: ''
+    };
+  };
+
+  const emptyMap: MapInfo = createEmptyMap();
+
   const IconStyles = useMemo(() => ({ size: '1.5rem' }), []);
 
   return (
@@ -58,13 +118,14 @@ const Settings = () => {
           <div className="contentSubBody">
             <div style={SettingsStyles.section}>
               <h4>Map Settings</h4>
-              {mapInfo && mapInfo.settings.mapName !== '' ? (
+              {map.settings.mapName !== '' ? (
                 <div>
                   <Button
                     variant="contained"
                     color="error"
                     onClick={() => {
-                      // handleClear()
+                      localStorage.removeItem('Terra_Logger_Map');
+                      setMap(emptyMap);
                     }}
                   >
                     <TiTrash />

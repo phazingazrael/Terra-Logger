@@ -1,20 +1,9 @@
 import { AppBar, Container, Grid } from '@mui/material';
-import { Dispatch, SetStateAction } from 'react';
 import { Outlet } from 'react-router-dom';
 import Item from '../components/Item.tsx';
 import MainNav from '../components/MainNav.tsx';
 
-import { AppInfo } from '../definitions/AppInfo';
-import { MapInfo } from '../definitions/MapInfo';
-
-interface MainLayoutProps {
-  mapInfo?: MapInfo;
-  setMapInfo: Dispatch<SetStateAction<MapInfo | undefined>>;
-  appInfo?: AppInfo;
-  setAppInfo: Dispatch<SetStateAction<AppInfo | undefined>>;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ mapInfo, setMapInfo, appInfo, setAppInfo }) => {
+const MainLayout = (): JSX.Element => {
   return (
     <div>
       <AppBar position="static">
@@ -30,7 +19,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ mapInfo, setMapInfo, appInfo, s
           <Grid item lg={9} md={10} xs={10}>
             <Item className="Content" id="Content">
               <div className="contentBody">
-                <Outlet context={[mapInfo, setMapInfo, appInfo, setAppInfo]} />
+                <Outlet />
               </div>
             </Item>
           </Grid>

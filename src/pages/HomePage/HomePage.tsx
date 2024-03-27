@@ -1,7 +1,10 @@
 import { Container } from '@mui/material';
 import React from 'react';
+import { useRecoilState } from 'recoil';
+import appAtom from '../../atoms/app';
 
 const HomePage: React.FC = () => {
+  const [app] = useRecoilState<AppInfo>(appAtom);
   return (
     <Container>
       <div className="contentSubHead">
@@ -15,8 +18,8 @@ const HomePage: React.FC = () => {
           meticulously organized Markdown files.
         </p>
         <h4>
-          Currently compatable with version {/* appInfo.application.afmgVer */} of Azgaar&#39;s
-          Fantasy Map Generator
+          Currently compatable with version {app.application.afmgVer} of Azgaar&#39;s Fantasy Map
+          Generator and newer!
         </h4>
         <h2>What Terra-Logger Offers:</h2>
         <ul>

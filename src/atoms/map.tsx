@@ -1,0 +1,132 @@
+import { atom } from 'recoil';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const nullMap = {
+  cities: [],
+  countries: [],
+  cultures: [],
+  info: {
+    name: '',
+    seed: ''
+  },
+  nameBases: [],
+  notes: [],
+  npcs: [],
+  params: [],
+  religions: [],
+  settings: {
+    mapName: '',
+    distanceUnit: '',
+    distanceScale: '',
+    areaUnit: '',
+    heightUnit: '',
+    heightExponent: '',
+    temperatureScale: '',
+    barSize: '',
+    barLabel: '',
+    barBackOpacity: '',
+    barBackColor: '',
+    barPosX: '',
+    barPosY: '',
+    populationRate: '',
+    urbanization: '',
+    mapSize: '',
+    latitude0: '',
+    prec: '',
+    options: {
+      pinNotes: false,
+      winds: [],
+      temperatureEquator: 0,
+      temperatureNorthPole: 0,
+      temperatureSouthPole: 0,
+      stateLabelsMode: '',
+      year: 0,
+      era: '',
+      eraShort: '',
+      military: []
+    },
+    hideLabels: 0,
+    stylePreset: '',
+    rescaleLabels: 0,
+    urbanDensity: 0
+  },
+  SVG: '',
+  svgMod: ''
+};
+
+const createEmptyMap = (): MapInfo => {
+  return {
+    cities: [],
+    countries: [],
+    cultures: [],
+    info: {
+      name: '',
+      seed: '',
+      width: 0,
+      height: 0,
+      ID: ''
+    },
+    nameBases: [],
+    notes: [],
+    npcs: [],
+    params: [],
+    religions: [],
+    settings: {
+      mapName: '',
+      distanceUnit: '',
+      distanceScale: '',
+      areaUnit: '',
+      heightUnit: '',
+      heightExponent: '',
+      temperatureScale: '',
+      barSize: '',
+      barLabel: '',
+      barBackOpacity: '',
+      barPosX: '',
+      barPosY: '',
+      populationRate: '',
+      urbanization: '',
+      mapSize: '',
+      latitude0: '',
+      prec: '',
+      options: {
+        pinNotes: false,
+        winds: [],
+        temperatureEquator: 0,
+        temperatureNorthPole: 0,
+        temperatureSouthPole: 0,
+        stateLabelsMode: '',
+        year: 0,
+        era: '',
+        eraShort: '',
+        militaryTypes: [
+          {
+            icon: '',
+            name: '',
+            rural: 0,
+            urban: 0,
+            crew: 0,
+            power: 0,
+            type: '',
+            separate: 0
+          }
+        ]
+      },
+      hideLabels: 0,
+      stylePreset: '',
+      rescaleLabels: 0,
+      urbanDensity: 0
+    },
+    SVG: '',
+    svgMod: ''
+  };
+};
+
+const emptyMap: MapInfo = createEmptyMap();
+
+const mapAtom = atom({
+  key: 'Map',
+  default: emptyMap
+});
+
+export default mapAtom;

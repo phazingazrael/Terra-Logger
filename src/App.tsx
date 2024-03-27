@@ -1,114 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Package from '../package.json';
+import { useRecoilState } from 'recoil';
+import appAtom from './atoms/app';
+import mapAtom from './atoms/map';
 import MainLayout from './layouts/MainLayout';
-import { ErrorPage, HomePage, Overview, Settings, Tags } from './pages';
+import { CountriesPage, ErrorPage, HomePage, Overview, Settings, Tags } from './pages';
 
 import './App.css';
 
-import { AppInfo } from './definitions/AppInfo';
-import { MapInfo } from './definitions/MapInfo';
-
 const App = (): JSX.Element => {
+  const [map, setMap] = useRecoilState<MapInfo>(mapAtom);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [mapInfo, setMapInfo] = useState<MapInfo>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [appInfo, setAppInfo] = useState<AppInfo>();
+  const [app, setApp] = useRecoilState<AppInfo>(appAtom);
 
   useEffect(() => {
-    const nullMap = {
-      cities: [],
-      countries: [],
-      cultures: [],
-      info: {
-        name: '',
-        seed: ''
-      },
-      nameBases: [],
-      notes: [],
-      npcs: [],
-      religions: [],
-      settings: {
-        mapName: '',
-        distanceUnit: '',
-        distanceScale: '',
-        areaUnit: '',
-        heightUnit: '',
-        heightExponent: '',
-        temperatureScale: '',
-        barSize: '',
-        barLabel: '',
-        barBackOpacity: '',
-        barBackColor: '',
-        barPosX: '',
-        barPosY: '',
-        populationRate: '',
-        urbanization: '',
-        mapSize: '',
-        latitude0: '',
-        prec: '',
-        options: {
-          pinNotes: false,
-          showMFCGMap: false,
-          winds: [],
-          temperatureEquator: 0,
-          temperatureNorthPole: 0,
-          temperatureSouthPole: 0,
-          stateLabelsMode: '',
-          year: 0,
-          era: '',
-          eraShort: '',
-          military: []
-        },
-        hideLabels: 0,
-        stylePreset: '',
-        rescaleLabels: 0,
-        urbanDensity: 0
-      },
-      SVG: '',
-      svgMod: ''
-    };
-    const defaultApp = {
-      id: Package.version,
-      application: {
-        name: Package.name,
-        version: Package.version,
-        afmgVer: '1.95.05',
-        supportedLanguages: ['en'],
-        defaultLanguage: 'en',
-        onboarding: true,
-        description: Package.descriptionFull
-      },
-      userSettings: {
-        theme: 'light',
-        language: 'en',
-        showWelcomeMessage: true,
-        fontSize: 'medium',
-        exportOption: '',
-        screen: {
-          innerWidth: window.innerWidth,
-          innerHeight: window.innerHeight,
-          outerWidth: window.outerWidth,
-          outerHeight: window.outerHeight,
-          devicePixelRatio: window.devicePixelRatio
-        }
-      }
-    };
-    setMapInfo(nullMap);
-    setAppInfo(defaultApp);
+    const mapData: string | null = localStorage.getItem('Terra_Logger_Map');
+    console.log(mapData);
+    console.log(map);
+    if (mapData) {
+      console.log('Map data found');
+      const newMap: MapInfo = JSON.parse(mapData) as MapInfo;
+      setMap(newMap);
+    }
   }, []);
 
   const router = createBrowserRouter([
     {
       path: '/',
-      element: (
-        <MainLayout
-          mapInfo={mapInfo}
-          setMapInfo={setMapInfo}
-          appInfo={appInfo}
-          setAppInfo={setAppInfo}
-        />
-      ),
+      element: <MainLayout />,
       errorElement: <ErrorPage />,
       children: [
         {
@@ -129,6 +48,11 @@ const App = (): JSX.Element => {
         {
           path: 'settings',
           element: <Settings />,
+          errorElement: <ErrorPage />
+        },
+        {
+          path: 'countries',
+          element: <CountriesPage />,
           errorElement: <ErrorPage />
         }
       ]

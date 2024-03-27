@@ -1,26 +1,22 @@
 import { Alert, AlertTitle, Stack } from '@mui/material';
-import React, { Dispatch, SetStateAction } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { AppInfo } from '../../definitions/AppInfo';
-import { MapInfo } from '../../definitions/MapInfo';
-import ShowMessageDialog from '../ShowMessageDialog/ShowMessageDialog';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
+import ShowMessageDialog from '../ShowMessageDialog/ShowMessageDialog';
+import { mutateData } from './Mutate';
 import { parseLoadedData, parseLoadedResult } from './Parse';
 
-import { useNavigate } from 'react-router-dom';
+import appAtom from '../../atoms/app';
+import mapAtom from '../../atoms/map';
 
 import './UploadMap.css';
 
 function UploadMap() {
-  const [, setMapInfo, appInfo] =
-    useOutletContext<
-      [
-        MapInfo,
-        Dispatch<SetStateAction<MapInfo | undefined>>,
-        AppInfo,
-        Dispatch<SetStateAction<AppInfo | undefined>>
-      ]
-    >();
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const [map, setMap] = useRecoilState(mapAtom);
+  const [app, setApp] = useRecoilState(appAtom);
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const navigate = useNavigate();
 
@@ -31,7 +27,7 @@ function UploadMap() {
 
   const OLDEST_SUPPORTED_VERSION = 1.95;
   const afmgMin = '1.95';
-  const currentVersion = parseFloat(appInfo.application.afmgVer);
+  const currentVersion = parseFloat(app.application.afmgVer);
 
   const readMAP = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -41,11 +37,6 @@ function UploadMap() {
       fileReader.onloadend = function (e) {
         if (e.target) {
           const result = e.target.result;
-          // version logic here: check if version is supported
-          // if not supported, throw error
-          // if supported, load the map
-          // if error, display error
-          // needs to be implemented
           if (result instanceof ArrayBuffer) {
             const [mapFile, mapVersion] = parseLoadedResult(result);
             const isInvalid =
@@ -61,10 +52,22 @@ function UploadMap() {
 
             if (isUpdated) {
               console.log('updated');
-              // setLoading(true);
-              parseLoadedData(mapFile);
+              const parsedMap = parseLoadedData(mapFile);
+              mutateData(parsedMap);
               // need to redirect to the main page '/'
               navigateToMain();
+            }
+            if (isNewer) {
+              console.log('newer');
+              const parsedMap = parseLoadedData(mapFile);
+              mutateData(parsedMap);
+              ShowMessageDialog({
+                open: true,
+                handleClose: () => {},
+                handleConfirm: () => {},
+                message: `The map version you are trying to load (${mapVersion}) is newer than the current version.\nPlease load the file in the appropriate version`,
+                title: 'Newer file'
+              });
             }
             if (isInvalid) {
               console.log('invalid');
@@ -85,19 +88,6 @@ function UploadMap() {
                 handleConfirm: () => {},
                 message: `The map version you are trying to load (${mapVersion}) is too old and cannot be updated to the current version.`,
                 title: 'Ancient file'
-              });
-            }
-            if (isNewer) {
-              console.log('newer');
-              const parsedMap = parseLoadedData(mapFile);
-              console.log('parsed map?');
-              console.log(parsedMap);
-              ShowMessageDialog({
-                open: true,
-                handleClose: () => {},
-                handleConfirm: () => {},
-                message: `The map version you are trying to load (${mapVersion}) is newer than the current version.\nPlease load the file in the appropriate version`,
-                title: 'Newer file'
               });
             }
             if (isOutdated) {

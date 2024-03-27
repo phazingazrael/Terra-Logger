@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { getAllTags } from '../components/Tags/Tags';
+import { getAllTags } from '../../components/Tags/Tags';
 
 interface TagData {
   _id: string;
