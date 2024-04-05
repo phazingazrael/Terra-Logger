@@ -7,6 +7,13 @@
   width: 100%;
 }
 
+div#root.dark .custom-card {
+  background-color: transparent;
+  color: #ffffff;
+  /* text-shadow: #708090 0.1em 0.1em 0.2em; */
+  border-color: #708090;
+}
+
 .card-header {
   padding: 0 !important;
   display: block !important;
@@ -56,6 +63,12 @@
   margin-top: 0.25rem;
   padding: 0.5rem;
   outline: none;
+}
+
+div#root.dark .file-input input, div#root.dark .file-input select {
+  background-color: #2d3748;
+  border-color: #708090;
+  color: #fff;
 }
 
 .upload-button {

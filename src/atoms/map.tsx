@@ -7,7 +7,7 @@ const nullMap = {
   cultures: [],
   info: {
     name: '',
-    seed: ''
+    seed: '',
   },
   nameBases: [],
   notes: [],
@@ -43,15 +43,15 @@ const nullMap = {
       year: 0,
       era: '',
       eraShort: '',
-      military: []
+      military: [],
     },
     hideLabels: 0,
     stylePreset: '',
     rescaleLabels: 0,
-    urbanDensity: 0
+    urbanDensity: 0,
   },
   SVG: '',
-  svgMod: ''
+  svgMod: '',
 };
 
 const createEmptyMap = (): MapInfo => {
@@ -64,7 +64,7 @@ const createEmptyMap = (): MapInfo => {
       seed: '',
       width: 0,
       height: 0,
-      ID: ''
+      ID: '',
     },
     nameBases: [],
     notes: [],
@@ -108,17 +108,17 @@ const createEmptyMap = (): MapInfo => {
             crew: 0,
             power: 0,
             type: '',
-            separate: 0
-          }
-        ]
+            separate: 0,
+          },
+        ],
       },
       hideLabels: 0,
       stylePreset: '',
       rescaleLabels: 0,
-      urbanDensity: 0
+      urbanDensity: 0,
     },
     SVG: '',
-    svgMod: ''
+    svgMod: '',
   };
 };
 
@@ -126,7 +126,7 @@ const emptyMap: MapInfo = createEmptyMap();
 
 const mapAtom = atom({
   key: 'Map',
-  default: emptyMap
+  default: emptyMap,
 });
 
 export default mapAtom;

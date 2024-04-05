@@ -84,7 +84,7 @@ export const parseLoadedData = (data: string[]) => {
         seed: params[3],
         width: +params[4],
         height: +params[5],
-        ID: params[6]
+        ID: params[6],
       },
       nameBases: nameBases,
       notes: Notes,
@@ -119,15 +119,15 @@ export const parseLoadedData = (data: string[]) => {
           year: SetOpt.year,
           era: SetOpt.era,
           eraShort: SetOpt.eraShort,
-          militaryTypes: SetOpt.military as MilitaryType[]
+          militaryTypes: SetOpt.military as MilitaryType[],
         },
         hideLabels: +settings[21],
         stylePreset: settings[22],
         rescaleLabels: +settings[23],
-        urbanDensity: +settings[24]
+        urbanDensity: +settings[24],
       },
       SVG: SVG,
-      svgMod: ''
+      svgMod: '',
     };
   };
 

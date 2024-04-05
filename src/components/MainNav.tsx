@@ -9,7 +9,7 @@ import {
   TiDocumentText,
   TiGlobe,
   TiHome,
-  TiTags
+  TiTags,
 } from 'react-icons/ti';
 import { NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';

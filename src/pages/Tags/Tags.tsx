@@ -5,7 +5,7 @@ import {
   AccordionSummary,
   Button,
   Unstable_Grid2 as Grid,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -37,7 +37,7 @@ const filterObjectsByTag = (
     .flatMap((array) => array)
     .filter(
       (object: object & { tags?: TagItems[] }) =>
-        Array.isArray(object.tags) && object.tags.some((tag) => tag._id === tagId)
+        Array.isArray(object.tags) && object.tags.some((tag) => tag._id === tagId),
     );
 };
 
@@ -83,7 +83,7 @@ const TagType = (props: TagData) => {
         <AccordionDetails>
           <Grid container spacing={2}>
             {sortTagsList(Tags).map((Tag) =>
-              filterObjectsByTag(Tag._id).length !== 0 ? <TagItem {...Tag} key={Tag._id} /> : ''
+              filterObjectsByTag(Tag._id).length !== 0 ? <TagItem {...Tag} key={Tag._id} /> : '',
             )}
           </Grid>
         </AccordionDetails>

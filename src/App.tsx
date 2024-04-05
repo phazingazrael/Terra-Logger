@@ -33,30 +33,30 @@ const App = (): JSX.Element => {
         {
           path: '/',
           element: <HomePage />,
-          errorElement: <ErrorPage />
+          errorElement: <ErrorPage />,
         },
         {
           path: 'overview',
           element: <Overview />,
-          errorElement: <ErrorPage />
+          errorElement: <ErrorPage />,
         },
         {
           path: 'tags',
           element: <Tags />,
-          errorElement: <ErrorPage />
+          errorElement: <ErrorPage />,
         },
         {
           path: 'settings',
           element: <Settings />,
-          errorElement: <ErrorPage />
+          errorElement: <ErrorPage />,
         },
         {
           path: 'countries',
           element: <CountriesPage />,
-          errorElement: <ErrorPage />
-        }
-      ]
-    }
+          errorElement: <ErrorPage />,
+        },
+      ],
+    },
   ]);
 
   return (
