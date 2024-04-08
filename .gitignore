@@ -141,10 +141,10 @@ dist
 *.sln
 *.sw?
 .better-commits.json
-.eslintrc.cjs
 
 
 # Misc
 dist-ssr
 *.local
 terra-logger.code-workspace
+yarn.lock
