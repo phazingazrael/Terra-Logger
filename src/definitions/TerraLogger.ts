@@ -5,24 +5,29 @@
 // TL_Map Interfaces
 
 type TLCulture = {
-  urbanPop: string;
-  ruralPop: string;
-  tags: Tag[];
-  name: string;
-  base: number;
-  shield: string;
-  id: number;
-  color: string;
-  type: string;
-  expansionism: number;
-  origins: number[];
-  code: string;
   _id: string;
+  base: number;
+  code: string;
+  color: string;
+  expansionism: number;
+  id: number;
+  name: string;
+  origins: number[];
+  ruralPop: string;
+  shield: string;
+  tags: Tag[];
+  type: string;
+  urbanPop: string;
 };
 
 type TLDiplomacy = {
   name: string;
   status: string;
+  id: number;
+};
+
+type TLNeighbor = {
+  name: string;
   id: number;
   _id: string;
 };
@@ -39,7 +44,8 @@ type TLMilitaryType = {
 };
 
 type TLMilitary = {
-  i: number;
+  _id: string;
+  id: number;
   a: number;
   cell: number;
   x: number;
@@ -65,15 +71,20 @@ type TLNote = {
 };
 
 type TLReligion = {
+  _id: string;
+  code: string;
+  culture: {
+    name: string;
+    description: string;
+    _id: string;
+  };
+  deity: string;
+  description: string;
+  form: string;
   i: number;
   name: string;
-  culture: number;
-  type: string;
-  form: string;
-  deity: string;
   origins: number[];
-  code: string;
-  _id: string;
+  type: string;
 };
 
 type TLNameBase = {
@@ -82,7 +93,7 @@ type TLNameBase = {
   max: string;
   d: string;
   m: string;
-  b: string;
+  names: string[];
   credit: string;
   _id: string;
 };
@@ -114,13 +125,14 @@ type TLCity = {
     nameFull: string;
   };
   culture: {
-    origin: string;
+    name: string;
     description: string;
     _id: string;
   };
   features: string[];
   id: number;
   mapLink: string;
+  mapSeed: string;
   name: string;
   population: string;
   size: string;
@@ -149,7 +161,7 @@ type TLCountry = {
   };
   color: string;
   culture: {
-    origin: string;
+    name: string;
     description: string;
     _id: string;
   };
@@ -174,11 +186,7 @@ type TLCountry = {
     formName: string;
     leaders: string[];
     military: TLMilitary[];
-    neighbors: {
-      name: string;
-      id: number;
-      _id: string;
-    };
+    neighbors: TLNeighbor[];
     ruler: string[];
   };
   population: {
@@ -211,7 +219,6 @@ interface TLMapInfo {
   npcs: {
     name: string;
   }[];
-  params: string[];
   religions: TLReligion[];
   settings: {
     mapName: string;
@@ -226,7 +233,7 @@ interface TLMapInfo {
     barBackOpacity: string;
     barPosX: string;
     barPosY: string;
-    populationRate: string;
+    populationRate: number;
     urbanization: string;
     mapSize: string;
     latitude0: string;
