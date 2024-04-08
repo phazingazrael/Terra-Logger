@@ -44,7 +44,8 @@ div#root.dark .section {
   margin-bottom: 16px;
 }
 
-div#root.dark select, div#root.dark input[type='checkbox'] {
+div#root.dark select,
+div#root.dark input[type='checkbox'] {
   background-color: #2d3748;
   border-color: #708090;
   color: #fff;
