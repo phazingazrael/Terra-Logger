@@ -65,7 +65,8 @@ div#root.dark .custom-card {
   outline: none;
 }
 
-div#root.dark .file-input input, div#root.dark .file-input select {
+div#root.dark .file-input input,
+div#root.dark .file-input select {
   background-color: #2d3748;
   border-color: #708090;
   color: #fff;

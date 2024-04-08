@@ -16,7 +16,7 @@ import './UploadMap.css';
 
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [map] = useRecoilState(mapAtom);
+  const [map, setMap] = useRecoilState(mapAtom);
   const [app] = useRecoilState(appAtom);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -59,14 +59,14 @@ function UploadMap() {
     if (isUpdated) {
       console.log('updated');
       const parsedMap = parseLoadedData(mapFile);
-      mutateData(parsedMap);
+      saveMapData(parsedMap);
       // need to redirect to the main page '/'
       navigateToMain();
     }
     if (isNewer) {
       console.log('newer');
       const parsedMap = parseLoadedData(mapFile);
-      mutateData(parsedMap);
+      saveMapData(parsedMap);
       ShowMessageDialog({
         open: true,
         handleClose: () => {},
@@ -106,6 +106,13 @@ function UploadMap() {
       });
     }
     return null;
+  }
+
+  function saveMapData(data: MapInfo) {
+    let mapData = mutateData(data as unknown as MapInfo);
+    mapData = JSON.parse(JSON.stringify(mapData));
+    setMap(mapData as unknown as TLMapInfo);
+    console.log(mapData);
   }
 
   const readMAP = (e: React.ChangeEvent<HTMLInputElement>) => {

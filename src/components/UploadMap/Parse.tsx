@@ -1,3 +1,5 @@
+// Modified from the following page and lines.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/io/load.js#L149-L167
 export const parseLoadedResult = (result: ArrayBuffer): [mapFile: string[], mapVersion: number] => {
   const resultAsString = new TextDecoder().decode(result);
   const isDelimited = resultAsString.substring(0, 10).includes('|');
@@ -34,6 +36,7 @@ export const parseLoadedData = (data: string[]) => {
     }[];
   }
   // Parse Map Parameters //
+
   const params = data[0].split('|');
   const settings = data[1].split('|');
 
@@ -53,9 +56,16 @@ export const parseLoadedData = (data: string[]) => {
     namesDL.forEach((d, i) => {
       const e = d.split('|');
       if (!e.length) return;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const b = e[5].split(',').length > 2 || !nameBases[i] ? e[5] : nameBases[i].b;
-      nameBases[i] = { name: e[0], min: e[1], max: e[2], d: e[3], m: e[4], b };
+      nameBases[i] = {
+        b: b,
+        d: e[3],
+        i: e[6] as unknown as number,
+        m: e[4] as unknown as number,
+        max: e[2] as unknown as number,
+        name: e[0],
+        min: e[1] as unknown as number,
+      };
     });
   }
 
@@ -104,7 +114,7 @@ export const parseLoadedData = (data: string[]) => {
         barBackOpacity: settings[8],
         barPosX: settings[10],
         barPosY: settings[11],
-        populationRate: settings[12],
+        populationRate: parseInt(settings[12]),
         urbanization: settings[13],
         mapSize: settings[14],
         latitude0: settings[15],
