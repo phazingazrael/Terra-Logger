@@ -13,7 +13,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "licenses": "generate-license-file --input package.json --output ./out/licenses.txt --overwrite",
     "changelog": "auto-changelog --prepend -p",
@@ -29,7 +28,6 @@
     "lexical": "^0.14.3",
     "lorem-ipsum": "^2.0.8",
     "nanoid": "^5.0.7",
-    "prettier-plugin-organize-imports": "^3.2.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -46,16 +44,9 @@
     "@types/node": "^20.12.5",
     "@types/react": "^18.2.75",
     "@types/react-dom": "^18.2.24",
-
     "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "9.0.0",
-    "eslint-config-airbnb": "19.0.4",
-    "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-jsx-a11y": "6.8.0",
-    "eslint-plugin-react": "7.34.1",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
     "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "typescript": "^5.4.4",
     "vite": "^5.2.8"
   }
