@@ -214,12 +214,13 @@ const mutateData = (data: MapInfo) => {
   function findCultureByID(id: number) {
     return tempMap.cultures.find((culture) => culture.id === id);
   }
-  function findCountryByID(id: number) {
-    return tempMap.countries.find((culture) => culture.id === id);
-  }
-  function findCityByID(id: number) {
-    return tempMap.cities.find((city) => city.id === id);
-  }
+  // function findCountryByID(id: number) {
+  //   return tempMap.countries.find((culture) => culture.id === id);
+  // }
+  // function findCityByID(id: number) {
+  //   return tempMap.cities.find((city) => city.id === id);
+  // }
+
   // minmax from numberUtils.js from Azgaar.
   // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/utils/numberUtils.js#L10C1-L12C2
   function minmax(value: number, min: number, max: number) {

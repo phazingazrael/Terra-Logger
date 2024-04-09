@@ -16,7 +16,7 @@ import './UploadMap.css';
 
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [map, setMap] = useRecoilState(mapAtom);
+  const [, setMap] = useRecoilState(mapAtom);
   const [app] = useRecoilState(appAtom);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 

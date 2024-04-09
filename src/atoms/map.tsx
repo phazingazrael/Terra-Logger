@@ -31,7 +31,6 @@ const createEmptyMap = (): TLMapInfo => {
     nameBases: [],
     notes: [],
     npcs: [],
-    params: [],
     religions: [],
     settings: {
       mapName: '',

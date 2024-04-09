@@ -1,7 +1,8 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Chip, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import LinesEllipsis from 'react-lines-ellipsis';
 
-function CountryCard(props: Readonly<Country>) {
+function CountryCard(props: Readonly<TLCountry>) {
   const country = props;
   const ImageAlt = country.name + ' CoA' || 'Country Emblem';
   return (
@@ -10,7 +11,7 @@ function CountryCard(props: Readonly<Country>) {
         // sx={{ backgroundColor: rgbToRgba("#f5f5f5", 0.5)}}
         title={ImageAlt}
       >
-        <LazyLoadedSVG coa={country.coa} />
+
       </CardMedia>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -31,8 +32,8 @@ function CountryCard(props: Readonly<Country>) {
         <div className="tile-category">
           Tags:
           <br />
-          {country.tags.map((tag, index) => (
-            <Chip size="small" key={index} label={tag.Name} />
+          {country.tags.map((tag) => (
+            <Chip size="small" key={tag._id} label={tag.Name} />
           ))}
         </div>
         <Link to={'/view_country/' + country._id}>

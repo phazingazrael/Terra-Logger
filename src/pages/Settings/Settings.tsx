@@ -41,7 +41,7 @@ const createEmptyMap = (): MapInfo => ({
     barBackOpacity: '',
     barPosX: '',
     barPosY: '',
-    populationRate: '',
+    populationRate: 0,
     urbanization: '',
     mapSize: '',
     latitude0: '',
@@ -128,7 +128,7 @@ function Settings() {
                     color="error"
                     onClick={() => {
                       localStorage.removeItem('Terra_Logger_Map');
-                      setMap(emptyMap);
+                      setMap(emptyMap as unknown as TLMapInfo);
                     }}
                   >
                     <TiTrash />

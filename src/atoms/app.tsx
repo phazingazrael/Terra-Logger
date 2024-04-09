@@ -1,25 +1,15 @@
 import { atom } from 'recoil';
 import Package from '../../package.json';
 
-import { createRxDatabase } from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-
-const appDB = await createRxDatabase({
-  name: 'app',                   // <- name
-  storage: getRxStorageDexie(),       // <- RxStorage
-  multiInstance: true,                // <- multiInstance (optional, default: true)
-  eventReduce: true,                  // <- eventReduce (optional, default: false)
-});
-
 const localStorageEffect =
   (key: string) =>
-  ({ setSelf, onSet }) => {
+  ({ setSelf, onSet }:{ setSelf: any; onSet: any }) => {
     const savedValue = localStorage.getItem(key);
     if (savedValue != null) {
       setSelf(JSON.parse(savedValue));
     }
 
-    onSet((newValue, _, isReset) => {
+    onSet((newValue: any, _: any, isReset: any) => {
       isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
     });
   };

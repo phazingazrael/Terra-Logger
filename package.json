@@ -44,6 +44,7 @@
     "@types/node": "^20.12.5",
     "@types/react": "^18.2.75",
     "@types/react-dom": "^18.2.24",
+    "@types/react-lines-ellipsis": "^0.15.6",
     "@vitejs/plugin-react": "^4.2.1",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",

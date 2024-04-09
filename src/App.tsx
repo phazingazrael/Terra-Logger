@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import appAtom from './atoms/app';
 import mapAtom from './atoms/map';
 import MainLayout from './layouts/MainLayout';
 import { CountriesPage, ErrorPage, HomePage, Overview, Settings, Tags } from './pages';
@@ -10,8 +9,6 @@ import './App.css';
 
 const App = (): JSX.Element => {
   const [map, setMap] = useRecoilState<TLMapInfo>(mapAtom);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [app, setApp] = useRecoilState<AppInfo>(appAtom);
 
   useEffect(() => {
     function handleResize() {
