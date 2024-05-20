@@ -134,6 +134,8 @@ function UploadMap() {
       svgMod: svgMod,
     };
 
+    addDataToStore('maps', MapInf);
+
     cities.forEach((city) => {
       let obj = {
         mapId: mapId,
