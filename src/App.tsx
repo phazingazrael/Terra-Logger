@@ -11,7 +11,7 @@ import { CountriesPage, ErrorPage, HomePage, Overview, Settings, Tags } from './
 import './App.css';
 
 const App = (): JSX.Element => {
-  const [map, setMap] = useRecoilState<TLMapInfo>(mapAtom);
+  const [map] = useRecoilState<TLMapInfo>(mapAtom);
 
   useEffect(() => {
     function handleResize() {
