@@ -10,14 +10,14 @@ import mutateData from './Mutate.tsx';
 import { parseLoadedData, parseLoadedResult } from './Parse.tsx';
 
 import appAtom from '../../atoms/app.tsx';
-import mapAtom from '../../atoms/map.tsx';
+//import mapAtom from '../../atoms/map.tsx';
 
 import { addDataToStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
 
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [, setMap] = useRecoilState(mapAtom);
+  //const [, setMap] = useRecoilState(mapAtom);
   const [app] = useRecoilState(appAtom);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
