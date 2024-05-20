@@ -106,15 +106,6 @@ const App = (): JSX.Element => {
     initializeDatabase();
   }, []);
 
-  useEffect(() => {
-    const mapData: string | null = localStorage.getItem('Terra_Logger_Map');
-    if (mapData) {
-      console.log('Map data found');
-      const newMap: TLMapInfo = JSON.parse(mapData) as TLMapInfo;
-      setMap(newMap);
-    }
-  }, []);
-
   const router = createBrowserRouter([
     {
       path: '/',
