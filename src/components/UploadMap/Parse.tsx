@@ -37,7 +37,6 @@ export const parseLoadedData = (data: string[]) => {
   }
   // Parse Map Parameters //
 
-  const params = data[0].split('|');
   let params: string[],
     settings: string[],
     SetOpt: SettingsOpts,
