@@ -27,52 +27,6 @@ const mutateData = (data: MapInfo) => {
   function findCultureByID(id: number) {
     return tempMap.cultures.find((culture) => culture.id === id);
   }
-  // function findCountryByID(id: number) {
-  //   return tempMap.countries.find((culture) => culture.id === id);
-  // }
-  // function findCityByID(id: number) {
-  //   return tempMap.cities.find((city) => city.id === id);
-  // }
-
-
-  // mutate cultures
-  data.cultures.forEach((culture) => {
-    // define new culture object
-    const newCulture: TLCulture = createEmptyCulture();
-
-    // define urban and rural population values
-    const urbanValue = Math.round(
-      culture.urban * Number(populationRate) * Number(urbanization),
-    ).toLocaleString('en-US');
-
-    const ruralValue = Math.round(
-      culture.rural * Number(populationRate) * Number(urbanization),
-    ).toLocaleString('en-US');
-
-    // add culture data to new culture object
-    newCulture._id = nanoid();
-    newCulture.base = culture.base;
-    newCulture.code = culture.code;
-    newCulture.color = culture.color ?? '';
-    newCulture.expansionism = culture.expansionism;
-    newCulture.id = culture.i;
-    newCulture.name = culture.name;
-    newCulture.origins = culture.origins;
-    newCulture.ruralPop = ruralValue;
-    newCulture.shield = culture.shield;
-    newCulture.type = culture.type;
-    newCulture.tags.push({
-      _id: '3za6JbQcWqraNj0guhnqk',
-      Default: true,
-      Description:
-        "The customs, arts, social institutions, and achievements of the world's inhabitants.",
-      Name: 'Culture',
-      Type: 'WorldOverview',
-    });
-    newCulture.urbanPop = urbanValue;
-
-    tempMap.cultures.push(newCulture);
-  });
 
   // mutate cities
   data.cities.forEach((city) => {
@@ -80,15 +34,16 @@ const mutateData = (data: MapInfo) => {
     const newCity: TLCity = createEmptyCity();
 
     // add city data to new city object
-    newCity._id = nanoid();
-    newCity.capital = !!city.capital;
-    newCity.coa = city.coa;
-    newCity.country.id = city.state;
-    newCity.description = '';
-    newCity.id = city.i;
-    newCity.mapLink = city.link;
-    newCity.mapSeed = city.MFCG as unknown as string;
-    newCity.name = city.name;
+    newCity._id = nanoid(); // unique id
+    newCity.capital = !!city.capital; // if city is capital
+    newCity.coa = city.coa; // set CoA data
+    newCity.country.id = city.state; // set country id
+    newCity.description = ''; // no description
+    newCity.id = city.i; // set city id
+    newCity.mapLink = city.link; // set map link
+    newCity.mapSeed = city.MFCG as unknown as string; // set map seed
+    newCity.name = city.name; // set city name
+    // set population data
     newCity.population = Math.round(
       city.population * Number(populationRate) * Number(urbanization),
     ).toLocaleString('en-US');
@@ -292,6 +247,45 @@ const mutateData = (data: MapInfo) => {
     newCity.type = 'City - ' + newCity.size;
 
     tempMap.cities.push(newCity);
+  });
+
+  // mutate cultures
+  data.cultures.forEach((culture) => {
+    // define new culture object
+    const newCulture: TLCulture = createEmptyCulture();
+
+    // define urban and rural population values
+    const urbanValue = Math.round(
+      culture.urban * Number(populationRate) * Number(urbanization),
+    ).toLocaleString('en-US');
+
+    const ruralValue = Math.round(
+      culture.rural * Number(populationRate) * Number(urbanization),
+    ).toLocaleString('en-US');
+
+    // add culture data to new culture object
+    newCulture._id = nanoid();
+    newCulture.base = culture.base;
+    newCulture.code = culture.code;
+    newCulture.color = culture.color ?? '';
+    newCulture.expansionism = culture.expansionism;
+    newCulture.id = culture.i;
+    newCulture.name = culture.name;
+    newCulture.origins = culture.origins;
+    newCulture.ruralPop = ruralValue;
+    newCulture.shield = culture.shield;
+    newCulture.type = culture.type;
+    newCulture.tags.push({
+      _id: '3za6JbQcWqraNj0guhnqk',
+      Default: true,
+      Description:
+        "The customs, arts, social institutions, and achievements of the world's inhabitants.",
+      Name: 'Culture',
+      Type: 'WorldOverview',
+    });
+    newCulture.urbanPop = urbanValue;
+
+    tempMap.cultures.push(newCulture);
   });
 
   // mutate countries
