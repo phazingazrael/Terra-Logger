@@ -45,8 +45,8 @@ export const parseLoadedData = (data: string[]) => {
     Countries: Country[],
     Cities: City[],
     Religions: Religion[],
-    nameBases: NameBase[],
-    Pack: object[];
+    nameBases: NameBase[];
+    //Pack: object[];
 
   if (data[5]) {
     // Find the starting and ending indices of the SVG code
@@ -78,10 +78,10 @@ export const parseLoadedData = (data: string[]) => {
     Notes = JSON.parse(data[4]) as Note[];
   }
 
-  if (data[6]) {
-    //console.log(data[6]);
-    Pack = JSON.parse(data[6]);
-  }
+  // if (data[6]) {
+  //   //console.log(data[6]);
+  //   Pack = JSON.parse(data[6]);
+  // }
 
   if (data[7]) {
     //console.log(data[7]);
@@ -194,6 +194,7 @@ export const parseLoadedData = (data: string[]) => {
       SVG: SVG,
       svgMod: '',
     };
+
   };
 
   const parsedMap: MapInfo = createParsedMap();
