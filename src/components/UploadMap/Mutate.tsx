@@ -48,6 +48,7 @@ const mutateData = (data: MapInfo) => {
       city.population * Number(populationRate) * Number(urbanization),
     ).toLocaleString('en-US');
     newCity.size = ''; // population based
+    // set base tags
     newCity.tags.push({
       _id: '1IZunX27kOFP-ff4kpeLQ',
       Default: true,
@@ -55,27 +56,36 @@ const mutateData = (data: MapInfo) => {
       Name: 'City',
       Type: 'Locations',
     });
-    newCity.type = city.type;
+    newCity.type = city.type; // set city type
 
     // size & sizeRaw from editors.js from Azgaar.
     // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/ui/editors.js#L306C1-L307C51
     const sizeRaw = 2.13 * Math.pow((city.population * populationRate) / urbanDensity, 0.385);
     const size = minmax(Math.ceil(sizeRaw), 6, 100);
 
+    /**
+     * Set map seed and link based on the city data.
+     * If city.i is defined, use it to set the map seed and link.
+     * Otherwise, use the default map seed and link.
+     */
     if (city.i !== undefined) {
       const paddedId = city.i.toString().padStart(4, '0');
       if (city.link === undefined) {
+        // Use the city id as the map seed
         newCity.mapSeed = paddedId;
+        // Generate a new map link using the city data
         let seed = data.info.seed + paddedId;
         newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${city.population}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
       }
     } else {
-      newCity.mapSeed = '0000';
-      let seed = data.info.seed + '0000';
+      // Use the default map seed and link
+      const randomNumber = Math.floor(Math.random() * (9999 - 0 + 1)) + 0;
+      const paddedRandomNumber = randomNumber.toString().padStart(4, '0');
+      newCity.mapSeed = paddedRandomNumber;
+      let seed = data.info.seed + paddedRandomNumber;
       newCity.id = 0;
       newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${city.population}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
     }
-
     // city features switch
     switch (true) {
       case city.citadel === 1:
@@ -151,11 +161,13 @@ const mutateData = (data: MapInfo) => {
       };
     }
 
-    let populationvalue = parseInt(newCity.population);
+    let populationValue = parseInt(newCity.population);
 
     // city size switch
+    // city size data loosely interpreted from "Medieval Demographics Made Easy" by S. John Ross (last known email sjohn@cumberlandgames.com)
+    // plans to implement further data from the demographics based on https://www.rpglibrary.org/utils/meddemog/ by Brandon Blackmoor
     switch (true) {
-      case populationvalue < 21:
+      case populationValue < 21:
         newCity.size = 'Thorp';
         newCity.tags.push({
           _id: 'PUnkFCYQe8ELfmDdLnQ9j',
@@ -165,7 +177,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 21 && populationvalue < 60:
+      case populationValue > 21 && populationValue < 60:
         newCity.size = 'Hamlet';
         newCity.tags.push({
           _id: 'E8a2ZY3L1YMejfutQ-SSX',
@@ -175,7 +187,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 61 && populationvalue < 200:
+      case populationValue > 61 && populationValue < 200:
         newCity.size = 'Village';
         newCity.tags.push({
           _id: 'VdgVjS1N0DGbOe1rPAwOU',
@@ -185,7 +197,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 201 && populationvalue < 2000:
+      case populationValue > 201 && populationValue < 2000:
         newCity.size = 'Small Town';
         newCity.tags.push({
           _id: 'vlcbcyj423BS-BNTdD3ba',
@@ -196,7 +208,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 2001 && populationvalue < 5000:
+      case populationValue > 2001 && populationValue < 5000:
         newCity.size = 'Large Town';
         newCity.tags.push({
           _id: 'dA8K690AX0izlvr53lB6z',
@@ -207,7 +219,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 5001 && populationvalue < 10000:
+      case populationValue > 5001 && populationValue < 10000:
         newCity.size = 'Small City';
         newCity.tags.push({
           _id: 'fHIeZ74EP4dDv5kzIG2w4',
@@ -218,7 +230,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 10001 && populationvalue < 25000:
+      case populationValue > 10001 && populationValue < 25000:
         newCity.size = 'Large City';
         newCity.tags.push({
           _id: 'grZI1ZhAH783TnF3lgOqv',
@@ -228,7 +240,7 @@ const mutateData = (data: MapInfo) => {
           Type: 'Locations',
         });
         break;
-      case populationvalue > 25000:
+      case populationValue > 25000:
         newCity.size = 'Metropolis';
         newCity.tags.push({
           _id: '9Zx94oEYkSJ1gncBTfPMt',
@@ -431,7 +443,6 @@ const mutateData = (data: MapInfo) => {
     mapElement.remove();
   }
 
-
   // set svg data
   const svgData = data.SVG;
 
@@ -468,10 +479,10 @@ const mutateData = (data: MapInfo) => {
     }
   }
 
-  console.log(terraLoggerMap);
-  console.log(tempMap);
-  console.log(data);
-  return data;
+  //console.log(terraLoggerMap);
+  //console.log(tempMap);
+  //console.log(data);
+  return tempMap;
 };
 
 export default mutateData;
