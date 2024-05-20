@@ -10,7 +10,7 @@ export const initDatabase = async () => {
       // Create individual stores for each entity
       ['cities', 'countries', 'cultures', 'notes', 'npcs', 'religions', 'nameBases'].forEach(
         (entity) => {
-          const store = db.createObjectStore(entity, { keyPath: 'id' });
+          const store = db.createObjectStore(entity, { keyPath: '_id' });
           store.createIndex('mapIdIndex', 'mapId');
         },
       );
