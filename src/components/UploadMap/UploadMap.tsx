@@ -12,6 +12,7 @@ import { parseLoadedData, parseLoadedResult } from './Parse.tsx';
 import appAtom from '../../atoms/app.tsx';
 import mapAtom from '../../atoms/map.tsx';
 
+import { addDataToStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
 
 function UploadMap() {
@@ -110,9 +111,84 @@ function UploadMap() {
 
   function saveMapData(data: MapInfo) {
     let mapData = mutateData(data as unknown as MapInfo);
-    mapData = JSON.parse(JSON.stringify(mapData));
-    setMap(mapData as unknown as TLMapInfo);
-    console.log(mapData);
+    let {
+      cities,
+      countries,
+      cultures,
+      info,
+      nameBases,
+      notes,
+      npcs,
+      religions,
+      settings,
+      SVG,
+      svgMod,
+    } = mapData;
+    let mapId = mapData.info.name + '-' + mapData.info.ID;
+    let MapInf = {
+      id: mapId,
+      mapId: mapId,
+      info: info,
+      settings: settings,
+      SVG: SVG,
+      svgMod: svgMod,
+    };
+
+    cities.forEach((city) => {
+      let obj = {
+        mapId: mapId,
+        ...city,
+      };
+      addDataToStore('cities', obj);
+    });
+
+    countries.forEach((country) => {
+      let obj = {
+        mapId: mapId,
+        ...country,
+      };
+      addDataToStore('countries', obj);
+    });
+
+    cultures.forEach((culture) => {
+      let obj = {
+        mapId: mapId,
+        ...culture,
+      };
+      addDataToStore('cultures', obj);
+    });
+
+    nameBases.forEach((nameBase) => {
+      let obj = {
+        mapId: mapId,
+        ...nameBase,
+      };
+      addDataToStore('nameBases', obj);
+    });
+
+    notes.forEach((note) => {
+      let obj = {
+        mapId: mapId,
+        ...note,
+      };
+      addDataToStore('notes', obj);
+    });
+
+    npcs.forEach((npc) => {
+      let obj = {
+        mapId: mapId,
+        ...npc,
+      };
+      addDataToStore('npcs', obj);
+    });
+
+    religions.forEach((religion) => {
+      let obj = {
+        mapId: mapId,
+        ...religion,
+      };
+      addDataToStore('religions', obj);
+    });
   }
 
   const readMAP = (e: React.ChangeEvent<HTMLInputElement>) => {
