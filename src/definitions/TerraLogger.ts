@@ -258,3 +258,52 @@ interface TLMapInfo {
   SVG: string;
   svgMod: string;
 }
+
+interface MapInf {
+  id: string;
+  info: {
+    name: string;
+    seed: string;
+    width: number;
+    height: number;
+    ID: string;
+  };
+  mapId: string;
+  settings: {
+    mapName: string;
+    distanceUnit: string;
+    distanceScale: string;
+    areaUnit: string;
+    heightUnit: string;
+    heightExponent: string;
+    temperatureScale: string;
+    barSize: string;
+    barLabel: string;
+    barBackOpacity: string;
+    barPosX: string;
+    barPosY: string;
+    populationRate: number;
+    urbanization: string;
+    mapSize: string;
+    latitude0: string;
+    prec: string;
+    options: {
+      pinNotes: boolean;
+      winds: Array<number>;
+      temperatureEquator: number;
+      temperatureNorthPole: number;
+      temperatureSouthPole: number;
+      stateLabelsMode: string;
+      year: number;
+      era: string;
+      eraShort: string;
+      militaryTypes: TLMilitaryType[];
+    };
+    hideLabels: number;
+    stylePreset: string;
+    rescaleLabels: number;
+    urbanDensity: number;
+  };
+  SVG: string;
+  svgMod: string;
+}
