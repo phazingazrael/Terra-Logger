@@ -14,8 +14,6 @@ const mutateData = (data: MapInfo) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
 
   // Mutate Map Data to Terra-Logger Format //
-  const terraLoggerMap: TLMapInfo = createTerraLoggerMap();
-
   const tempMap: TLMapInfo = createTerraLoggerMap();
 
   // begin mutating data //
