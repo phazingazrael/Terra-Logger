@@ -38,22 +38,78 @@ export const parseLoadedData = (data: string[]) => {
   // Parse Map Parameters //
 
   const params = data[0].split('|');
-  const settings = data[1].split('|');
+  let params: string[],
+    settings: string[],
+    SetOpt: SettingsOpts,
+    Notes: Note[],
+    Cultures: Culture[],
+    Countries: Country[],
+    Cities: City[],
+    Religions: Religion[],
+    nameBases: NameBase[],
+    Pack: object[];
 
-  const SetOpt = JSON.parse(settings[19]) as SettingsOpts;
+  if (data[5]) {
+    // Find the starting and ending indices of the SVG code
+    const startIndex = data.findIndex((item) => item.startsWith('<svg'));
+    const endIndex = data.findIndex((item) => item.endsWith('</svg>'));
 
-  const Notes = JSON.parse(data[4]) as Note[];
+    // Merge the SVG code into data[5]
+    data[5] = data.slice(startIndex, endIndex + 1).join('');
+    data.splice(6, endIndex + 1);
+  }
 
-  const Cultures = JSON.parse(data[13]) as Culture[];
-  const Countries = JSON.parse(data[14]) as Country[];
-  const Cities = JSON.parse(data[15]) as City[];
-  const Religions = JSON.parse(data[29]) as Religion[];
+  // data.forEach((d, i) => {
+  //   console.log("Line "+i+": "+d)
+  // });
 
-  const nameBases = [] as NameBase[];
+  if (data[0]) {
+    //console.log(data[0]);
+    params = data[0].split('|');
+  }
 
-  if (data[31]) {
-    const namesDL = data[31].split('/');
-    namesDL.forEach((d, i) => {
+  if (data[1]) {
+    //console.log(data[1]);
+    settings = data[1].split('|');
+    SetOpt = JSON.parse(settings[19]) as SettingsOpts;
+  }
+
+  if (data[4]) {
+    //console.log(data[4]);
+    Notes = JSON.parse(data[4]) as Note[];
+  }
+
+  if (data[6]) {
+    //console.log(data[6]);
+    Pack = JSON.parse(data[6]);
+  }
+
+  if (data[7]) {
+    //console.log(data[7]);
+    Cultures = JSON.parse(data[7]) as Culture[];
+  }
+
+  if (data[8]) {
+    //console.log(data[8]);
+    Countries = JSON.parse(data[8]) as Country[];
+  }
+
+  if (data[9]) {
+    //console.log(data[9]);
+    Cities = JSON.parse(data[9]) as City[];
+  }
+
+  if (data[23]) {
+    //console.log(data[23]);
+    Religions = JSON.parse(data[23]) as Religion[];
+  }
+
+  nameBases = [] as NameBase[];
+
+  if (data[25]) {
+    //console.log(data[25]);
+    const names = data[25].split('/');
+    names.forEach((d, i) => {
       const e = d.split('|');
       if (!e.length) return;
       const b = e[5].split(',').length > 2 || !nameBases[i] ? e[5] : nameBases[i].b;
@@ -98,7 +154,7 @@ export const parseLoadedData = (data: string[]) => {
       },
       nameBases: nameBases,
       notes: Notes,
-      npcs: [{ name: 'test' }],
+      npcs: [],
       params: params,
       religions: Religions,
       settings: {
