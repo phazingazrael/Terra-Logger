@@ -2,18 +2,18 @@
 /* eslint-disable no-underscore-dangle */
 import { nanoid } from 'nanoid';
 
+import { createEmptyCity } from '../Util/mkEmpty/tlCity';
+import { createEmptyCountry } from '../Util/mkEmpty/tlCountry';
+import { createEmptyCulture } from '../Util/mkEmpty/tlCulture';
+import { createTerraLoggerMap } from '../Util/mkEmpty/tlMap';
+import { createEmptyReligion } from '../Util/mkEmpty/tlReligion';
+import { minmax } from '../Util/util';
 import nameBaseJSON from './NameBases.json';
 
 const mutateData = (data: MapInfo) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
 
   // Mutate Map Data to Terra-Logger Format //
-
-
-
-
-
-
   const terraLoggerMap: TLMapInfo = createTerraLoggerMap();
 
   const tempMap: TLMapInfo = createTerraLoggerMap();
