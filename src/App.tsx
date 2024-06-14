@@ -6,12 +6,22 @@ import mapAtom from './atoms/map';
 import { initDatabase } from './db/database';
 import { addDataToStore, getDataFromStore, getFullStore } from './db/interactions';
 import MainLayout from './layouts/MainLayout';
-import { CountriesPage, ErrorPage, HomePage, Overview, Settings, Tags } from './pages';
+import {
+  CitiesPage,
+  CountriesPage,
+  ErrorPage,
+  HomePage,
+  Overview,
+  ReligionsPage,
+  Settings,
+  Tags,
+  CityView
+} from './pages';
 
 import './App.css';
 
 const App = (): JSX.Element => {
-  const [map] = useRecoilState<TLMapInfo>(mapAtom);
+  const [map] = useRecoilState<MapInf>(mapAtom);
 
   useEffect(() => {
     function handleResize() {
