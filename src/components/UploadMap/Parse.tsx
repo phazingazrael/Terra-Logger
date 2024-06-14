@@ -128,12 +128,12 @@ export const parseLoadedData = (data: string[]) => {
   // svg stuff, do this last
   if (data[5]) {
     const svgString = data[5];
-
+    console.log(svgString);
     // Parse the SVG string
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
     const svgElement = svgDoc.documentElement;
-
+    console.log(svgElement);
     // Replace the original SVG string with the modified one
     SVG = new XMLSerializer().serializeToString(svgElement);
   }

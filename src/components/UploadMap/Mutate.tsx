@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { nanoid } from 'nanoid';
 
+import { handleSvgReplace } from '../Util/handleSvgReplace';
 import { createEmptyCity } from '../Util/mkEmpty/tlCity';
 import { createEmptyCountry } from '../Util/mkEmpty/tlCountry';
 import { createEmptyCulture } from '../Util/mkEmpty/tlCulture';
@@ -10,7 +11,7 @@ import { createEmptyReligion } from '../Util/mkEmpty/tlReligion';
 import { minmax } from '../Util/util';
 import nameBaseJSON from './NameBases.json';
 
-const mutateData = (data: MapInfo) => {
+const mutateData = async (data: MapInfo) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
 
   // Mutate Map Data to Terra-Logger Format //
@@ -55,6 +56,39 @@ const mutateData = (data: MapInfo) => {
       Type: 'Locations',
     });
     newCity.type = city.type; // set city type
+
+    //get coa svg from armoria and save to string inside of city data
+    let coa = city.coa;
+    let url;
+    // check if coa is an object and if it has more than 0 keys
+    if (typeof coa === 'object' && Object.keys(coa).length > 0) {
+      // if so, encode the coa data to a string and add it to the url
+      url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
+    } else {
+      // if not, add the default url
+      url = 'https://armoria.herokuapp.com/?size=500&format=svg';
+    }
+    const fetchSvg = async (URL: string) => {
+      try {
+        console.log(URL);
+        const response = await fetch(URL);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const svgText = await response.text();
+        if (!svgText) {
+          throw new Error('Response text is empty');
+        } else {
+          newCity.coaSVG = svgText;
+        }
+        console.log(response.status)
+        //console.log(svgText);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchSvg(url);
 
     // size & sizeRaw from editors.js from Azgaar.
     // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/ui/editors.js#L306C1-L307C51
@@ -436,50 +470,8 @@ const mutateData = (data: MapInfo) => {
 
   // mutate SVGs
 
-  const mapElement = document.getElementById('map');
-  if (mapElement) {
-    mapElement.remove();
-  }
+  handleSvgReplace({ svg: data.SVG, height: data.info.height, width: data.info.width });
 
-  // set svg data
-  const svgData = data.SVG;
-
-  // Get current window dimensions
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-
-  // Get original dimensions from data
-  const originalWidth = data.info.width;
-  const originalHeight = data.info.height;
-
-  // Insert 'modifiedSvgString' into the DOM or use it as needed
-  document.body.insertAdjacentHTML('afterbegin', svgData);
-
-  const mapItem = document.getElementById('map');
-  const viewBox = document.getElementById('viewbox');
-  if (mapItem) {
-    if (viewBox) {
-      mapItem.setAttribute('height', windowHeight as unknown as string);
-      mapItem.setAttribute('width', windowWidth as unknown as string);
-      viewBox.setAttribute('height', windowHeight as unknown as string);
-      viewBox.setAttribute('width', windowWidth as unknown as string);
-
-      if (innerHeight > originalHeight) {
-        viewBox.classList.add('svgScaledUp');
-      } else if (innerHeight < originalHeight) {
-        viewBox.classList.add('svgScaledDown');
-      }
-      // Apply transformation to scale content
-      viewBox.setAttribute(
-        'transform',
-        `scale(${innerWidth / originalWidth},${innerHeight / originalHeight})`,
-      );
-    }
-  }
-
-  //console.log(terraLoggerMap);
-  //console.log(tempMap);
-  //console.log(data);
   return tempMap;
 };
 

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-console */
 import { Alert, AlertTitle, Stack } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
@@ -10,15 +10,16 @@ import mutateData from './Mutate.tsx';
 import { parseLoadedData, parseLoadedResult } from './Parse.tsx';
 
 import appAtom from '../../atoms/app.tsx';
-//import mapAtom from '../../atoms/map.tsx';
+import mapAtom from '../../atoms/map.tsx';
 
-import { addDataToStore } from '../../db/interactions.tsx';
+import { addDataToStore, getFullStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
 
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  //const [, setMap] = useRecoilState(mapAtom);
-  const [app] = useRecoilState(appAtom);
+  const [app] = useRecoilState<AppInfo>(appAtom);
+  const [, setMap] = useRecoilState<MapInf>(mapAtom);
+  const [mapsList, setMapsList] = useState<MapInf[]>([]);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const navigate = useNavigate();
@@ -31,6 +32,15 @@ function UploadMap() {
     console.log('Navigating to main');
     navigate('/', { replace: true });
   };
+
+  useEffect(() => {
+    const fetchMapsList = async () => {
+      const mapsData = await getFullStore('maps');
+      setMapsList(mapsData);
+    };
+
+    fetchMapsList();
+  }, []);
 
   function processLoadedData(mapFile: string[], mapVersion: number) {
     const isInvalid = !mapFile || Number.isNaN(mapVersion) || mapFile?.length < 26 || !mapFile?.[5];
@@ -109,8 +119,8 @@ function UploadMap() {
     return null;
   }
 
-  function saveMapData(data: MapInfo) {
-    let mapData = mutateData(data as unknown as MapInfo);
+  async function saveMapData(data: MapInfo): Promise<void> {
+    let mapData = await mutateData(data as unknown as MapInfo);
     let {
       cities,
       countries,
@@ -134,7 +144,27 @@ function UploadMap() {
       svgMod: svgMod,
     };
 
+    // assign SVG elements to variables
+    const mapItem = document.getElementById('map');
+
+    if (mapItem) {
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(mapItem.outerHTML, 'image/svg+xml');
+      const svgElement = svgDoc.documentElement;
+
+      MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
+    }
+
     addDataToStore('maps', MapInf);
+    setMap(MapInf);
+
+    let Maps: MapInf[] = [];
+    if (mapsList.length > 0) {
+      mapsList.map((m) => Maps.push(m));
+    }
+    Maps.push(MapInf);
+
+    console.log(Maps);
 
     cities.forEach((city) => {
       let obj = {
