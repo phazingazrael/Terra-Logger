@@ -5,7 +5,7 @@ import { Link, useOutletContext } from 'react-router-dom';
 
 import { LazyLoadedSVG, rgbToRgba } from '../Util';
 
-import '../cards.css';
+import './cards.css';
 
 function CountryCard(props: Readonly<TLCountry>) {
   const country = props;
