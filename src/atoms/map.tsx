@@ -1,26 +1,8 @@
 import { atom } from 'recoil';
 
-const localStorageEffect =
-  (key: string) =>
-  ({ setSelf, onSet }: { setSelf: any; onSet: any }) => {
-    const savedValue = localStorage.getItem(key);
-    if (savedValue != null) {
-      setSelf(JSON.parse(savedValue));
-    }
-
-    onSet((newValue: any, _: any, isReset: any) => {
-      isReset ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(newValue));
-    });
-  };
-
-const localSaveData: string | null = localStorage.getItem('TL_map');
-const localSave: TLMapInfo | null = localSaveData ? (JSON.parse(localSaveData) as TLMapInfo) : null;
-
-const createEmptyMap = (): TLMapInfo => {
+const createEmptyMap = (): MapInf => {
   return {
-    cities: [],
-    countries: [],
-    cultures: [],
+    id: '',
     info: {
       name: '',
       seed: '',
@@ -28,10 +10,7 @@ const createEmptyMap = (): TLMapInfo => {
       height: 0,
       ID: '',
     },
-    nameBases: [],
-    notes: [],
-    npcs: [],
-    religions: [],
+    mapId: '',
     settings: {
       mapName: '',
       distanceUnit: '',
@@ -83,12 +62,10 @@ const createEmptyMap = (): TLMapInfo => {
   };
 };
 
-const emptyMap: TLMapInfo = createEmptyMap();
-const mapData: TLMapInfo = localSave ?? emptyMap;
+const mapData: MapInf = createEmptyMap();
 const mapAtom = atom({
   key: 'Map',
   default: mapData,
-  effects: [localStorageEffect('TL_map')],
 });
 
 export default mapAtom;

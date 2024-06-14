@@ -31,6 +31,23 @@ export async function getDataFromStore(storeName: string, key: any) {
 }
 
 /**
+ * Retrieve data from a store using a specified index.
+ *
+ * @param {string} storeName - The name of the store to retrieve data from.
+ * @param {any} key - The key of the data to retrieve.
+ * @param {string} index - The name of the index to use for the retrieval.
+ * @returns {Promise<any>} - A promise that resolves with the data from the store, or null if the data does not exist.
+ */
+export async function getDataFromStoreIndex(storeName: string, key: any, index: string) {
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, 'readonly');
+  const store = tx.objectStore(storeName);
+  const idx = store.index(index);
+  const data = await idx.get(key);
+  return data;
+}
+
+/**
  * Retrieve all data from a store.
  *
  * @param {string} storeName - The name of the store to retrieve data from.
@@ -83,11 +100,44 @@ export async function deleteDataFromStore(storeName: string, key: any) {
  * @param {IDBValidKey | IDBKeyRange} query - The query to use for the index.
  * @returns {Promise<any[]>} - A promise that resolves with an array of data from the store that matches the query.
  */
-export async function queryDataFromStore(storeName: string, indexName: string, query: IDBValidKey | IDBKeyRange) {
+export async function queryDataFromStore(
+  storeName: string,
+  indexName: string,
+  query: IDBValidKey | IDBKeyRange,
+) {
   const db = await initDatabase();
   const tx = db.transaction(storeName, 'readonly');
   const store = tx.objectStore(storeName);
   const index = store.index(indexName);
   const result = await index.getAll(query);
   return result;
+}
+
+/**
+ * Delete data from a store based on the mapId property.
+ *
+ * @param {string} storeName - The name of the store to delete data from.
+ * @param {string} indexName - The name of the index to use for the query.
+ * @param {string} key - The key of the data to delete.
+ * @returns {Promise<void>} - A promise that resolves when the data has been deleted from the store.
+ */
+export async function deleteDataFromStoreByMapId(
+  storeName: string,
+  indexName: string,
+  key: string,
+) {
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, 'readwrite');
+  const store = tx.objectStore(storeName);
+  const index = store.index(indexName);
+
+  // Get all objects with the specified mapId
+  const objectsToDelete = await index.getAll(IDBKeyRange.only(key));
+
+  // Delete each object
+  for (const object of objectsToDelete) {
+    store.delete(object._id); // Assuming each object has an 'id' property
+  }
+
+  await tx.done;
 }
