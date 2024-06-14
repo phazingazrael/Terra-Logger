@@ -1,0 +1,28 @@
+#MapsList input[type="checkbox"] {
+  z-index: 3;
+  position: relative;
+  float: right;
+  top: -12.8dvh;
+}
+
+#MapsList svg#map {
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  /* transform: scale(0.997); */
+}
+
+#MapsList g#viewbox {
+  width: auto;
+  height: auto;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.svg-container {
+  overflow: hidden;
+  height: 12.8dvh;
+}
