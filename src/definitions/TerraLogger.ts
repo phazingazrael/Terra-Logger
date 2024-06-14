@@ -4,6 +4,24 @@
 
 // TL_Map Interfaces
 
+type TLCoA = {
+  coa?: {
+    t1?: string;
+    division?: {
+      division?: string;
+      t?: string;
+      line?: string;
+    };
+    charges?: Array<{
+      charge?: string;
+      t?: string;
+      p?: string;
+      size?: number;
+    }>;
+    shield?: string;
+  };
+};
+
 type TLCulture = {
   _id: string;
   base: number;
@@ -116,6 +134,7 @@ type TLCity = {
     }[];
     shield: string;
   };
+  coaSVG: string;
   country: {
     _id: string;
     govForm: string;
@@ -145,19 +164,19 @@ type TLCountry = {
   _id: string;
   cities: TLCity[];
   coa?: {
-    t1: string;
-    division: {
+    t1?: string;
+    division?: {
       division: string;
       t: string;
       line: string;
     };
-    charges: {
+    charges?: {
       charge: string;
       t: string;
       p: string;
       size: number;
     }[];
-    shield: string;
+    shield?: string;
   };
   color: string;
   culture: {
