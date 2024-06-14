@@ -18,6 +18,7 @@ export const createEmptyCity = (): TLCity => ({
     ],
     shield: '',
   },
+  coaSVG:'',
   country: {
     _id: '',
     govForm: '',
