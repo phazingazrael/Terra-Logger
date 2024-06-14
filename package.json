@@ -28,6 +28,7 @@
     "idb": "^8.0.0",
     "lexical": "^0.15.0",
     "lorem-ipsum": "^2.0.8",
+    "module-alias": "^2.2.3",
     "nanoid": "^5.0.7",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -50,5 +51,13 @@
     "prettier-plugin-organize-imports": "^3.2.4",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"
+  },
+  "_moduleAliases": {
+    "@phaze/Cards": "src/components/Cards",
+    "@phaze/UploadMap": "src/components/UploadMap",
+    "@phaze/Util": "src/components/Util",
+    "@phaze/LazySvg": "src/components/lazyLoadedSVG",
+    "@phaze/MapManager": "src/components/MapManager",
+    "@phaze/Export": "src/components/export"
   }
 }

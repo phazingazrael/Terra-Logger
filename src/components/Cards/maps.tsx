@@ -1,10 +1,10 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
 
-import { /*LazyLoadedSVG,*/ rgbToRgba } from '../../';
+import { /*LazyLoadedSVG,*/ rgbToRgba } from '..';
 
 import React, { useEffect } from 'react';
-import '../cards.css';
+import './cards.css';
 
 const MapsCard: React.FC<MapsCardProps> = ({
   handleMapSelect,

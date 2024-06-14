@@ -2,9 +2,10 @@ import { Container, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import mapAtom from '../../atoms/map';
-import ReligionCard from '../../components/cards/religion/religion.jsx';
 import { initDatabase } from '../../db/database';
 import { queryDataFromStore } from '../../db/interactions';
+
+import { ReligionCard } from '@phaze/Cards';
 
 function ReligionsPage() {
   const [map] = useRecoilState(mapAtom);

@@ -8,7 +8,7 @@ import mapLoadedAtom from '../../atoms/mapLoaded.tsx';
 import mapNameAtom from '../../atoms/mapName.tsx';
 import { deleteDataFromStore, getFullStore, queryDataFromStore } from '../../db/interactions.tsx';
 
-import MapsCard from '../cards/maps/maps.tsx';
+import MapsCard from '../Cards/maps.tsx';
 import './index.css';
 
 interface MapManagerProps {

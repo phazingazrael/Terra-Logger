@@ -2,9 +2,10 @@ import { Container, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import mapAtom from '../../atoms/map';
-import CountryCard from '../../components/cards/country/country.jsx';
 import { initDatabase } from '../../db/database';
 import { queryDataFromStore } from '../../db/interactions';
+
+import { CountryCard } from '@phaze/Cards';
 
 function CountriesPage() {
   const [map] = useRecoilState(mapAtom);

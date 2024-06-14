@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { Link, useOutletContext } from 'react-router-dom';
 
-import { LazyLoadedSVG, rgbToRgba } from '../../';
+import { LazyLoadedSVG, rgbToRgba } from '../';
 
-import '../cards.css';
+import './cards.css';
 
 function CityCard(props: Readonly<TLCity>) {
   const city = props;
