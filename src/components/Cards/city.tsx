@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { Link, useOutletContext } from 'react-router-dom';
 
-import { LazyLoadedSVG, rgbToRgba } from '../';
+import { rgbToRgba, LazyLoadedSVG } from '../Util';
 
 import './cards.css';
 

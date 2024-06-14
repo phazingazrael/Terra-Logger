@@ -12,7 +12,7 @@ import MapManager from '../../components/MapManager/index.tsx';
 import UploadMap from '../../components/UploadMap/UploadMap.tsx';
 
 function Settings() {
-  const [map, setMap] = useRecoilState(mapAtom);
+  const [map, ] = useRecoilState(mapAtom);
   const [app, setApp] = useRecoilState(appAtom);
   const { userSettings } = app;
   const [selectAllDefaults, setSelectAllDefaults] = useState(false);

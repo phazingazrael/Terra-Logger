@@ -26,27 +26,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     /* Other */
-    "baseUrl": "./",
-    "paths": {
-      "@phaze/Cards": [
-        "src/components/Cards"
-      ],
-      "@phaze/UploadMap": [
-        "src/components/UploadMap"
-      ],
-      "@phaze/Util": [
-        "src/components/Util"
-      ],
-      "@phaze/LazySvg": [
-        "src/components/lazyLoadedSVG"
-      ],
-      "@phaze/MapManager": [
-        "src/components/MapManager"
-      ],
-      "@phaze/Export": [
-        "src/components/export"
-      ]
-    }
+
   },
   "include": [
     "src"

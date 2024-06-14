@@ -1,6 +1,5 @@
 import { Button, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import mapAtom from '../../atoms/map.tsx';
@@ -8,7 +7,7 @@ import mapLoadedAtom from '../../atoms/mapLoaded.tsx';
 import mapNameAtom from '../../atoms/mapName.tsx';
 import { deleteDataFromStore, getFullStore, queryDataFromStore } from '../../db/interactions.tsx';
 
-import MapsCard from '../Cards/maps.tsx';
+import { MapsCard } from "../Cards";
 import './index.css';
 
 interface MapManagerProps {
@@ -16,7 +15,6 @@ interface MapManagerProps {
 }
 
 const MapManager: React.FC<MapManagerProps> = () => {
-  const navigate = useNavigate();
   const [map, setMap] = useRecoilState(mapAtom);
   const [mapsList, setMapsList] = useState<MapInf[]>([]);
   const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
@@ -27,8 +25,8 @@ const MapManager: React.FC<MapManagerProps> = () => {
   const [selectedNpcs, setSelectedNpcs] = useState<any[]>([]);
   const [selectedReligions, setSelectedReligions] = useState<any[]>([]);
   const [selectedNameBases, setSelectedNameBases] = useState<any[]>([]);
-  const [mapName, setMapName] = useRecoilState(mapNameAtom);
-  const [mapLoaded, setMapLoaded] = useRecoilState(mapLoadedAtom);
+  const [, setMapName] = useRecoilState(mapNameAtom);
+  const [, setMapLoaded] = useRecoilState(mapLoadedAtom);
 
   useEffect(() => {
     const fetchMapsList = async () => {

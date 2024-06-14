@@ -2,7 +2,7 @@ import { Container, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import mapAtom from '../../atoms/map';
-import { CityCard } from '@phaze/Cards';
+import { CityCard } from '../../components/Cards';
 import { initDatabase } from '../../db/database';
 import { queryDataFromStore } from '../../db/interactions';
 

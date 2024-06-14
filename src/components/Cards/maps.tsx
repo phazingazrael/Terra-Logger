@@ -1,7 +1,7 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
 
-import { /*LazyLoadedSVG,*/ rgbToRgba } from '..';
+import { rgbToRgba } from '../Util';
 
 import React, { useEffect } from 'react';
 import './cards.css';
@@ -26,36 +26,7 @@ const MapsCard: React.FC<MapsCardProps> = ({
     themeColor = theme.palette.primary.light;
   }
 
-  let mapsListing = document.getElementById('MapsList');
 
-  if (mapsListing) {
-    let mapsListSvg = mapsListing.getElementsByTagName('svg');
-    let mapsListViewboxes = mapsListing.getElementsByTagName('g');
-    let svgContainer = document.getElementsByClassName('svg-container');
-
-    let svgWidth = svgContainer.item(0)?.clientWidth;
-    let svgHeight = svgContainer.item(0)?.clientHeight;
-
-    if (mapsListSvg.length > 0) {
-      for (const svg of mapsListSvg) {
-        svg.removeAttribute('width');
-        svg.removeAttribute('height');
-        for (const viewbox of mapsListViewboxes) {
-          if (viewbox.id === 'viewbox') {
-            for (const viewbox of mapsListViewboxes) {
-              // viewbox.setAttribute(
-              //   'transform',
-              //   `scale(${svgWidth / info.width},${svgHeight / info.height})`,
-              // );
-              viewbox.removeAttribute('transform');
-              viewbox.removeAttribute('width');
-              viewbox.removeAttribute('height');
-            }
-          }
-        }
-      }
-    }
-  }
 
   useEffect(() => {
     if (mapId === id) {

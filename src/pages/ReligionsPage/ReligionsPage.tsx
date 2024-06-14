@@ -5,7 +5,7 @@ import mapAtom from '../../atoms/map';
 import { initDatabase } from '../../db/database';
 import { queryDataFromStore } from '../../db/interactions';
 
-import { ReligionCard } from '@phaze/Cards';
+import { ReligionCard } from '../../components/Cards';
 
 function ReligionsPage() {
   const [map] = useRecoilState(mapAtom);

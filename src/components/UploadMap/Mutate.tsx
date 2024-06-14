@@ -8,8 +8,9 @@ import { createEmptyCountry } from '../Util/mkEmpty/tlCountry';
 import { createEmptyCulture } from '../Util/mkEmpty/tlCulture';
 import { createTerraLoggerMap } from '../Util/mkEmpty/tlMap';
 import { createEmptyReligion } from '../Util/mkEmpty/tlReligion';
-import { minmax } from '../Util/util';
 import nameBaseJSON from './NameBases.json';
+
+import { minmax } from "../Util";
 
 const mutateData = async (data: MapInfo) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
