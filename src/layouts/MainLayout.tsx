@@ -1,12 +1,14 @@
 import { AppBar, Container, Grid, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import Icon from '../assets/icon.png';
 import appAtom from '../atoms/app.tsx';
 import Item from '../components/Item.tsx';
 import MainNav from '../components/MainNav.tsx';
+
+import { getFullStore } from '../db/interactions.tsx';
 
 import KuashanScript from '../assets/fonts/KaushanScript-Regular.ttf';
 
@@ -76,6 +78,8 @@ const dark = createTheme({
 });
 
 function MainLayout() {
+  const [mapsList, setMapsList] = useState<MapInf[]>([]);
+  const [Theme, setTheme] = useState({});
   const [appData] = useRecoilState(appAtom);
   const {
     userSettings: { theme },
@@ -90,12 +94,23 @@ function MainLayout() {
       if (theme === 'dark') {
         // Add class "dark" to the root element
         rootElement.classList.add('dark');
+        setTheme(dark);
       } else {
         // Remove class "dark" from the root element
         rootElement.classList.remove('dark');
+        setTheme(light);
       }
     }
   }, [theme]);
+
+  useEffect(() => {
+    const fetchMapsList = async () => {
+      const mapsData = await getFullStore('maps');
+      setMapsList(mapsData);
+    };
+
+    fetchMapsList();
+  }, []);
 
   return (
     <ThemeProvider theme={selectedTheme}>
@@ -121,13 +136,13 @@ function MainLayout() {
         <Grid container spacing={2}>
           <Grid item lg={3} md={2} xs={2}>
             <Item className="Navigation">
-              <MainNav />
+              <MainNav mapsList={mapsList} />
             </Item>
           </Grid>
           <Grid item lg={9} md={10} xs={10}>
             <Item className="Content" id="Content">
               <div className="contentBody">
-                <Outlet />
+                <Outlet context={Theme} />
               </div>
             </Item>
           </Grid>
