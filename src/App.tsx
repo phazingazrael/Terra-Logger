@@ -147,6 +147,22 @@ const App = (): JSX.Element => {
           element: <CountriesPage />,
           errorElement: <ErrorPage />,
         },
+        {
+          path: 'cities',
+          element: <CitiesPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: 'religions',
+          element: <ReligionsPage />,
+          errorElement: <ErrorPage />,
+        },
+        // view routes here
+        {
+          path: 'view_city/:_id',
+          element: <CityView />,
+          errorElement: <ErrorPage />,
+        }
       ],
     },
   ]);

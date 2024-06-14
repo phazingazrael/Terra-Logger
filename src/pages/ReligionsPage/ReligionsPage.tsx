@@ -2,15 +2,14 @@ import { Container, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import mapAtom from '../../atoms/map';
-import CountryCard from '../../components/cards/country/country.jsx';
+import ReligionCard from '../../components/cards/religion/religion.jsx';
 import { initDatabase } from '../../db/database';
 import { queryDataFromStore } from '../../db/interactions';
 
-function CountriesPage() {
+function ReligionsPage() {
   const [map] = useRecoilState(mapAtom);
-  const [countries, setCountries] = useState<TLCountry[]>([]);
+  const [religions, setReligions] = useState<TLReligion[]>([]);
   const { mapId } = map;
-  //console.log(map);
   useEffect(() => {
     const initializeDatabase = async () => {
       try {
@@ -27,26 +26,26 @@ function CountriesPage() {
   }, []);
 
   useEffect(() => {
-    const loadCountries = async () => {
-      const data = await queryDataFromStore('countries', 'mapIdIndex', mapId);
+    const loadReligions = async () => {
+      const data = await queryDataFromStore('religions', 'mapIdIndex', mapId);
       if (data) {
         console.log(data);
-        setCountries(data);
+        setReligions(data);
       }
     };
 
-    loadCountries();
+    loadReligions();
   }, []);
   return (
     <Container>
       <div className="contentSubHead">
-        <h3>Countries</h3>
+        <h3>Religions</h3>
       </div>
       <div className="contentSubBody">
         <Grid container spacing={2}>
-          {countries.map((entry) => (
+          {religions.map((entry) => (
             <Grid item xs={3} key={entry._id} id={entry._id}>
-              <CountryCard {...entry} />
+              <ReligionCard {...entry} />
             </Grid>
           ))}
         </Grid>
@@ -55,4 +54,4 @@ function CountriesPage() {
   );
 }
 
-export default CountriesPage;
+export default ReligionsPage;
