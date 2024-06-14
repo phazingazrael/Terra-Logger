@@ -1,82 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Button, Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material';
+import { Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { IconContext } from 'react-icons';
-import { TiTrash } from 'react-icons/ti';
 import { useRecoilState } from 'recoil';
 
 import './Settings.css';
-// import SettingsStyles from './Styles.tsx';
 
 import appAtom from '../../atoms/app.tsx';
 import mapAtom from '../../atoms/map.tsx';
+import MapManager from '../../components/MapManager/index.tsx';
 import UploadMap from '../../components/UploadMap/UploadMap.tsx';
-
-const createEmptyMap = (): MapInfo => ({
-  cities: [],
-  countries: [],
-  cultures: [],
-  info: {
-    name: '',
-    seed: '',
-    width: 0,
-    height: 0,
-    ID: '',
-  },
-  nameBases: [],
-  notes: [],
-  npcs: [],
-  params: [],
-  religions: [],
-  settings: {
-    mapName: '',
-    distanceUnit: '',
-    distanceScale: '',
-    areaUnit: '',
-    heightUnit: '',
-    heightExponent: '',
-    temperatureScale: '',
-    barSize: '',
-    barLabel: '',
-    barBackOpacity: '',
-    barPosX: '',
-    barPosY: '',
-    populationRate: 0,
-    urbanization: '',
-    mapSize: '',
-    latitude0: '',
-    prec: '',
-    options: {
-      pinNotes: false,
-      winds: [],
-      temperatureEquator: 0,
-      temperatureNorthPole: 0,
-      temperatureSouthPole: 0,
-      stateLabelsMode: '',
-      year: 0,
-      era: '',
-      eraShort: '',
-      militaryTypes: [
-        {
-          icon: '',
-          name: '',
-          rural: 0,
-          urban: 0,
-          crew: 0,
-          power: 0,
-          type: '',
-          separate: 0,
-        },
-      ],
-    },
-    hideLabels: 0,
-    stylePreset: '',
-    rescaleLabels: 0,
-    urbanDensity: 0,
-  },
-  SVG: '',
-  svgMod: '',
-});
 
 function Settings() {
   const [map, setMap] = useRecoilState(mapAtom);
@@ -109,8 +42,6 @@ function Settings() {
     setDefaults(updatedDefaults);
   };
 
-  const emptyMap: MapInfo = createEmptyMap();
-
   const IconStyles = useMemo(() => ({ size: '1.5rem' }), []);
 
   return (
@@ -122,18 +53,13 @@ function Settings() {
             <div className="section">
               <h4>Map Settings</h4>
               {map.settings.mapName !== '' ? (
-                <div>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      localStorage.removeItem('Terra_Logger_Map');
-                      setMap(emptyMap as unknown as TLMapInfo);
-                    }}
-                  >
-                    <TiTrash />
-                    Delete Map
-                  </Button>
+                <div className="sectionAlt">
+                  <label htmlFor="MapsList" style={{ marginRight: '10px' }}>
+                    Manage Loaded Maps
+                  </label>
+                  <span id="MapsList">
+                    <MapManager />
+                  </span>
                 </div>
               ) : (
                 <UploadMap />
