@@ -35,6 +35,16 @@ header {
   padding-left: 0px;
 }
 
+.Navigation .MuiAccordion-root {
+  background-color: rgba(0, 0, 0, 0);
+  box-shadow: none;
+  width: 100%;
+}
+
+.Navigation .MuiAccordionDetails-root {
+  padding-top: 0;
+}
+
 /* Content Styling */
 .Content {
   max-height: 75vh;
@@ -105,8 +115,7 @@ header {
 
 /* Dynamic screen size specific styles */
 /*-- Extra small devices (phones, 600px and down) --*/
-@media only screen and (max-width: 600px) {
-}
+@media only screen and (max-width: 600px) {}
 
 /*-- Small devices (portrait tablets and large phones, 600px and up) --*/
 @media only screen and (min-width: 601px) and (max-width: 768px) {
@@ -134,6 +143,7 @@ header {
   .Content {
     max-height: 75dvh;
   }
+
   .contentSubBody {
     max-height: 65vh;
   }
