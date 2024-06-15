@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { useMemo } from 'react';
 import { IconContext } from 'react-icons';
