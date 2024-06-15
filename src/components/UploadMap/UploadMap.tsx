@@ -9,9 +9,11 @@ import { toast } from 'react-toastify';
 
 import mutateData from './Mutate.tsx';
 import { parseLoadedData, parseLoadedResult } from './Parse.tsx';
+import BookLoader from '../Util/bookLoader.tsx'
 
 import appAtom from '../../atoms/app.tsx';
 import mapAtom from '../../atoms/map.tsx';
+import loadingAtom from '../../atoms/loading.tsx';
 
 import { addDataToStore, getFullStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
@@ -23,6 +25,7 @@ function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const [app] = useRecoilState<AppInfo>(appAtom);
   const [, setMap] = useRecoilState<MapInf>(mapAtom);
+  const [isLoading, setLoading] = useRecoilState(loadingAtom);
   const [mapsList, setMapsList] = useState<MapInf[]>([]);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -203,9 +206,12 @@ function UploadMap() {
       };
       addDataToStore('religions', obj);
     });
+
+    setLoading(false);
   }
 
   const readMAP = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
     if (e.target.files) {
       const file = e.target.files[0];
       const fileReader = new FileReader();
@@ -240,6 +246,11 @@ function UploadMap() {
     <div className="uploadForm">
       <div>
         <div className="custom-card" data-v0-t="card">
+        {isLoading? (
+        <div id="Loading" className="custom-loading">
+          <BookLoader/>
+        </div>
+      ) : null}
           <div className="card-header">
             <h5 className="card-title">
               Uh Oh, Looks like there isn&apos;t anything loaded, Want to load an exported map file?

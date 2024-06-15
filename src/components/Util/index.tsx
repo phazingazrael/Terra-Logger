@@ -2,6 +2,7 @@ export { default as rgbToRgba } from './rgb2rgba.tsx';
 export { minmax } from './minmax.tsx'
 export { handleSvgReplace } from './handleSvgReplace.tsx'
 export { default as LazyLoadedSVG } from './lazyLoadedSVG.tsx';
+export { default as BookLoader } from './bookLoader.tsx';
 
 /* make empty functions */
 export {createEmptyCity} from './mkEmpty/tlCity.tsx'

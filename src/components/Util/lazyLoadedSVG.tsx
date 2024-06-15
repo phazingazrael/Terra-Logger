@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
+import { customAlphabet } from 'nanoid';
 
 import PropTypes from 'prop-types';
 
 function LazyLoadedSVG(props: Readonly<TLCoA>) {
   const imgRef = useRef<HTMLImageElement>(null);
   const coa = props;
+
+  const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 
   useEffect(() => {
     const options = {
@@ -22,8 +25,8 @@ function LazyLoadedSVG(props: Readonly<TLCoA>) {
           // Check if coa is an object and not empty
           if (typeof coa === 'object' && Object.keys(coa).length > 0) {
             url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
-          } else {
-            url = 'https://armoria.herokuapp.com/?size=500&format=svg';
+          } else if (coa === undefined) {
+            url = `https://armoria.herokuapp.com/?size=500&format=svg&seed=${nanoid()}`;
           }
           if (imgRef.current) {
             imgRef.current.src = url;

@@ -11,7 +11,6 @@ const MapsCard: React.FC<MapsCardProps> = ({
   id,
   info,
   mapId,
-  svgMod,
 }) => {
   // console.log(id, info, mapId, settings, SVG, svgMod);
   const theme: any = useOutletContext();

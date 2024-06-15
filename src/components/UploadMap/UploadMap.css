@@ -144,3 +144,17 @@ div#root.dark .file-input select {
   margin-top: 0.5em;
   color: #cc0000; /* Dark red */
 }
+
+.uploadForm {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.custom-loading {
+  z-index: 1;
+  position: relative;
+  top: 58.5dvh;
+  background: rgba(0, 0, 0, 0.65);
+  margin-top: -64.5dvh;
+}

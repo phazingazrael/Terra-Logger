@@ -3,6 +3,7 @@ import { createTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { ToastContainer } from 'react-toastify';
 import Icon from '../assets/icon.png';
 import appAtom from '../atoms/app.tsx';
 import Item from '../components/Item.tsx';
@@ -147,6 +148,18 @@ function MainLayout() {
             </Item>
           </Grid>
         </Grid>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={10000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </Container>
     </ThemeProvider>
   );
