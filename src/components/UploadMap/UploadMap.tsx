@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import { Alert, AlertTitle, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
@@ -29,7 +29,7 @@ function UploadMap() {
   const [mapsList, setMapsList] = useState<MapInf[]>([]);
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const OLDEST_SUPPORTED_VERSION = 1.95;
   const afmgMin = '1.95';
