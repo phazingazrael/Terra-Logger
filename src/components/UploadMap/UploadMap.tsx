@@ -4,8 +4,9 @@ import { Alert, AlertTitle, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { toast } from 'react-toastify';
 
-import ShowMessageDialog from '../ShowMessageDialog/ShowMessageDialog.tsx';
+
 import mutateData from './Mutate.tsx';
 import { parseLoadedData, parseLoadedResult } from './Parse.tsx';
 
@@ -14,6 +15,9 @@ import mapAtom from '../../atoms/map.tsx';
 
 import { addDataToStore, getFullStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
+import 'react-toastify/dist/ReactToastify.css';
+;
+
 
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -67,54 +71,31 @@ function UploadMap() {
     mapVersion: number,
     mapFile: string[],
   ) {
-    if (isUpdated) {
+    const ToastSuccess = () => toast.success(" Map Loaded Successfully! \n Please wait for the map to be fully loaded. ");
+    const ToastInvalid = () => toast.error("Invalid map file. Please upload a valid map file.");
+    const ToastAncient = () => toast.error(`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`);
+
+    if (isNewer || isUpdated) {
       console.log('updated');
       const parsedMap = parseLoadedData(mapFile);
       saveMapData(parsedMap);
       // need to redirect to the main page '/'
-      navigateToMain();
-    }
-    if (isNewer) {
-      console.log('newer');
-      const parsedMap = parseLoadedData(mapFile);
-      saveMapData(parsedMap);
-      ShowMessageDialog({
-        open: true,
-        handleClose: () => {},
-        handleConfirm: () => {},
-        message: `The map version you are trying to load (${mapVersion}) is newer than the current version.\nPlease load the file in the appropriate version`,
-        title: 'Newer file',
-      });
+      ToastSuccess();
     }
     if (isInvalid) {
       console.log('invalid');
-      return ShowMessageDialog({
-        open: true,
-        handleClose: () => {},
-        handleConfirm: () => {},
-        message: 'The file does not look like a valid save file.\nPlease check the data format',
-        title: 'Invalid file',
-      });
+      ToastInvalid();
+      setLoading(false);
     }
     if (isAncient) {
       console.log('ancient');
-      return ShowMessageDialog({
-        open: true,
-        handleClose: () => {},
-        handleConfirm: () => {},
-        message: `The map version you are trying to load (${mapVersion}) is too old and cannot be updated to the current version.`,
-        title: 'Ancient file',
-      });
+      ToastAncient();
+      setLoading(false);
     }
     if (isOutdated) {
       console.log('outdated');
-      return ShowMessageDialog({
-        open: true,
-        handleClose: () => {},
-        handleConfirm: () => {},
-        message: `The map version (${mapVersion}) does not match the Generator version (${currentVersion}).\nThat is fine, however, as data still is able to be loaded without issue.`,
-        title: 'Outdated file',
-      });
+      ToastAncient();
+      setLoading(false);
     }
     return null;
   }
