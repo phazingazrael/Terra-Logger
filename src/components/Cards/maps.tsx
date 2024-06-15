@@ -39,7 +39,6 @@ const MapsCard: React.FC<MapsCardProps> = ({
         sx={{ backgroundColor: theme ? rgbToRgba(themeColor as string, 0.5 as number) : '' }}
         title={ImageAlt}
       >
-        <div className="svg-container" dangerouslySetInnerHTML={{ __html: svgMod }} />
         <input type="checkbox" onChange={() => handleMapSelect(id)} />
       </CardMedia>
       <CardContent>

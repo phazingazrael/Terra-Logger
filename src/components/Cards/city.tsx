@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { Link, useOutletContext } from 'react-router-dom';
 
-import { rgbToRgba, LazyLoadedSVG } from '../Util';
+import { rgbToRgba } from '../Util';
 
 import './cards.css';
 
@@ -26,22 +26,27 @@ function CityCard(props: Readonly<TLCity>) {
         sx={{ backgroundColor: theme ? rgbToRgba(themeColor as string, 0.5 as number) : '' }}
         title={ImageAlt}
       >
-        <LazyLoadedSVG {...(city.coa as TLCoA)} />
+        {/* <LazyLoadedSVG {...(city.coa as TLCoA)} /> */}
+        <div className="svg-container CoA" dangerouslySetInnerHTML={{__html: city.coaSVG}}></div>
       </CardMedia>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {city.name}
         </Typography>
+        {city.description !== '' && (
         <LinesEllipsis
-          text={city.description}
-          maxLine="2"
-          ellipsis="..."
-          trimRight
-          basedOn="letters"
-          id={'city.id-' + city._id}
-          className="description"
-          component="p"
-        />
+        text={city.description}
+        maxLine="2"
+        ellipsis="..."
+        trimRight
+        basedOn="letters"
+        id={'city.id-' + city._id}
+        className="description"
+        component="p"
+      />
+        )
+        }
+
       </CardContent>
       <CardActions className="tile-info">
         <div className="tile-category">

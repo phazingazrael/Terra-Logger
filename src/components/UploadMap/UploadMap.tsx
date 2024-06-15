@@ -15,16 +15,6 @@ import mapAtom from '../../atoms/map.tsx';
 import { addDataToStore, getFullStore } from '../../db/interactions.tsx';
 import './UploadMap.css';
 
-async function resolveSVGs(svgs: { _id: string, svg: Promise<string> }[]) {
-  const resolvedSVGs = await Promise.all(svgs.map(async (item) => ({
-    _id: item._id,
-    svg: await item.svg,
-  })))
-
-  return resolvedSVGs
-}
-
-
 function UploadMap() {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const [app] = useRecoilState<AppInfo>(appAtom);

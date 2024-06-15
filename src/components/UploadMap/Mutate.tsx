@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid'
 
 import { handleSvgReplace } from '../Util/handleSvgReplace';
 import { createEmptyCountry } from '../Util/mkEmpty/tlCountry';
@@ -10,6 +10,8 @@ import { createEmptyReligion } from '../Util/mkEmpty/tlReligion';
 import nameBaseJSON from './NameBases.json';
 
 import { minmax } from "../Util";
+
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 25);
 
 const mutateData = async (data: MapInfo) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
