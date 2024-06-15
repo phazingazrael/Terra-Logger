@@ -20,9 +20,8 @@ export const createEmptyCountry = (): TLCountry => ({
   },
   color: '',
   culture: {
-    name: '',
-    description: '',
     _id: '',
+    id:'',
   },
   description: '',
   economy: {
@@ -54,6 +53,6 @@ export const createEmptyCountry = (): TLCountry => ({
     urban: '',
   },
   tags: [],
-  type: [],
+  type: '',
   warCampaigns: [],
 });

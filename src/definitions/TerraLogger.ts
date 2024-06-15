@@ -92,9 +92,8 @@ type TLReligion = {
   _id: string;
   code: string;
   culture: {
-    name: string;
-    description: string;
     _id: string;
+    id: string;
   };
   deity: string;
   description: string;
@@ -144,8 +143,7 @@ type TLCity = {
     nameFull: string;
   };
   culture: {
-    name: string;
-    description: string;
+    id: string;
     _id: string;
   };
   features: string[];
@@ -180,9 +178,8 @@ type TLCountry = {
   };
   color: string;
   culture: {
-    name: string;
-    description: string;
     _id: string;
+    id: string;
   };
   description: string;
   economy: {
@@ -214,7 +211,7 @@ type TLCountry = {
     urban: string;
   };
   tags: Tag[];
-  type: string[];
+  type: string;
   warCampaigns: {
     title: string;
     start: number;

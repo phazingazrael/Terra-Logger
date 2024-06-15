@@ -11,11 +11,9 @@ const MapsCard: React.FC<MapsCardProps> = ({
   id,
   info,
   mapId,
-  settings,
-  SVG,
   svgMod,
 }) => {
-  console.log(id, info, mapId, settings, SVG, svgMod);
+  // console.log(id, info, mapId, settings, SVG, svgMod);
   const theme: any = useOutletContext();
 
   let themeColor = null;
@@ -30,7 +28,7 @@ const MapsCard: React.FC<MapsCardProps> = ({
 
   useEffect(() => {
     if (mapId === id) {
-      console.log('map loaded');
+      // console.log('map loaded');
     }
   });
 

@@ -3,8 +3,7 @@ export const createEmptyReligion = (): TLReligion => ({
   code: '',
   culture: {
     _id: '',
-    name: '',
-    description: '',
+    id:'',
   },
   deity: '',
   description: '',
