@@ -35,10 +35,10 @@ function UploadMap() {
   const afmgMin = '1.95';
   const currentVersion = parseFloat(app.application.afmgVer);
 
-  const navigateToMain = () => {
-    console.log('Navigating to main');
-    navigate('/', { replace: true });
-  };
+  // const navigateToMain = () => {
+  //   console.log('Navigating to main');
+  //   navigate('/', { replace: true });
+  // };
 
   useEffect(() => {
     const fetchMapsList = async () => {
