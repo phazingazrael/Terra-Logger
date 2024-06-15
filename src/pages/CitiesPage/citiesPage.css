@@ -1,0 +1,13 @@
+.citiesLoader {
+  min-height: 48.5dvh;
+  margin: 0 auto;
+  padding-top: 16dvh !important;
+  max-width: 150px;
+  min-width: 100px;
+}
+
+.citiesLoader h2 {
+  width: 100px;
+  overflow: hidden;
+  color: #8309AC;
+}
