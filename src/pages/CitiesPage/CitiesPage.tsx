@@ -33,8 +33,8 @@ function CitiesPage() {
 			} catch (error) {
 				console.error(error);
 			}
-			let countries = await getFullStore("countries");
-			let sortedCountries = [...countries].sort((a, b) =>
+			const countries = await getFullStore("countries");
+			const sortedCountries = [...countries].sort((a, b) =>
 				a.name > b.name ? 1 : -1,
 			);
 			setCountriesList(sortedCountries);
@@ -54,7 +54,7 @@ function CitiesPage() {
 		};
 
 		loadCities();
-	}, []);
+	}, [mapId]);
 
 	return (
 		<Container>

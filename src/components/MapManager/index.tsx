@@ -1,5 +1,5 @@
 import { Button, Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 import mapAtom from "../../atoms/map.tsx";
@@ -14,21 +14,17 @@ import {
 import "./index.css";
 import { MapsCard } from "../cards";
 
-interface MapManagerProps {
-	// Define any props that the map manager component needs
-}
-
-const MapManager: React.FC<MapManagerProps> = () => {
+const MapManager: React.FC = () => {
 	const [map, setMap] = useRecoilState(mapAtom);
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
-	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
-	const [selectedCities, setSelectedCities] = useState<any[]>([]);
-	const [selectedCountries, setSelectedCountries] = useState<any[]>([]);
-	const [selectedCultures, setSelectedCultures] = useState<any[]>([]);
-	const [selectedNotes, setSelectedNotes] = useState<any[]>([]);
+	const [selectedMaps, setSelectedMaps] = useState<any[]>([]);
+	const [selectedCities, setSelectedCities] = useState<TLCity[]>([]);
+	const [selectedCountries, setSelectedCountries] = useState<TLCountry[]>([]);
+	const [selectedCultures, setSelectedCultures] = useState<TLCulture[]>([]);
+	const [selectedNotes, setSelectedNotes] = useState<TLNote[]>([]);
 	const [selectedNpcs, setSelectedNpcs] = useState<any[]>([]);
-	const [selectedReligions, setSelectedReligions] = useState<any[]>([]);
-	const [selectedNameBases, setSelectedNameBases] = useState<any[]>([]);
+	const [selectedReligions, setSelectedReligions] = useState<TLReligion[]>([]);
+	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
 	const [, setMapName] = useRecoilState(mapNameAtom);
 	const [, setMapLoaded] = useRecoilState(mapLoadedAtom);
 
@@ -105,7 +101,7 @@ const MapManager: React.FC<MapManagerProps> = () => {
 	useEffect(() => {
 		const fetchObjectsList = async () => {
 			if (selectedMaps.length > 0) {
-				selectedMaps.forEach(async (map: any) => {
+				for (const map of selectedMaps) {
 					const cityObjs = await queryDataFromStore(
 						"cities",
 						"mapIdIndex",
@@ -149,7 +145,7 @@ const MapManager: React.FC<MapManagerProps> = () => {
 					setSelectedNpcs(npcObjs);
 					setSelectedReligions(religionObjs);
 					setSelectedNameBases(nameBaseObjs);
-				});
+				}
 			}
 		};
 
@@ -169,7 +165,7 @@ const MapManager: React.FC<MapManagerProps> = () => {
 	) => {
 		event.preventDefault();
 		const allPromises = selectedMaps.map(async (mapId) => {
-			console.log("========= Deleting Map: " + mapId);
+			console.log(`========= Deleting Map:  ${mapId} =========`);
 			console.log("========= Deleting Cities =========");
 			for (const city of selectedCities) {
 				console.log(city.name);
@@ -213,9 +209,7 @@ const MapManager: React.FC<MapManagerProps> = () => {
 			}
 
 			await deleteDataFromStore("maps", mapId);
-			console.log(
-				"========= Deleted Map: " + map.id + "(" + mapId + ") =========",
-			);
+			console.log(`========= Deleted Map: ${map.id} (${mapId}) =========`);
 		});
 
 		await Promise.all(allPromises);
