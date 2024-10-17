@@ -9,6 +9,7 @@ import { deleteDataFromStore, getFullStore, queryDataFromStore } from '../../db/
 
 import { MapsCard } from "../Cards";
 import './index.css';
+import { MapsCard } from "../cards";
 
 interface MapManagerProps {
   // Define any props that the map manager component needs
