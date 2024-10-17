@@ -1,4 +1,6 @@
-.search-filter-container {}
+.search-filter-container {
+  display: block;
+}
 
 .search-input {
   height: 2.5rem;
@@ -12,12 +14,15 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #6b7280; /* Equivalent to focus:ring-gray-500 */
-  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.5); /* Ring effect */
+  border-color: #6b7280;
+  /* Equivalent to focus:ring-gray-500 */
+  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.5);
+  /* Ring effect */
 }
 
 .search-input::placeholder {
-  color: #6b7280; /* Equivalent to text-muted-foreground */
+  color: #6b7280;
+  /* Equivalent to text-muted-foreground */
 }
 
 .search-input:disabled {

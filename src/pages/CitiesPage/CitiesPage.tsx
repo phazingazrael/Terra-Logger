@@ -91,7 +91,7 @@ function CitiesPage() {
 						}
 					>
 						{cities.map((entry) => (
-							<Grid item xs={3} key={entry._id} id={entry._id}>
+							<Grid item xs={3} key={entry._id + entry.name} id={entry._id}>
 								<LazyCityCard {...entry} />
 							</Grid>
 						))}

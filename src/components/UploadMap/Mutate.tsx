@@ -7,7 +7,7 @@ import { createEmptyCountry } from "../Util/mkEmpty/tlCountry";
 import { createEmptyCulture } from "../Util/mkEmpty/tlCulture";
 import { createTerraLoggerMap } from "../Util/mkEmpty/tlMap";
 import { createEmptyReligion } from "../Util/mkEmpty/tlReligion";
-import nameBaseJSON from "./NameBases.json";
+//import nameBaseJSON from "./NameBases.json";
 
 import { minmax } from "../Util";
 
@@ -497,7 +497,8 @@ const mutateData = async (data: MapInfo) => {
 	}
 
 	//associate cities with countries
-	for (const city of data.cities as unknown as TLCity[]) {
+	// biome-ignore lint/complexity/noForEach: <explanation>
+	(data.cities as unknown as TLCity[]).forEach((city) => {
 		if (city.country) {
 			const tempCountry = tempMap.countries.find(
 				(c) => c.id === city.country.id,
@@ -524,7 +525,7 @@ const mutateData = async (data: MapInfo) => {
 				};
 			}
 		}
-	}
+	});
 
 	// mutate cultures
 	for (const culture of data.cultures as unknown as TLCulture[]) {

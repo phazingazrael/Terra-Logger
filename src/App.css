@@ -66,6 +66,7 @@ header {
 .MuiPaper-root {
   text-align: left !important;
 }
+
 /*-- MUI Override --*/
 
 /* Loading display Styling */
@@ -130,9 +131,11 @@ header {
 
 /* Dynamic screen size specific styles */
 /*-- Extra small devices (phones, 600px and down) --*/
-@media only screen and (max-width: 600px) {}
+/*-- not used, for now, needs implementation --*/
+/* @media only screen and (max-width: 600px) {} */
 
 /*-- Small devices (portrait tablets and large phones, 600px and up) --*/
+
 @media only screen and (min-width: 601px) and (max-width: 768px) {
   .Content {
     max-height: 65vh;

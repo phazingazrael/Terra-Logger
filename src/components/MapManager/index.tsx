@@ -22,7 +22,7 @@ const MapManager: React.FC = () => {
 	const [selectedCountries, setSelectedCountries] = useState<TLCountry[]>([]);
 	const [selectedCultures, setSelectedCultures] = useState<TLCulture[]>([]);
 	const [selectedNotes, setSelectedNotes] = useState<TLNote[]>([]);
-	const [selectedNpcs, setSelectedNpcs] = useState<string[]>([]);
+	// const [selectedNpcs, setSelectedNpcs] = useState<string[]>([]);
 	const [selectedReligions, setSelectedReligions] = useState<TLReligion[]>([]);
 	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
 	const [, setMapName] = useRecoilState(mapNameAtom);
@@ -118,7 +118,7 @@ const MapManager: React.FC = () => {
 						map,
 					);
 					const noteObjs = await queryDataFromStore("notes", "mapIdIndex", map);
-					const npcObjs = await queryDataFromStore("npcs", "mapIdIndex", map);
+					//const npcObjs = await queryDataFromStore("npcs", "mapIdIndex", map);
 					const religionObjs = await queryDataFromStore(
 						"religions",
 						"mapIdIndex",
@@ -134,7 +134,7 @@ const MapManager: React.FC = () => {
 					setSelectedCountries(countryObjs);
 					setSelectedCultures(cultureObjs);
 					setSelectedNotes(noteObjs);
-					setSelectedNpcs(npcObjs);
+					//setSelectedNpcs(npcObjs);
 					setSelectedReligions(religionObjs);
 					setSelectedNameBases(nameBaseObjs);
 				}
