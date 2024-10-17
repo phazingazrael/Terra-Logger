@@ -146,7 +146,6 @@ dist
 # Misc
 dist-ssr
 *.local
-terra-logger.code-workspace
 yarn.lock
 /public/TestMaps
 public/TestMaps/Bouzyia 2024-01-07-18-47.map
