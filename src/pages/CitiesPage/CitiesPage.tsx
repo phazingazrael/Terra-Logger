@@ -21,7 +21,9 @@ function CitiesPage() {
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
 	const { mapId } = map;
 
-	const LazyCityCard = React.lazy(() => import("../../components/cards/city"));
+	const LazyCityCard = React.lazy(
+		() => import("../../components/Cards/city.tsx"),
+	);
 
 	useEffect(() => {
 		const initializeDatabase = async () => {

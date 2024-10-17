@@ -12,7 +12,7 @@ import {
 } from "../../db/interactions.tsx";
 
 import "./index.css";
-import { MapsCard } from "../cards";
+import { MapsCard } from "../Cards/index.tsx";
 
 const MapManager: React.FC = () => {
 	const [map, setMap] = useRecoilState(mapAtom);
