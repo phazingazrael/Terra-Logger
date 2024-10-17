@@ -17,12 +17,12 @@ import { MapsCard } from "../Cards/index.tsx";
 const MapManager: React.FC = () => {
 	const [map, setMap] = useRecoilState(mapAtom);
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
-	const [selectedMaps, setSelectedMaps] = useState<any[]>([]);
+	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
 	const [selectedCities, setSelectedCities] = useState<TLCity[]>([]);
 	const [selectedCountries, setSelectedCountries] = useState<TLCountry[]>([]);
 	const [selectedCultures, setSelectedCultures] = useState<TLCulture[]>([]);
 	const [selectedNotes, setSelectedNotes] = useState<TLNote[]>([]);
-	const [selectedNpcs, setSelectedNpcs] = useState<any[]>([]);
+	const [selectedNpcs, setSelectedNpcs] = useState<string[]>([]);
 	const [selectedReligions, setSelectedReligions] = useState<TLReligion[]>([]);
 	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
 	const [, setMapName] = useRecoilState(mapNameAtom);
@@ -105,37 +105,29 @@ const MapManager: React.FC = () => {
 					const cityObjs = await queryDataFromStore(
 						"cities",
 						"mapIdIndex",
-						map.mapId,
+						map,
 					);
 					const countryObjs = await queryDataFromStore(
 						"countries",
 						"mapIdIndex",
-						map.mapId,
+						map,
 					);
 					const cultureObjs = await queryDataFromStore(
 						"cultures",
 						"mapIdIndex",
-						map.mapId,
+						map,
 					);
-					const noteObjs = await queryDataFromStore(
-						"notes",
-						"mapIdIndex",
-						map.mapId,
-					);
-					const npcObjs = await queryDataFromStore(
-						"npcs",
-						"mapIdIndex",
-						map.mapId,
-					);
+					const noteObjs = await queryDataFromStore("notes", "mapIdIndex", map);
+					const npcObjs = await queryDataFromStore("npcs", "mapIdIndex", map);
 					const religionObjs = await queryDataFromStore(
 						"religions",
 						"mapIdIndex",
-						map.mapId,
+						map,
 					);
 					const nameBaseObjs = await queryDataFromStore(
 						"nameBases",
 						"mapIdIndex",
-						map.mapId,
+						map,
 					);
 
 					setSelectedCities(cityObjs);
@@ -190,11 +182,12 @@ const MapManager: React.FC = () => {
 				await deleteDataFromStore("notes", note._id);
 			}
 
-			console.log("========= Deleting NPCs =========");
-			for (const npc of selectedNpcs) {
-				console.log(npc.name);
-				await deleteDataFromStore("npcs", npc._id);
-			}
+			// TODO: implement NPCs
+			// console.log("========= Deleting NPCs =========");
+			// for (const npc of selectedNpcs) {
+			// 	console.log(npc.name);
+			// 	await deleteDataFromStore("npcs", npc._id);
+			// }
 
 			console.log("========= Deleting Religions =========");
 			for (const religion of selectedReligions) {

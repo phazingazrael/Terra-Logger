@@ -82,7 +82,7 @@ const mutateData = async (data: MapInfo) => {
 				// if so, encode the coa data to a string and add it to the url
 				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
 			} else if (coa === undefined) {
-				console.log(coa, (city as any)._id);
+				console.log(coa, (city as unknown as TLCity)._id);
 				// if not, add the default url
 				url = "https://armoria.herokuapp.com/?size=500&format=svg";
 			}
@@ -115,7 +115,7 @@ const mutateData = async (data: MapInfo) => {
 				// Use the city id as the map seed
 				newCity.mapSeed = paddedId;
 				// Generate a new map link using the city data
-				let seed = data.info.seed + paddedId;
+				const seed = data.info.seed + paddedId;
 				newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${city.population}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
 			}
 		} else {
@@ -123,7 +123,7 @@ const mutateData = async (data: MapInfo) => {
 			const randomNumber = Math.floor(Math.random() * (9999 - 0 + 1)) + 0;
 			const paddedRandomNumber = randomNumber.toString().padStart(4, "0");
 			newCity.mapSeed = paddedRandomNumber;
-			let seed = data.info.seed + paddedRandomNumber;
+			const seed = data.info.seed + paddedRandomNumber;
 			newCity.id = 0;
 			newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${city.population}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
 		}
@@ -195,7 +195,7 @@ const mutateData = async (data: MapInfo) => {
 				});
 		}
 
-		let Culture = findCultureByID(city.culture);
+		const Culture = findCultureByID(city.culture);
 
 		if (Culture) {
 			newCity.culture = {
@@ -204,7 +204,9 @@ const mutateData = async (data: MapInfo) => {
 			};
 		}
 
-		let populationValue = parseInt(newCity.population.replace(/,/g, ""));
+		const populationValue = Number.parseInt(
+			newCity.population.replace(/,/g, ""),
+		);
 
 		// city size switch
 		// city size data loosely interpreted from "Medieval Demographics Made Easy" by S. John Ross (last known email sjohn@cumberlandgames.com)
@@ -302,13 +304,13 @@ const mutateData = async (data: MapInfo) => {
 				break;
 		}
 
-		newCity.type = "City - " + newCity.size;
+		newCity.type = `City - ${newCity.size}`;
 
 		tempMap.cities.push(newCity);
 	}
 
 	// mutate cultures
-	data.cultures.forEach((culture) => {
+	for (const culture of data.cultures) {
 		// define new culture object
 		const newCulture: TLCulture = createEmptyCulture();
 
@@ -344,10 +346,10 @@ const mutateData = async (data: MapInfo) => {
 		newCulture.urbanPop = urbanValue;
 
 		tempMap.cultures.push(newCulture);
-	});
+	}
 
 	// mutate countries
-	data.countries.forEach((country) => {
+	for (const country of data.countries) {
 		// define new country object
 		const newCountry: TLCountry = createEmptyCountry();
 
@@ -363,7 +365,7 @@ const mutateData = async (data: MapInfo) => {
 		newCountry.political.form = country.form;
 		newCountry.political.formName = country.formName;
 
-		let Culture = findCultureByID(country.culture);
+		const Culture = findCultureByID(country.culture);
 
 		if (Culture) {
 			newCountry.culture = {
@@ -373,7 +375,7 @@ const mutateData = async (data: MapInfo) => {
 		}
 
 		if (country.military) {
-			country.military.forEach((military) => {
+			for (const military of country.military) {
 				newCountry.political.military.push({
 					_id: nanoid(),
 					id: military.i,
@@ -394,30 +396,31 @@ const mutateData = async (data: MapInfo) => {
 					state: military.state,
 					icon: military.icon,
 				});
-			});
+			}
 		}
 		if (country.neighbors) {
-			country.neighbors.forEach((neighbor) => {
+			for (const neighbor of country.neighbors) {
 				newCountry.political.neighbors.push({
 					name:
 						data.countries[neighbor].fullName || data.countries[neighbor].name,
 					id: data.countries[neighbor].i,
 					_id: "",
 				});
-			});
+			}
 		}
 		if (country.diplomacy) {
-			country.diplomacy.map((Diplomat, index) => {
-				if (Diplomat === "Suspicion") {
-					Diplomat = "Suspicious";
+			country.diplomacy.forEach((diplomacyStatus, index) => {
+				let status = diplomacyStatus;
+				if (status === "Suspicion") {
+					status = "Suspicious";
 				}
 				if (index === country.i) {
-					Diplomat = "-";
+					status = "-";
 				}
 
 				const dipObj: TLDiplomacy = {
 					name: data.countries[index].fullName || data.countries[index].name,
-					status: Diplomat,
+					status,
 					id: data.countries[index].i,
 				};
 				newCountry.political.diplomacy.push(dipObj);
@@ -448,20 +451,20 @@ const mutateData = async (data: MapInfo) => {
 		newCountry.type = country.type;
 
 		tempMap.countries.push(newCountry);
-	});
+	}
 
 	// mutate name bases
-	nameBaseJSON.forEach((name: NameBase) => {
+	for (const name of data.nameBases) {
 		name._id = nanoid();
 		if (name.b !== undefined) {
-			let names = name.b.split(",") as unknown as string[];
+			const names = name.b.split(",") as unknown as string[];
 			name.names = names;
 			tempMap.nameBases.push(name as unknown as TLNameBase);
 		}
-	});
+	}
 
 	// mutate notes
-	data.notes.forEach((note) => {
+	for (const note of data.notes) {
 		const newNote: TLNote = {
 			_id: nanoid(),
 			legend: note.legend,
@@ -469,12 +472,12 @@ const mutateData = async (data: MapInfo) => {
 			name: note.name,
 		};
 		tempMap.notes.push(newNote);
-	});
+	}
 
 	// mutate religions - needs touching up.
-	data.religions.forEach((religion) => {
+	for (const religion of data.religions) {
 		const newReligion: TLReligion = createEmptyReligion();
-		let Culture = tempMap.cultures.find((c) => c.id === religion.culture);
+		const Culture = tempMap.cultures.find((c) => c.id === religion.culture);
 		newReligion._id = nanoid();
 		newReligion.code = religion.code;
 		if (Culture) {
@@ -491,10 +494,10 @@ const mutateData = async (data: MapInfo) => {
 		newReligion.type = religion.type;
 
 		tempMap.religions.push(newReligion);
-	});
+	}
 
 	//associate cities with countries
-	tempMap.cities.forEach(async (city) => {
+	for (const city of data.cities as unknown as TLCity[]) {
 		if (city.country) {
 			const tempCountry = tempMap.countries.find(
 				(c) => c.id === city.country.id,
@@ -521,26 +524,30 @@ const mutateData = async (data: MapInfo) => {
 				};
 			}
 		}
-	});
+	}
 
 	// mutate cultures
-	tempMap.cultures.forEach((culture) => {
-		let cultureCountries = tempMap.countries.filter(
+	for (const culture of data.cultures as unknown as TLCulture[]) {
+		const cultureCountries = tempMap.countries.filter(
 			(country) => country.culture.id === (culture.id as unknown as string),
 		);
 		let urbPop = 0;
 		let rurPop = 0;
 
-		cultureCountries.forEach((country) => {
-			let urbValue = parseInt(country.population.urban.replace(/,/g, ""));
-			let rurValue = parseInt(country.population.rural.replace(/,/g, ""));
+		for (const country of cultureCountries) {
+			const urbValue = Number.parseInt(
+				country.population.urban.replace(/,/g, ""),
+			);
+			const rurValue = Number.parseInt(
+				country.population.rural.replace(/,/g, ""),
+			);
 
 			urbPop += urbValue;
 			rurPop += rurValue;
-		});
+		}
 		culture.urbanPop = urbPop.toLocaleString("en-US");
 		culture.ruralPop = rurPop.toLocaleString("en-US");
-	});
+	}
 
 	handleSvgReplace({
 		svg: data.SVG,
