@@ -4,7 +4,7 @@
 
 - [x] Importing .map file from Azgaar's Fantasy Map Generator.
 - [x] Use the included SVG from the .map file to render the actual map as the program's background.
-- [x] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
+- [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
 - [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
 - [ ] Exporting of simple markdown files for imported data. (data export basics started)
 - [ ] new browser view to upended azgaar fantasy map website if user doesn't have an existing map.
