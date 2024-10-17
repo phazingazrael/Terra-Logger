@@ -14,7 +14,7 @@
     "dev": "tsc && vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "licenses": "generate-license-file --input package.json --output ./out/licenses.txt --overwrite",
+    "licenses": "generate-license-file --config ./license-config.json --input package.json --output ./out/licenses.txt --overwrite",
     "changelog": "auto-changelog --prepend -p",
     "format": "prettier --config .prettierrc . --write"
   },
