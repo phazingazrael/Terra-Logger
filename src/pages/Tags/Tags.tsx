@@ -4,7 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  Unstable_Grid2 as Grid,
+  Grid2 as Grid,
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -58,7 +58,7 @@ const Tags = () => {
   return (
     <>
       <h3>All Tags</h3>
-      <Grid container spacing={2}>
+      <Grid component="div" spacing={2}>
         {tagsList ? sortTagTypes(tagsList).map((Tag) => <TagType {...Tag} key={Tag._id} />) : ''}
       </Grid>
     </>
@@ -69,7 +69,7 @@ const TagType = (props: TagData) => {
   const { _id, Name, Type, Count, Tags } = props;
 
   return Tags.some((tag) => filterObjectsByTag(tag._id).length !== 0) ? (
-    <Grid xs={4} className={Type} id={_id}>
+    <Grid component="div" size={4} className={Type} id={_id}>
       <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -97,7 +97,7 @@ const TagType = (props: TagData) => {
 const TagItem = (props: TagItems) => {
   const { _id, Default, Description, Name, Type } = props;
   return (
-    <Grid xs={12}>
+    <Grid size={12}>
       <span>{Name}</span>
       <div className="tag-info">
         <span className="tag-posts">
