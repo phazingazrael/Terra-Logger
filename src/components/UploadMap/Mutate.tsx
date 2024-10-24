@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-import { customAlphabet } from "nanoid";
-
 import { handleSvgReplace } from "../Util/handleSvgReplace";
 import { createEmptyCountry } from "../Util/mkEmpty/tlCountry";
 import { createEmptyCulture } from "../Util/mkEmpty/tlCulture";
@@ -11,7 +9,7 @@ import { createEmptyReligion } from "../Util/mkEmpty/tlReligion";
 
 import { minmax } from "../Util";
 
-const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 25);
+import { v7 as uuid } from "uuid";
 
 const mutateData = async (data: MapInfo) => {
 	const { populationRate, urbanization, urbanDensity } = data.settings;
@@ -33,7 +31,7 @@ const mutateData = async (data: MapInfo) => {
 	for (const city of data.cities) {
 		// add city data to new city object
 		const newCity: TLCity = {
-			_id: nanoid(), // unique id,
+			_id: uuid(), // unique id,
 			capital: !!city.capital, // if city is capital
 			coa: city.coa, // set CoA data
 			coaSVG: "",
@@ -324,7 +322,7 @@ const mutateData = async (data: MapInfo) => {
 		).toLocaleString("en-US");
 
 		// add culture data to new culture object
-		newCulture._id = nanoid();
+		newCulture._id = uuid();
 		newCulture.base = culture.base;
 		newCulture.code = culture.code;
 		newCulture.color = culture.color ?? "";
@@ -354,7 +352,7 @@ const mutateData = async (data: MapInfo) => {
 		const newCountry: TLCountry = createEmptyCountry();
 
 		// add country data to new country object
-		newCountry._id = nanoid();
+		newCountry._id = uuid();
 		newCountry.id = country.i;
 		// newCountry.cities = []; //will be pushed to later.
 		newCountry.coa = country.coa;
@@ -377,7 +375,7 @@ const mutateData = async (data: MapInfo) => {
 		if (country.military) {
 			for (const military of country.military) {
 				newCountry.political.military.push({
-					_id: nanoid(),
+					_id: uuid(),
 					id: military.i,
 					a: military.a,
 					cell: military.cell,
@@ -455,7 +453,7 @@ const mutateData = async (data: MapInfo) => {
 
 	// mutate name bases
 	for (const name of data.nameBases) {
-		name._id = nanoid();
+		name._id = uuid();
 		if (name.b !== undefined) {
 			const names = name.b.split(",") as unknown as string[];
 			name.names = names;
@@ -466,7 +464,7 @@ const mutateData = async (data: MapInfo) => {
 	// mutate notes
 	for (const note of data.notes) {
 		const newNote: TLNote = {
-			_id: nanoid(),
+			_id: uuid(),
 			legend: note.legend,
 			id: note.id,
 			name: note.name,
@@ -478,7 +476,7 @@ const mutateData = async (data: MapInfo) => {
 	for (const religion of data.religions) {
 		const newReligion: TLReligion = createEmptyReligion();
 		const Culture = tempMap.cultures.find((c) => c.id === religion.culture);
-		newReligion._id = nanoid();
+		newReligion._id = uuid();
 		newReligion.code = religion.code;
 		if (Culture) {
 			newReligion.culture = {
