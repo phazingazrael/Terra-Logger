@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-underscore-dangle */
-import { customAlphabet } from "nanoid";
-
 import { handleSvgReplace } from "../Util/handleSvgReplace";
 import { createEmptyCountry } from "../Util/mkEmpty/tlCountry";
 import { createEmptyCulture } from "../Util/mkEmpty/tlCulture";
@@ -11,7 +7,7 @@ import { createEmptyReligion } from "../Util/mkEmpty/tlReligion";
 
 import { minmax } from "../Util";
 
-const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 25);
+import { v7 as uuidv7 } from "uuid";
 
 const mutateData = async (data: MapInfo) => {
 	const { populationRate, urbanization, urbanDensity } = data.settings;
@@ -33,7 +29,7 @@ const mutateData = async (data: MapInfo) => {
 	for (const city of data.cities) {
 		// add city data to new city object
 		const newCity: TLCity = {
-			_id: nanoid(), // unique id,
+			_id: uuidv7(), // unique id,
 			capital: !!city.capital, // if city is capital
 			coa: city.coa, // set CoA data
 			coaSVG: "",
@@ -59,8 +55,9 @@ const mutateData = async (data: MapInfo) => {
 			).toLocaleString("en-US"),
 			size: "",
 			tags: [
+				// set default city tags
 				{
-					_id: "1IZunX27kOFP-ff4kpeLQ",
+					_id: "0192be16-c07d-74dd-946d-07ba53af9bf0",
 					Default: true,
 					Description:
 						"A large and permanent human settlement within the world.",
@@ -132,7 +129,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.citadel === 1:
 				newCity.features.push("Citadel");
 				newCity.tags.push({
-					_id: "lTnDEGrVvLDS2feESzZPV",
+					_id: "0192be16-c07d-75c8-a7cb-e902f9288150",
 					Default: true,
 					Description:
 						"A fortress, typically on high ground, protecting or dominating a city.",
@@ -143,7 +140,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.plaza === 1:
 				newCity.features.push("Plaza");
 				newCity.tags.push({
-					_id: "4CoOX8cSxMIjSBOzlcWzT",
+					_id: "0192be16-c07d-75ce-b400-fb4205c032cb",
 					Default: true,
 					Description: "An open public square, especially in a city or town.",
 					Name: "Plaza",
@@ -153,7 +150,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.port === 1:
 				newCity.features.push("Port");
 				newCity.tags.push({
-					_id: "3OVpUylcH9JCUZMSX9nK4",
+					_id: "0192be16-c07d-775a-88b6-a04be82a4ef8",
 					Default: true,
 					Description:
 						"Locations designated for harboring and facilitating the arrival, departure, and storage of ships and vessels. Ports are key points of trade, transportation, and naval activities within the world, often situated along coastlines or major waterways.",
@@ -164,7 +161,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.shanty === 1:
 				newCity.features.push("Shanty Town(s)");
 				newCity.tags.push({
-					_id: "tgFP5-2syOFdgXGQS11hB",
+					_id: "0192be16-c07d-7dcb-8bc4-59b414181713",
 					Default: true,
 					Description:
 						"A deprived area on the outskirts of a town consisting of makeshift dwellings.",
@@ -175,7 +172,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.temple === 1:
 				newCity.features.push("Temple");
 				newCity.tags.push({
-					_id: "FeS5jSkiM7N6-yhVccuwZ",
+					_id: "0192be16-c07d-77cb-a8a9-5f2e7cca4ff5",
 					Default: true,
 					Description:
 						"A building dedicated to the worship of deities or a place of religious practices.",
@@ -186,7 +183,7 @@ const mutateData = async (data: MapInfo) => {
 			case city.walls === 1:
 				newCity.features.push("Walls");
 				newCity.tags.push({
-					_id: "7SfAGH2dfmCZVsaU8JNbt",
+					_id: "0192be16-c07d-7d9d-94e7-5c20fb29cdf4",
 					Default: true,
 					Description:
 						"Defensive barriers or fortifications enclosing a city or settlement.",
@@ -215,7 +212,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue < 21:
 				newCity.size = "Thorp";
 				newCity.tags.push({
-					_id: "PUnkFCYQe8ELfmDdLnQ9j",
+					_id: "0192be16-c07d-74f5-99b0-a740feb48fa8",
 					Default: true,
 					Description: "A small village or hamlet within the world.",
 					Name: "Thorp",
@@ -225,7 +222,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 21 && populationValue < 60:
 				newCity.size = "Hamlet";
 				newCity.tags.push({
-					_id: "E8a2ZY3L1YMejfutQ-SSX",
+					_id: "0192be16-c07d-75f5-8a3a-71493c6551c4",
 					Default: true,
 					Description:
 						"A small settlement, often smaller than a village, within the world.",
@@ -236,7 +233,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 61 && populationValue < 200:
 				newCity.size = "Village";
 				newCity.tags.push({
-					_id: "VdgVjS1N0DGbOe1rPAwOU",
+					_id: "0192be16-c07d-744f-8488-5243c3811a7e",
 					Default: true,
 					Description:
 						"A clustered human settlement larger than a hamlet but smaller than a town.",
@@ -247,7 +244,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 201 && populationValue < 2000:
 				newCity.size = "Small Town";
 				newCity.tags.push({
-					_id: "vlcbcyj423BS-BNTdD3ba",
+					_id: "0192be16-c07d-75f3-aef5-43d0a0d27233",
 					Default: true,
 					Description:
 						"A compact and organized human settlement, larger than a village but smaller than a large town.",
@@ -258,7 +255,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 2001 && populationValue < 5000:
 				newCity.size = "Large Town";
 				newCity.tags.push({
-					_id: "dA8K690AX0izlvr53lB6z",
+					_id: "0192be16-c07d-7a1e-94fc-485f70488182",
 					Default: true,
 					Description:
 						"A sizable and populated human settlement, larger than a small town but smaller than a city.",
@@ -269,7 +266,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 5001 && populationValue < 10000:
 				newCity.size = "Small City";
 				newCity.tags.push({
-					_id: "fHIeZ74EP4dDv5kzIG2w4",
+					_id: "0192be16-c07d-7e2c-88a4-f1c2fde568bc",
 					Default: true,
 					Description:
 						"A compact and urbanized human settlement, larger than a large town but smaller than a metropolis.",
@@ -280,7 +277,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 10001 && populationValue < 25000:
 				newCity.size = "Large City";
 				newCity.tags.push({
-					_id: "grZI1ZhAH783TnF3lgOqv",
+					_id: "0192be16-c07d-7b5e-abf6-d13114d5327b",
 					Default: true,
 					Description:
 						"A densely populated and highly developed urban center within the world.",
@@ -291,7 +288,7 @@ const mutateData = async (data: MapInfo) => {
 			case populationValue > 25000:
 				newCity.size = "Metropolis";
 				newCity.tags.push({
-					_id: "9Zx94oEYkSJ1gncBTfPMt",
+					_id: "0192be16-c07d-7739-8b58-d67e3913403a",
 					Default: true,
 					Description:
 						"An extremely large and highly populated urban center, often a major hub of commerce and culture.",
@@ -300,7 +297,7 @@ const mutateData = async (data: MapInfo) => {
 				});
 				break;
 			default:
-				newCity.size = "uknown";
+				newCity.size = "unknown";
 				break;
 		}
 
@@ -324,7 +321,7 @@ const mutateData = async (data: MapInfo) => {
 		).toLocaleString("en-US");
 
 		// add culture data to new culture object
-		newCulture._id = nanoid();
+		newCulture._id = uuidv7();
 		newCulture.base = culture.base;
 		newCulture.code = culture.code;
 		newCulture.color = culture.color ?? "";
@@ -336,7 +333,7 @@ const mutateData = async (data: MapInfo) => {
 		newCulture.shield = culture.shield;
 		newCulture.type = culture.type;
 		newCulture.tags.push({
-			_id: "3za6JbQcWqraNj0guhnqk",
+			_id: "0192be16-c07d-7897-8ee1-0e117f5d2b9a",
 			Default: true,
 			Description:
 				"The customs, arts, social institutions, and achievements of the world's inhabitants.",
@@ -354,7 +351,7 @@ const mutateData = async (data: MapInfo) => {
 		const newCountry: TLCountry = createEmptyCountry();
 
 		// add country data to new country object
-		newCountry._id = nanoid();
+		newCountry._id = uuidv7();
 		newCountry.id = country.i;
 		// newCountry.cities = []; //will be pushed to later.
 		newCountry.coa = country.coa;
@@ -377,7 +374,7 @@ const mutateData = async (data: MapInfo) => {
 		if (country.military) {
 			for (const military of country.military) {
 				newCountry.political.military.push({
-					_id: nanoid(),
+					_id: uuidv7(),
 					id: military.i,
 					a: military.a,
 					cell: military.cell,
@@ -441,7 +438,7 @@ const mutateData = async (data: MapInfo) => {
 			Math.round(ruralvalue + urbanvalue).toLocaleString("en-US") || "";
 
 		newCountry.tags.push({
-			_id: "TJaHO2uqBFZcoXWIfc5hJ",
+			_id: "0192be16-c07d-74ab-966e-5a5a5f43c2ff",
 			Default: true,
 			Description:
 				"A distinct and sovereign nation within the world, often with defined borders.",
@@ -455,7 +452,7 @@ const mutateData = async (data: MapInfo) => {
 
 	// mutate name bases
 	for (const name of data.nameBases) {
-		name._id = nanoid();
+		name._id = uuidv7();
 		if (name.b !== undefined) {
 			const names = name.b.split(",") as unknown as string[];
 			name.names = names;
@@ -466,7 +463,7 @@ const mutateData = async (data: MapInfo) => {
 	// mutate notes
 	for (const note of data.notes) {
 		const newNote: TLNote = {
-			_id: nanoid(),
+			_id: uuidv7(),
 			legend: note.legend,
 			id: note.id,
 			name: note.name,
@@ -478,7 +475,7 @@ const mutateData = async (data: MapInfo) => {
 	for (const religion of data.religions) {
 		const newReligion: TLReligion = createEmptyReligion();
 		const Culture = tempMap.cultures.find((c) => c.id === religion.culture);
-		newReligion._id = nanoid();
+		newReligion._id = uuidv7();
 		newReligion.code = religion.code;
 		if (Culture) {
 			newReligion.culture = {
