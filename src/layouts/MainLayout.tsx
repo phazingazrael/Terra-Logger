@@ -89,7 +89,7 @@ const dark = createTheme({
 
 function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
-	const [theTheme, setTheme] = useState({});
+	const [Theme, setTheme] = useState({});
 	const [appData] = useRecoilState(appAtom);
 	const {
 		userSettings: { theme },
@@ -158,7 +158,7 @@ function MainLayout() {
 					<Grid item lg={9} md={10} xs={10}>
 						<Item className="Content" id="Content">
 							<div className="contentBody">
-								<Outlet context={theTheme} />
+								<Outlet context={Theme} />
 							</div>
 						</Item>
 					</Grid>
