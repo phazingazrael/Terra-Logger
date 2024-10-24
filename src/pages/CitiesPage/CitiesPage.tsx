@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Container, Grid } from "@mui/material";
+import { Button, ButtonGroup, Container, Grid2 as Grid } from "@mui/material";
 import React, { useEffect, useState, Suspense } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
@@ -82,16 +82,21 @@ function CitiesPage() {
 				</div>
 			</div>
 			<div className="contentSubBody">
-				<Grid container spacing={2}>
+				<Grid container size={12} spacing={2}>
 					<Suspense
 						fallback={
-							<Grid item xs={12}>
+							<Grid component="div" size={12}>
 								<BookLoader />
 							</Grid>
 						}
 					>
 						{cities.map((entry) => (
-							<Grid item xs={3} key={entry._id + entry.name} id={entry._id}>
+							<Grid
+								component="div"
+								size={3}
+								key={entry._id + entry.name}
+								id={entry._id}
+							>
 								<LazyCityCard {...entry} />
 							</Grid>
 						))}

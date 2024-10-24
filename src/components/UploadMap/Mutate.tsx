@@ -21,8 +21,20 @@ const mutateData = async (data: MapInfo) => {
 	tempMap.settings = data.settings;
 	tempMap.SVG = data.SVG;
 
+	// cultures cache
+	const culturesCache = new Map<number, Culture>();
+
 	function findCultureByID(id: number) {
-		return data.cultures.find((culture) => culture.i === id);
+		if (culturesCache.has(id)) {
+			return culturesCache.get(id);
+		}
+
+		const culture = data.cultures.find((culture) => culture.i === id);
+		if (!culture) {
+			throw new Error(`Culture not found for ID ${id}`);
+		}
+		culturesCache.set(id, culture);
+		return culture;
 	}
 
 	// mutate cities
@@ -74,8 +86,8 @@ const mutateData = async (data: MapInfo) => {
 			const coa = city.coa;
 			let url: string | undefined;
 
-			// check if coa is an object and if it has more than 0 keys
 			if (typeof coa === "object" && Object.keys(coa).length > 0) {
+				// check if coa is an object and if it has more than 0 keys
 				// if so, encode the coa data to a string and add it to the url
 				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
 			} else if (coa === undefined) {
@@ -85,13 +97,38 @@ const mutateData = async (data: MapInfo) => {
 			}
 
 			if (url !== undefined) {
-				try {
-					const response = await fetch(url);
-					const svg = await response.text();
-					newCity.coaSVG = svg;
-				} catch (error) {
-					console.error("Error fetching SVG:", error);
+				const maxRetries = 3; // adjust this value as needed
+				const retryDelay = 500; // 500ms delay between retries
+				let retries = 0;
+
+				async function fetchSvg() {
+					try {
+						const response = await fetch(url ?? "");
+						if (response.ok) {
+							const svg = await response.text();
+							newCity.coaSVG = svg;
+						} else if (response.status >= 500) {
+							// server error, retry
+							if (retries < maxRetries) {
+								retries++;
+								await new Promise((resolve) => setTimeout(resolve, retryDelay));
+								await fetchSvg();
+							} else {
+								console.error(
+									`Failed to fetch SVG after ${maxRetries} retries`,
+								);
+							}
+						} else {
+							console.error(
+								`Failed to fetch SVG: ${response.status} ${response.statusText}`,
+							);
+						}
+					} catch (error) {
+						console.error("Error fetching SVG:", error);
+					}
 				}
+
+				await fetchSvg();
 			}
 		}
 
@@ -495,7 +532,7 @@ const mutateData = async (data: MapInfo) => {
 
 	//associate cities with countries
 	// biome-ignore lint/complexity/noForEach: <explanation>
-	(data.cities as unknown as TLCity[]).forEach((city) => {
+	(tempMap.cities as unknown as TLCity[]).forEach((city) => {
 		if (city.country) {
 			const tempCountry = tempMap.countries.find(
 				(c) => c.id === city.country.id,
@@ -525,7 +562,7 @@ const mutateData = async (data: MapInfo) => {
 	});
 
 	// mutate cultures
-	for (const culture of data.cultures as unknown as TLCulture[]) {
+	for (const culture of tempMap.cultures as unknown as TLCulture[]) {
 		const cultureCountries = tempMap.countries.filter(
 			(country) => country.culture.id === (culture.id as unknown as string),
 		);
