@@ -11,7 +11,6 @@ export const mutateCities = async (
 	urbanization: string,
 	urbanDensity: number,
 ) => {
-	const Cities: TLCity[] = [];
 	// mutate cities
 	for (const city of data.cities) {
 		// add city data to new city object
