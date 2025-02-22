@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState, useMemo } from "react";
-import { Container } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { IconContext } from "react-icons";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getDataFromStore } from "../../db/interactions";
 
 import "./city.css";
@@ -27,66 +27,119 @@ function CityView() {
 			<IconContext.Provider value={IconStyles}>
 				<div className="contentSubBody">
 					<div className="flex-container">
-						<section className="citySection">
-							<div className="container">
-								<div className="grid-container">
-									<div className="content">
-										<div className="text-content">
-											<h1 className="title">{city?.name}</h1>
-											<p className="location">{city?.country.name}</p>
-											<p className="population">
+						<div className="city-wiki">
+							<div className="city-header">
+								<div
+									className="city-image"
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
+								/>
+								<div className="city-info">
+									<Typography variant="h1">{city?.name}</Typography>
+									<div className="city-meta">
+										<p>
+											<Typography color="primary" component="h3">
+												Country: {city?.country.name}
+											</Typography>
+											<Typography color="primary" component="h3">
 												Population: {city?.population}
-											</p>
-										</div>
-									</div>
-									<div
-										className="image-container"
-										// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-										dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
-									/>
-								</div>
-							</div>
-						</section>
-						<section className="citySection">
-							<div className="container grid-layout">
-								<div className="text-content">
-									<h2 className="title">Description</h2>
-									<p className="description">{city?.description}</p>
-									<div className="features-culture">
-										<div className="features">
-											<h3 className="subtitle">Features</h3>
-											<ul className="list">
-												{city?.features.map((feature) => (
-													<li key={feature}>{feature}</li>
-												))}
-											</ul>
-										</div>
-										<div className="culture">
-											<h3 className="subtitle">Culture</h3>
-											<p>get culture information and render it here:</p>
-										</div>
-									</div>
-								</div>
-								<div className="text-content">
-									<h2 className="title">&nbsp;</h2>
-									<p className="description">{city?.description}</p>
-									<div className="features-culture">
-										<div className="features">
-											<h3 className="subtitle">Tags</h3>
-											<ul className="list">
-												{city?.features.map((feature) => (
-													<li key={feature}>{feature}</li>
-												))}
-											</ul>
-										</div>
-										<div className="culture">
-											<h3 className="subtitle">Map Link</h3>
-											<p>render Map link here</p>
-										</div>
+											</Typography>
+											<Typography color="primary" component="h3">
+												Size: {city?.size}
+											</Typography>
+											{city?.capital && (
+												<Typography
+													color="primary"
+													component="h3"
+													className="capital-badge"
+												>
+													Capital
+												</Typography>
+											)}
+										</p>
 									</div>
 								</div>
 							</div>
-						</section>
+
+							<main className="city-content">
+								<section className="description">
+									<Typography color="primary" component="h2">
+										Description
+									</Typography>
+									<Typography color="primary" component="p">
+										{city?.description && city?.description.length > 0
+											? city?.description
+											: `${city?.name} is a ${city?.size.toLowerCase()} in ${city?.country.name}.`}
+									</Typography>
+								</section>
+
+								<div className="content-grid">
+									<section className="features">
+										<Typography color="primary" component="h2">
+											Features
+										</Typography>
+										<Typography color="primary" component="ul">
+											{city?.features.map((feature, index) => (
+												// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+												<li key={index}>{feature}</li>
+											))}
+										</Typography>
+									</section>
+
+									<section className="tags">
+										<Typography color="primary" component="h2">
+											Tags
+										</Typography>
+										<div className="tag-list">
+											{city?.tags.map((tag) => (
+												<Typography
+													component="span"
+													color="primary"
+													key={tag._id}
+													className="tag"
+													title={tag.Description}
+												>
+													{tag.Name}
+												</Typography>
+											))}
+										</div>
+									</section>
+
+									<section className="map-link">
+										<Typography color="primary" component="h2">
+											Map
+										</Typography>
+										{city?.mapLink && (
+											<Link
+												to={city.mapLink}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												View City Map
+											</Link>
+										)}
+									</section>
+
+									<section className="additional-info">
+										<Typography color="primary" component="h2">
+											Additional Information
+										</Typography>
+										<Typography color="primary" component="p">
+											Map ID: {city?.mapId}
+										</Typography>
+										<Typography color="primary" component="p">
+											Map Seed: {city?.mapSeed}
+										</Typography>
+										<Typography color="primary" component="p">
+											City Type: {city?.type}
+										</Typography>
+										<Typography color="primary" component="p">
+											Culture ID: {city?.culture.id}
+										</Typography>
+									</section>
+								</div>
+							</main>
+						</div>
 					</div>
 				</div>
 			</IconContext.Provider>
