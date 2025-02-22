@@ -150,6 +150,7 @@ type TLCity = {
 	id: number;
 	mapLink: string;
 	mapSeed: string;
+	mapId?: string;
 	name: string;
 	population: string;
 	size: string;
