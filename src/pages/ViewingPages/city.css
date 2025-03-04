@@ -72,10 +72,11 @@
 }
 
 .city-wiki h2 {
-  font-size: 1.5em;
+  font-size: 1rem;
   margin-top: 0;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+  border-bottom: 1px solid #313131;
+  margin-bottom: 10px;
+  font-weight: 600;
 }
 
 ul {
@@ -110,6 +111,60 @@ ul {
   background-color: #0056b3;
 }
 
+/* individual information cards */
+/* Base container */
+.info {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Container for all detail rows */
+.detail-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual detail row */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* Allow wrapping on very small screens */
+  gap: 0.5rem;
+  /* Space between label and value when wrapped */
+}
+
+/* Label styling */
+.detail-label {
+  color: darkblue;
+  min-width: 80px;
+  border-bottom: 1px dashed;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+}
+
+/* Value styling */
+.detail-value {
+  font-weight: 400;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .detail-value {
+    text-align: left;
+    width: 100%;
+  }
+}
+
+/* individual information cards end */
+
 .additional-info p {
   margin: 5px 0;
 }
@@ -129,3 +184,6 @@ ul {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* temp */
