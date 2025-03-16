@@ -16,6 +16,7 @@ export const initDatabase = async () => {
 				"npcs",
 				"religions",
 				"nameBases",
+        "tags"
 			]) {
 				const store = db.createObjectStore(entity, { keyPath: "_id" });
 				store.createIndex("mapIdIndex", "mapId");
