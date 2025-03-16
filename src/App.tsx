@@ -20,6 +20,7 @@ import {
 	Settings,
 	Tags,
 	CityView,
+	CountryView,
 } from "./pages";
 
 import "./App.css";
@@ -170,6 +171,11 @@ const App = (): JSX.Element => {
 				{
 					path: "view_city/:_id",
 					element: <CityView />,
+					errorElement: <ErrorPage />,
+				},
+				{
+					path: "view_country/:_id",
+					element: <CountryView />,
 					errorElement: <ErrorPage />,
 				},
 			],

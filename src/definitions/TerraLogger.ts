@@ -177,6 +177,7 @@ type TLCountry = {
 		}[];
 		shield?: string;
 	};
+	coaSVG: string;
 	color: string;
 	culture: {
 		_id: string;

@@ -172,28 +172,32 @@ export const mutateCities = async (
 			newCity.population.replace(/,/g, ""),
 		);
 
-		/**
-		 * Set map seed and link based on the city data.
-		 * If city.i is defined, use it to set the map seed and link.
-		 * Otherwise, use the default map seed and link.
-		 */
+		// Check if city index is defined
 		if (city.i !== undefined) {
+			// Convert city index to a string and pad it with leading zeros to ensure it's 4 digits
 			const paddedId = city.i.toString().padStart(4, "0");
+			// Check if the city link is not already set
 			if (city.link === undefined) {
-				// Use the city id as the map seed
+				// Set the map seed for the city as the padded city index
 				newCity.mapSeed = paddedId;
-				// Generate a new map link using the city data
+				// Create a unique seed for the map by concatenating the global seed with the padded city index
 				const seed = data.info.seed + paddedId;
-				newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${newCity.population.replace(/,/g, "")}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
+				// Construct a map link using various city properties and the created seed
+				newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${newCity.population.replace(/,/g, "")}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=${city.port}`;
 			}
 		} else {
-			// Use the default map seed and link
+			// If city index is not defined, generate a random number to use as the map seed
 			const randomNumber = Math.floor(Math.random() * (9999 - 0 + 1)) + 0;
+			// Pad the random number with leading zeros to ensure it's 4 digits
 			const paddedRandomNumber = randomNumber.toString().padStart(4, "0");
+			// Set the map seed for the city as the padded random number
 			newCity.mapSeed = paddedRandomNumber;
+			// Create a unique seed for the map by concatenating the global seed with the padded random number
 			const seed = data.info.seed + paddedRandomNumber;
+			// Set the city ID to a default value of 0
 			newCity.id = 0;
-			newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&population=${populationValue}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=0`;
+			// Construct a map link using various city properties and the created seed
+			newCity.mapLink = `https://watabou.github.io/city-generator/?size=${size}&seed=${seed}&name=${newCity.name}&&population=${newCity.population.replace(/,/g, "")}&greens=0&citadel=${city.citadel}&urban_castle=${city.citadel}&plaza=${city.plaza}&temple=${city.temple}&walls=${city.walls}&shantytown=${city.shanty}&coast=${city.port}&river=${city.port}&hub=${city.capital}&sea=${city.port}`;
 		}
 
 		// city size switch
