@@ -2,25 +2,58 @@
 import { useEffect, useState, useMemo } from "react";
 import { Container, Typography } from "@mui/material";
 import { IconContext } from "react-icons";
-import { useParams, Link } from "react-router-dom";
-import { getDataFromStore } from "../../db/interactions";
+import { useParams } from "react-router-dom";
+import { getDataFromStore, getFullStore } from "../../db/interactions";
 
 import "./viewStyles.css";
 
-function CityView() {
-	const cityId = useParams();
-	const [city, setCity] = useState<TLCity>();
+function CountryView() {
+	const countryId = useParams();
+	const [country, setCountry] = useState<TLCountry>();
+	const [cities, setCities] = useState<TLCity[]>([]);
 
 	useEffect(() => {
-		if (cityId !== undefined) {
-			getDataFromStore("countries", cityId._id).then((data) => {
-				setCity(data as TLCity);
+		if (countryId !== undefined) {
+			getDataFromStore("countries", countryId._id).then((data) => {
+				setCountry(data as TLCountry);
 			});
 		}
-	}, [cityId]);
+	}, [countryId]);
 
+	useEffect(() => {
+		if (countryId !== undefined) {
+			const fullCities = [] as TLCity[];
+
+			getFullStore("cities").then((data) => {
+				if (data) {
+					for (const city of data) {
+						if (city.country._id === countryId._id) {
+							fullCities.push(city);
+						}
+						console.log(fullCities);
+					}
+					setCities(fullCities);
+				}
+			});
+		}
+	}, [countryId]);
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
-	console.log(JSON.stringify(city));
+	console.log(JSON.stringify(country));
+	console.log(JSON.stringify(cities));
+
+	const tagStyle = {
+		display: "inline-flex",
+		alignItems: "center",
+		backgroundColor: "#f0f0f0",
+		border: "1px solid #ddd",
+		borderRadius: "20px",
+		padding: "4px 12px",
+		margin: "3px",
+		fontSize: "0.85em",
+		color: "#444",
+		boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+		transition: "all 0.2s ease",
+	};
 
 	return (
 		<Container className="Settings">
@@ -32,22 +65,22 @@ function CityView() {
 								<div
 									className="city-image"
 									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
+									dangerouslySetInnerHTML={{ __html: country?.coaSVG ?? "" }}
 								/>
 								<div className="city-info">
-									<Typography variant="h1">{city?.name}</Typography>
+									<Typography variant="h1">{country?.name}</Typography>
 									<div className="city-meta">
 										<p>
 											<Typography color="primary" component="h3">
-												Country: {city?.country.name}
+												Country: {country?.nameFull}
 											</Typography>
 											<Typography color="primary" component="h3">
-												Population: {city?.population}
+												Population: {country?.population.total}
 											</Typography>
-											<Typography color="primary" component="h3">
-												Size: {city?.size}
+											{/* <Typography color="primary" component="h3">
+												Size: {country?.size}
 											</Typography>
-											{city?.capital && (
+											{country?.capital && (
 												<Typography
 													color="primary"
 													component="h3"
@@ -55,7 +88,7 @@ function CityView() {
 												>
 													Capital
 												</Typography>
-											)}
+											)} */}
 										</p>
 									</div>
 								</div>
@@ -67,38 +100,27 @@ function CityView() {
 										Description
 									</Typography>
 									<Typography color="primary" component="p">
-										{city?.description && city?.description.length > 0
-											? city?.description
-											: `${city?.name} is a country.`}
+										{country?.description && country?.description.length > 0
+											? country?.description
+											: `${country?.name} is a country.`}
 									</Typography>
 								</section>
 
 								<div className="content-grid">
 									<section className="features">
 										<Typography color="primary" component="h2">
-											Features
+											Cities
 										</Typography>
 										<Typography color="primary" component="p">
 											<div className="tag-list">
-												{city?.features.map((feature) => (
+												{cities?.map((city) => (
 													<span
-														key={feature}
+														key={city._id}
+														title={city.description}
 														className="tag"
-														style={{
-															display: "inline-flex",
-															alignItems: "center",
-															backgroundColor: "#f0f0f0",
-															border: "1px solid #ddd",
-															borderRadius: "20px",
-															padding: "4px 12px",
-															margin: "3px",
-															fontSize: "0.85em",
-															color: "#444",
-															boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-															transition: "all 0.2s ease",
-														}}
+														style={tagStyle}
 													>
-														{feature}
+														{city.name}
 													</span>
 												))}
 											</div>
@@ -110,45 +132,17 @@ function CityView() {
 											Tags
 										</Typography>
 										<div className="tag-list">
-											{city?.tags.map((tag) => (
+											{country?.tags.map((tag) => (
 												<span
 													key={tag._id}
 													className="tag"
 													title={tag.Description}
-													style={{
-														display: "inline-flex",
-														alignItems: "center",
-														backgroundColor: "#f0f0f0",
-														border: "1px solid #ddd",
-														borderRadius: "20px",
-														padding: "4px 12px",
-														margin: "3px",
-														fontSize: "0.85em",
-														color: "#444",
-														boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-														transition: "all 0.2s ease",
-														cursor: "help",
-													}}
+													style={tagStyle}
 												>
 													🏷️ {tag.Name}
 												</span>
 											))}
 										</div>
-									</section>
-
-									<section className="map-link">
-										<Typography color="primary" component="h2">
-											Map
-										</Typography>
-										{city?.mapLink && (
-											<Link
-												to={city?.mapLink}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												🗺️ View City Map
-											</Link>
-										)}
 									</section>
 
 									<section className="history">
@@ -588,7 +582,7 @@ function CityView() {
 													Gods, Demons & Cosmic Entities:
 												</Typography>
 												<span className="detail-value">
-													[Who is worshiped or feared in the city?]
+													[Who is worshiped or feared in the country?]
 												</span>
 											</div>
 											<div className="detail-container">
@@ -735,25 +729,27 @@ function CityView() {
 												<Typography component="span" className="detail-label">
 													Map ID:
 												</Typography>
-												<span className="detail-value">{city?.mapId}</span>
+												{/* <span className="detail-value">{country?.mapId}</span> */}
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Map Seed:
 												</Typography>
-												<span className="detail-value">{city?.mapSeed}</span>
+												{/* <span className="detail-value">{country?.mapSeed}</span> */}
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													City Type:
 												</Typography>
-												<span className="detail-value">{city?.type}</span>
+												<span className="detail-value">{country?.type}</span>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Culture ID:
 												</Typography>
-												<span className="detail-value">{city?.culture.id}</span>
+												<span className="detail-value">
+													{country?.culture.id}
+												</span>
 											</div>
 										</div>
 									</section>
@@ -767,4 +763,4 @@ function CityView() {
 	);
 }
 
-export default CityView;
+export default CountryView;

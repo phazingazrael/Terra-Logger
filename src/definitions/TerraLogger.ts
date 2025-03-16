@@ -150,6 +150,7 @@ type TLCity = {
 	id: number;
 	mapLink: string;
 	mapSeed: string;
+	mapId?: string;
 	name: string;
 	population: string;
 	size: string;
@@ -176,6 +177,7 @@ type TLCountry = {
 		}[];
 		shield?: string;
 	};
+	coaSVG: string;
 	color: string;
 	culture: {
 		_id: string;

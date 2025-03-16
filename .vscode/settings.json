@@ -19,5 +19,14 @@
 		"titleBar.inactiveForeground": "#e7e7e799"
 	},
 	"peacock.color": "#84288d",
-	"cSpell.words": ["Dexie", "editext", "npcs", "Objs", "toastify"]
+	"cSpell.words": [
+		"Dexie",
+		"editext",
+		"Elven",
+		"mecha",
+		"megacorps",
+		"npcs",
+		"Objs",
+		"toastify"
+	]
 }

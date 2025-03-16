@@ -1,7 +1,7 @@
 import {
 	AppBar,
 	Container,
-	Grid,
+	Grid2 as Grid,
 	ThemeProvider,
 	Toolbar,
 	Typography,
@@ -150,12 +150,12 @@ function MainLayout() {
 			</AppBar>
 			<Container maxWidth="xl" className="pageBody">
 				<Grid container spacing={2}>
-					<Grid item lg={3} md={2} xs={2}>
+					<Grid size={3}>
 						<Item className="Navigation">
 							<MainNav mapsList={mapsList} />
 						</Item>
 					</Grid>
-					<Grid item lg={9} md={10} xs={10}>
+					<Grid size={9}>
 						<Item className="Content" id="Content">
 							<div className="contentBody">
 								<Outlet context={Theme} />

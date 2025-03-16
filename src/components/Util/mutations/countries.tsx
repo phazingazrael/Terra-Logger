@@ -86,6 +86,36 @@ export const mutateCountries = async (
 			});
 		}
 
+		if (country.coa) {
+			// get coa svg from armoria and save to string inside of city data
+			const coa = country.coa;
+			let url: string | undefined;
+
+			// check if coa is an object and if it has more than 0 keys
+			if (typeof coa === "object" && Object.keys(coa).length > 0) {
+				// if so, encode the coa data to a string and add it to the url
+				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
+			} else if (coa === undefined) {
+				console.log(coa, (country as unknown as TLCity)._id);
+				// if not, add the default url
+				url = "https://armoria.herokuapp.com/?size=500&format=svg";
+			}
+
+			if (url !== undefined) {
+				try {
+					const response = await fetch(url);
+					const svg = await response.text();
+					if (svg.startsWith("<!DOCTYPE html>")) {
+						throw new Error("Received HTML error page");
+					}
+					newCountry.coaSVG = svg;
+					console.log(country.name, url);
+				} catch (error) {
+					console.error("Error fetching SVG:", error);
+				}
+			}
+		}
+
 		const urbanvalue = Math.round(
 			country.urban * Number(populationRate) * Number(urbanization),
 		);
