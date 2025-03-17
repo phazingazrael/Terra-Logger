@@ -1,4 +1,10 @@
-import { Button, ButtonGroup, Container, Grid2 as Grid } from "@mui/material";
+import {
+	Button,
+	ButtonGroup,
+	Container,
+	Chip,
+	Grid2 as Grid,
+} from "@mui/material";
 import React, { useEffect, useState, Suspense } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
@@ -13,12 +19,16 @@ type countriesList = {
 	name: string;
 	_id: string;
 	nameFull: string;
+	color: string;
 };
 
 function CitiesPage() {
 	const [map] = useRecoilState(mapAtom);
 	const [cities, setCities] = useState<TLCity[]>([]);
+	const [filteredCities, setFilteredCities] = useState<TLCity[]>([]);
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 	const { mapId } = map;
 
 	const LazyCityCard = React.lazy(
@@ -39,6 +49,7 @@ function CitiesPage() {
 			const sortedCountries = [...countries].sort((a, b) =>
 				a.name > b.name ? 1 : -1,
 			);
+			console.log(sortedCountries);
 			setCountriesList(sortedCountries);
 		};
 
@@ -58,27 +69,63 @@ function CitiesPage() {
 		loadCities();
 	}, [mapId]);
 
+	useEffect(() => {
+		const FilteredCities = cities.filter((city) => {
+			if (searchQuery) {
+				return city.name?.toLowerCase().includes(searchQuery.toLowerCase());
+			}
+			if (selectedCountry) {
+				return city.country._id === selectedCountry;
+			}
+			return true;
+		});
+		setFilteredCities(FilteredCities);
+	}, [searchQuery, selectedCountry, cities]);
+
 	return (
 		<Container>
 			<div className="contentSubHead">
 				<h3>Cities</h3>
 				<div id="search-filter-container" className="search-filter-container">
-					<input
-						id="search-input"
-						className="search-input"
-						placeholder="Search Cities..."
-						type="search"
-					/>
-					<Button variant="outlined" id="filter-all" className="filter-all">
-						All
-					</Button>
-					<ButtonGroup className="filter-group country-filter">
+					<div>
+						<input
+							id="search-input"
+							className="search-input"
+							placeholder="Search Cities..."
+							type="search"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value.toString())}
+						/>
+						<Button
+							variant="outlined"
+							id="filter-all"
+							className="filter-all"
+							onClick={() => {
+								setSearchQuery("");
+								setSelectedCountry(null);
+							}}
+						>
+							All
+						</Button>
+					</div>
+					<div>
 						{countriesList.map((country) => (
-							<Button key={country._id} id={country._id}>
-								{country.name}
-							</Button>
+							<Chip
+								component="a"
+								href="#basic-chip"
+								clickable
+								key={country._id}
+								id={country._id}
+								onClick={() => setSelectedCountry(country._id)}
+								label={country.name}
+								style={{
+									backgroundColor: country.color,
+									border: "1px solid black",
+									margin: "0.25em",
+								}}
+							/>
 						))}
-					</ButtonGroup>
+					</div>
 				</div>
 			</div>
 			<div className="contentSubBody">
@@ -90,11 +137,17 @@ function CitiesPage() {
 							</Grid>
 						}
 					>
-						{cities.map((entry) => (
-							<Grid size={3} key={entry._id + entry.name} id={entry._id}>
-								<LazyCityCard {...entry} />
-							</Grid>
-						))}
+						{filteredCities.length === 0
+							? cities.map((entry) => (
+									<Grid size={3} key={entry._id + entry.name} id={entry._id}>
+										<LazyCityCard {...entry} />
+									</Grid>
+								))
+							: filteredCities.map((entry) => (
+									<Grid size={3} key={entry._id + entry.name} id={entry._id}>
+										<LazyCityCard {...entry} />
+									</Grid>
+								))}
 					</Suspense>
 				</Grid>
 			</div>
