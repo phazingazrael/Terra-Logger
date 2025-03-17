@@ -3,17 +3,30 @@ import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
-	Button,
+	Container,
+	Box,
 	Grid2 as Grid,
 	Typography,
+	Chip,
+	List,
+	ListItem,
+	ListItemButton,
+	ListItemText,
+	Divider,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { getAllTags } from "../../components/Tags/Tags";
 
+import { styled } from "@mui/material/styles";
+// Styled components
+const CategoryIcon = styled("span")({
+	fontSize: "28px",
+	marginRight: "12px",
+});
+
 interface TagData {
 	_id: string;
-	Count: number;
 	Name: string;
 	Tags: TagItems[];
 	Type: string;
@@ -28,25 +41,28 @@ interface TagItems {
 }
 
 const tagsData: TagData[] = getAllTags();
+console.log(tagsData);
 
-const filterObjectsByTag = (
-	tagId: string,
-	...arrays: Array<(object & { tags?: TagItems[] })[]>
-): (object & { tags?: TagItems[] })[] => {
-	return arrays
-		.flat()
-		.filter(
-			(object: object & { tags?: TagItems[] }) =>
-				Array.isArray(object.tags) &&
-				object.tags.some((tag) => tag._id === tagId),
-		);
+const categoryIcons = {
+	WorldOverview: "🌍",
+	Maps: "🗺️",
+	Characters: "👤",
+	Technology: "⚙️",
+	MagicSystem: "✨",
+	ReligionsAndMythology: "🛐",
+	Economy: "💰",
+	Politics: "🏛️",
+	TimeAndCalendar: "🗓️",
+	CreaturesAndFlora: "🦄",
+	Locations: "📍",
+	CulturalArtifacts: "🏺",
+	EducationAndKnowledge: "📚",
+	EventsAndHistory: "📜",
+	Miscellaneous: "🔍",
 };
 
-const sortTagsList = (tagsList: TagItems[]) => {
-	return tagsList.sort((a, b) => a.Name.localeCompare(b.Name));
-};
-const sortTagTypes = (tagsList: TagData[]) => {
-	return tagsList.sort((a, b) => a.Name.localeCompare(b.Name));
+const formatCategoryName = (name: string) => {
+	return name.replace(/([A-Z])/g, " $1").trim();
 };
 
 const Tags = () => {
@@ -57,72 +73,84 @@ const Tags = () => {
 	}, []);
 
 	return (
-		<>
-			<h3>All Tags</h3>
-			<Grid component="div" spacing={2}>
-				{tagsList
-					? sortTagTypes(tagsList).map((Tag) => (
-							<TagType {...Tag} key={Tag._id} />
-						))
-					: ""}
-			</Grid>
-		</>
-	);
-};
-
-const TagType = (props: TagData) => {
-	const { _id, Name, Type, Count, Tags } = props;
-
-	return Tags.some((tag) => filterObjectsByTag(tag._id).length !== 0) ? (
-		<Grid component="div" size={4} className={Type} id={_id}>
-			<Accordion defaultExpanded>
-				<AccordionSummary
-					expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel1-content"
-					id="panel1-header"
-				>
-					<Typography variant="h6">
-						{Name} <span>{`${Count} Items`}</span>
-					</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Grid container spacing={2}>
-						{sortTagsList(Tags).map((Tag) =>
-							filterObjectsByTag(Tag._id).length !== 0 ? (
-								<TagItem {...Tag} key={Tag._id} />
-							) : (
-								""
-							),
-						)}
-					</Grid>
-				</AccordionDetails>
-			</Accordion>
-		</Grid>
-	) : (
-		""
-	);
-};
-
-const TagItem = (props: TagItems) => {
-	const { _id, Default, Description, Name, Type } = props;
-	return (
-		<Grid size={12}>
-			<span>{Name}</span>
-			<div className="tag-info">
-				<span className="tag-posts">
-					{`${filterObjectsByTag(_id).length} Items`}
-					<br />
-					{`Default: ${Default}`}
-					<br />
-					{`Description: ${Description}`}
-					<br />
-					{`Type: ${Type}`}
-				</span>
-				<Button variant="contained" className="tag-button">
-					View Posts
-				</Button>
+		<Container>
+			<div className="contentSubHead">
+				<h3>All Tags</h3>
 			</div>
-		</Grid>
+			<div className="contentSubBody">
+				<Grid container spacing={2}>
+					{tagsList?.map((tag) => (
+						<Grid size={4} key={tag._id}>
+							<Accordion
+								elevation={3}
+								sx={{
+									borderRadius: 2,
+									"&:before": {
+										display: "none",
+									},
+									transition: "transform 0.2s ease, box-shadow 0.2s ease",
+									"&:hover": {
+										transform: "translateY(-4px)",
+										boxShadow: 6,
+									},
+								}}
+							>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
+									aria-controls={`panel-${tag._id}-content`}
+									id={`panel-${tag._id}-header`}
+									sx={{
+										bgcolor: "grey.50",
+										borderRadius: "8px 8px 0 0",
+										minHeight: 64,
+										"& .MuiAccordionSummary-content": {
+											margin: "12px 0",
+										},
+									}}
+								>
+									<Box sx={{ display: "flex", alignItems: "center" }}>
+										<CategoryIcon>
+											{categoryIcons[tag.Name as keyof typeof categoryIcons] ||
+												"📋"}
+										</CategoryIcon>
+										<Typography component="h3">
+											{formatCategoryName(tag.Name)}
+										</Typography>
+										<Chip
+											label={tag.Tags.length}
+											size="small"
+											sx={{
+												ml: 1,
+												bgcolor: "action.hover",
+												fontSize: "0.75rem",
+											}}
+										/>
+									</Box>
+								</AccordionSummary>
+
+								<AccordionDetails sx={{ p: 0 }}>
+									<List disablePadding>
+										{tag.Tags.map((tagItem, index) => (
+											<div key={tagItem._id}>
+												<ListItem disablePadding>
+													<ListItemButton onClick={() => {}} sx={{ py: 1.5 }}>
+														<ListItemText
+															primary={tagItem.Name}
+															secondary={tagItem.Description}
+														/>
+													</ListItemButton>
+												</ListItem>
+												{index < tag.Tags.length - 1 && <Divider />}
+											</div>
+										))}
+									</List>
+								</AccordionDetails>
+							</Accordion>
+						</Grid>
+					))}
+				</Grid>
+			</div>
+		</Container>
 	);
 };
 

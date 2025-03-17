@@ -1,10 +1,4 @@
-import {
-	Button,
-	ButtonGroup,
-	Container,
-	Chip,
-	Grid2 as Grid,
-} from "@mui/material";
+import { Button, Container, Chip, Grid2 as Grid } from "@mui/material";
 import React, { useEffect, useState, Suspense } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
@@ -51,6 +45,8 @@ function CitiesPage() {
 			);
 			console.log(sortedCountries);
 			setCountriesList(sortedCountries);
+			setSearchQuery("");
+			setSelectedCountry(null);
 		};
 
 		initializeDatabase();
@@ -97,7 +93,8 @@ function CitiesPage() {
 							onChange={(e) => setSearchQuery(e.target.value.toString())}
 						/>
 						<Button
-							variant="outlined"
+							variant="contained"
+							color="error"
 							id="filter-all"
 							className="filter-all"
 							onClick={() => {
@@ -105,14 +102,12 @@ function CitiesPage() {
 								setSelectedCountry(null);
 							}}
 						>
-							All
+							Reset Filters
 						</Button>
 					</div>
 					<div>
 						{countriesList.map((country) => (
 							<Chip
-								component="a"
-								href="#basic-chip"
 								clickable
 								key={country._id}
 								id={country._id}

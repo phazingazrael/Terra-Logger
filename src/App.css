@@ -163,6 +163,7 @@ header {
   }
 
   .contentSubBody {
-    max-height: 65vh;
+    max-height: 58vh;
+    overflow: auto;
   }
 }

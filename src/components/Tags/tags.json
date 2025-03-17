@@ -1,7 +1,6 @@
 [
   {
     "_id": "0192be16-c07d-761a-8980-110fb28f12a6",
-    "Count": 0,
     "Name": "WorldOverview",
     "Tags": [
       {
@@ -44,7 +43,6 @@
   },
   {
     "_id": "0192be16-c07d-7fea-9253-8216ed96968c",
-    "Count": 0,
     "Name": "Maps",
     "Tags": [
       {
@@ -136,7 +134,6 @@
   },
   {
     "_id": "0192be16-c07d-71c6-bb2b-848b961c58c4",
-    "Count": 0,
     "Name": "Characters",
     "Tags": [
       {
@@ -179,7 +176,6 @@
   },
   {
     "_id": "0192be16-c07e-77ff-bf41-9aa226958b0b",
-    "Count": 0,
     "Name": "Technology",
     "Tags": [
       {
@@ -222,7 +218,6 @@
   },
   {
     "_id": "0192be16-c07e-7f1d-8a12-ba34a6f3a74e",
-    "Count": 0,
     "Name": "MagicSystem",
     "Tags": [
       {
@@ -258,7 +253,6 @@
   },
   {
     "_id": "0192be16-c07e-7ed5-ac5f-14100fbab72c",
-    "Count": 0,
     "Name": "ReligionsAndMythology",
     "Tags": [
       {
@@ -294,7 +288,6 @@
   },
   {
     "_id": "0192be16-c07e-7aa0-a02f-371bc9f494af",
-    "Count": 0,
     "Name": "Economy",
     "Tags": [
       {
@@ -330,7 +323,6 @@
   },
   {
     "_id": "0192be16-c07e-7e9a-be75-3841405d0163",
-    "Count": 0,
     "Name": "Politics",
     "Tags": [
       {
@@ -366,7 +358,6 @@
   },
   {
     "_id": "0192be16-c07e-77a1-a50b-2e3fe7234113",
-    "Count": 0,
     "Name": "TimeAndCalendar",
     "Tags": [
       {
@@ -402,7 +393,6 @@
   },
   {
     "_id": "0192be16-c07e-70af-9da6-1aee547d62f3",
-    "Count": 0,
     "Name": "CreaturesAndFlora",
     "Tags": [
       {
@@ -438,7 +428,6 @@
   },
   {
     "_id": "0192be16-c07e-7b85-8305-fbc5f62cd363",
-    "Count": 0,
     "Name": "Locations",
     "Tags": [
       {
@@ -530,7 +519,6 @@
   },
   {
     "_id": "0192be16-c07e-75ed-9f6c-ef7e7d859ab0",
-    "Count": 0,
     "Name": "CulturalArtifacts",
     "Tags": [
       {
@@ -566,7 +554,6 @@
   },
   {
     "_id": "0192be16-c07e-701b-ae36-59a212539e2b",
-    "Count": 0,
     "Name": "EducationAndKnowledge",
     "Tags": [
       {
@@ -602,7 +589,6 @@
   },
   {
     "_id": "0192be16-c07e-7067-9d4f-c22eac66e191",
-    "Count": 0,
     "Name": "EventsAndHistory",
     "Tags": [
       {
@@ -638,7 +624,6 @@
   },
   {
     "_id": "0192be16-c07e-7605-baf3-a8b70f79e830",
-    "Count": 0,
     "Name": "Miscellaneous",
     "Tags": [
       {
