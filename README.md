@@ -62,7 +62,6 @@ We have exciting plans for future versions of Terra-Logger:
 
 - Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
 
-Stay tuned for updates and new releases to experience the latest features and enhancements!
 
 ## Contributing
 
