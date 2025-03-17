@@ -265,6 +265,12 @@ ul {
   }
 }
 
+@media (max-width: 1280px) {
+  .wiki section {
+    grid-column: 1 / -1;
+  }
+}
+
 /* individual information cards end */
 
 .additional-info p {
