@@ -11,9 +11,36 @@ function CityView() {
 	const cityId = useParams();
 	const [city, setCity] = useState<TLCity>();
 
+	const tagStyles = {
+		display: "inline-flex",
+		alignItems: "center",
+		backgroundColor: "#f0f0f0",
+		border: "1px solid #ddd",
+		borderRadius: "20px",
+		padding: "4px 12px",
+		margin: "3px",
+		fontSize: "0.85em",
+		color: "#444",
+		boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+		transition: "all 0.2s ease",
+	};
+
+	const capitalBadge = {
+		display: "inline-flex",
+		alignItems: "center",
+		backgroundColor: "#ffd700",
+		border: "1px solid #ddd",
+		borderRadius: "10px",
+		padding: "2px 8px",
+		margin: "3px",
+		fontSize: "1em",
+		boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+		fontWeight: "bold",
+	};
+
 	useEffect(() => {
 		if (cityId !== undefined) {
-			getDataFromStore("countries", cityId._id).then((data) => {
+			getDataFromStore("cities", cityId._id).then((data) => {
 				setCity(data as TLCity);
 			});
 		}
@@ -27,16 +54,16 @@ function CityView() {
 			<IconContext.Provider value={IconStyles}>
 				<div className="contentSubBody">
 					<div className="flex-container">
-						<div className="city-wiki">
-							<div className="city-header">
+						<div className="wiki">
+							<div className="header">
 								<div
-									className="city-image"
+									className="image"
 									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
 								/>
-								<div className="city-info">
+								<div className="info">
 									<Typography variant="h1">{city?.name}</Typography>
-									<div className="city-meta">
+									<div className="meta">
 										<p>
 											<Typography color="primary" component="h3">
 												Country: {city?.country.name}
@@ -51,9 +78,10 @@ function CityView() {
 												<Typography
 													color="primary"
 													component="h3"
-													className="capital-badge"
+													// className="capital-badge"
+													style={capitalBadge}
 												>
-													Capital
+													🏛️ Capital
 												</Typography>
 											)}
 										</p>
@@ -61,7 +89,7 @@ function CityView() {
 								</div>
 							</div>
 
-							<main className="city-content">
+							<main className="content">
 								<section className="description">
 									<Typography color="primary" component="h2">
 										Description
@@ -81,23 +109,7 @@ function CityView() {
 										<Typography color="primary" component="p">
 											<div className="tag-list">
 												{city?.features.map((feature) => (
-													<span
-														key={feature}
-														className="tag"
-														style={{
-															display: "inline-flex",
-															alignItems: "center",
-															backgroundColor: "#f0f0f0",
-															border: "1px solid #ddd",
-															borderRadius: "20px",
-															padding: "4px 12px",
-															margin: "3px",
-															fontSize: "0.85em",
-															color: "#444",
-															boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-															transition: "all 0.2s ease",
-														}}
-													>
+													<span key={feature} className="tag" style={tagStyles}>
 														{feature}
 													</span>
 												))}
@@ -115,20 +127,7 @@ function CityView() {
 													key={tag._id}
 													className="tag"
 													title={tag.Description}
-													style={{
-														display: "inline-flex",
-														alignItems: "center",
-														backgroundColor: "#f0f0f0",
-														border: "1px solid #ddd",
-														borderRadius: "20px",
-														padding: "4px 12px",
-														margin: "3px",
-														fontSize: "0.85em",
-														color: "#444",
-														boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-														transition: "all 0.2s ease",
-														cursor: "help",
-													}}
+													style={tagStyles}
 												>
 													🏷️ {tag.Name}
 												</span>

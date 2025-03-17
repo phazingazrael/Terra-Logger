@@ -77,7 +77,7 @@ export async function getFullStore(storeName: string) {
  * @param {any} updatedData - The updated data to store.
  * @returns {Promise<void>} - A promise that resolves when the data has been updated in the store.
  */
-// biome-ignore lint/suspicious/noExplicitAny: This is fine
+
 export async function updateDataInStore(
 	storeName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: This is fine
