@@ -1,4 +1,4 @@
-import { Button, Container, Chip, Grid2 as Grid } from "@mui/material";
+import { Button, Container, Chip, Grid2 as Grid, AppBar } from "@mui/material";
 import React, { useEffect, useState, Suspense } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
@@ -76,12 +76,12 @@ function CitiesPage() {
 			return true;
 		});
 		setFilteredCities(FilteredCities);
+		document.getElementById("Content")?.scrollTo({ top: 0 });
 	}, [searchQuery, selectedCountry, cities]);
 
 	return (
 		<Container>
-			<div className="contentSubHead">
-				<h3>Cities</h3>
+			<AppBar position="sticky" color="default">
 				<div id="search-filter-container" className="search-filter-container">
 					<div>
 						<input
@@ -123,8 +123,9 @@ function CitiesPage() {
 						))}
 					</div>
 				</div>
-			</div>
-			<div className="contentSubBody">
+			</AppBar>
+
+			<div className="contentSubBody citiesList">
 				<Grid container spacing={2}>
 					<Suspense
 						fallback={
@@ -134,14 +135,14 @@ function CitiesPage() {
 						}
 					>
 						{filteredCities.length === 0
-							? cities.map((entry) => (
-									<Grid size={3} key={entry._id + entry.name} id={entry._id}>
-										<LazyCityCard {...entry} />
+							? cities.map((city) => (
+									<Grid size={3} key={city._id + city.name} id={city._id}>
+										<LazyCityCard {...city} />
 									</Grid>
 								))
-							: filteredCities.map((entry) => (
-									<Grid size={3} key={entry._id + entry.name} id={entry._id}>
-										<LazyCityCard {...entry} />
+							: filteredCities.map((city) => (
+									<Grid size={3} key={city._id + city.name} id={city._id}>
+										<LazyCityCard {...city} />
 									</Grid>
 								))}
 					</Suspense>

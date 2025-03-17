@@ -39,3 +39,8 @@
   color: #ffffff !important;
   border-color: #ffffff !important;
 }
+
+.contentBody header {
+  margin-bottom: 2dvh !important;
+  padding-top: 10px;
+}

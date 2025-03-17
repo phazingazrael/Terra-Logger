@@ -39,7 +39,18 @@ function CountryCard(props: Readonly<TLCountry>) {
 				}}
 				title={ImageAlt}
 			>
-				<LazyLoadedSVG {...(country.coa as TLCoA)} />
+				{country.coaSVG === "" ||
+				country.coaSVG === undefined ||
+				country.coaSVG === null ? (
+					<LazyLoadedSVG {...(country.coa as TLCoA)} />
+				) : (
+					<div
+						className="svg-container CoA"
+						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+						dangerouslySetInnerHTML={{ __html: country.coaSVG }}
+					/>
+				)}
+				{/* <LazyLoadedSVG {...(country.coa as TLCoA)} /> */}
 			</CardMedia>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">

@@ -95,7 +95,7 @@ export const mutateCountries = async (
 			if (typeof coa === "object" && Object.keys(coa).length > 0) {
 				// if so, encode the coa data to a string and add it to the url
 				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
-			} else if (coa === undefined) {
+			} else {
 				console.log(coa, (country as unknown as TLCity)._id);
 				// if not, add the default url
 				url = "https://armoria.herokuapp.com/?size=500&format=svg";

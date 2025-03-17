@@ -37,6 +37,7 @@ function CountriesPage() {
 		};
 
 		loadCountries();
+		document.getElementById("Content")?.scrollTo({ top: 0 });
 	}, [mapId]);
 	return (
 		<Container>

@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid2 as Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
@@ -226,10 +226,10 @@ const MapManager: React.FC = () => {
 
 	return (
 		<div>
-			<h2>Maps List</h2>
+			<h2>Saved maps</h2>
 			<Grid container spacing={2}>
 				{mapsList.map((map) => (
-					<Grid item xs={3} key={map.id} id={map.id}>
+					<Grid size={3} key={map.id} id={map.id}>
 						<MapsCard {...map} handleMapSelect={handleMapSelect} />
 					</Grid>
 				))}
