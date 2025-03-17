@@ -33,3 +33,9 @@
 .filter-all {
   float: right;
 }
+
+.selected {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}

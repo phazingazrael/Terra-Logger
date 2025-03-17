@@ -111,6 +111,7 @@ function CitiesPage() {
 								clickable
 								key={country._id}
 								id={country._id}
+								className={country._id === selectedCountry ? "selected" : ""}
 								onClick={() => setSelectedCountry(country._id)}
 								label={country.name}
 								style={{
