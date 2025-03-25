@@ -32,12 +32,14 @@ function ReligionsPage() {
 			const data = await queryDataFromStore("religions", "mapIdIndex", mapId);
 			if (data) {
 				console.log(data);
+				console.log(JSON.stringify(data));
 				setReligions(data);
 			}
 		};
 
 		loadReligions();
 	}, []);
+	}, [mapId]);
 	return (
 		<Container>
 			<div className="contentSubHead">
