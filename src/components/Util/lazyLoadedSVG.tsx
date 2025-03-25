@@ -7,7 +7,7 @@ function LazyLoadedSVG(props: Readonly<TLCoA>) {
 	const imgRef = useRef<HTMLImageElement>(null);
 	const coa = props;
 
-	const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 8);
+	// const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 8);
 
 	useEffect(() => {
 		const options = {
