@@ -1,4 +1,5 @@
 import { Container, Grid } from "@mui/material";
+import { Container, Grid2 as Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
@@ -46,6 +47,7 @@ function ReligionsPage() {
 				<Grid container spacing={2}>
 					{religions.map((entry) => (
 						<Grid item xs={3} key={entry._id} id={entry._id}>
+						<Grid size={3} key={entry._id} id={entry._id}>
 							<ReligionCard {...entry} />
 						</Grid>
 					))}
