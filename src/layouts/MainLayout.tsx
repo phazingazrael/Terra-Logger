@@ -9,7 +9,7 @@ import {
 import { createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { ToastContainer } from "react-toastify";
 import Icon from "../assets/icon.png";
 import appAtom from "../atoms/app.tsx";
@@ -90,12 +90,13 @@ const dark = createTheme({
 function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const [Theme, setTheme] = useState({});
-	const [appData] = useRecoilState(appAtom);
+	const [appData] = useAtom(appAtom);
 	const {
 		userSettings: { theme },
 	} = appData;
 	const selectedTheme = theme === "light" ? light : dark;
 
+	console.log(appData);
 	useEffect(() => {
 		const rootElement = document.getElementById("root");
 

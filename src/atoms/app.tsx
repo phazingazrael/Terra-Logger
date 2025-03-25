@@ -1,33 +1,23 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 import Package from "../../package.json";
-
-// const localStorageEffect =
-// 	(key: string) =>
-// 	({
-// 		setSelf,
-// 		onSet,
-// 	}: {
-// 		setSelf: (value: unknown) => void;
-// 		onSet: (
-// 			callback: (newValue: unknown, _: unknown, isReset: boolean) => void,
-// 		) => void;
-// 	}) => {
-// 		const savedValue = localStorage.getItem(key);
-// 		if (savedValue != null) {
-// 			setSelf(JSON.parse(savedValue));
-// 		}
-
-// 		onSet((newValue: unknown, _: unknown, isReset: boolean) => {
-// 			isReset
-// 				? localStorage.removeItem(key)
-// 				: localStorage.setItem(key, JSON.stringify(newValue));
-// 		});
-// 	};
+import { getDataFromStore } from "../db/interactions";
 
 // Retrieve the saved data from local storage and parse it as an App object
-const localSaveData: string | null = localStorage.getItem("TL_app");
+
+/**
+ * Retrieves the locally saved application data from storage.
+ *
+ * @param {string} storeName - The name of the store to retrieve data from.
+ * @param {string} key - The key of the data to retrieve.
+ * @returns {object | null} The retrieved data, or null if no data is found.
+ */
+const localSaveData: object | null = getDataFromStore(
+	"appSettings",
+	`TL_${Package.version}`,
+);
+
 const localSave: AppInfo | null = localSaveData
-	? (JSON.parse(localSaveData) as AppInfo)
+	? (localSaveData as AppInfo)
 	: null;
 
 const defaultApp: AppInfo = {
@@ -58,10 +48,7 @@ const defaultApp: AppInfo = {
 };
 
 const appData: AppInfo = localSave ?? defaultApp;
-export const appAtom = atom<AppInfo>({
-	key: "Application",
-	default: appData,
-	// effects: [localStorageEffect("TL_app")],
-});
+
+export const appAtom = atom(appData);
 
 export default appAtom;

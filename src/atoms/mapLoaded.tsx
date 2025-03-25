@@ -1,8 +1,5 @@
-import { atom } from 'recoil';
+import { atom } from "jotai";
 
-const mapLoadedAtom = atom({
-  key: 'MapLoaded',
-  default: false,  // default value (aka initial value)
-});
+const mapLoadedAtom = atom(false);
 
 export default mapLoadedAtom;

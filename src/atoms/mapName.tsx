@@ -1,8 +1,5 @@
-import { atom } from 'recoil';
+import { atom } from "jotai";
 
-const mapNameAtom = atom({
-  key: 'MapName',
-  default: '',  // default value (aka initial value)
-});
+const mapNameAtom = atom("");
 
 export default mapNameAtom;

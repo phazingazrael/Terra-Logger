@@ -1,8 +1,5 @@
-import { atom } from 'recoil';
+import { atom } from "jotai";
 
-const loadingAtom = atom({
-  key: 'Loading',
-  default: false,  // default value (aka initial value)
-});
+const loadingAtom = atom(false);
 
 export default loadingAtom;

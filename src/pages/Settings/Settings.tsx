@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 
 import "./Settings.css";
 
@@ -17,8 +17,8 @@ import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 
 function Settings() {
-	const [map] = useRecoilState(mapAtom);
-	const [app, setApp] = useRecoilState(appAtom);
+	const [map] = useAtom(mapAtom);
+	const [app, setApp] = useAtom(appAtom);
 	const { userSettings } = app;
 	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaults, setDefaults] = useState<Array<string>>([]);
