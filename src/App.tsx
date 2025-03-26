@@ -76,7 +76,7 @@ const App = (): JSX.Element => {
 				);
 				console.log("App Settings: ");
 				console.log(appSettings);
-				if (appSettings) {
+				if (appSettings !== undefined) {
 					console.log("Application settings found, loading settings...");
 					console.log(appSettings);
 				} else {
