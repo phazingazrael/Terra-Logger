@@ -1,13 +1,10 @@
 import { useEffect, useRef } from "react";
-// import { customAlphabet } from "nanoid";
 
 import PropTypes from "prop-types";
 
 function LazyLoadedSVG(props: Readonly<TLCoA>) {
 	const imgRef = useRef<HTMLImageElement>(null);
 	const coa = props;
-
-	// const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 8);
 
 	useEffect(() => {
 		const options = {
