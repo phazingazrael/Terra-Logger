@@ -121,11 +121,13 @@ export async function queryDataFromStore(
 	indexName: string,
 	query: IDBValidKey | IDBKeyRange,
 ) {
+	console.time("queryDataFromStore Fetch");
 	const db = await initDatabase();
 	const tx = db.transaction(storeName, "readonly");
 	const store = tx.objectStore(storeName);
 	const index = store.index(indexName);
 	const result = await index.getAll(query);
+	console.time("queryDataFromStore Fetch");
 	return result;
 }
 
