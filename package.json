@@ -28,6 +28,7 @@
     "@vercel/analytics": "^1.4.1",
     "body-parser": "^1.20.3",
     "idb": "^8.0.1",
+    "jotai": "^2.12.2",
     "lexical": "^0.23.1",
     "lorem-ipsum": "^2.0.8",
     "module-alias": "^2.2.3",
@@ -39,7 +40,6 @@
     "react-lines-ellipsis": "^0.15.4",
     "react-router-dom": "^6.27.0",
     "react-toastify": "^11.0.3",
-    "recoil": "^0.7.7",
     "rxjs": "^7.8.1",
     "uuid": "^11.0.5"
   },

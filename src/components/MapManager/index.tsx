@@ -1,6 +1,6 @@
 import { Button, Grid2 as Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 
 import mapAtom from "../../atoms/map.tsx";
 import mapLoadedAtom from "../../atoms/mapLoaded.tsx";
@@ -15,7 +15,7 @@ import "./index.css";
 import { MapsCard } from "../Cards/index.tsx";
 
 const MapManager: React.FC = () => {
-	const [map, setMap] = useRecoilState(mapAtom);
+	const [map, setMap] = useAtom(mapAtom);
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
 	const [selectedCities, setSelectedCities] = useState<TLCity[]>([]);
@@ -25,8 +25,8 @@ const MapManager: React.FC = () => {
 	// const [selectedNpcs, setSelectedNpcs] = useState<string[]>([]);
 	const [selectedReligions, setSelectedReligions] = useState<TLReligion[]>([]);
 	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
-	const [, setMapName] = useRecoilState(mapNameAtom);
-	const [, setMapLoaded] = useRecoilState(mapLoadedAtom);
+	const [, setMapName] = useAtom(mapNameAtom);
+	const [, setMapLoaded] = useAtom(mapLoadedAtom);
 
 	useEffect(() => {
 		const fetchMapsList = async () => {

@@ -1,8 +1,6 @@
-import { minmax } from "../../Util";
+import { minmax, findCultureByID } from "../../Util";
 
 import { v7 as uuidv7 } from "uuid";
-
-import findCultureByID from "../findCultureByID";
 
 export const mutateCities = async (
 	data: MapInfo,

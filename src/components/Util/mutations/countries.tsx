@@ -1,6 +1,6 @@
 import { v7 as uuidv7 } from "uuid";
 
-import findCultureByID from "../findCultureByID";
+import { findCultureByID } from "../../Util";
 import { createEmptyCountry } from "../mkEmpty/tlCountry";
 
 export const mutateCountries = async (

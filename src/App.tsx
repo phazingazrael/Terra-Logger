@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import Package from "../package.json";
 import mapAtom from "./atoms/map";
 import { initDatabase } from "./db/database";
@@ -26,7 +26,7 @@ import {
 import "./App.css";
 
 const App = (): JSX.Element => {
-	const [map] = useRecoilState<MapInf>(mapAtom);
+	const [map] = useAtom(mapAtom);
 
 	useEffect(() => {
 		function handleResize() {
@@ -74,7 +74,9 @@ const App = (): JSX.Element => {
 					"appSettings",
 					`TL_${Package.version}`,
 				);
-				if (appSettings) {
+				console.log("App Settings: ");
+				console.log(appSettings);
+				if (appSettings !== undefined) {
 					console.log("Application settings found, loading settings...");
 					console.log(appSettings);
 				} else {

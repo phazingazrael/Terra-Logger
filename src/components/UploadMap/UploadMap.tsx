@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import { Alert, AlertTitle, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { toast } from "react-toastify";
 
 import mutateData from "./Mutate.tsx";
@@ -18,9 +18,9 @@ import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
 
 function UploadMap() {
-	const [app] = useRecoilState<AppInfo>(appAtom);
-	const [, setMap] = useRecoilState<MapInf>(mapAtom);
-	const [isLoading, setLoading] = useRecoilState(loadingAtom);
+	const [app] = useAtom(appAtom);
+	const [, setMap] = useAtom(mapAtom);
+	const [isLoading, setLoading] = useAtom(loadingAtom);
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 
 	const OLDEST_SUPPORTED_VERSION = 1.95;
