@@ -1,6 +1,6 @@
 import { Container, Grid2 as Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
 import { initDatabase } from "../../db/database";
 import { queryDataFromStore } from "../../db/interactions";
@@ -8,7 +8,7 @@ import { queryDataFromStore } from "../../db/interactions";
 import { CountryCard } from "../../components/Cards";
 
 function CountriesPage() {
-	const [map] = useAtom(mapAtom);
+	const [map] = useRecoilState(mapAtom);
 	const [countries, setCountries] = useState<TLCountry[]>([]);
 	const { mapId } = map;
 

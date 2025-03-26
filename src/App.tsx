@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useAtom } from "jotai";
+import { useRecoilState } from "recoil";
 import Package from "../package.json";
 import mapAtom from "./atoms/map";
 import { initDatabase } from "./db/database";
@@ -26,7 +26,7 @@ import {
 import "./App.css";
 
 const App = (): JSX.Element => {
-	const [map] = useAtom(mapAtom);
+	const [map] = useRecoilState<MapInf>(mapAtom);
 
 	useEffect(() => {
 		function handleResize() {

@@ -21,7 +21,7 @@ import {
 	TiTags,
 } from "react-icons/ti";
 import { NavLink } from "react-router-dom";
-import { useAtom } from "jotai";
+import { useRecoilState } from "recoil";
 import mapAtom from "../atoms/map";
 import mapLoadedAtom from "../atoms/mapLoaded";
 import mapNameAtom from "../atoms/mapName";
@@ -29,9 +29,9 @@ import { handleSvgReplace } from "./Util/handleSvgReplace";
 
 const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	const iconStyles = useMemo(() => ({ size: "1.75rem" }), []);
-	const [map, setMap] = useAtom(mapAtom);
-	const [mapLoaded, setMapLoaded] = useAtom(mapLoadedAtom);
-	const [mapName, setMapName] = useAtom(mapNameAtom);
+	const [map, setMap] = useRecoilState(mapAtom);
+	const [mapLoaded, setMapLoaded] = useRecoilState(mapLoadedAtom);
+	const [mapName, setMapName] = useRecoilState(mapNameAtom);
 	const [expanded, setExpanded] = useState(false); // State to manage accordion expansion
 
 	const mapList = mapsList.mapsList;

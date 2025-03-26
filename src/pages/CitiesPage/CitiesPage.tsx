@@ -1,6 +1,6 @@
 import { Button, Container, Chip, Grid2 as Grid, AppBar } from "@mui/material";
-import React, { useEffect, useState, Suspense, Profiler } from "react";
-import { useAtom } from "jotai";
+import React, { useEffect, useState, Suspense } from "react";
+import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
 import { initDatabase } from "../../db/database";
 import { getFullStore, queryDataFromStore } from "../../db/interactions";
@@ -17,7 +17,7 @@ type countriesList = {
 };
 
 function CitiesPage() {
-	const [map] = useAtom(mapAtom);
+	const [map] = useRecoilState(mapAtom);
 	const [cities, setCities] = useState<TLCity[]>([]);
 	const [filteredCities, setFilteredCities] = useState<TLCity[]>([]);
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
@@ -65,8 +65,6 @@ function CitiesPage() {
 		loadCities();
 	}, [mapId]);
 
-	// eslint-disable react-hooks/exhaustive-deps
-	// biome-ignore lint/correctness/useExhaustiveDependencies: cities should not be changing
 	useEffect(() => {
 		const FilteredCities = cities.filter((city) => {
 			if (searchQuery) {
@@ -79,99 +77,78 @@ function CitiesPage() {
 		});
 		setFilteredCities(FilteredCities);
 		document.getElementById("Content")?.scrollTo({ top: 0 });
-	}, [searchQuery, selectedCountry]);
-
-	function onRender(
-		id: string,
-		phase: string,
-		actualDuration: number,
-		baseDuration: number,
-		startTime: number,
-		commitTime: number,
-	) {
-		console.log({
-			id,
-			phase,
-			actualDuration: actualDuration / 1000,
-			baseDuration,
-			startTime,
-			commitTime,
-		});
-	}
+	}, [searchQuery, selectedCountry, cities]);
 
 	return (
-		<Profiler id="CitiesPage" onRender={onRender}>
-			<Container>
-				<AppBar position="sticky" color="default">
-					<div id="search-filter-container" className="search-filter-container">
-						<div>
-							<input
-								id="search-input"
-								className="search-input"
-								placeholder="Search Cities..."
-								type="search"
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value.toString())}
-							/>
-							<Button
-								variant="contained"
-								color="error"
-								id="filter-all"
-								className="filter-all"
-								onClick={() => {
-									setSearchQuery("");
-									setSelectedCountry(null);
-								}}
-							>
-								Reset Filters
-							</Button>
-						</div>
-						<div>
-							{countriesList.map((country) => (
-								<Chip
-									clickable
-									key={country._id}
-									id={country._id}
-									className={country._id === selectedCountry ? "selected" : ""}
-									onClick={() => setSelectedCountry(country._id)}
-									label={country.name}
-									style={{
-										backgroundColor: country.color,
-										border: "1px solid black",
-										margin: "0.25em",
-									}}
-								/>
-							))}
-						</div>
-					</div>
-				</AppBar>
-
-				<div className="contentSubBody citiesList">
-					<Grid container spacing={2}>
-						<Suspense
-							key={filteredCities.length}
-							fallback={
-								<Grid size={12}>
-									<BookLoader />
-								</Grid>
-							}
+		<Container>
+			<AppBar position="sticky" color="default">
+				<div id="search-filter-container" className="search-filter-container">
+					<div>
+						<input
+							id="search-input"
+							className="search-input"
+							placeholder="Search Cities..."
+							type="search"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value.toString())}
+						/>
+						<Button
+							variant="contained"
+							color="error"
+							id="filter-all"
+							className="filter-all"
+							onClick={() => {
+								setSearchQuery("");
+								setSelectedCountry(null);
+							}}
 						>
-							{filteredCities.length === 0
-								? cities.map((city) => (
-										<Grid size={3} key={city._id + city.name} id={city._id}>
-											<LazyCityCard {...city} />
-										</Grid>
-									))
-								: filteredCities.map((city) => (
-										<Grid size={3} key={city._id + city.name} id={city._id}>
-											<LazyCityCard {...city} />
-										</Grid>
-									))}
-						</Suspense>
-					</Grid>
+							Reset Filters
+						</Button>
+					</div>
+					<div>
+						{countriesList.map((country) => (
+							<Chip
+								clickable
+								key={country._id}
+								id={country._id}
+								className={country._id === selectedCountry ? "selected" : ""}
+								onClick={() => setSelectedCountry(country._id)}
+								label={country.name}
+								style={{
+									backgroundColor: country.color,
+									border: "1px solid black",
+									margin: "0.25em",
+								}}
+							/>
+						))}
+					</div>
 				</div>
-			</Container>
-		</Profiler>
+			</AppBar>
+
+			<div className="contentSubBody citiesList">
+				<Grid container spacing={2}>
+					<Suspense
+						fallback={
+							<Grid size={12}>
+								<BookLoader />
+							</Grid>
+						}
+					>
+						{filteredCities.length === 0
+							? cities.map((city) => (
+									<Grid size={3} key={city._id + city.name} id={city._id}>
+										<LazyCityCard {...city} />
+									</Grid>
+								))
+							: filteredCities.map((city) => (
+									<Grid size={3} key={city._id + city.name} id={city._id}>
+										<LazyCityCard {...city} />
+									</Grid>
+								))}
+					</Suspense>
+				</Grid>
+			</div>
+		</Container>
 	);
 }
 
