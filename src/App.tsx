@@ -74,6 +74,7 @@ const App = (): JSX.Element => {
 					"appSettings",
 					`TL_${Package.version}`,
 				);
+				console.log("App Settings: ");
 				console.log(appSettings);
 				if (appSettings) {
 					console.log("Application settings found, loading settings...");
