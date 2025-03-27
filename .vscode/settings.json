@@ -23,11 +23,13 @@
 		"Dexie",
 		"editext",
 		"Elven",
+		"Kuashan",
 		"mecha",
 		"megacorps",
 		"namebases",
 		"npcs",
 		"Objs",
-		"toastify"
+		"toastify",
+		"viewbox"
 	]
 }

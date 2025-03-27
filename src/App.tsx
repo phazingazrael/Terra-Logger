@@ -1,14 +1,8 @@
 import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import Package from "../package.json";
 import mapAtom from "./atoms/map";
 import { initDatabase } from "./db/database";
-import {
-	addDataToStore,
-	getDataFromStore,
-	getFullStore,
-} from "./db/interactions";
 import MainLayout from "./layouts/MainLayout";
 import {
 	CitiesPage,
@@ -28,23 +22,35 @@ import "./App.css";
 const App = (): JSX.Element => {
 	const [map] = useRecoilState<MapInf>(mapAtom);
 
+	// resize map
 	useEffect(() => {
+		/**
+		 * Handles the window's resize event.
+		 * This function is called whenever the user resizes the window.
+		 */
 		function handleResize() {
+			// Get the new window dimensions
 			const { innerHeight, innerWidth } = window;
+
+			// Log the new window dimensions
 			console.log("resized to: ", innerWidth, "x", innerHeight);
+
+			// Get the map elements
 			const mapElement = document.getElementById("map");
 			const viewBox = document.getElementById("viewbox");
+
+			// Get the original dimensions of the map
 			const originalHeight = map.info.height;
 			const originalWidth = map.info.width;
-			if (mapElement) {
-				console.log(originalHeight, originalWidth);
-				console.log(innerHeight, innerWidth);
-				console.log(originalHeight / innerHeight, originalWidth / innerWidth);
-				console.log(innerHeight / originalHeight, innerWidth / originalWidth);
 
+			// Scale the map to fit the new window dimensions
+			if (mapElement) {
 				if (viewBox) {
+					// Set the new height and width of the map element
 					mapElement.setAttribute("height", innerHeight as unknown as string);
 					mapElement.setAttribute("width", innerWidth as unknown as string);
+
+					// Set the new height and width of the viewBox element
 					viewBox.setAttribute("height", innerHeight as unknown as string);
 					viewBox.setAttribute("width", innerWidth as unknown as string);
 
@@ -60,67 +66,22 @@ const App = (): JSX.Element => {
 		window.addEventListener("resize", handleResize);
 	});
 
+	// Initialize the database
 	useEffect(() => {
+		/**
+		 * Initializes the IndexedDB database.
+		 * This function is called once, when the component mounts.
+		 */
 		const initializeDatabase = async () => {
 			try {
+				// Initialize the IndexedDB database
 				const database = await initDatabase();
 
 				if (database) {
 					console.log("Database initialized");
 				}
-
-				// get data from appSettings store
-				const appSettings = await getDataFromStore(
-					"appSettings",
-					`TL_${Package.version}`,
-				);
-				console.log("App Settings: ");
-				console.log(appSettings);
-				if (appSettings !== undefined) {
-					console.log("Application settings found, loading settings...");
-					console.log(appSettings);
-				} else {
-					console.log(
-						"First Time Load, Application settings not found, updating defaults...",
-					);
-					const defaultSettings = {
-						id: `TL_${Package.version}`,
-						application: {
-							name: Package.name,
-							version: Package.version,
-							afmgVer: "1.95.00",
-							supportedLanguages: ["en"],
-							defaultLanguage: "en",
-							onboarding: true,
-							description: Package.descriptionFull,
-						},
-						userSettings: {
-							theme: "light",
-							language: "en",
-							showWelcomeMessage: true,
-							fontSize: "medium",
-							exportOption: "",
-							screen: {
-								innerWidth: window.innerWidth,
-								innerHeight: window.innerHeight,
-								outerWidth: window.outerWidth,
-								outerHeight: window.outerHeight,
-								devicePixelRatio: window.devicePixelRatio,
-							},
-						},
-					};
-					addDataToStore("appSettings", defaultSettings);
-				}
-
-				// get data from map store
-				const mapData = await getFullStore("maps");
-				if (mapData && mapData.length > 0) {
-					console.log("Map data found");
-					console.log(mapData);
-				} else {
-					console.log("First Time Load or Map data not loaded");
-				}
 			} catch (error) {
+				// Handle any errors that occur when initializing the database
 				console.error("Failed to initialize database:", error);
 			}
 		};

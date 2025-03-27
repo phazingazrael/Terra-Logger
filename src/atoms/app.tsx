@@ -1,35 +1,17 @@
 import { atom } from "recoil";
 import Package from "../../package.json";
+import { addDataToStore, getDataFromStore } from "../db/interactions";
 
-// const localStorageEffect =
-// 	(key: string) =>
-// 	({
-// 		setSelf,
-// 		onSet,
-// 	}: {
-// 		setSelf: (value: unknown) => void;
-// 		onSet: (
-// 			callback: (newValue: unknown, _: unknown, isReset: boolean) => void,
-// 		) => void;
-// 	}) => {
-// 		const savedValue = localStorage.getItem(key);
-// 		if (savedValue != null) {
-// 			setSelf(JSON.parse(savedValue));
-// 		}
+// Retrieve the saved data from the database
+const localSaveData: AppInfo | null = await getDataFromStore(
+	"appSettings",
+	`TL_${Package.version}`,
+);
 
-// 		onSet((newValue: unknown, _: unknown, isReset: boolean) => {
-// 			isReset
-// 				? localStorage.removeItem(key)
-// 				: localStorage.setItem(key, JSON.stringify(newValue));
-// 		});
-// 	};
+// Set the localSaveData to null if it is undefined
+const localSave: AppInfo | null = localSaveData ?? null;
 
-// Retrieve the saved data from local storage and parse it as an App object
-const localSaveData: string | null = localStorage.getItem("TL_app");
-const localSave: AppInfo | null = localSaveData
-	? (JSON.parse(localSaveData) as AppInfo)
-	: null;
-
+// Set the defaultApp info object
 const defaultApp: AppInfo = {
 	id: `TL_${Package.version}`,
 	application: {
@@ -57,11 +39,19 @@ const defaultApp: AppInfo = {
 	},
 };
 
+// Set the appData object
 const appData: AppInfo = localSave ?? defaultApp;
+
+// Add the appData object to the database if it is null
+if (localSave === null) {
+	addDataToStore("appSettings", appData);
+}
+
+// Set the appAtom
 export const appAtom = atom<AppInfo>({
 	key: "Application",
 	default: appData,
-	// effects: [localStorageEffect("TL_app")],
 });
 
+// Export the appAtom
 export default appAtom;
