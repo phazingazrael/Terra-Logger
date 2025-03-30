@@ -88,7 +88,12 @@ export async function updateDataInStore(
 	const db = await initDatabase();
 	const tx = db.transaction(storeName, "readwrite");
 	const store = tx.objectStore(storeName);
-	store.put(updatedData, key);
+	const keyExists = await store.getKey(key);
+	if (!keyExists) {
+		store.add(updatedData, key);
+		return;
+	}
+	store.put(updatedData);
 	await tx.done;
 }
 
@@ -121,13 +126,13 @@ export async function queryDataFromStore(
 	indexName: string,
 	query: IDBValidKey | IDBKeyRange,
 ) {
-	console.time("queryDataFromStore Fetch");
+	console.time(`queryDataFromStore Fetch ${indexName}`);
 	const db = await initDatabase();
 	const tx = db.transaction(storeName, "readonly");
 	const store = tx.objectStore(storeName);
 	const index = store.index(indexName);
 	const result = await index.getAll(query);
-	console.time("queryDataFromStore Fetch");
+	console.timeEnd(`queryDataFromStore Fetch ${indexName}`);
 	return result;
 }
 

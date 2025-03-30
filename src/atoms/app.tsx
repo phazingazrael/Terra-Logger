@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import Package from "../../package.json";
-import { addDataToStore, getDataFromStore } from "../db/interactions";
+import { updateDataInStore, getDataFromStore } from "../db/interactions";
 
 let LocalSaveData: AppInfo | null = null;
 // Retrieve the saved data from the database
@@ -50,7 +50,7 @@ const appData: AppInfo = localSave ?? defaultApp;
 
 // Add the appData object to the database if it is null
 if (localSave === null) {
-	addDataToStore("appSettings", appData);
+	updateDataInStore("appSettings", `TL_${Package.version}`, appData);
 }
 
 // Set the appAtom
