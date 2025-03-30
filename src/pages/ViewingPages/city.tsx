@@ -47,7 +47,6 @@ function CityView() {
 	}, [cityId]);
 
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
-	console.log(JSON.stringify(city));
 
 	return (
 		<Container className="Settings">

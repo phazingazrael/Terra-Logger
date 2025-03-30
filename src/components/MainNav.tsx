@@ -68,7 +68,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							expanded={expanded}
 							onChange={(event, isExpanded) => {
 								handleAccordionChange(isExpanded);
-								console.log(event);
+								console.info(event);
 							}}
 						>
 							<AccordionSummary

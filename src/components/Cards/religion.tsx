@@ -37,7 +37,7 @@ function ReligionCard(props: Readonly<TLReligion>) {
 						: "",
 				}}
 				title={ImageAlt}
-			></CardMedia>
+			/>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">
 					{religion.name}

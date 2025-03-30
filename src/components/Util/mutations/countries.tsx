@@ -11,7 +11,6 @@ export const mutateCountries = async (
 	populationRate: number,
 	urbanization: string,
 ) => {
-	console.log(" countriesData", data.countries);
 	for (const country of data.countries) {
 		// define new country object
 		const newCountry: TLCountry = createEmptyCountry();
@@ -100,7 +99,6 @@ export const mutateCountries = async (
 							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCountry._id}`,
 						).then((response) => response.text()));
 				const svg = response;
-				console.log(country.name, svg);
 				if (svg.startsWith("<!DOCTYPE html>")) {
 					throw new Error("Received HTML error page");
 				}

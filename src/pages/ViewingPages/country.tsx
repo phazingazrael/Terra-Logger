@@ -47,7 +47,6 @@ function CountryView() {
 						if (city.country._id === countryId._id) {
 							fullCities.push(city);
 						}
-						console.log(fullCities);
 					}
 					setCities(fullCities);
 				}
@@ -55,8 +54,6 @@ function CountryView() {
 		}
 	}, [countryId]);
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
-	console.log(JSON.stringify(country));
-	console.log(JSON.stringify(cities));
 
 	const tagStyle = {
 		display: "inline-flex",

@@ -34,7 +34,7 @@ function CitiesPage() {
 			try {
 				const database = await initDatabase();
 				if (database) {
-					console.log("Database initialized");
+					console.info("Database initialized");
 				}
 			} catch (error) {
 				console.error(error);
@@ -43,7 +43,6 @@ function CitiesPage() {
 			const sortedCountries = [...countries].sort((a, b) =>
 				a.name > b.name ? 1 : -1,
 			);
-			console.log(sortedCountries);
 			setCountriesList(sortedCountries);
 			setSearchQuery("");
 			setSelectedCountry(null);
@@ -56,7 +55,6 @@ function CitiesPage() {
 		const loadCities = async () => {
 			const data = await queryDataFromStore("cities", "mapIdIndex", mapId);
 			if (data) {
-				console.log(data);
 				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
 				setCities(sortedData);
 			}

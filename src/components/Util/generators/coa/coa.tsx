@@ -1817,7 +1817,6 @@ const patterns = {
 
 const getCOA = async (id: string, coa: TLCoA) => {
 	const { shield, division, ordinaries, charges } = coa;
-	console.log(id, coa);
 	const ordinariesRegular = ordinaries?.filter((o) => !o.above);
 	const ordinariesAboveCharges = ordinaries?.filter((o) => o.above);
 	const shieldPath = (shield && shieldPaths[shield]) || shieldPaths.heater;
@@ -2025,8 +2024,6 @@ async function getCharges(coa: TLCoA, id: string, shieldPath: string) {
 }
 
 async function fetchCharge(charge: TLCharge, id: string) {
-	console.log(charge);
-	console.log(`${PATH}${charge}.svg`);
 	const fetched = fetch(`${PATH}${charge}.svg`)
 		.then((res) => {
 			if (res.ok) return res.text();

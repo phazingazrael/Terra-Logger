@@ -157,52 +157,52 @@ const MapManager: React.FC = () => {
 	) => {
 		event.preventDefault();
 		const allPromises = selectedMaps.map(async (mapId) => {
-			console.log(`========= Deleting Map:  ${mapId} =========`);
-			console.log("========= Deleting Cities =========");
+			console.info(`========= Deleting Map:  ${mapId} =========`);
+			console.info("========= Deleting Cities =========");
 			for (const city of selectedCities) {
-				console.log(city.name);
+				console.info(city.name);
 				await deleteDataFromStore("cities", city._id);
 			}
 
-			console.log("========= Deleting Countries =========");
+			console.info("========= Deleting Countries =========");
 			for (const country of selectedCountries) {
-				console.log(country.name);
+				console.info(country.name);
 				await deleteDataFromStore("countries", country._id);
 			}
 
-			console.log("========= Deleting Cultures =========");
+			console.info("========= Deleting Cultures =========");
 			for (const culture of selectedCultures) {
-				console.log(culture.name);
+				console.info(culture.name);
 				await deleteDataFromStore("cultures", culture._id);
 			}
 
-			console.log("========= Deleting Notes =========");
+			console.info("========= Deleting Notes =========");
 			for (const note of selectedNotes) {
-				console.log(note.name);
+				console.info(note.name);
 				await deleteDataFromStore("notes", note._id);
 			}
 
 			// TODO: implement NPCs
-			// console.log("========= Deleting NPCs =========");
+			// console.info("========= Deleting NPCs =========");
 			// for (const npc of selectedNpcs) {
-			// 	console.log(npc.name);
+			// 	console.info(npc.name);
 			// 	await deleteDataFromStore("npcs", npc._id);
 			// }
 
-			console.log("========= Deleting Religions =========");
+			console.info("========= Deleting Religions =========");
 			for (const religion of selectedReligions) {
-				console.log(religion.name);
+				console.info(religion.name);
 				await deleteDataFromStore("religions", religion._id);
 			}
 
-			console.log("========= Deleting NameBases =========");
+			console.info("========= Deleting NameBases =========");
 			for (const nameBase of selectedNameBases) {
-				console.log(nameBase.name);
+				console.info(nameBase.name);
 				await deleteDataFromStore("nameBases", nameBase._id);
 			}
 
 			await deleteDataFromStore("maps", mapId);
-			console.log(`========= Deleted Map: ${map.id} (${mapId}) =========`);
+			console.info(`========= Deleted Map: ${map.id} (${mapId}) =========`);
 		});
 
 		await Promise.all(allPromises);

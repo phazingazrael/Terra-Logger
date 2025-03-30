@@ -16,7 +16,7 @@ function ReligionsPage() {
 			try {
 				const database = await initDatabase();
 				if (database) {
-					console.log("Database initialized");
+					console.info("Database initialized");
 				}
 			} catch (error) {
 				console.error(error);
@@ -30,8 +30,6 @@ function ReligionsPage() {
 		const loadReligions = async () => {
 			const data = await queryDataFromStore("religions", "mapIdIndex", mapId);
 			if (data) {
-				console.log(data);
-				console.log(JSON.stringify(data));
 				setReligions(data);
 			}
 		};

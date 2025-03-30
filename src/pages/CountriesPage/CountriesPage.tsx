@@ -17,7 +17,7 @@ function CountriesPage() {
 			try {
 				const database = await initDatabase();
 				if (database) {
-					console.log("Database initialized");
+					console.info("Database initialized");
 				}
 			} catch (error) {
 				console.error(error);
@@ -31,7 +31,6 @@ function CountriesPage() {
 		const loadCountries = async () => {
 			const data = await queryDataFromStore("countries", "mapIdIndex", mapId);
 			if (data) {
-				console.log(data);
 				setCountries(data);
 			}
 		};

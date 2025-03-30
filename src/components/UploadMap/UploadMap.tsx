@@ -93,24 +93,24 @@ function UploadMap() {
 			);
 
 		if (isNewer || isUpdated) {
-			console.log("valid");
+			console.info("valid");
 			const parsedMap = parseLoadedData(mapFile);
 			saveMapData(parsedMap);
 			// need to redirect to the main page '/'
 			ToastSuccess();
 		}
 		if (isInvalid) {
-			console.log("invalid");
+			console.info("invalid");
 			ToastInvalid();
 			setLoading(false);
 		}
 		if (isAncient) {
-			console.log("ancient");
+			console.info("ancient");
 			ToastAncient();
 			setLoading(false);
 		}
 		if (isOutdated) {
-			console.log("outdated");
+			console.info("outdated");
 			ToastAncient();
 			setLoading(false);
 		}
@@ -119,7 +119,6 @@ function UploadMap() {
 
 	async function saveMapData(data: MapInfo): Promise<void> {
 		const mapData = await mutateData(data as unknown as MapInfo);
-		console.log(mapData);
 		const {
 			cities,
 			countries,
@@ -164,8 +163,6 @@ function UploadMap() {
 			}
 		}
 		Maps.push(MapInf);
-
-		console.log(Maps);
 
 		for (const city of cities) {
 			const obj = {

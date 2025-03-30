@@ -10,16 +10,9 @@ import { useOutletContext } from "react-router-dom";
 
 import { rgbToRgba } from "../Util";
 
-import { useEffect } from "react";
 import "./cards.css";
 
-const MapsCard: React.FC<MapsCardProps> = ({
-	handleMapSelect,
-	id,
-	info,
-	mapId,
-}) => {
-	// console.log(id, info, mapId, settings, SVG, svgMod);
+const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 	// biome-ignore lint/suspicious/noExplicitAny: Theme data is not typed correctly here yet, will be fixed later
 	const theme: any = useOutletContext();
 
@@ -30,12 +23,6 @@ const MapsCard: React.FC<MapsCardProps> = ({
 	} else if (theme.palette.mode === "light") {
 		themeColor = theme.palette.primary.light;
 	}
-
-	useEffect(() => {
-		if (mapId === id) {
-			// console.log('map loaded');
-		}
-	});
 
 	const ImageAlt = "";
 	return (

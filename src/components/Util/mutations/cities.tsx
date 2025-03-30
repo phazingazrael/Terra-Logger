@@ -67,7 +67,6 @@ export const mutateCities = async (
 							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCity._id}`,
 						).then((response) => response.text()));
 				const svg = response;
-				console.log(city.name, svg);
 				if (svg.startsWith("<!DOCTYPE html>")) {
 					throw new Error("Received HTML error page");
 				}

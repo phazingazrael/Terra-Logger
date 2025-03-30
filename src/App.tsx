@@ -33,7 +33,7 @@ const App = (): JSX.Element => {
 			const { innerHeight, innerWidth } = window;
 
 			// Log the new window dimensions
-			console.log("resized to: ", innerWidth, "x", innerHeight);
+			console.info("resized to: ", innerWidth, "x", innerHeight);
 
 			// Get the map elements
 			const mapElement = document.getElementById("map");
@@ -78,7 +78,7 @@ const App = (): JSX.Element => {
 				const database = await initDatabase();
 
 				if (database) {
-					console.log("Database initialized");
+					console.info("Database initialized");
 				}
 			} catch (error) {
 				// Handle any errors that occur when initializing the database

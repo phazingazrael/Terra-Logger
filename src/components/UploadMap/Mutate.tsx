@@ -26,11 +26,6 @@ const mutateData = async (data: MapInfo) => {
 	// begin mutating data //
 	try {
 		assignMapInfo(tempMap, data);
-		console.log("Assigned Map Info");
-		console.log(
-			"Temp Map after assigning map info:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 	} catch (error) {
@@ -45,11 +40,7 @@ const mutateData = async (data: MapInfo) => {
 			populationRate,
 			urbanization,
 		);
-		console.log("Mutated Cultures");
-		console.log(
-			"Temp Map after mutating cultures:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
+
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.cultures = Cultures;
@@ -66,11 +57,6 @@ const mutateData = async (data: MapInfo) => {
 			urbanization,
 			urbanDensity,
 		);
-		console.log("Mutated Cities");
-		console.log(
-			"Temp Map after mutating cities:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.cities = Cities;
@@ -86,11 +72,6 @@ const mutateData = async (data: MapInfo) => {
 			populationRate,
 			urbanization,
 		);
-		console.log("Mutated Countries");
-		console.log(
-			"Temp Map after mutating countries:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.countries = Countries;
@@ -101,11 +82,6 @@ const mutateData = async (data: MapInfo) => {
 	// mutate name bases
 	try {
 		const NameBases = await mutateNameBases(tempMap);
-		console.log("Mutated Name Bases");
-		console.log(
-			"Temp Map after mutating namebases :",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.nameBases = NameBases;
@@ -116,11 +92,6 @@ const mutateData = async (data: MapInfo) => {
 	// mutate notes
 	try {
 		const Notes = await mutateNotes(data, tempMap);
-		console.log("Mutated Notes");
-		console.log(
-			"Temp Map after mutating notes:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.notes = Notes;
@@ -131,11 +102,6 @@ const mutateData = async (data: MapInfo) => {
 	// mutate religions - needs touching up.
 	try {
 		const Religions = await mutateReligions(data, tempMap);
-		console.log("Mutated Religions");
-		console.log(
-			"Temp Map after mutating religions:",
-			JSON.parse(JSON.stringify(tempMap)),
-		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.religions = Religions;
@@ -175,11 +141,6 @@ const mutateData = async (data: MapInfo) => {
 	});
 
 	// assigned Cities to Countries
-	console.log("Assigned Cities to Countries");
-	console.log(
-		"Temp Map after assigning cities to countries:",
-		JSON.parse(JSON.stringify(tempMap)),
-	);
 
 	// mutate cultures
 	for (const culture of tempMap.cultures as unknown as TLCulture[]) {

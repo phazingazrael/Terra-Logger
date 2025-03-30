@@ -92,6 +92,6 @@ export const getAllTagTypes = () => {
 	const uniqueTypes = [...new Set(tagTypes)];
 
 	// Log and return the unique tag types
-	//console.log(JSON.stringify(uniqueTypes));
+
 	return uniqueTypes.map((type) => ({ Type: type, Name: formatTagName(type) }));
 };

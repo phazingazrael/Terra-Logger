@@ -41,7 +41,6 @@ interface TagItems {
 }
 
 const tagsData: TagData[] = getAllTags();
-console.log(tagsData);
 
 const categoryIcons = {
 	WorldOverview: "🌍",
