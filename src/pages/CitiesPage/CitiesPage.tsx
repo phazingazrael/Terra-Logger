@@ -82,57 +82,6 @@ function CitiesPage() {
 		document.getElementById("Content")?.scrollTo({ top: 0 });
 	}, [searchQuery, selectedCountry, cities]);
 
-	function onRenderProfiler(
-		id: string,
-		phase: string,
-		actualDuration: number,
-		baseDuration: number,
-		startTime: number,
-		commitTime: number,
-	) {
-		if (phase === "idle") {
-			console.log("idle", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "mount") {
-			console.log("mount", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "update") {
-			console.log("update", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "nested-update") {
-			console.log("nested-update", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "render") {
-			console.log("render", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "commit") {
-			console.log("commit", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "layout") {
-			console.log("layout", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		} else if (phase === "passive") {
-			console.log("passive", id, actualDuration);
-			console.log("baseDuration", baseDuration);
-			console.log("startTime", startTime);
-			console.log("commitTime", commitTime);
-		}
-	}
-
 	return (
 		<Container>
 			<AppBar position="sticky" color="default">
@@ -188,13 +137,11 @@ function CitiesPage() {
 							</Grid>
 						}
 					>
-						<Profiler id="cities" onRender={onRenderProfiler}>
-							{filteredCities.map((city) => (
-								<Grid size={3} key={city._id + city.name} id={city._id}>
-									<LazyCityCard {...city} />
-								</Grid>
-							))}
-						</Profiler>
+						{filteredCities.map((city) => (
+							<Grid size={3} key={city._id + city.name} id={city._id}>
+								<LazyCityCard {...city} />
+							</Grid>
+						))}
 					</Suspense>
 				</Grid>
 			</div>
