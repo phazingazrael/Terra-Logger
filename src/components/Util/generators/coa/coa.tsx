@@ -4,7 +4,7 @@
 // all Charges from https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/charges
 // Simple svg shapes and charges are made by Azgaar and available under CC0.
 // A lot of the complex charge renders are from WappenWiki and available for non-commercial use only.
-const PATH = "./charges/";
+const PATH = "./coaGen/charges/";
 
 const colors: { [key: string]: string } = {
 	argent: "#fafafa",
