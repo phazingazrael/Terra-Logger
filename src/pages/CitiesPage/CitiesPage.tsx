@@ -1,13 +1,15 @@
 import { Button, Container, Chip, Grid2 as Grid, AppBar } from "@mui/material";
-import React, { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, lazy, Profiler } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
 import { initDatabase } from "../../db/database";
-import { getFullStore, queryDataFromStore } from "../../db/interactions";
+import { queryDataFromStore } from "../../db/interactions";
 
 import "./citiesPage.css";
 
 import BookLoader from "../../components/Util/bookLoader.tsx";
+
+const LazyCityCard = lazy(() => import("../../components/Cards/city.tsx"));
 
 type countriesList = {
 	name: string;
@@ -21,13 +23,9 @@ function CitiesPage() {
 	const [cities, setCities] = useState<TLCity[]>([]);
 	const [filteredCities, setFilteredCities] = useState<TLCity[]>([]);
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
-	const [searchQuery, setSearchQuery] = useState("");
+	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 	const { mapId } = map;
-
-	const LazyCityCard = React.lazy(
-		() => import("../../components/Cards/city.tsx"),
-	);
 
 	useEffect(() => {
 		const initializeDatabase = async () => {
@@ -39,7 +37,21 @@ function CitiesPage() {
 			} catch (error) {
 				console.error(error);
 			}
-			const countries = await getFullStore("countries");
+			const data = (await queryDataFromStore(
+				"cities",
+				"mapIdIndex",
+				mapId,
+			)) as TLCity[];
+			if (data) {
+				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
+				setCities(sortedData);
+			}
+
+			const countries = (await queryDataFromStore(
+				"countries",
+				"mapIdIndex",
+				mapId,
+			)) as TLCountry[];
 			const sortedCountries = [...countries].sort((a, b) =>
 				a.name > b.name ? 1 : -1,
 			);
@@ -49,33 +61,77 @@ function CitiesPage() {
 		};
 
 		initializeDatabase();
-	}, []);
-
-	useEffect(() => {
-		const loadCities = async () => {
-			const data = await queryDataFromStore("cities", "mapIdIndex", mapId);
-			if (data) {
-				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
-				setCities(sortedData);
-			}
-		};
-
-		loadCities();
 	}, [mapId]);
 
 	useEffect(() => {
-		const FilteredCities = cities.filter((city) => {
-			if (searchQuery) {
-				return city.name?.toLowerCase().includes(searchQuery.toLowerCase());
-			}
-			if (selectedCountry) {
-				return city.country._id === selectedCountry;
-			}
-			return true;
-		});
-		setFilteredCities(FilteredCities);
+		if (cities.length > 0) {
+			const FilteredCities = cities.filter((city) => {
+				if (searchQuery !== "") {
+					return city.name?.toLowerCase().includes(searchQuery.toLowerCase());
+				}
+				if (selectedCountry !== null) {
+					return city.country._id === selectedCountry;
+				}
+				if (selectedCountry === null && searchQuery === "") {
+					return cities;
+				}
+			});
+			setFilteredCities(FilteredCities);
+		}
+
 		document.getElementById("Content")?.scrollTo({ top: 0 });
 	}, [searchQuery, selectedCountry, cities]);
+
+	function onRenderProfiler(
+		id: string,
+		phase: string,
+		actualDuration: number,
+		baseDuration: number,
+		startTime: number,
+		commitTime: number,
+	) {
+		if (phase === "idle") {
+			console.log("idle", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "mount") {
+			console.log("mount", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "update") {
+			console.log("update", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "nested-update") {
+			console.log("nested-update", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "render") {
+			console.log("render", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "commit") {
+			console.log("commit", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "layout") {
+			console.log("layout", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		} else if (phase === "passive") {
+			console.log("passive", id, actualDuration);
+			console.log("baseDuration", baseDuration);
+			console.log("startTime", startTime);
+			console.log("commitTime", commitTime);
+		}
+	}
 
 	return (
 		<Container>
@@ -132,17 +188,13 @@ function CitiesPage() {
 							</Grid>
 						}
 					>
-						{filteredCities.length === 0
-							? cities.map((city) => (
-									<Grid size={3} key={city._id + city.name} id={city._id}>
-										<LazyCityCard {...city} />
-									</Grid>
-								))
-							: filteredCities.map((city) => (
-									<Grid size={3} key={city._id + city.name} id={city._id}>
-										<LazyCityCard {...city} />
-									</Grid>
-								))}
+						<Profiler id="cities" onRender={onRenderProfiler}>
+							{filteredCities.map((city) => (
+								<Grid size={3} key={city._id + city.name} id={city._id}>
+									<LazyCityCard {...city} />
+								</Grid>
+							))}
+						</Profiler>
 					</Suspense>
 				</Grid>
 			</div>
