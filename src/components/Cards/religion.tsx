@@ -37,9 +37,7 @@ function ReligionCard(props: Readonly<TLReligion>) {
 						: "",
 				}}
 				title={ImageAlt}
-			>
-				{/* <LazyLoadedSVG {...(religion.coa as TLCoA)} /> */}
-			</CardMedia>
+			></CardMedia>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">
 					{religion.name}

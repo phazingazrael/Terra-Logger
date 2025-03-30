@@ -3,12 +3,15 @@ import { v7 as uuidv7 } from "uuid";
 import { findCultureByID } from "../../Util";
 import { createEmptyCountry } from "../mkEmpty/tlCountry";
 
+import getCOA from "../generators/coa/coa.tsx";
+
 export const mutateCountries = async (
 	data: MapInfo,
 	tempMap: TLMapInfo,
 	populationRate: number,
 	urbanization: string,
 ) => {
+	console.log(" countriesData", data.countries);
 	for (const country of data.countries) {
 		// define new country object
 		const newCountry: TLCountry = createEmptyCountry();
@@ -87,33 +90,29 @@ export const mutateCountries = async (
 		}
 
 		if (country.coa) {
-			// get coa svg from armoria and save to string inside of city data
+			// get coa svg from armoria and save to string inside of city data			const coa = country.coa;
 			const coa = country.coa;
-			let url: string | undefined;
-
-			// check if coa is an object and if it has more than 0 keys
-			if (typeof coa === "object" && Object.keys(coa).length > 0) {
-				// if so, encode the coa data to a string and add it to the url
-				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
-			} else {
-				console.log(coa, (country as unknown as TLCity)._id);
-				// if not, add the default url
-				url = "https://armoria.herokuapp.com/?size=500&format=svg";
-			}
-
-			if (url !== undefined) {
-				try {
-					const response = await fetch(url);
-					const svg = await response.text();
-					if (svg.startsWith("<!DOCTYPE html>")) {
-						throw new Error("Received HTML error page");
-					}
-					newCountry.coaSVG = svg;
-					console.log(country.name, url);
-				} catch (error) {
-					console.error("Error fetching SVG:", error);
+			try {
+				const response = await (typeof coa === "object" &&
+				Object.keys(coa).length > 0
+					? getCOA(country.i as unknown as string, coa)
+					: fetch(
+							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+						).then((response) => response.text()));
+				const svg = response;
+				console.log(country.name, svg);
+				if (svg.startsWith("<!DOCTYPE html>")) {
+					throw new Error("Received HTML error page");
 				}
+				newCountry.coaSVG = svg;
+			} catch (error) {
+				console.error("Error fetching SVG:", country.name, error);
 			}
+		} else if (!country.coa || country.coa === undefined) {
+			const response = await fetch(
+				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+			).then((response) => response.text());
+			newCountry.coaSVG = response;
 		}
 
 		const urbanvalue = Math.round(

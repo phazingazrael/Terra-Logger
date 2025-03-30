@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import Ellipsis from "../Util/ellipsis";
 import { Link, useOutletContext } from "react-router-dom";
 
-import { rgbToRgba, LazyLoadedSVG } from "../Util";
+import { rgbToRgba } from "../Util";
 
 import "./cards.css";
 
@@ -39,18 +39,11 @@ function CityCard(props: Readonly<TLCity>) {
 				}}
 				title={ImageAlt}
 			>
-				{/* <LazyLoadedSVG {...(city.coa as TLCoA)} /> */}
-				{city.coaSVG === "" ||
-				city.coaSVG ===
-					'<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>Internal Server Error</pre>\n</body>\n</html>\n' ? (
-					<LazyLoadedSVG {...(city.coa as TLCoA)} />
-				) : (
-					<div
-						className="svg-container CoA"
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-						dangerouslySetInnerHTML={{ __html: city.coaSVG }}
-					/>
-				)}
+				<div
+					className="svg-container CoA"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+					dangerouslySetInnerHTML={{ __html: city.coaSVG }}
+				/>
 			</CardMedia>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">

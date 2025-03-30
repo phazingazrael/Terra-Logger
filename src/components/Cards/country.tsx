@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import Ellipsis from "../Util/ellipsis";
 import { Link, useOutletContext } from "react-router-dom";
 
-import { LazyLoadedSVG, rgbToRgba } from "../Util";
+import { rgbToRgba } from "../Util";
 
 import "./cards.css";
 
@@ -39,18 +39,11 @@ function CountryCard(props: Readonly<TLCountry>) {
 				}}
 				title={ImageAlt}
 			>
-				{country.coaSVG === "" ||
-				country.coaSVG === undefined ||
-				country.coaSVG === null ? (
-					<LazyLoadedSVG {...(country.coa as TLCoA)} />
-				) : (
-					<div
-						className="svg-container CoA"
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-						dangerouslySetInnerHTML={{ __html: country.coaSVG }}
-					/>
-				)}
-				{/* <LazyLoadedSVG {...(country.coa as TLCoA)} /> */}
+				<div
+					className="svg-container CoA"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+					dangerouslySetInnerHTML={{ __html: country.coaSVG }}
+				/>
 			</CardMedia>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">

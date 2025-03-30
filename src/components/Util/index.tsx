@@ -1,5 +1,4 @@
 /* common utils */
-export { default as LazyLoadedSVG } from "./lazyLoadedSVG.tsx";
 export { default as BookLoader } from "./bookLoader.tsx";
 export { default as Ellipsis } from "./ellipsis.tsx";
 

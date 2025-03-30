@@ -2,6 +2,8 @@ import { minmax, findCultureByID } from "../../Util";
 
 import { v7 as uuidv7 } from "uuid";
 
+import getCOA from "../generators/coa/coa.tsx";
+
 export const mutateCities = async (
 	data: MapInfo,
 	tempMap: TLMapInfo,
@@ -56,31 +58,28 @@ export const mutateCities = async (
 		if (city.coa) {
 			// get coa svg from armoria and save to string inside of city data
 			const coa = city.coa;
-			let url: string | undefined;
 
-			// check if coa is an object and if it has more than 0 keys
-			if (typeof coa === "object" && Object.keys(coa).length > 0) {
-				// if so, encode the coa data to a string and add it to the url
-				url = `https://armoria.herokuapp.com/?coa=${encodeURIComponent(JSON.stringify(coa))}`;
-			} else if (coa === undefined) {
-				console.log(coa, (city as unknown as TLCity)._id);
-				// if not, add the default url
-				url = "https://armoria.herokuapp.com/?size=500&format=svg";
-			}
-
-			if (url !== undefined) {
-				try {
-					const response = await fetch(url);
-					const svg = await response.text();
-					if (svg.startsWith("<!DOCTYPE html>")) {
-						throw new Error("Received HTML error page");
-					}
-					newCity.coaSVG = svg;
-					console.log(city.name, url);
-				} catch (error) {
-					console.error("Error fetching SVG:", error);
+			try {
+				const response = await (typeof coa === "object" &&
+				Object.keys(coa).length > 0
+					? getCOA(city.i as unknown as string, coa)
+					: fetch("https://armoria.herokuapp.com/?size=500&format=svg").then(
+							(response) => response.text(),
+						));
+				const svg = response;
+				console.log(city.name, svg);
+				if (svg.startsWith("<!DOCTYPE html>")) {
+					throw new Error("Received HTML error page");
 				}
+				newCity.coaSVG = svg;
+			} catch (error) {
+				console.error("Error fetching SVG:", city.name, error);
 			}
+		} else if (!city.coa || city.coa === undefined) {
+			const response = await fetch(
+				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+			).then((response) => response.text());
+			newCity.coaSVG = response;
 		}
 
 		// size & sizeRaw from editors.js from Azgaar.

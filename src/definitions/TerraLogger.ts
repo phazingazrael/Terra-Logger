@@ -4,22 +4,40 @@
 
 // TL_Map Interfaces
 
+type TLOrdinary = {
+	ordinary?: string;
+	t?: string;
+	line?: string;
+	size?: number;
+	above?: boolean;
+	divided?: string;
+};
+
+type TLCharge = {
+	charge?: string;
+	t?: string;
+	t2?: string;
+	t3?: string;
+	p?: string;
+	size?: number;
+	divided?: string;
+	stroke?: string;
+	sinister?: boolean;
+	reversed?: boolean;
+};
+
+type TLDivision = {
+	division?: string;
+	t?: string;
+	line?: string;
+};
+
 type TLCoA = {
-	coa?: {
-		t1?: string;
-		division?: {
-			division?: string;
-			t?: string;
-			line?: string;
-		};
-		charges?: Array<{
-			charge?: string;
-			t?: string;
-			p?: string;
-			size?: number;
-		}>;
-		shield?: string;
-	};
+	t1?: string;
+	division?: TLDivision;
+	ordinaries?: TLOrdinary[];
+	charges?: TLCharge[];
+	shield?: string;
 };
 
 type TLCulture = {
