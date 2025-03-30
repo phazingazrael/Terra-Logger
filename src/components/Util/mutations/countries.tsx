@@ -97,7 +97,7 @@ export const mutateCountries = async (
 				Object.keys(coa).length > 0
 					? getCOA(country.i as unknown as string, coa)
 					: fetch(
-							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCountry._id}`,
 						).then((response) => response.text()));
 				const svg = response;
 				console.log(country.name, svg);
@@ -110,7 +110,7 @@ export const mutateCountries = async (
 			}
 		} else if (!country.coa || country.coa === undefined) {
 			const response = await fetch(
-				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCountry._id}`,
 			).then((response) => response.text());
 			newCountry.coaSVG = response;
 		}

@@ -63,9 +63,9 @@ export const mutateCities = async (
 				const response = await (typeof coa === "object" &&
 				Object.keys(coa).length > 0
 					? getCOA(city.i as unknown as string, coa)
-					: fetch("https://armoria.herokuapp.com/?size=500&format=svg").then(
-							(response) => response.text(),
-						));
+					: fetch(
+							`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCity._id}`,
+						).then((response) => response.text()));
 				const svg = response;
 				console.log(city.name, svg);
 				if (svg.startsWith("<!DOCTYPE html>")) {
@@ -77,7 +77,7 @@ export const mutateCities = async (
 			}
 		} else if (!city.coa || city.coa === undefined) {
 			const response = await fetch(
-				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${uuidv7()}`,
+				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${newCity._id}`,
 			).then((response) => response.text());
 			newCity.coaSVG = response;
 		}
