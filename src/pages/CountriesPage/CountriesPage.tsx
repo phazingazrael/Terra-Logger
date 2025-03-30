@@ -29,9 +29,14 @@ function CountriesPage() {
 
 	useEffect(() => {
 		const loadCountries = async () => {
-			const data = await queryDataFromStore("countries", "mapIdIndex", mapId);
+			const data = (await queryDataFromStore(
+				"countries",
+				"mapIdIndex",
+				mapId,
+			)) as TLCountry[];
 			if (data) {
-				setCountries(data);
+				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
+				setCountries(sortedData);
 			}
 		};
 
