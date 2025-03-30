@@ -2,14 +2,20 @@ import { atom } from "recoil";
 import Package from "../../package.json";
 import { addDataToStore, getDataFromStore } from "../db/interactions";
 
+let LocalSaveData: AppInfo | null = null;
 // Retrieve the saved data from the database
-const localSaveData: AppInfo | null = await getDataFromStore(
-	"appSettings",
-	`TL_${Package.version}`,
-);
+async function initApp() {
+	await getDataFromStore("appSettings", `TL_${Package.version}`).then(
+		(data) => {
+			LocalSaveData = data;
+		},
+	);
+}
+
+initApp();
 
 // Set the localSaveData to null if it is undefined
-const localSave: AppInfo | null = localSaveData ?? null;
+const localSave: AppInfo | null = LocalSaveData ?? null;
 
 // Set the defaultApp info object
 const defaultApp: AppInfo = {
