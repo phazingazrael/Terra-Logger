@@ -41,7 +41,7 @@ function CityCard(props: Readonly<TLCity>) {
 			>
 				<div
 					className="svg-container CoA"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is safe, Generated locally from data
 					dangerouslySetInnerHTML={{ __html: city.coaSVG }}
 				/>
 			</CardMedia>
