@@ -1,5 +1,5 @@
 import { Button, Container, Chip, Grid2 as Grid, AppBar } from "@mui/material";
-import { useEffect, useState, Suspense, lazy, Profiler } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
 import { initDatabase } from "../../db/database";
@@ -9,7 +9,9 @@ import "./citiesPage.css";
 
 import BookLoader from "../../components/Util/bookLoader.tsx";
 
-const LazyCityCard = lazy(() => import("../../components/Cards/city.tsx"));
+const LazyCityCard = React.lazy(
+	() => import("../../components/Cards/city.tsx"),
+);
 
 type countriesList = {
 	name: string;
@@ -37,15 +39,6 @@ function CitiesPage() {
 			} catch (error) {
 				console.error(error);
 			}
-			const data = (await queryDataFromStore(
-				"cities",
-				"mapIdIndex",
-				mapId,
-			)) as TLCity[];
-			if (data) {
-				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
-				setCities(sortedData);
-			}
 
 			const countries = (await queryDataFromStore(
 				"countries",
@@ -56,6 +49,18 @@ function CitiesPage() {
 				a.name > b.name ? 1 : -1,
 			);
 			setCountriesList(sortedCountries);
+
+			const data = (await queryDataFromStore(
+				"cities",
+				"mapIdIndex",
+				mapId,
+			)) as TLCity[];
+
+			if (data) {
+				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
+				setCities(sortedData);
+			}
+
 			setSearchQuery("");
 			setSelectedCountry(null);
 		};
