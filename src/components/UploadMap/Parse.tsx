@@ -53,7 +53,7 @@ function calculateVoronoi(points: number[], boundary: number[]) {
 
 export const parseLoadedResult = (
 	result: ArrayBuffer,
-): [mapFile: string[], mapVersion: number] => {
+): [mapFile: string[], mapVersion: number, versionString: string] => {
 	const resultAsString = new TextDecoder().decode(result);
 	const isDelimited = resultAsString.substring(0, 10).includes("|");
 	const decoded = isDelimited
@@ -61,11 +61,16 @@ export const parseLoadedResult = (
 		: decodeURIComponent(atob(resultAsString));
 
 	const mapFile = decoded.split("\r\n");
+	const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
 	// biome-ignore lint/style/useConst: <explanation>
 	let mapVersion =
-		Number.parseFloat(mapFile[0].split("|")[0] || mapFile[0]) ?? 0;
-
-	return [mapFile, mapVersion];
+		versionparts[0] * 10000 + versionparts[1] * 100 + versionparts[2];
+	const patchVersion =
+		versionparts[2] > 9 ? versionparts[2] : `0${versionparts[2]}`;
+	const versionString = JSON.stringify(
+		`${versionparts[0]}.${versionparts[1]}.${patchVersion}`,
+	);
+	return [mapFile, mapVersion, versionString];
 };
 
 export const parseLoadedData = (data: string[]) => {

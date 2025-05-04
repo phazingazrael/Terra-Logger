@@ -107,6 +107,7 @@ function UploadMap() {
 		isOutdated: boolean,
 		mapVersion: number,
 		mapFile: string[],
+		versionString: string,
 	) {
 		const ToastSuccess = () =>
 			toast.success(
@@ -120,9 +121,8 @@ function UploadMap() {
 			);
 
 		if (isNewer || isUpdated || isOutdated) {
-			console.info("valid");
 			const parsedMap = parseLoadedData(mapFile);
-			saveMapData(parsedMap);
+			saveMapData(parsedMap, JSON.parse(versionString));
 			// need to redirect to the main page '/'
 			ToastSuccess();
 		}
@@ -139,8 +139,9 @@ function UploadMap() {
 		return null;
 	}
 
-	async function saveMapData(data: MapInfo): Promise<void> {
+	async function saveMapData(data: MapInfo, versionS: string): Promise<void> {
 		const mapData = await mutateData(data as unknown as MapInfo);
+		console.log(data);
 		const {
 			cities,
 			countries,
@@ -158,7 +159,7 @@ function UploadMap() {
 		const MapInf: MapInf = {
 			id: mapId,
 			mapId: mapId,
-			info: info,
+			info: { ...info, ver: versionS },
 			settings: settings,
 			SVG: SVG,
 			svgMod: svgMod,
@@ -255,10 +256,11 @@ function UploadMap() {
 				if (event.target) {
 					const { result } = event.target;
 					if (result instanceof ArrayBuffer) {
-						const [mapFile, mapVersion] = parseLoadedResult(result);
+						const [mapFile, mapVersion, versionString] =
+							parseLoadedResult(result);
 						const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
 							processLoadedData(mapFile, mapVersion.toString());
-						console.log(isUpdated, isNewer, isInvalid, isAncient, isOutdated);
+						console.log(versionString);
 						handleLoadedData(
 							isUpdated,
 							isNewer,
@@ -267,6 +269,7 @@ function UploadMap() {
 							isOutdated,
 							mapVersion,
 							mapFile,
+							versionString,
 						);
 					}
 				}

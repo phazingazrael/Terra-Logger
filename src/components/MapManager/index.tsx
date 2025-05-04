@@ -45,6 +45,7 @@ const MapManager: React.FC = () => {
 			width: 0,
 			height: 0,
 			ID: "",
+			ver: "",
 		},
 		mapId: "",
 		settings: {

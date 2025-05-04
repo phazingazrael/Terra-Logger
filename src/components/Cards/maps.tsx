@@ -41,6 +41,15 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 				<Typography gutterBottom variant="h5" component="div">
 					{info.name}
 				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					Seed: {info.seed}
+				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					Map Version: {info.ver}
+				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					Width: {info.width} x Height: {info.height}
+				</Typography>
 			</CardContent>
 			<CardActions className="tile-info">
 				<Button className="tile-button" color="secondary" variant="contained">
@@ -59,6 +68,7 @@ type MapsCardProps = {
 		width: number;
 		height: number;
 		ID: string;
+		ver: string;
 		// ... other properties ...
 	};
 	mapId: string;

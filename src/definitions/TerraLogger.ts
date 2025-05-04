@@ -304,6 +304,7 @@ interface MapInf {
 		width: number;
 		height: number;
 		ID: string;
+		ver: string;
 	};
 	mapId: string;
 	settings: {
