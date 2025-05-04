@@ -1,7 +1,20 @@
-#MapsList input[type="checkbox"] {
+#MapsList input[type='checkbox'] {
   z-index: 3;
   position: relative;
   float: right;
   width: 20px;
   height: 20px;
+}
+
+.UploadMap-modal .file-grid {
+  display: block !important;
+}
+
+.UploadMap-modal .card-header,
+.UploadMap-modal .file-input:nth-child(2) {
+  display: none !important;
+}
+
+.UploadMap-modal .card-body {
+  padding: 0 !important;
 }

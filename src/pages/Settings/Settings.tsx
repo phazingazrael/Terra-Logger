@@ -24,7 +24,7 @@ function Settings() {
 	const { userSettings } = app;
 	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaults, setDefaults] = useState<Array<string>>([]);
-	const [mapsList, setMapsList] = useState<MapInf[]>([]);
+	const [mapsList, setMapsList] = useRecoilState(mapsListAtom);
 
 	useEffect(() => {
 		const fetchMapsList = async () => {

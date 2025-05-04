@@ -43,6 +43,15 @@ header {
 
 .Navigation .MuiAccordionDetails-root {
   padding-top: 0;
+  padding-bottom: 0;
+}
+.Navigation .MuiList-root {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.Navigation .MuiAccordionSummary-content {
+  margin: 0;
 }
 
 /* Content Styling */
@@ -112,9 +121,8 @@ header {
 .citiesLoader h2 {
   width: 100px;
   overflow: hidden;
-  color: #8309AC;
+  color: #8309ac;
 }
-
 
 /* Svg background display changes */
 /*-- only shows if map is smaller than screen size --*/
