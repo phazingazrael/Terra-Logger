@@ -13,6 +13,7 @@ import "./Settings.css";
 
 import appAtom from "../../atoms/app.tsx";
 import mapAtom from "../../atoms/map.tsx";
+import mapsListAtom from "../../atoms/mapsList.tsx";
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 
@@ -29,11 +30,11 @@ function Settings() {
 	useEffect(() => {
 		const fetchMapsList = async () => {
 			const mapsData = await getFullStore("maps");
-			setMapsList(mapsData);
+			setMapsList(mapsData as MapInf[]);
 		};
 
 		fetchMapsList();
-	}, []);
+	}, [mapsList, setMapsList]);
 
 	const defaultExports: Array<string> = [
 		"Cities",

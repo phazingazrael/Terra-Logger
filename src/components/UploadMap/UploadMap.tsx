@@ -11,9 +11,14 @@ import BookLoader from "../Util/bookLoader.tsx";
 
 import appAtom from "../../atoms/app.tsx";
 import mapAtom from "../../atoms/map.tsx";
+import mapsAtom from "../../atoms/mapsList.tsx";
 import loadingAtom from "../../atoms/loading.tsx";
 
-import { addDataToStore, getFullStore } from "../../db/interactions.tsx";
+import {
+	addDataToStore,
+	getFullStore,
+	updateDataInStore,
+} from "../../db/interactions.tsx";
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,7 +26,7 @@ function UploadMap() {
 	const [app] = useRecoilState<AppInfo>(appAtom);
 	const [, setMap] = useRecoilState<MapInf>(mapAtom);
 	const [isLoading, setLoading] = useRecoilState(loadingAtom);
-	const [mapsList, setMapsList] = useState<MapInf[]>([]);
+	const [mapsList, setMapsList] = useRecoilState(mapsAtom);
 
 	const OLDEST_SUPPORTED_VERSION = "1.95.00";
 	const afmgMin = "1.95.00";
@@ -180,12 +185,20 @@ function UploadMap() {
 		setMap(MapInf);
 
 		const Maps: MapInf[] = [];
-		if (mapsList.length > 0) {
-			for (const map of mapsList) {
+		const mapsListValue = await mapsList();
+		if (mapsListValue.length > 0) {
+			for (const map of mapsListValue) {
 				Maps.push(map);
 			}
+		} else {
+			Maps.push(MapInf);
 		}
-		Maps.push(MapInf);
+
+		if (Maps.length > 0) {
+			for (const map of Maps) {
+				updateDataInStore("maps", map.id, map);
+			}
+		}
 
 		for (const city of cities) {
 			const obj = {
@@ -322,7 +335,7 @@ function UploadMap() {
 								</Stack>
 							</div>
 							<div className="file-input">
-								<Alert severity="info">
+								<Alert severity="info" className="uploadBox-desc">
 									<AlertTitle>
 										Why use the .map file instead of exported .json?
 									</AlertTitle>

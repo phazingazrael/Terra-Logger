@@ -1,4 +1,4 @@
-import { Button, Grid2 as Grid } from "@mui/material";
+import { Button, Grid2 as Grid, Modal, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
@@ -13,6 +13,20 @@ import {
 
 import "./index.css";
 import { MapsCard } from "../Cards/index.tsx";
+import UploadMap from "../UploadMap/UploadMap.tsx";
+import shadows from "@mui/material/styles/shadows";
+import { Navigate } from "react-router-dom";
+
+const modalStyle = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	bgcolor: "background.paper",
+	border: "2px solid #000",
+	boxShadow: shadows[24],
+	p: 4,
+};
 
 const MapManager: React.FC = () => {
 	const [map, setMap] = useRecoilState(mapAtom);
@@ -27,6 +41,10 @@ const MapManager: React.FC = () => {
 	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
 	const [, setMapName] = useRecoilState(mapNameAtom);
 	const [, setMapLoaded] = useRecoilState(mapLoadedAtom);
+
+	const [open, setOpen] = useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 
 	useEffect(() => {
 		const fetchMapsList = async () => {
@@ -158,52 +176,60 @@ const MapManager: React.FC = () => {
 	) => {
 		event.preventDefault();
 		const allPromises = selectedMaps.map(async (mapId) => {
-			console.info(`========= Deleting Map:  ${mapId} =========`);
-			console.info("========= Deleting Cities =========");
+			console.group(`========= Deleting Map:  ${mapId} =========`);
+			console.groupCollapsed("========= Deleting Cities =========");
 			for (const city of selectedCities) {
 				console.info(city.name);
 				await deleteDataFromStore("cities", city._id);
 			}
+			console.groupEnd();
 
-			console.info("========= Deleting Countries =========");
+			console.groupCollapsed("========= Deleting Countries =========");
 			for (const country of selectedCountries) {
 				console.info(country.name);
 				await deleteDataFromStore("countries", country._id);
 			}
+			console.groupEnd();
 
-			console.info("========= Deleting Cultures =========");
+			console.groupCollapsed("========= Deleting Cultures =========");
 			for (const culture of selectedCultures) {
 				console.info(culture.name);
 				await deleteDataFromStore("cultures", culture._id);
 			}
+			console.groupEnd();
 
-			console.info("========= Deleting Notes =========");
+			console.groupCollapsed("========= Deleting Notes =========");
 			for (const note of selectedNotes) {
 				console.info(note.name);
 				await deleteDataFromStore("notes", note._id);
 			}
+			console.groupEnd();
 
 			// TODO: implement NPCs
-			// console.info("========= Deleting NPCs =========");
+			// console.groupCollapsed("========= Deleting NPCs =========");
 			// for (const npc of selectedNpcs) {
 			// 	console.info(npc.name);
 			// 	await deleteDataFromStore("npcs", npc._id);
 			// }
+			// console.groupEnd()
 
-			console.info("========= Deleting Religions =========");
+			console.groupCollapsed("========= Deleting Religions =========");
 			for (const religion of selectedReligions) {
 				console.info(religion.name);
 				await deleteDataFromStore("religions", religion._id);
 			}
+			console.groupEnd();
 
-			console.info("========= Deleting NameBases =========");
+			console.groupCollapsed("========= Deleting NameBases =========");
 			for (const nameBase of selectedNameBases) {
 				console.info(nameBase.name);
 				await deleteDataFromStore("nameBases", nameBase._id);
 			}
+			console.groupEnd();
 
 			await deleteDataFromStore("maps", mapId);
 			console.info(`========= Deleted Map: ${map.id} (${mapId}) =========`);
+			console.groupEnd();
 		});
 
 		await Promise.all(allPromises);
@@ -248,6 +274,28 @@ const MapManager: React.FC = () => {
 			) : (
 				""
 			)}
+			<Button
+				variant="contained"
+				onClick={() => {
+					handleOpen();
+					setTimeout(() => {
+						handleClose();
+					}, 10000);
+					Navigate({ to: "/settings" });
+				}}
+			>
+				Upload New Map
+			</Button>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="modal-modal-title"
+				aria-describedby="modal-modal-description"
+			>
+				<Box sx={modalStyle} className="UploadMap-modal">
+					<UploadMap />
+				</Box>
+			</Modal>
 		</div>
 	);
 };
