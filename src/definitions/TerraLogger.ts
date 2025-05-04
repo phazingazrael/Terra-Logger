@@ -14,7 +14,7 @@ type TLOrdinary = {
 };
 
 type TLCharge = {
-	charge?: string;
+	charge?: string | undefined;
 	t?: string;
 	t2?: string;
 	t3?: string;
@@ -38,6 +38,7 @@ type TLCoA = {
 	ordinaries?: TLOrdinary[];
 	charges?: TLCharge[];
 	shield?: string;
+	line?: string;
 };
 
 type TLCulture = {
