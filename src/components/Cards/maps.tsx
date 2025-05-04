@@ -1,11 +1,4 @@
-import {
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Typography,
-} from "@mui/material";
+import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 
 import { rgbToRgba } from "../Util";
@@ -51,11 +44,6 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 					Width: {info.width} x Height: {info.height}
 				</Typography>
 			</CardContent>
-			<CardActions className="tile-info">
-				<Button className="tile-button" color="secondary" variant="contained">
-					View
-				</Button>
-			</CardActions>
 		</Card>
 	);
 };
