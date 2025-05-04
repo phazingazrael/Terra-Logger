@@ -20,6 +20,7 @@
 	},
 	"peacock.color": "#84288d",
 	"cSpell.words": [
+		"Delaunator",
 		"Dexie",
 		"editext",
 		"Elven",
@@ -30,6 +31,7 @@
 		"npcs",
 		"Objs",
 		"toastify",
-		"viewbox"
+		"viewbox",
+		"voronoi"
 	]
 }
