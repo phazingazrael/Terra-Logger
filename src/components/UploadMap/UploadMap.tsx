@@ -23,8 +23,8 @@ function UploadMap() {
 	const [isLoading, setLoading] = useRecoilState(loadingAtom);
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 
-	const OLDEST_SUPPORTED_VERSION = 1.95;
-	const afmgMin = "1.95";
+	const OLDEST_SUPPORTED_VERSION = "1.95.00";
+	const afmgMin = "1.95.00";
 	const currentVersion = Number.parseFloat(app.application.afmgVer);
 
 	useEffect(() => {
@@ -36,32 +36,59 @@ function UploadMap() {
 		fetchMapsList();
 	}, []);
 
+	function isValidVersion(versionString: string) {
+		if (!versionString) return false;
+		const [major, minor, patch] = versionString.split(".");
+		return !Number.isNaN(major) && !Number.isNaN(minor) && !Number.isNaN(patch);
+	}
+
 	function compareVersions(
-		version1: number | string,
-		version2: number | string,
-	): number {
-		const v1 = String(version1).split(".").map(Number);
-		const v2 = String(version2).split(".").map(Number);
+		version1: string,
+		version2: string,
+		options = { major: true, minor: true, patch: true },
+	) {
+		if (!isValidVersion(version1) || !isValidVersion(version2))
+			return { isEqual: false, isNewer: false, isOlder: false };
 
-		for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
-			const part1 = v1[i] || 0;
-			const part2 = v2[i] || 0;
+		let [major1, minor1, patch1] = version1.split(".").map(Number);
+		let [major2, minor2, patch2] = version2.split(".").map(Number);
 
-			if (part1 > part2) return 1;
-			if (part1 < part2) return -1;
-		}
+		if (!options.major) major1 = major2 = 0;
+		if (!options.minor) minor1 = minor2 = 0;
+		if (!options.patch) patch1 = patch2 = 0;
 
-		return 0;
+		const isEqual = major1 === major2 && minor1 === minor2 && patch1 === patch2;
+		const isNewer =
+			major1 > major2 ||
+			(major1 === major2 &&
+				(minor1 > minor2 || (minor1 === minor2 && patch1 > patch2)));
+		const isOlder =
+			major1 < major2 ||
+			(major1 === major2 &&
+				(minor1 < minor2 || (minor1 === minor2 && patch1 < patch2)));
+
+		return { isEqual, isNewer, isOlder };
 	}
 
 	function processLoadedData(mapFile: string[], mapVersion: string) {
 		const isInvalid =
 			!mapFile || !mapVersion || mapFile?.length < 26 || !mapFile?.[5];
-		const isUpdated = compareVersions(mapVersion, currentVersion) === 0;
-		const isAncient =
-			compareVersions(mapVersion, OLDEST_SUPPORTED_VERSION.toString()) < 0;
-		const isNewer = compareVersions(mapVersion, currentVersion) > 0;
-		const isOutdated = compareVersions(mapVersion, currentVersion) < 0;
+		const isUpdated = compareVersions(
+			mapVersion,
+			currentVersion.toString(),
+		).isEqual;
+		const isAncient = compareVersions(
+			mapVersion,
+			OLDEST_SUPPORTED_VERSION.toString(),
+		).isOlder;
+		const isNewer = compareVersions(
+			mapVersion,
+			currentVersion.toString(),
+		).isNewer;
+		const isOutdated = compareVersions(
+			mapVersion,
+			currentVersion.toString(),
+		).isOlder;
 
 		return {
 			isUpdated,
@@ -92,7 +119,7 @@ function UploadMap() {
 				`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`,
 			);
 
-		if (isNewer || isUpdated) {
+		if (isNewer || isUpdated || isOutdated) {
 			console.info("valid");
 			const parsedMap = parseLoadedData(mapFile);
 			saveMapData(parsedMap);
@@ -106,11 +133,6 @@ function UploadMap() {
 		}
 		if (isAncient) {
 			console.info("ancient");
-			ToastAncient();
-			setLoading(false);
-		}
-		if (isOutdated) {
-			console.info("outdated");
 			ToastAncient();
 			setLoading(false);
 		}
@@ -236,6 +258,7 @@ function UploadMap() {
 						const [mapFile, mapVersion] = parseLoadedResult(result);
 						const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
 							processLoadedData(mapFile, mapVersion.toString());
+						console.log(isUpdated, isNewer, isInvalid, isAncient, isOutdated);
 						handleLoadedData(
 							isUpdated,
 							isNewer,
