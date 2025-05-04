@@ -5,7 +5,7 @@ import {
 	FormControlLabel,
 	FormGroup,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { IconContext } from "react-icons";
 import { useRecoilState } from "recoil";
 
@@ -16,12 +16,24 @@ import mapAtom from "../../atoms/map.tsx";
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 
+import { getFullStore } from "../../db/interactions.tsx";
+
 function Settings() {
 	const [map] = useRecoilState(mapAtom);
 	const [app, setApp] = useRecoilState(appAtom);
 	const { userSettings } = app;
 	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaults, setDefaults] = useState<Array<string>>([]);
+	const [mapsList, setMapsList] = useState<MapInf[]>([]);
+
+	useEffect(() => {
+		const fetchMapsList = async () => {
+			const mapsData = await getFullStore("maps");
+			setMapsList(mapsData);
+		};
+
+		fetchMapsList();
+	}, []);
 
 	const defaultExports: Array<string> = [
 		"Cities",
@@ -57,7 +69,7 @@ function Settings() {
 					<div className="contentSubBody">
 						<div className="section">
 							<h4>Map Settings</h4>
-							{map.settings.mapName !== "" ? (
+							{mapsList[0] !== undefined ? (
 								<div className="sectionAlt">
 									<span id="MapsList">
 										<MapManager />
