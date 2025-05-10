@@ -1,12 +1,12 @@
-import { atom } from 'recoil';
-import { getFullStore } from '../db/interactions';
+import { atom } from "recoil";
+import { getFullStore } from "../db/interactions";
 
 const mapsListAtom = atom({
-  key: 'MapsList',
-  default: async () => {
-    const mapsData = await getFullStore('maps');
-    return mapsData || [];
-  },
+	key: "MapsList",
+	default: async () => {
+		const mapsData = await getFullStore("maps");
+		return mapsData;
+	},
 });
 
 export default mapsListAtom;

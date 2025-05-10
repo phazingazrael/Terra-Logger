@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-console */
 import { Alert, AlertTitle, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { toast } from "react-toastify";
 
@@ -34,12 +34,12 @@ function UploadMap() {
 
 	useEffect(() => {
 		const fetchMapsList = async () => {
-			const mapsData = await getFullStore("maps");
-			setMapsList(mapsData);
+			const mapsData: MapInf[] = await getFullStore("maps");
+			setMapsList(() => Promise.resolve(mapsData));
 		};
 
 		fetchMapsList();
-	}, []);
+	}, [setMapsList]);
 
 	function isValidVersion(versionString: string) {
 		if (!versionString) return false;
@@ -185,7 +185,7 @@ function UploadMap() {
 		setMap(MapInf);
 
 		const Maps: MapInf[] = [];
-		const mapsListValue = await mapsList();
+		const mapsListValue = await getFullStore("maps");
 		if (mapsListValue.length > 0) {
 			for (const map of mapsListValue) {
 				Maps.push(map);

@@ -4,10 +4,12 @@ import { useOutletContext } from "react-router-dom";
 import { rgbToRgba } from "../Util";
 
 import "./cards.css";
+import type { Context } from "../../definitions/Common";
 
 const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
-	// biome-ignore lint/suspicious/noExplicitAny: Theme data is not typed correctly here yet, will be fixed later
-	const theme: any = useOutletContext();
+	const { Theme }: Context = useOutletContext();
+
+	const theme = Theme;
 
 	let themeColor = null;
 

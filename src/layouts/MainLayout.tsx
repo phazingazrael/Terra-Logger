@@ -184,7 +184,7 @@ function MainLayout() {
 					<Grid size={9}>
 						<Item className="Content" id="Content">
 							<div className="contentBody">
-								<Outlet context={Theme} />
+								<Outlet context={{ Theme, mapsList }} />
 							</div>
 						</Item>
 					</Grid>
