@@ -307,7 +307,7 @@ export const mutateCities = async (
 		} else if (city.removed === true) {
 			console.log("city was removed");
 		} else {
-			console.log("city data not found");
+			console.log("city data not found", city);
 		}
 	}
 

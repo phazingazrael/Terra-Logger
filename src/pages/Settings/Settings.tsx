@@ -1,40 +1,28 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import {
 	Checkbox,
 	Container,
 	FormControlLabel,
 	FormGroup,
 } from "@mui/material";
-import { useMemo, useState, useEffect } from "react";
+import type { Context } from "../../definitions/Common";
+import { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { useRecoilState } from "recoil";
 
 import "./Settings.css";
 
 import appAtom from "../../atoms/app.tsx";
-import mapAtom from "../../atoms/map.tsx";
-import mapsListAtom from "../../atoms/mapsList.tsx";
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
+import { useOutletContext } from "react-router-dom";
 
-import { getFullStore } from "../../db/interactions.tsx";
-
-function Settings() {
-	const [map] = useRecoilState(mapAtom);
+function Settings(): JSX.Element {
 	const [app, setApp] = useRecoilState(appAtom);
 	const { userSettings } = app;
 	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaults, setDefaults] = useState<Array<string>>([]);
-	const [mapsList, setMapsList] = useRecoilState(mapsListAtom);
 
-	useEffect(() => {
-		const fetchMapsList = async () => {
-			const mapsData = await getFullStore("maps");
-			setMapsList(mapsData as MapInf[]);
-		};
-
-		fetchMapsList();
-	}, [mapsList, setMapsList]);
+	const { mapsList }: Context = useOutletContext();
 
 	const defaultExports: Array<string> = [
 		"Cities",
@@ -70,7 +58,7 @@ function Settings() {
 					<div className="contentSubBody">
 						<div className="section">
 							<h4>Map Settings</h4>
-							{mapsList[0] !== undefined ? (
+							{mapsList.length > 0 ? (
 								<div className="sectionAlt">
 									<span id="MapsList">
 										<MapManager />

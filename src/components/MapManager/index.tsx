@@ -15,7 +15,8 @@ import "./index.css";
 import { MapsCard } from "../Cards/index.tsx";
 import UploadMap from "../UploadMap/UploadMap.tsx";
 import shadows from "@mui/material/styles/shadows";
-import { Navigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
+import type { Context } from "../../definitions/Common.ts";
 
 const modalStyle = {
 	position: "absolute",
@@ -30,7 +31,7 @@ const modalStyle = {
 
 const MapManager: React.FC = () => {
 	const [map, setMap] = useRecoilState(mapAtom);
-	const [mapsList, setMapsList] = useState<MapInf[]>([]);
+	const { mapsList }: Context = useOutletContext();
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
 	const [selectedCities, setSelectedCities] = useState<TLCity[]>([]);
 	const [selectedCountries, setSelectedCountries] = useState<TLCountry[]>([]);
@@ -45,15 +46,6 @@ const MapManager: React.FC = () => {
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-
-	useEffect(() => {
-		const fetchMapsList = async () => {
-			const mapsData = await getFullStore("maps");
-			setMapsList(mapsData);
-		};
-
-		fetchMapsList();
-	}, []);
 
 	const createEmptyMap = (): MapInf => ({
 		id: "",
@@ -243,12 +235,6 @@ const MapManager: React.FC = () => {
 		if (mapElement) {
 			mapElement.remove();
 		}
-
-		if (mapsList.length > 0) {
-			window.location.replace("/");
-		} else {
-			window.location.replace("/settings");
-		}
 	};
 
 	return (
@@ -281,7 +267,6 @@ const MapManager: React.FC = () => {
 					setTimeout(() => {
 						handleClose();
 					}, 10000);
-					Navigate({ to: "/settings" });
 				}}
 			>
 				Upload New Map
