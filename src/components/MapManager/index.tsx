@@ -178,6 +178,7 @@ const MapManager: React.FC = () => {
 		event.preventDefault();
 		const allPromises = selectedMaps.map(async (mapId) => {
 			console.group(`========= Deleting Map:  ${mapId} =========`);
+
 			console.groupCollapsed("========= Deleting Cities =========");
 			for (const city of selectedCities) {
 				console.info(city.name);
@@ -244,6 +245,8 @@ const MapManager: React.FC = () => {
 		if (mapElement) {
 			mapElement.remove();
 		}
+
+		setSelectedMaps([]);
 	};
 
 	return (

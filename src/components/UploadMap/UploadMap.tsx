@@ -130,7 +130,11 @@ function UploadMap() {
 
 		if (isNewer || isUpdated || isOutdated) {
 			const parsedMap = parseLoadedData(mapFile);
-			saveMapData(parsedMap, JSON.parse(versionString));
+			saveMapData(
+				parsedMap.parsedMap,
+				JSON.parse(versionString),
+				parsedMap.Pack,
+			);
 			// need to redirect to the main page '/'
 			ToastSuccess();
 		}
@@ -147,8 +151,15 @@ function UploadMap() {
 		return null;
 	}
 
-	async function saveMapData(data: MapInfo, versionS: string): Promise<void> {
-		const mapData = await mutateData(data as unknown as MapInfo);
+	async function saveMapData(
+		data: MapInfo,
+		VersionString: string,
+		Pack: object,
+	): Promise<void> {
+		const mapData = await mutateData(
+			data as unknown as MapInfo,
+			Pack as unknown as Pack,
+		);
 		console.log(data);
 		const {
 			cities,
@@ -167,7 +178,7 @@ function UploadMap() {
 		const MapInf: MapInf = {
 			id: mapId,
 			mapId: mapId,
-			info: { ...info, ver: versionS },
+			info: { ...info, ver: VersionString },
 			settings: settings,
 			SVG: SVG,
 			svgMod: svgMod,
