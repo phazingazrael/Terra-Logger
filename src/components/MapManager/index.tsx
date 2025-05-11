@@ -7,7 +7,6 @@ import mapLoadedAtom from "../../atoms/mapLoaded.tsx";
 import mapNameAtom from "../../atoms/mapName.tsx";
 import {
 	deleteDataFromStore,
-	getFullStore,
 	queryDataFromStore,
 } from "../../db/interactions.tsx";
 
@@ -17,6 +16,16 @@ import UploadMap from "../UploadMap/UploadMap.tsx";
 import shadows from "@mui/material/styles/shadows";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common.ts";
+
+import type {
+	TLCity,
+	TLCountry,
+	TLCulture,
+	TLNameBase,
+	TLNote,
+	TLReligion,
+	MapInf,
+} from "../../definitions/TerraLogger.ts";
 
 const modalStyle = {
 	position: "absolute",

@@ -1,5 +1,7 @@
 import { atom } from "recoil";
 
+import type { MapInf } from "../definitions/TerraLogger";
+
 const createEmptyMap = (): MapInf => {
 	return {
 		id: "",

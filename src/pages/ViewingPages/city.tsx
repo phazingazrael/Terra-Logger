@@ -5,6 +5,8 @@ import { IconContext } from "react-icons";
 import { useParams, Link } from "react-router-dom";
 import { getDataFromStore } from "../../db/interactions";
 
+import type { TLCity } from "../../definitions/TerraLogger";
+
 import "./viewStyles.css";
 
 function CityView() {

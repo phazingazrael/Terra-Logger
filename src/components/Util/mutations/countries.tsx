@@ -5,6 +5,12 @@ import { createEmptyCountry } from "../mkEmpty/tlCountry";
 
 import getCOA from "../generators/coa/render.tsx";
 
+import type {
+	TLMapInfo,
+	TLCountry,
+	TLDiplomacy,
+} from "../../../definitions/TerraLogger.ts";
+
 export const mutateCountries = async (
 	data: MapInfo,
 	tempMap: TLMapInfo,

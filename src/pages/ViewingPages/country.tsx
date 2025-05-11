@@ -5,6 +5,12 @@ import { IconContext } from "react-icons";
 import { useParams } from "react-router-dom";
 import { getDataFromStore, getFullStore } from "../../db/interactions";
 
+import type {
+	TLCountry,
+	TLDiplomacy,
+	TLCity,
+} from "../../definitions/TerraLogger";
+
 import "./viewStyles.css";
 
 function CountryView() {

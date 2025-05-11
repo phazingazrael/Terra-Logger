@@ -19,6 +19,9 @@ import {
 	getFullStore,
 	updateDataInStore,
 } from "../../db/interactions.tsx";
+
+import type { MapInf } from "../../definitions/TerraLogger.ts";
+
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,7 +29,7 @@ function UploadMap() {
 	const [app] = useRecoilState<AppInfo>(appAtom);
 	const [, setMap] = useRecoilState<MapInf>(mapAtom);
 	const [isLoading, setLoading] = useRecoilState(loadingAtom);
-	const [mapsList, setMapsList] = useRecoilState(mapsAtom);
+	const [, setMapsList] = useRecoilState(mapsAtom);
 
 	const OLDEST_SUPPORTED_VERSION = "1.95.00";
 	const afmgMin = "1.95.00";

@@ -7,6 +7,8 @@ import { queryDataFromStore } from "../../db/interactions";
 
 import { CountryCard } from "../../components/Cards";
 
+import type { TLCountry } from "../../definitions/TerraLogger";
+
 function CountriesPage() {
 	const [map] = useRecoilState(mapAtom);
 	const [countries, setCountries] = useState<TLCountry[]>([]);

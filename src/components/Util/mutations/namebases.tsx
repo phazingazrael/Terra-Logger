@@ -2,6 +2,8 @@ import { v7 as uuidv7 } from "uuid";
 
 import nameBaseJSON from "../../UploadMap/NameBases.json";
 
+import type { TLMapInfo, TLNameBase } from "../../../definitions/TerraLogger";
+
 interface NameBaseWithList extends NameBase {
 	nameList: string[];
 }

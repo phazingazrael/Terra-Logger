@@ -20,6 +20,8 @@ import { getFullStore } from "../db/interactions.tsx";
 
 import { Analytics } from "@vercel/analytics/react";
 
+import type { MapInf } from "../definitions/TerraLogger";
+
 import KuashanScript from "../assets/fonts/KaushanScript-Regular.ttf";
 
 const light = createTheme({

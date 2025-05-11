@@ -1,3 +1,5 @@
+import type { TLCulture } from "../../../definitions/TerraLogger";
+
 export const createEmptyCulture = (): TLCulture => ({
   urbanPop: '',
   ruralPop: '',

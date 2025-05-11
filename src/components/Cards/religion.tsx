@@ -6,7 +6,7 @@ import {
 	CardMedia,
 	/*Chip,*/ Typography,
 } from "@mui/material";
-import type { Theme } from "@mui/material";
+
 import PropTypes from "prop-types";
 import Ellipsis from "../Util/ellipsis";
 import { Link, useOutletContext } from "react-router-dom";

@@ -1,4 +1,3 @@
-import type { Theme } from "@mui/material";
 import {
 	Button,
 	Card,
@@ -15,6 +14,8 @@ import { Link, useOutletContext } from "react-router-dom";
 import { rgbToRgba } from "../Util";
 
 import type { Context } from "../../definitions/Common";
+
+import type { TLCity } from "../../definitions/TerraLogger";
 
 import "./cards.css";
 

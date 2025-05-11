@@ -7,6 +7,8 @@ import { queryDataFromStore } from "../../db/interactions";
 
 import { ReligionCard } from "../../components/Cards";
 
+import type { TLReligion } from "../../definitions/TerraLogger";
+
 function ReligionsPage() {
 	const [map] = useRecoilState(mapAtom);
 	const [religions, setReligions] = useState<TLReligion[]>([]);

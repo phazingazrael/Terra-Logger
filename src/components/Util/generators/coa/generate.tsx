@@ -1,6 +1,8 @@
 // Modified from the following page.
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/coa-generator.js
 
+import type { TLCoA } from "../../../../definitions/TerraLogger";
+
 const tinctures: Tinctures = {
 	field: { metals: 3, colours: 4, stains: +P(0.03), patterns: 1 },
 	division: { metals: 5, colours: 8, stains: +P(0.03), patterns: 1 },
@@ -2396,7 +2398,7 @@ const generate = (
 		const invert = isSameType(parent.t1 ?? "", coa.t1 ?? "");
 		const t = invert
 			? getTincture("division", usedTinctures, coa.t1)
-			: (parent.t1 ?? "");
+			: parent.t1 ?? "";
 		const canton = { ordinary: "canton", t };
 
 		coa.charges?.forEach((charge, i) => {
@@ -2585,11 +2587,11 @@ const generate = (
 			if (!t1 || !t2) {
 				const startWithMetal = P(0.7);
 				t1 = startWithMetal
-					? (rw(tinctures.metals) ?? "")
-					: (rw(tinctures.colours) ?? "");
+					? rw(tinctures.metals) ?? ""
+					: rw(tinctures.colours) ?? "";
 				t2 = startWithMetal
-					? (rw(tinctures.colours) ?? "")
-					: (rw(tinctures.metals) ?? "");
+					? rw(tinctures.colours) ?? ""
+					: rw(tinctures.metals) ?? "";
 			}
 		}
 

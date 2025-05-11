@@ -1,3 +1,5 @@
+import type { TLMapInfo } from "../../../definitions/TerraLogger";
+
 export const createTerraLoggerMap = (): TLMapInfo => ({
   cities: [],
   countries: [],

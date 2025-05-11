@@ -4,6 +4,8 @@ import { v7 as uuidv7 } from "uuid";
 
 import getCOA from "../generators/coa/render.tsx";
 
+import type { TLMapInfo, TLCity } from "../../../definitions/TerraLogger";
+
 export const mutateCities = async (
 	data: MapInfo,
 	tempMap: TLMapInfo,

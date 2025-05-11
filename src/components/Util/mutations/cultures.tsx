@@ -1,6 +1,7 @@
 import { v7 as uuidv7 } from "uuid";
 import { createEmptyCulture } from "../mkEmpty/tlCulture";
 
+import type { TLMapInfo, TLCulture } from "../../../definitions/TerraLogger";
 export const mutateCultures = async (
 	data: MapInfo,
 	tempMap: TLMapInfo,

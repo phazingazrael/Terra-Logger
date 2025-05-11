@@ -9,7 +9,6 @@ import {
 	CountriesPage,
 	ErrorPage,
 	HomePage,
-	Overview,
 	ReligionsPage,
 	Settings,
 	Tags,

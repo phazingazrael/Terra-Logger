@@ -12,14 +12,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { ImDiamonds } from "react-icons/im";
-import {
-	TiBook,
-	TiCog,
-	TiDocumentText,
-	TiGlobe,
-	TiHome,
-	TiTags,
-} from "react-icons/ti";
+import { TiCog, TiDocumentText, TiGlobe, TiHome, TiTags } from "react-icons/ti";
 import { NavLink } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import mapAtom from "../atoms/map";

@@ -6,6 +6,12 @@
 // A lot of the complex charge renders are from WappenWiki and available for non-commercial use only.
 const PATH = "./coaGen/charges/";
 
+import type {
+	TLCoA,
+	TLOrdinary,
+	TLCharge,
+} from "../../../../definitions/TerraLogger";
+
 const colors: { [key: string]: string } = {
 	argent: "#fafafa",
 	or: "#ffe066",
