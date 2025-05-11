@@ -10,6 +10,12 @@ import {
 	mutateNotes,
 } from "../Util/mutations";
 
+import type {
+	TLMapInfo,
+	TLCity,
+	TLCulture,
+} from "../../definitions/TerraLogger";
+
 const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 	// add map info that doesn't need mutating.
 	tempMap.info = data.info;

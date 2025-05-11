@@ -13,18 +13,21 @@ import { Link, useOutletContext } from "react-router-dom";
 
 import { rgbToRgba } from "../Util";
 
+import type { Context } from "../../definitions/Common";
+import type { TLReligion } from "../../definitions/TerraLogger";
+
 import "./cards.css";
 
 function ReligionCard(props: Readonly<TLReligion>) {
 	const religion = props;
-	const theme: Theme = useOutletContext();
+	const { Theme }: Context = useOutletContext();
 
 	let themeColor = null;
 
-	if (theme.palette.mode === "dark") {
-		themeColor = theme.palette.primary.dark;
-	} else if (theme.palette.mode === "light") {
-		themeColor = theme.palette.primary.light;
+	if (Theme.palette.mode === "dark") {
+		themeColor = Theme.palette.primary.dark;
+	} else if (Theme.palette.mode === "light") {
+		themeColor = Theme.palette.primary.light;
 	}
 
 	const ImageAlt = "";
@@ -32,7 +35,7 @@ function ReligionCard(props: Readonly<TLReligion>) {
 		<Card>
 			<CardMedia
 				sx={{
-					backgroundColor: theme
+					backgroundColor: Theme
 						? rgbToRgba(themeColor as string, 0.5 as number)
 						: "",
 				}}

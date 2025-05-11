@@ -3,6 +3,7 @@
 // visual effects only for eslint-disable //
 
 import type { Theme } from "@mui/material";
+import type { MapInf } from "./TerraLogger";
 
 // Common interfaces
 

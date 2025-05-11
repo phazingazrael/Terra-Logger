@@ -9,6 +9,8 @@ import "./citiesPage.css";
 
 import BookLoader from "../../components/Util/bookLoader.tsx";
 
+import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
+
 const LazyCityCard = React.lazy(
 	() => import("../../components/Cards/city.tsx"),
 );
@@ -135,18 +137,16 @@ function CitiesPage() {
 
 			<div className="contentSubBody citiesList">
 				<Grid container spacing={2}>
-					<Suspense
-						fallback={
-							<Grid size={12}>
-								<BookLoader />
-							</Grid>
-						}
-					>
-						{filteredCities.map((city) => (
-							<Grid size={3} key={city._id + city.name} id={city._id}>
-								<LazyCityCard {...city} />
-							</Grid>
-						))}
+					<Suspense fallback={<BookLoader />}>
+						{filteredCities.length > 0 ? (
+							filteredCities.map((city) => (
+								<Grid size={3} key={city._id + city.name} id={city._id}>
+									<LazyCityCard {...city} />
+								</Grid>
+							))
+						) : (
+							<BookLoader />
+						)}
 					</Suspense>
 				</Grid>
 			</div>

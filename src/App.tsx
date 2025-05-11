@@ -17,6 +17,8 @@ import {
 	CountryView,
 } from "./pages";
 
+import type { MapInf } from "./definitions/TerraLogger";
+
 import "./App.css";
 
 const App = (): JSX.Element => {
@@ -100,11 +102,11 @@ const App = (): JSX.Element => {
 					element: <HomePage />,
 					errorElement: <ErrorPage />,
 				},
-				{
-					path: "overview",
-					element: <Overview />,
-					errorElement: <ErrorPage />,
-				},
+				// {
+				// 	path: "overview",
+				// 	element: <Overview />,
+				// 	errorElement: <ErrorPage />,
+				// },
 				{
 					path: "tags",
 					element: <Tags />,

@@ -14,18 +14,20 @@ import { Link, useOutletContext } from "react-router-dom";
 
 import { rgbToRgba } from "../Util";
 
+import type { Context } from "../../definitions/Common";
+
 import "./cards.css";
 
 function CityCard(props: Readonly<TLCity>) {
 	const city = props;
-	const theme: Theme = useOutletContext();
+	const { Theme }: Context = useOutletContext();
 
 	let themeColor = null;
 
-	if (theme.palette.mode === "dark") {
-		themeColor = theme.palette.primary.dark;
-	} else if (theme.palette.mode === "light") {
-		themeColor = theme.palette.primary.light;
+	if (Theme.palette.mode === "dark") {
+		themeColor = Theme.palette.primary.dark;
+	} else if (Theme.palette.mode === "light") {
+		themeColor = Theme.palette.primary.light;
 	}
 
 	const ImageAlt = "";
@@ -33,7 +35,7 @@ function CityCard(props: Readonly<TLCity>) {
 		<Card>
 			<CardMedia
 				sx={{
-					backgroundColor: theme
+					backgroundColor: Theme
 						? rgbToRgba(themeColor as string, 0.5 as number)
 						: "",
 				}}

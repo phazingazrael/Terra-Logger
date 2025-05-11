@@ -1,6 +1,8 @@
 import { v7 as uuidv7 } from "uuid";
 import { createEmptyReligion } from "../mkEmpty/tlReligion";
 
+import type { TLMapInfo, TLReligion } from "../../../definitions/TerraLogger";
+
 export const mutateReligions = async (data: MapInfo, tempMap: TLMapInfo) => {
 	for (const religion of data.religions) {
 		const newReligion: TLReligion = createEmptyReligion();
@@ -16,6 +18,7 @@ export const mutateReligions = async (data: MapInfo, tempMap: TLMapInfo) => {
 		newReligion.deity = religion.deity;
 		newReligion.form = religion.form;
 		newReligion.i = religion.i;
+		// newReligion.members = religion.members;
 		newReligion.name = religion.name;
 		newReligion.origins = religion.origins;
 		newReligion.type = religion.type;

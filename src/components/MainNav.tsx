@@ -27,6 +27,8 @@ import mapLoadedAtom from "../atoms/mapLoaded";
 import mapNameAtom from "../atoms/mapName";
 import { handleSvgReplace } from "./Util/handleSvgReplace";
 
+import type { MapInf } from "../definitions/TerraLogger";
+
 const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	const iconStyles = useMemo(() => ({ size: "1.75rem" }), []);
 	const [map, setMap] = useRecoilState(mapAtom);
@@ -125,80 +127,64 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 					</MenuItem>
 				</NavLink>
 				{mapLoaded ? (
-					<>
+					<div className="subMenu">
 						<NavLink
-							to="/overview"
+							to="/countries"
 							className={({ isActive }) => (isActive ? "active" : "")}
 						>
 							<MenuItem>
 								<ListItemIcon>
-									<TiBook />
+									<TiDocumentText />
 								</ListItemIcon>
-								<ListItemText>Overview</ListItemText>
+								<ListItemText>Countries</ListItemText>
 								<ListItemIcon className="inactive">
 									<ImDiamonds />
 								</ListItemIcon>
 							</MenuItem>
 						</NavLink>
-						<div className="subMenu">
-							<NavLink
-								to="/countries"
-								className={({ isActive }) => (isActive ? "active" : "")}
-							>
-								<MenuItem>
-									<ListItemIcon>
-										<TiDocumentText />
-									</ListItemIcon>
-									<ListItemText>Countries</ListItemText>
-									<ListItemIcon className="inactive">
-										<ImDiamonds />
-									</ListItemIcon>
-								</MenuItem>
-							</NavLink>
-							<NavLink
-								to="/cities"
-								className={({ isActive }) => (isActive ? "active" : "")}
-							>
-								<MenuItem>
-									<ListItemIcon>
-										<TiDocumentText />
-									</ListItemIcon>
-									<ListItemText>Cities</ListItemText>
-									<ListItemIcon className="inactive">
-										<ImDiamonds />
-									</ListItemIcon>
-								</MenuItem>
-							</NavLink>
-							<NavLink
-								to="/religions"
-								className={({ isActive }) => (isActive ? "active" : "")}
-							>
-								<MenuItem>
-									<ListItemIcon>
-										<TiDocumentText />
-									</ListItemIcon>
-									<ListItemText>Religions</ListItemText>
-									<ListItemIcon className="inactive">
-										<ImDiamonds />
-									</ListItemIcon>
-								</MenuItem>
-							</NavLink>
-							<NavLink
-								to="/tags"
-								className={({ isActive }) => (isActive ? "active" : "")}
-							>
-								<MenuItem>
-									<ListItemIcon>
-										<TiTags />
-									</ListItemIcon>
-									<ListItemText>Tags</ListItemText>
-									<ListItemIcon className="inactive">
-										<ImDiamonds />
-									</ListItemIcon>
-								</MenuItem>
-							</NavLink>
-						</div>
-					</>
+						<NavLink
+							to="/cities"
+							className={({ isActive }) => (isActive ? "active" : "")}
+						>
+							<MenuItem>
+								<ListItemIcon>
+									<TiDocumentText />
+								</ListItemIcon>
+								<ListItemText>Cities</ListItemText>
+								<ListItemIcon className="inactive">
+									<ImDiamonds />
+								</ListItemIcon>
+							</MenuItem>
+						</NavLink>
+						<NavLink
+							to="/religions"
+							className={({ isActive }) => (isActive ? "active" : "")}
+						>
+							<MenuItem>
+								<ListItemIcon>
+									<TiDocumentText />
+								</ListItemIcon>
+								<ListItemText>Religions</ListItemText>
+								<ListItemIcon className="inactive">
+									<ImDiamonds />
+								</ListItemIcon>
+							</MenuItem>
+						</NavLink>
+						<NavLink
+							to="/tags"
+							className={({ isActive }) => (isActive ? "active" : "")}
+						>
+							<MenuItem>
+								<ListItemIcon>
+									<TiTags />
+								</ListItemIcon>
+								<ListItemText>Tags</ListItemText>
+								<ListItemIcon className="inactive">
+									<ImDiamonds />
+								</ListItemIcon>
+							</MenuItem>
+						</NavLink>
+					</div>
 				) : (
 					""
 				)}
