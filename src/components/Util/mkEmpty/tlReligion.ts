@@ -17,4 +17,6 @@ export const createEmptyReligion = (): TLReligion => ({
   name: '',
   origins: [],
   type: '',
+  center: 0,
+  tags: []
 });
