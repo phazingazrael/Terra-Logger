@@ -148,3 +148,4 @@ dist-ssr
 *.local
 yarn.lock
 temp/
+TestMaps/
