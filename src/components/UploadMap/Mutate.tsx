@@ -23,7 +23,7 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 	tempMap.SVG = data.SVG;
 };
 
-const mutateData = async (data: MapInfo) => {
+const mutateData = async (data: MapInfo, Pack: Pack) => {
 	const { populationRate, urbanization, urbanDensity } = data.settings;
 
 	// Mutate Map Data to Terra-Logger Format //
@@ -107,7 +107,13 @@ const mutateData = async (data: MapInfo) => {
 
 	// mutate religions - needs touching up.
 	try {
-		const Religions = await mutateReligions(data, tempMap);
+		const Religions = await mutateReligions(
+			data,
+			tempMap,
+			Pack,
+			populationRate,
+			urbanization,
+		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
 		tempMap.religions = Religions;

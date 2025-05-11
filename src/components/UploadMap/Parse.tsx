@@ -1,4 +1,4 @@
-// Modified from the following page and lines.
+// Modified from the following page.
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/io/load.js
 
 import Delaunator from "delaunator";
@@ -99,13 +99,13 @@ export const parseLoadedData = (data: string[]) => {
 	interface GridData {
 		points?: number[];
 		boundary?: number[];
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: data isn't being used, only for reference
 		cells?: any;
 		vertices?: number[];
 		cellsDesired?: number;
 		cellsX?: number;
 		cellsY?: number;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: data isn't being used, only for reference
 		features?: any[];
 		spacing?: number;
 	}
@@ -134,30 +134,43 @@ export const parseLoadedData = (data: string[]) => {
 	};
 	// biome-ignore lint/style/useConst: <explanation>
 	let Pack = {
-		features: [],
-		cultures: [],
-		states: [],
-		burgs: [],
-		religions: [],
-		provinces: [],
-		rivers: [],
-		markers: [],
-		routes: [],
-		zones: [],
+		burgs: [], // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
 		cells: {
-			biome: [],
-			burg: [],
-			conf: [],
-			culture: [],
-			fl: [],
-			pop: [],
-			r: [],
-			s: [],
-			state: [],
-			religion: [],
-			province: [],
-			routes: [],
+			area: [], // number[] - cells area in pixels. Uint16Array
+			b: [], // number[] - indicator whether the cell borders the map edge, 1 if true, 0 if false. Integers, not Boolean
+			biome: [], // number[] - cells biome index. Uint8Array
+			burg: [], // number[] - cells burg index. Uint16Array
+			c: [], // number[][] - indexes of cells adjacent to each cell (neighboring cells)
+			conf: [], // number[] - cells flux amount in confluences. Confluences are cells where rivers meet each other. Uint16Array
+			culture: [], // number[] - cells culture index. Uint16Array
+			f: [], // number[] - indexes of feature. Uint16Array or Uint32Array (depending on cells number)
+			fl: [], // number[] - cells flux amount. Defines how much water flow through the cell. Use to get rivers data and score cells. Uint16Array
+			g: [], // number[] - indexes of a source cell in grid. Uint16Array or Uint32Array. The only way to find correct grid cell parent for pack cells
+			h: [], // number[] - cells elevation in [0, 100] range, where 20 is the minimal land elevation. Uint8Array
+			harbor: [], // number[] - cells harbor score. Shows how many water cells are adjacent to the cell. Used for scoring. Uint8Array
+			haven: [], // number[] - cells haven cells index. Each coastal cell has haven cells defined for correct routes building. Uint16Array or Uint32Array (depending on cells number)
+			i: [], // number[] - cell indexes Uint16Array or Uint32Array (depending on cells number)
+			p: [], // number[][] - cells coordinates [x, y] after repacking. Numbers rounded to 2 decimals
+			pop: [], // number[] - cells population in population points (1 point = 1000 people by default). Float32Array, not rounded to not lose population of high population rate
+			province: [], // number[] - cells province index. Uint16Array
+			q: {}, // object - quadtree used for fast closest cell detection
+			r: [], // number[] - cells river index. Uint16Array
+			religion: [], // number[] - cells religion index. Uint16Array
+			routes: {}, //object - cells connections via routes. E.g. pack.cells.routes[8] = {9: 306, 10: 306} shows that cell 8 has two route connections - with cell 9 via route 306 and with cell 10 by route 306
+			s: [], // number[] - cells score. Scoring is used to define best cells to place a burg. Uint16Array
+			state: [], // number[] - cells state index. Uint16Array
+			t: [], // number[] - distance field. 1, 2, ... - land cells, -1, -2, ... - water cells, 0 - unmarked cell. Uint8Array
+			v: [], // number[][] - indexes of vertices of each cell
 		},
+		cultures: [], // Cultures (races, language zones) data is stored as an array of objects with strict element order. Element 0 is reserved by the wildlands culture.
+		features: [], // object[] - array containing objects for all enclosed entities of repacked graph: islands, lakes and oceans. Note: element 0 has no data. Stored in .map file.
+		markers: [], // Markers data is stored as an unordered array of objects.
+		provinces: [], // Provinces data is stored as an array of objects with strict element order. Element 0 is not used.
+		religions: [], // Religions data is stored as an array of objects with strict element order. Element 0 is reserved for "No religion".
+		rivers: [], // Rivers data is stored as an unordered array of objects.
+		routes: [], // Routes data is stored as an unordered array of objects.
+		states: [], // States (countries) data is stored as an array of objects with strict element order. Element 0 is reserved for neutrals
+		zones: [], // Zones data is stored as an array of objects with i not necessary equal to the element index, but order of element defines the rendering order and is important.
 	};
 
 	// params
@@ -462,11 +475,10 @@ export const parseLoadedData = (data: string[]) => {
 		Pack.zones = JSON.parse(data[38]);
 	}
 
-	// "Serialized SVG"
+	// "Serialized SVG", do this last
 	// data[5]
 	let SVG = "";
 	if (data[5]) {
-		// svg stuff, do this last
 		const svgString = data[5];
 
 		// Parse the SVG string
@@ -538,5 +550,5 @@ export const parseLoadedData = (data: string[]) => {
 
 	const parsedMap: MapInfo = createParsedMap();
 
-	return parsedMap;
+	return { parsedMap, Pack };
 };

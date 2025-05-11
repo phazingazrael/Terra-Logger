@@ -314,3 +314,109 @@ interface MapInfo {
   SVG: string;
   svgMod: string;
 }
+
+// "Pack" data model
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model
+
+interface CellData {
+  // number[] - cells area in pixels. Uint16Array
+  area: number[];
+  // number[] - indicator whether the cell borders the map edge, 1 if true, 0 if false. Integers, not Boolean
+  b: number[];
+  // number[] - cells biome index. Uint8Array
+  biome: number[];
+  // number[] - cells burg index. Uint16Array
+  burg: number[];
+  // number[][] - indexes of cells adjacent to each cell (neighboring cells)
+  c: number[][];
+  // number[] - cells flux amount in confluences. Confluences are cells where rivers meet each other. Uint16Array
+  conf: number[];
+  // number[] - cells culture index. Uint16Array
+  culture: number[];
+  // number[] - indexes of feature. Uint16Array or Uint32Array (depending on cells number)
+  f: number[];
+  // number[] - cells flux amount. Defines how much water flow through the cell. Use to get rivers data and score cells. Uint16Array
+  fl: number[];
+  // number[] - indexes of a source cell in grid. Uint16Array or Uint32Array. The only way to find correct grid cell parent for pack cells
+  g: number[];
+  // number[] - cells elevation in [0, 100] range, where 20 is the minimal land elevation. Uint8Array
+  h: number[];
+  // number[] - cells harbor score. Shows how many water cells are adjacent to the cell. Used for scoring. Uint8Array
+  harbor: number[];
+  // number[] - cells haven cells index. Each coastal cell has haven cells defined for correct routes building. Uint16Array or Uint32Array (depending on cells number)
+  haven: number[];
+  // number[] - cell indexes Uint16Array or Uint32Array (depending on cells number)
+  i: number[];
+  // number[][] - cells coordinates [x, y] after repacking. Numbers rounded to 2 decimals
+  p: number[][];
+  // number[] - cells population in population points (1 point = 1000 people by default). Float32Array, not rounded to not lose population of high population rate
+  pop: number[];
+  // number[] - cells province index. Uint16Array
+  province: number[];
+  // object - quadtree used for fast closest cell detection
+  q: object;
+  // number[] - cells river index. Uint16Array
+  r: number[];
+  // number[] - cells religion index. Uint16Array
+  religion: number[];
+  // object - cells connections via routes. E.g. pack.cells.routes[8] = {9: 306, 10: 306} shows that cell 8 has two route connections - with cell 9 via route 306 and with cell 10 by route 306
+  routes: object;
+  // number[] - cells score. Scoring is used to define best cells to place a burg. Uint16Array
+  s: number[];
+  // number[] - cells state index. Uint16Array
+  state: number[];
+  // number[] - distance field. 1, 2, ... - land cells, -1, -2, ... - water cells, 0 - unmarked cell. Uint8Array
+  t: number[];
+  // number[][] - indexes of vertices of each cell
+  v: number[][];
+}
+
+interface BurgData {
+  i: number, //number - burg id, always equal to the array index
+  name: string, // string - burg name
+  cell: number, // number - burg cell id. One cell can have only one burg
+  x: number, // number - x axis coordinate, rounded to two decimals
+  y: number, // number - y axis coordinate, rounded to two decimals
+  culture: number, // number - burg culture id
+  state: number, // number - burg state id
+  population: number, // number - burg population in population points
+  feature: number, // number - burg feature id (id of a landmass)
+  type: string, // string - burg type, see culture types
+  coa: object, // object - emblem object, data model is the same as in Armoria and covered in API documentation. The only additional fields are optional size: number, x: number and y: number that controls the emblem position on the map (if it's not default). If emblem is loaded by user, then the value is { custom: true } and cannot be displayed in Armoria
+  MFCG: number, // number - burg seed in Medieval Fantasy City Generator (MFCG). If not provided, seed is combined from map seed and burg id
+  link: string, // string - custom link to burg in MFCG. MFCG seed is not used if link is provided
+  capital: number, // number - 1 if burg is a capital, 0 if not (each state has only 1 capital)
+  port: number, // number - if burg is not a port, then 0, otherwise feature id of the water body the burg stands on
+  citadel: number, // number - 1 if burg has a castle, 0 if not. Used for MFCG
+  plaza: number, // number - 1 if burg has a marketplace, 0 if not. Used for MFCG
+  shanty: number, // number - 1 if burg has a shanty town, 0 if not. Used for MFCG
+  temple: number, // number - 1 if burg has a temple, 0 if not. Used for MFCG
+  walls: number, // number - 1 if burg has walls, 0 if not. Used for MFCG
+  lock: boolean, // boolean - true if burg is locked (not affected by regeneration)
+  removed: boolean, // boolean - true if burg is removed
+}
+
+interface Pack {
+  // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
+  burgs: BurgData[];
+  // Cell data
+  cells: CellData;
+  // Cultures (races, language zones) data is stored as an array of objects with strict element order. Element 0 is reserved by the wildlands culture.
+  cultures: object[];
+  // object[] - array containing objects for all enclosed entities of repacked graph: islands, lakes and oceans. Note: element 0 has no data. Stored in .map file.
+  features: object[];
+  // Markers data is stored as an unordered array of objects.
+  markers: object[];
+  // Provinces data is stored as an array of objects with strict element order. Element 0 is not used.
+  provinces: object[];
+  // Religions data is stored as an array of objects with strict element order. Element 0 is reserved for "No religion".
+  religions: object[];
+  // Rivers data is stored as an unordered array of objects.
+  rivers: object[];
+  // Routes data is stored as an unordered array of objects.
+  routes: object[];
+  // States (countries) data is stored as an array of objects with strict element order. Element 0 is reserved for neutrals
+  states: object[];
+  // Zones data is stored as an array of objects with i not necessary equal to the element index, but order of element defines the rendering order and is important.
+  zones: object[];
+}

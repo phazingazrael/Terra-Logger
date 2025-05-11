@@ -49,6 +49,7 @@ export type TLCulture = {
   color: string;
   expansionism: number;
   id: number;
+  mapId?: string;
   name: string;
   origins: number[];
   ruralPop: string;
@@ -104,12 +105,14 @@ export type TLMilitary = {
 export type TLNote = {
   id: string;
   legend: string;
+  mapId?: string;
   name: string;
   _id: string;
 };
 
 export type TLReligion = {
   _id: string;
+  center: number;
   code: string;
   culture: {
     _id: string;
@@ -125,6 +128,7 @@ export type TLReligion = {
   };
   name: string;
   origins: number[];
+  tags: Tag[];
   type: string;
 };
 
@@ -134,6 +138,7 @@ export type TLNameBase = {
   max: string;
   d: string;
   m: string;
+  mapId?: string;
   names: string[];
   credit: string;
   _id: string;
@@ -220,6 +225,7 @@ export type TLCountry = {
   id: number;
   location: string;
   languages: string[];
+  mapId?: string;
   name: string;
   nameFull: string;
   political: {

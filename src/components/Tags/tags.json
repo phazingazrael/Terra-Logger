@@ -256,6 +256,34 @@
     "Name": "ReligionsAndMythology",
     "Tags": [
       {
+        "_id": "0196c079-2b91-7049-a7f8-df31f3583bfb",
+        "Default": true,
+        "Description": "Traditional belief systems rooted in local customs, often informal and passed down orally.",
+        "Name": "Folk Religion",
+        "Type": "ReligionsAndMythology"
+      },
+      {
+        "_id": "0196c079-2b91-77b9-b1ff-d9a77b4d6ab9",
+        "Default": true,
+        "Description": "Structured religions with established doctrine, hierarchy, and widespread institutions.",
+        "Name": "Organized Religion",
+        "Type": "ReligionsAndMythology"
+      },
+      {
+        "_id": "0196c079-2b91-7a51-9437-f76ab624eabf",
+        "Default": true,
+        "Description": "Belief systems that deviate from established religious doctrine and are often considered blasphemous.",
+        "Name": "Heresy",
+        "Type": "ReligionsAndMythology"
+      },
+      {
+        "_id": "0196c079-2b91-794e-a79d-ce9b0e2bcba9",
+        "Default": true,
+        "Description": "Small, often secretive religious groups centered around a charismatic leader or unconventional beliefs.",
+        "Name": "Cult",
+        "Type": "ReligionsAndMythology"
+      },
+      {
         "_id": "0192be16-c07e-7459-a046-43685d665769",
         "Default": true,
         "Description": "Systems of beliefs and practices centered around deities or higher powers.",
@@ -281,6 +309,13 @@
         "Default": true,
         "Description": "Formal ceremonies or practices within religious or magical contexts.",
         "Name": "Rituals",
+        "Type": "ReligionsAndMythology"
+      },
+      {
+        "_id": "0196c071-ade3-79d3-8d49-c6f6a55c3f70",
+        "Default": true,
+        "Description": "Religious systems or belief structures that are no longer practiced or have fallen out of use.",
+        "Name": "Dead Religion",
         "Type": "ReligionsAndMythology"
       }
     ],
