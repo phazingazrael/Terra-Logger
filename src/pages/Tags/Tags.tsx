@@ -18,12 +18,7 @@ import { useEffect, useState } from "react";
 
 import { getAllTags } from "../../components/Tags/Tags";
 
-import { styled } from "@mui/material/styles";
-// Styled components
-const CategoryIcon = styled("span")({
-	fontSize: "28px",
-	marginRight: "12px",
-});
+import { CategoryIcon } from "../../components/Styled";
 
 interface TagData {
 	_id: string;

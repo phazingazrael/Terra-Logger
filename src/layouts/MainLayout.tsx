@@ -14,7 +14,9 @@ import { ToastContainer } from "react-toastify";
 import Icon from "../assets/icon.png";
 import { appAtom } from "../atoms";
 
-import { MainNav, Item } from "../components";
+import { MainNav } from "../components";
+
+import { ContentMain } from "../components/Styled";
 
 import { getFullStore } from "../db/interactions.tsx";
 
@@ -181,16 +183,16 @@ function MainLayout() {
 			<Container maxWidth="xl" className="pageBody">
 				<Grid container spacing={2}>
 					<Grid size={3}>
-						<Item className="Navigation">
+						<ContentMain className="Navigation">
 							<MainNav mapsList={mapsList} />
-						</Item>
+						</ContentMain>
 					</Grid>
 					<Grid size={9}>
-						<Item className="Content" id="Content">
+						<ContentMain className="Content" id="Content">
 							<div className="contentBody">
 								<Outlet context={{ Theme, mapsList }} />
 							</div>
-						</Item>
+						</ContentMain>
 					</Grid>
 				</Grid>
 				<ToastContainer
