@@ -112,7 +112,11 @@ export type TLNote = {
 
 export type TLReligion = {
   _id: string;
-  center: number;
+  center: {
+    i: number;
+    _id: string;
+    name: string;
+  };
   code: string;
   culture: {
     _id: string;
@@ -127,7 +131,7 @@ export type TLReligion = {
     urban: number;
   };
   name: string;
-  origins: number[];
+  origins: string[];
   tags: Tag[];
   type: string;
 };
