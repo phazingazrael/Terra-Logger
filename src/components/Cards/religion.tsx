@@ -193,7 +193,11 @@ function ReligionCard(props: Readonly<TLReligion>) {
 										alignItems: "center",
 									}}
 								>
-									{formIcon}
+									<span
+										style={{ color: Theme.palette.common.white, marginTop: 7 }}
+									>
+										{formIcon}
+									</span>
 								</Box>
 							}
 						/>
