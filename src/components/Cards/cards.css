@@ -1,7 +1,8 @@
 /* Fix SVG image aspect ratio */
-.MuiCardMedia-root svg,
-.MuiCardMedia-root img {
-  aspect-ratio: 300/200;
+.CitiesPage .MuiAvatar-root svg,
+.CitiesPage .MuiAvatar-root img,
+.CountriesPage .MuiAvatar-root svg,
+.CountriesPage .MuiAvatar-root img {
   object-fit: contain;
   width: 100% !important;
   height: 110% !important;
@@ -11,21 +12,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.tile-category {
+  font-size: 0.875rem;
+  color: #718096;
+  /* Gray 500 */
+}
 
-  .tile-category {
-    font-size: 0.875rem;
-    color: #718096;
-    /* Gray 500 */
-  }
-
-  .tile-button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0.2rem !important;
-  }
+.tile-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.2rem !important;
 }
