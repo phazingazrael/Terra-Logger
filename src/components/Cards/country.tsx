@@ -13,7 +13,6 @@ import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { rgbToRgba } from "../Util";
 import { getPoliticalColor, getPoliticalIcon } from "../Util/countryUtils";
 
 import type { Context } from "../../definitions/Common";
@@ -45,7 +44,7 @@ function CountryCard(props: Readonly<TLCountry>) {
 			{/* Country CoA */}
 			<Avatar
 				sx={{
-					bgcolor: rgbToRgba(country.color, 0.5),
+					bgcolor: country.color,
 					position: "absolute",
 					top: -10,
 					right: 16,
