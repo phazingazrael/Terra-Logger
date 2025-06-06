@@ -135,7 +135,7 @@ function CitiesPage() {
 				</div>
 			</AppBar>
 
-			<div className="contentSubBody citiesList">
+			<div className="contentSubBody CitiesPage">
 				<Grid container spacing={2}>
 					<Suspense fallback={<BookLoader />}>
 						{filteredCities.length > 0 ? (

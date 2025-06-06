@@ -47,10 +47,10 @@ function CountriesPage() {
 	}, [mapId]);
 	return (
 		<Container>
-			<div className="contentSubHead">
+			{/* <div className="contentSubHead">
 				<h3>Countries</h3>
-			</div>
-			<div className="contentSubBody">
+			</div> */}
+			<div className="contentSubBody CountriesPage">
 				<Grid container spacing={2}>
 					{countries.map((entry) => (
 						<Grid size={3} key={entry._id} id={entry._id}>
