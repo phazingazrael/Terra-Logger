@@ -1,9 +1,27 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState, useMemo } from "react";
-import { Container, Typography } from "@mui/material";
+import {
+	Container,
+	Typography,
+	LinearProgress,
+	Box,
+	useTheme,
+	Grid2 as Grid,
+	TableContainer,
+	Table,
+	TableHead,
+	TableRow,
+	TableBody,
+	TableCell,
+} from "@mui/material";
+
 import { IconContext } from "react-icons";
 import { useParams } from "react-router-dom";
 import { getDataFromStore, getFullStore } from "../../db/interactions";
+
+import {
+	Agriculture as AgricultureIcon,
+	LocationCity as LocationCityIcon,
+} from "@mui/icons-material";
 
 import type {
 	TLCountry,
@@ -18,6 +36,9 @@ function CountryView() {
 	const [country, setCountry] = useState<TLCountry>();
 	const [cities, setCities] = useState<TLCity[]>([]);
 	const [activeTab, setActiveTab] = useState<string>("regiments");
+	const [totalPopulation, setTotalPopulation] = useState(0);
+	const [ruralPercentage, setRuralPercentage] = useState(0);
+	const [urbanPercentage, setUrbanPercentage] = useState(0);
 
 	// Group military units by type
 	const regiments = country?.political.military.filter((unit) => unit.n === 0);
@@ -59,6 +80,32 @@ function CountryView() {
 			});
 		}
 	}, [countryId]);
+
+	useEffect(() => {
+		if (country) {
+			setTotalPopulation(
+				Number(country.population.rural.replace(",", "")) +
+					Number(country.population.urban.replace(",", "")),
+			);
+			setRuralPercentage(
+				totalPopulation === 0
+					? 0
+					: (Number(country.population.rural.replace(",", "")) /
+							totalPopulation) *
+							100,
+			);
+			setUrbanPercentage(
+				totalPopulation === 0
+					? 0
+					: (Number(country.population.urban.replace(",", "")) /
+							totalPopulation) *
+							100,
+			);
+		}
+	});
+
+	const theme = useTheme();
+
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
 
 	const tagStyle = {
@@ -103,24 +150,176 @@ function CountryView() {
 								/>
 								<div className="info">
 									<Typography variant="h1">{country?.name}</Typography>
-									<div className="meta">
-										<p>
+									<Grid container className="meta">
+										<Grid size={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
 											<Typography color="primary" component="h3">
 												{country?.nameFull}
 											</Typography>
 											<Typography color="primary" component="h3">
 												Type: {country?.type}
 											</Typography>
-											<Typography color="primary" component="h3">
-												Population:
-												<ul className="population-list">
-													<li>Total: {country?.population.total}</li>
-													<li>Urban: {country?.population.urban}</li>
-													<li>Rural: {country?.population.rural}</li>
-												</ul>
-											</Typography>
-										</p>
-									</div>
+										</Grid>
+										<Grid size={{ xs: 8, sm: 8, md: 8, lg: 8, xl: 8 }}>
+											<Grid container className="popGrid">
+												<Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+													<section>
+														<Box>
+															<Box
+																sx={{
+																	display: "flex",
+																	justifyContent: "space-between",
+																	alignItems: "center",
+																	mb: 1,
+																}}
+															>
+																<Box
+																	sx={{ display: "flex", alignItems: "center" }}
+																>
+																	<Typography
+																		color="primary"
+																		variant="subtitle1"
+																	>
+																		Population:
+																	</Typography>
+																</Box>
+																<Typography
+																	variant="h6"
+																	color="primary"
+																	sx={{ fontWeight: "bold" }}
+																>
+																	{country?.population.total}
+																</Typography>
+															</Box>
+														</Box>
+													</section>
+													<Grid container spacing={4} sx={{ mt: 2 }}>
+														<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+															<section>
+																<Box>
+																	<Box
+																		sx={{
+																			display: "flex",
+																			justifyContent: "space-between",
+																			alignItems: "center",
+																			mb: 1,
+																		}}
+																	>
+																		<Box
+																			sx={{
+																				display: "flex",
+																				alignItems: "center",
+																			}}
+																		>
+																			<AgricultureIcon
+																				sx={{ mr: 1, color: "#4caf50" }}
+																			/>
+																			<Typography
+																				color="primary"
+																				variant="subtitle1"
+																			>
+																				Rural Population:
+																			</Typography>
+																		</Box>
+																	</Box>
+
+																	<Typography
+																		variant="h6"
+																		color="primary"
+																		sx={{ fontWeight: "bold" }}
+																	>
+																		{country?.population.rural}
+																	</Typography>
+
+																	<LinearProgress
+																		variant="determinate"
+																		value={ruralPercentage}
+																		sx={{
+																			height: 8,
+																			borderRadius: 4,
+																			bgcolor: theme.palette.grey[200],
+																			"& .MuiLinearProgress-bar": {
+																				bgcolor: "#4caf50",
+																				borderRadius: 4,
+																			},
+																		}}
+																	/>
+																	<Typography
+																		variant="body2"
+																		color="primary"
+																		sx={{ mt: 0.5 }}
+																	>
+																		{ruralPercentage !== 0
+																			? ruralPercentage.toFixed(1)
+																			: 0}
+																		% of total
+																	</Typography>
+																</Box>
+															</section>
+														</Grid>
+														<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+															<section>
+																<Box>
+																	<Box
+																		sx={{
+																			display: "flex",
+																			justifyContent: "space-between",
+																			alignItems: "center",
+																			mb: 1,
+																		}}
+																	>
+																		<Box
+																			sx={{
+																				display: "flex",
+																				alignItems: "center",
+																			}}
+																		>
+																			<LocationCityIcon
+																				sx={{ mr: 1, color: "#2196f3" }}
+																			/>
+																			<Typography
+																				variant="subtitle1"
+																				color="primary"
+																				style={{ width: "100%" }}
+																			>
+																				Urban Population:
+																			</Typography>
+																		</Box>
+																	</Box>
+																	<Typography
+																		variant="h6"
+																		color="primary"
+																		sx={{ fontWeight: "bold" }}
+																	>
+																		{country?.population.urban}
+																	</Typography>
+																	<LinearProgress
+																		variant="determinate"
+																		value={urbanPercentage || 0}
+																		sx={{
+																			height: 8,
+																			borderRadius: 4,
+																			bgcolor: theme.palette.grey[200],
+																			"& .MuiLinearProgress-bar": {
+																				bgcolor: "#2196f3",
+																				borderRadius: 4,
+																			},
+																		}}
+																	/>
+																	<Typography
+																		variant="body2"
+																		color="primary"
+																		sx={{ mt: 0.5 }}
+																	>
+																		{urbanPercentage.toFixed(1)}% of total
+																	</Typography>
+																</Box>
+															</section>
+														</Grid>
+													</Grid>
+												</Grid>
+											</Grid>
+										</Grid>
+									</Grid>
 								</div>
 							</div>
 
@@ -170,51 +369,75 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Government Type:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													{`${country?.political.form} (${country?.political.formName})`}
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Capital:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													{cities.find((city) => city.capital)?.name}
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Current Ruler(s):
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[King, High Priestess, AI Overlord, Elder Council,
 													etc.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Noble Houses & Factions:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Major power groups, noble families, rival factions.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Laws & Justice System:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Trial by combat? Magic-enforced law? A dystopian
 													police state?]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Corruption Level:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Low, moderate, high, controlled by crime syndicates.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -243,50 +466,52 @@ function CountryView() {
 										<div className="military-content">
 											{activeTab === "regiments" && (
 												<div className="military-units">
-													<table className="military-table">
-														<thead>
-															<tr>
-																<th>Name</th>
-																<th>Strength</th>
-																<th>Composition</th>
-															</tr>
-														</thead>
-														<tbody>
-															{regiments?.slice(0, 10).map((regiment) => (
-																<tr key={regiment._id}>
-																	<td>
-																		<span className="unit-icon">
-																			{regiment.icon}
-																		</span>
-																		{regiment.name}
-																	</td>
-																	<td>{regiment.a}</td>
-																	<td>
-																		{!!regiment.u.cavalry && (
-																			<span className="unit-comp">
-																				🐴 {regiment.u.cavalry}
+													<TableContainer>
+														<Table className="military-table">
+															<TableHead>
+																<TableRow>
+																	<TableCell>Name</TableCell>
+																	<TableCell>Strength</TableCell>
+																	<TableCell>Composition</TableCell>
+																</TableRow>
+															</TableHead>
+															<TableBody>
+																{regiments?.slice(0, 10).map((regiment) => (
+																	<TableRow key={regiment._id}>
+																		<TableCell>
+																			<span className="unit-icon">
+																				{regiment.icon}
 																			</span>
-																		)}
-																		{!!regiment.u.infantry && (
-																			<span className="unit-comp">
-																				👣 {regiment.u.infantry}
-																			</span>
-																		)}
-																		{!!regiment.u.archers && (
-																			<span className="unit-comp">
-																				🏹 {regiment.u.archers}
-																			</span>
-																		)}
-																		{!!regiment.u.artillery && (
-																			<span className="unit-comp">
-																				💣 {regiment.u.artillery}
-																			</span>
-																		)}
-																	</td>
-																</tr>
-															))}
-														</tbody>
-													</table>
+																			{regiment.name}
+																		</TableCell>
+																		<TableCell>{regiment.a}</TableCell>
+																		<TableCell>
+																			{!!regiment.u.cavalry && (
+																				<span className="unit-comp">
+																					🐴 {regiment.u.cavalry}
+																				</span>
+																			)}
+																			{!!regiment.u.infantry && (
+																				<span className="unit-comp">
+																					👣 {regiment.u.infantry}
+																				</span>
+																			)}
+																			{!!regiment.u.archers && (
+																				<span className="unit-comp">
+																					🏹 {regiment.u.archers}
+																				</span>
+																			)}
+																			{!!regiment.u.artillery && (
+																				<span className="unit-comp">
+																					💣 {regiment.u.artillery}
+																				</span>
+																			)}
+																		</TableCell>
+																	</TableRow>
+																))}
+															</TableBody>
+														</Table>
+													</TableContainer>
 													{regiments && regiments.length > 10 && (
 														<p className="more-units">
 															+ {regiments.length - 10} more regiments
@@ -297,27 +522,27 @@ function CountryView() {
 
 											{activeTab === "fleets" && (
 												<div className="military-units">
-													<table className="military-table">
-														<thead>
-															<tr>
-																<th>Name</th>
-																<th>Strength</th>
-															</tr>
-														</thead>
-														<tbody>
+													<Table className="military-table">
+														<TableHead>
+															<TableRow>
+																<TableCell>Name</TableCell>
+																<TableCell>Strength</TableCell>
+															</TableRow>
+														</TableHead>
+														<TableBody>
 															{fleets?.slice(0, 10).map((fleet) => (
-																<tr key={fleet._id}>
-																	<td>
+																<TableRow key={fleet._id}>
+																	<TableCell>
 																		<span className="unit-icon">
 																			{fleet.icon}
 																		</span>
 																		{fleet.name}
-																	</td>
-																	<td>{fleet.a}</td>
-																</tr>
+																	</TableCell>
+																	<TableCell>{fleet.a}</TableCell>
+																</TableRow>
 															))}
-														</tbody>
-													</table>
+														</TableBody>
+													</Table>
 													{fleets && fleets.length > 10 && (
 														<p className="more-units">
 															+ {fleets.length - 10} more fleets
@@ -345,11 +570,25 @@ function CountryView() {
 												{country && country.economy.exports.length > 0 ? (
 													<ul>
 														{country.economy.exports.map((item) => (
-															<li key={item}>{item}</li>
+															<li key={item}>
+																<Typography
+																	component="p"
+																	className="detail-value"
+																	color="black"
+																>
+																	{item}
+																</Typography>
+															</li>
 														))}
 													</ul>
 												) : (
-													<p>No exports listed</p>
+													<Typography
+														component="p"
+														className="detail-value"
+														color="black"
+													>
+														No exports listed
+													</Typography>
 												)}
 											</div>
 
@@ -360,11 +599,25 @@ function CountryView() {
 												{country && country.economy.imports.length > 0 ? (
 													<ul>
 														{country.economy.imports.map((item) => (
-															<li key={item}>{item}</li>
+															<li key={item}>
+																<Typography
+																	component="p"
+																	className="detail-value"
+																	color="black"
+																>
+																	{item}
+																</Typography>
+															</li>
 														))}
 													</ul>
 												) : (
-													<p>No imports listed</p>
+													<Typography
+														component="p"
+														className="detail-value"
+														color="black"
+													>
+														No imports listed
+													</Typography>
 												)}
 											</div>
 										</div>
@@ -372,45 +625,65 @@ function CountryView() {
 											<Typography component="span" className="detail-label">
 												Major Industries:
 											</Typography>
-											<span className="detail-value">
+											<Typography
+												component="span"
+												color="black"
+												className="detail-value"
+											>
 												[Alchemy, soul-forging, mecha production, space mining,
 												etc.]
-											</span>
+											</Typography>
 										</div>
 										<div className="detail-container">
 											<Typography component="span" className="detail-label">
 												Currency & Trade:
 											</Typography>
-											<span className="detail-value">
+											<Typography
+												component="span"
+												color="black"
+												className="detail-value"
+											>
 												[Gold coins, credits, mana crystals, barter system,
 												etc.]
-											</span>
+											</Typography>
 										</div>
 										<div className="detail-container">
 											<Typography component="span" className="detail-label">
 												Notable Guilds & Corporations:
 											</Typography>
-											<span className="detail-value">
+											<Typography
+												component="span"
+												color="black"
+												className="detail-value"
+											>
 												[Merchant houses, cybernetic megacorps, thieves’ guilds,
 												etc.]
-											</span>
+											</Typography>
 										</div>
 										<div className="detail-container">
 											<Typography component="span" className="detail-label">
 												Imports & Exports:
 											</Typography>
-											<span className="detail-value">
+											<Typography
+												component="span"
+												color="black"
+												className="detail-value"
+											>
 												[What does the city rely on, and what does it supply to
 												others?]
-											</span>
+											</Typography>
 										</div>
 										<div className="detail-container">
 											<Typography component="span" className="detail-label">
 												Black Market & Illicit Trade:
 											</Typography>
-											<span className="detail-value">
+											<Typography
+												component="span"
+												color="black"
+												className="detail-value"
+											>
 												[Contraband, smugglers, underground syndicates.]
-											</span>
+											</Typography>
 										</div>
 									</section>
 
@@ -435,7 +708,15 @@ function CountryView() {
 																style={{ marginTop: "unset" }}
 															>
 																{relations.map((relation) => (
-																	<li key={relation.id}>{relation.name}</li>
+																	<li key={relation.id}>
+																		<Typography
+																			component="span"
+																			color="black"
+																			className="detail-value"
+																		>
+																			{relation.name}
+																		</Typography>
+																	</li>
 																))}
 															</ul>
 														</div>
@@ -456,36 +737,52 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Notable Founding Myths/Legends:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Ancient tales about how the city was formed or its
 													divine/magical origins.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Major Wars & Conflicts:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Significant wars, galactic conflicts, magical wars,
 													or civil uprisings.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Epochs & Eras:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Different historical periods, dynasties, or
 													interstellar ages.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Notable Leaders & Rulers:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Kings, Emperors, Warlords, AI Governors, etc.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -499,45 +796,65 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Population Growth & Migration:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Stable, declining, booming, dependent on
 													magic/artificial births.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Ethnic & Racial Composition:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Humans, Elves, Orcs, Androids, Clones, etc.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Language & Scripts:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Common tongue, ancient runes, digital code-based
 													speech.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Religion & Deities:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Worship of gods, forgotten cosmic entities, AI
 													prophets.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Caste/Class System:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Strict hierarchy, meritocracy, anarchist communes,
 													slave societies.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -551,36 +868,52 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Academies & Universities:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Magical academies, science research institutes, AI
 													learning centers.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Forbidden Knowledge & Secret Societies:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Cults, hidden libraries, esoteric scholars.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Notable Thinkers & Researchers:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Famous wizards, AI philosophers, other
 													intellectuals.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Libraries & Archives:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[World’s largest collection of spell tomes,
 													AI-encrypted data vaults.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -594,35 +927,51 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Music & Performing Arts:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Bards, holographic opera, psychic concerts.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Festivals & Holidays:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Ritual sacrifice days, AI awakening celebrations,
 													etc.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Cuisine & Food Culture:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Elven wine, synthetic protein cubes, soul-infused
 													delicacies.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Fashion & Dress:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Steampunk, cybernetic enhancements, enchanted robes.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -636,34 +985,50 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Gods, Demons & Cosmic Entities:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Who is worshiped or feared in the country?]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Sacred Sites & Temples:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Massive cathedrals, shrines hidden in floating
 													cities.]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Religious Factions & Cults:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[What groups enforce (or subvert) faith?]
-												</span>
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Miracles & Divine Interventions:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[Recent divine events or mythological sightings.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -677,10 +1042,14 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Influential Figures:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													[List of influential people, such as rulers, warriors,
 													philosophers, criminals, and deities.]
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>
@@ -712,27 +1081,45 @@ function CountryView() {
 												<Typography component="span" className="detail-label">
 													Map ID:
 												</Typography>
-												{/* <span className="detail-value">{country?.mapId}</span> */}
+												{/* <Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>{country?.mapId}</Typography> */}
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Map Seed:
 												</Typography>
-												{/* <span className="detail-value">{country?.mapSeed}</span> */}
+												{/* <Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>{country?.mapSeed}</Typography> */}
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Country Type:
 												</Typography>
-												<span className="detail-value">{country?.type}</span>
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
+													{country?.type}
+												</Typography>
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
 													Culture ID:
 												</Typography>
-												<span className="detail-value">
+												<Typography
+													component="span"
+													color="black"
+													className="detail-value"
+												>
 													{country?.culture.id}
-												</span>
+												</Typography>
 											</div>
 										</div>
 									</section>

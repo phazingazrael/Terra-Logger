@@ -30,7 +30,13 @@ function ReligionsPage() {
 
 	useEffect(() => {
 		const loadReligions = async () => {
-			const data = await queryDataFromStore("religions", "mapIdIndex", mapId);
+			const data = (await queryDataFromStore(
+				"religions",
+				"mapIdIndex",
+				mapId,
+			)) as TLReligion[];
+			console.log(data);
+			// const data = (await queryDataFromStore("religions", "mapIdIndex", mapId);)
 			if (data) {
 				setReligions(data);
 			}
@@ -38,12 +44,14 @@ function ReligionsPage() {
 
 		loadReligions();
 	}, [mapId]);
+	//TODO(SELF): filter out "dead" religions by default?
+	//TODO(SELF): fix white on grey "type Pill"
 	return (
 		<Container>
-			<div className="contentSubHead">
+			{/* <div className="contentSubHead">
 				<h3>Religions</h3>
-			</div>
-			<div className="contentSubBody">
+			</div> */}
+			<div className="contentSubBody ReligionsPage">
 				<Grid container spacing={2}>
 					{religions.map((entry) => (
 						<Grid size={3} key={entry._id} id={entry._id}>
