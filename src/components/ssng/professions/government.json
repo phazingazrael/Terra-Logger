@@ -1,0 +1,252 @@
+{
+  "Monarchy": {
+    "Duchy": {
+      "Duke/Duchess": "The ruler of a duchy, overseeing its governance and administration.",
+      "Court Wizard": "Adviser to the duke/duchess, responsible for magical matters and divination.",
+      "Knight": "Sworn defender of the duchy, loyal to the ruling noble.",
+      "Royal Steward": "Manages the day-to-day affairs of the duchy, from finances to logistics.",
+      "Master-at-Arms": "Oversees military training and operations within the duchy.",
+      "Royal Huntsman": "Responsible for managing the duchy's forests and wildlife."
+    },
+    "Grand Duchy": {
+      "Grand Duke/Grand Duchess": "The sovereign ruler of a large duchy, often overseeing multiple smaller duchies.",
+      "Archmage": "Highest-ranking magical adviser, responsible for major mystical affairs.",
+      "Royal Treasurer": "Manages the finances of the grand duchy, overseeing taxes and expenditures.",
+      "High Commander": "Leads the grand duchy's military forces in times of conflict.",
+      "Grand Inquisitor": "Ensures adherence to the grand duchy's religious doctrine and hunts down heretics.",
+      "Master Diplomat": "Handles diplomatic relations with neighboring realms and foreign powers."
+    },
+    "Principality": {
+      "Prince/Princess": "The ruling noble of a principality, governing its lands and subjects.",
+      "High Priest/Priestess": "Spiritual leader of the principality, guiding religious practices and ceremonies.",
+      "Chancellor": "Advises the prince/princess on matters of law and governance.",
+      "Spymaster": "Conducts covert operations and gathers intelligence on behalf of the principality.",
+      "Royal Architect": "Designs and oversees the construction of important buildings and infrastructure.",
+      "Master Merchant": "Controls trade within the principality, managing commerce and markets."
+    },
+    "Kingdom": {
+      "King/Queen": "The sovereign ruler of a kingdom, holding supreme authority over its territories.",
+      "Royal Sage": "Scholarly adviser to the monarch, providing wisdom on matters of history and lore.",
+      "Lord/Lady Chamberlain": "Manages the royal household and coordinates royal events and ceremonies.",
+      "Royal Admiral": "Commands the kingdom's naval forces, protecting its shores and trade routes.",
+      "Royal Historian": "Records the kingdom's history and chronicles the deeds of its rulers.",
+      "Royal Executioner": "Carries out the monarch's justice, executing criminals and traitors."
+    },
+    "Empire": {
+      "Emperor/Empress": "The supreme ruler of an empire, commanding vast territories and diverse peoples.",
+      "Imperial Grand Vizier": "Chief adviser to the emperor/empress, overseeing the empire's administration.",
+      "Imperial High Priest/Priestess": "Head of the empire's religion, guiding spiritual matters and ceremonies.",
+      "Imperial Warlord": "Commands the empire's armies, leading campaigns and conquests.",
+      "Imperial Chancellor": "Oversees the empire's diplomatic relations and foreign affairs.",
+      "Imperial Spymaster": "Controls the empire's intelligence network, rooting out threats and espionage."
+    }
+  },
+  "Republic": {
+    "Republic": {
+      "President": "Elected leader of the republic, serving as head of state and government.",
+      "Senator": "Representative of a region or constituency within the republic's legislative body.",
+      "Chief Justice": "Head of the republic's judiciary, ensuring the interpretation and application of laws.",
+      "Public Defender": "Provides legal defense for citizens accused of crimes within the republic.",
+      "Mayor": "Oversees the administration of a city or town within the republic's jurisdiction.",
+      "Diplomat": "Negotiates treaties and agreements with foreign powers on behalf of the republic."
+    },
+    "Federation": {
+      "Federation Chancellor": "Leader of the federation, coordinating between member states and overseeing federal affairs.",
+      "Councilor": "Representative of a member state within the federation's legislative council.",
+      "Federal Marshal": "Enforces federal laws and maintains order across the federation's territories.",
+      "Trade Envoy": "Promotes commerce and trade between member states and foreign entities.",
+      "Federation Auditor": "Monitors financial transactions and ensures transparency within the federation.",
+      "Environmental Commissioner": "Implements policies and regulations to protect the federation's natural resources."
+    },
+    "Trade Company": {
+      "Chairman/Chairwoman": "Head of the trade company, responsible for its operations and profitability.",
+      "Chief Financial Officer": "Manages the company's finances and investments, maximizing returns.",
+      "Trade Representative": "Negotiates trade agreements and partnerships with foreign entities.",
+      "Logistics Coordinator": "Organizes the transportation and distribution of goods for the trade company.",
+      "Market Analyst": "Studies market trends and consumer behavior to inform business strategies.",
+      "Security Chief": "Protects the trade company's assets and personnel from external threats."
+    },
+    "Most Serene Republic": {
+      "Doge": "Elected leader of the republic, presiding over its senate and executive council.",
+      "Patrician": "Wealthy and influential citizen, serving as a senator and city leader within the republic.",
+      "Naval Admiral": "Commands the republic's naval forces, safeguarding its maritime interests.",
+      "Civic Architect": "Designs and oversees the construction of public buildings and infrastructure.",
+      "Trade Consul": "Represents the republic's interests in international trade and commerce.",
+      "Artisan Guildmaster": "Leads a guild of artisans, promoting craftsmanship and trade within the republic."
+    },
+    "Oligarchy": {
+      "Oligarch": "Wealthy elite who hold significant political power within the oligarchy, often controlling key industries.",
+      "Councilor": "Member of the oligarchic council, representing the interests of influential families or factions.",
+      "Chief Strategist": "Develops military and political strategies to maintain the oligarchy's dominance.",
+      "Economic Adviser": "Provides guidance on economic policy and investment opportunities for the oligarchy.",
+      "Security Director": "Oversees the oligarchy's private security forces and intelligence operations.",
+      "Legal Counsel": "Advises oligarchs on matters of law and ensures compliance with regulations."
+    },
+    "Tetrarchy": {
+      "Tetrarch": "One of four co-rulers who share power within the tetrarchy, each overseeing a quadrant of the realm.",
+      "Quadrant Governor": "Administrator appointed by a tetrarch to govern one of the realm's four regions.",
+      "Military Tribune": "Commander of the tetrarchy's military forces, responsible for defense and conquest.",
+      "Civic Planner": "Designs and implements urban development projects across the tetrarchy.",
+      "Cultural Curator": "Preserves and promotes the arts and traditions of the tetrarchy's diverse cultures.",
+      "Foreign Envoy": "Represents the tetrarchy's interests in diplomatic relations with neighboring realms."
+    },
+    "Triumvirate": {
+      "Triumvir": "One of three rulers who jointly govern the realm, sharing executive authority and decision-making.",
+      "Joint Magistrate": "Official responsible for enforcing laws and maintaining order within the triumvirate.",
+      "Public Works Overseer": "Manages infrastructure projects and public services on behalf of the triumvirate.",
+      "Trade Liaison": "Facilitates commerce and trade agreements between the triumvirate and other realms.",
+      "Cultural Ambassador": "Promotes cultural exchange and understanding between the triumvirate and foreign nations.",
+      "Emergency Councilor": "Advises the triumvirs on matters of crisis management and disaster response."
+    },
+    "Diarchy": {
+      "Co-King/Co-Queen": "Dual rulers who share the throne and divide responsibilities within the diarchy.",
+      "Royal Consort": "Spouse of one of the co-monarchs, often involved in ceremonial duties and diplomacy.",
+      "Court Astrologer": "Advises the diarchy on matters of fate and celestial influence.",
+      "Guardian of the Realm": "Commander of the diarchy's elite guard, sworn to protect the monarchs and their interests.",
+      "Chief Herald": "Announces royal proclamations and oversees heraldic traditions within the diarchy.",
+      "Master of Revels": "Organizes festivities and celebrations to honor the diarchy and entertain the populace."
+    },
+    "Junta": {
+      "Junta Leader": "Head of the military junta, exercising authoritarian control over the government.",
+      "Field Marshal": "Highest-ranking military officer, commanding the junta's armed forces and operations.",
+      "Propaganda Minister": "Controls information and media to support the junta's agenda and suppress dissent.",
+      "Secret Police Chief": "Leads the junta's intelligence agency, monitoring and suppressing opposition activities.",
+      "Economic Czar": "Manages the junta's economic policies and resources, often through coercion and corruption.",
+      "Labor Overseer": "Enforces labor laws and ensures productivity to benefit the junta's regime."
+    }
+  },
+  "Theocracy": {
+    "Theocracy": {
+      "High Priest/High Priestess": "Supreme religious leader of the theocracy, interpreting divine will and guiding religious doctrine.",
+      "Council of Elders": "Group of senior clergy who advise the high priest/priestess and help govern the theocracy.",
+      "Temple Guardian": "Defender of the theocracy's sacred sites and religious artifacts.",
+      "Divine Healer": "Practitioner of divine magic, providing spiritual and physical healing to the faithful.",
+      "Missionary": "Spreads the teachings and beliefs of the theocracy to distant lands and peoples.",
+      "Religious Scholar": "Studies sacred texts and theology, deepening understanding of the theocracy's faith."
+    },
+    "Brotherhood": {
+      "Brother/Sister": "Member of a religious order dedicated to serving the deity or deities of the brotherhood.",
+      "Monastic Abbot/Abbess": "Head of a monastery or convent, overseeing spiritual and administrative matters.",
+      "Inquisitor": "Investigates heresy and enforces religious law within the brotherhood's jurisdiction.",
+      "Scribe": "Records and preserves sacred texts and teachings within the brotherhood's archives.",
+      "Chaplain": "Provides spiritual guidance and support to members of the brotherhood and the community.",
+      "Cantor": "Leads worship and performs sacred music during religious ceremonies."
+    },
+    "Thearchy": {
+      "Divine Sovereign": "Ruler of the thearchy, believed to be a divine avatar or chosen vessel of the gods.",
+      "Oracle": "Seer and prophet who receives divine revelations and interprets omens for the thearchy.",
+      "Celestial Council": "Assembly of divine beings who advise the divine sovereign and shape the thearchy's destiny.",
+      "Guardian Paladin": "Champion of the thearchy, sworn to protect the divine sovereign and uphold divine law.",
+      "Divine Artisan": "Crafts sacred relics and icons for worship, imbuing them with divine power.",
+      "Spiritual Guide": "Offers counseling and spiritual guidance to the thearchy's citizens, helping them navigate life's challenges."
+    },
+    "See": {
+      "High Bishop/High Priestess": "Head of the religious hierarchy within the see, responsible for spiritual leadership and governance.",
+      "Council of Cardinals": "Group of senior clergy who advise the high bishop/priestess and oversee ecclesiastical affairs.",
+      "Exorcist": "Expert in banishing evil spirits and purging demonic influence from the see's territory.",
+      "Sanctuary Keeper": "Custodian of holy sites and relics, ensuring their protection and reverence.",
+      "Divine Advocate": "Legal expert who adjudicates disputes and interprets religious law within the see.",
+      "Pilgrim Guide": "Leads religious pilgrimages and sacred journeys to significant sites within the see's domain."
+    },
+    "Holy State": {
+      "Pontiff": "Supreme religious authority and temporal ruler of the holy state, believed to embody divine will.",
+      "Holy Council": "Assembly of religious leaders who advise the pontiff and shape the policies of the holy state.",
+      "Crusader": "Warrior dedicated to defending the faith and expanding the influence of the holy state through military conquest.",
+      "Divine Emissary": "Diplomat and ambassador who represents the holy state's interests in dealings with foreign powers.",
+      "Miracle Worker": "Performer of divine miracles, revered as a living conduit of divine power within the holy state.",
+      "Monastic Scholar": "Academic expert in theology and religious studies, advancing understanding of the holy state's faith and traditions."
+    }
+  },
+  "Union": {
+    "Union": {
+      "Union President": "Elected leader of the union, tasked with representing the collective interests of member states.",
+      "Assembly Delegate": "Representative of a member state within the union's legislative assembly.",
+      "Unity Ambassador": "Promotes cooperation and collaboration between member states of the union.",
+      "Border Warden": "Oversees border security and immigration control for the union's territories.",
+      "Union Treasurer": "Manages the financial resources and budgets of the union, ensuring equitable distribution.",
+      "Community Organizer": "Facilitates grassroots initiatives and community projects within the union."
+    },
+    "League": {
+      "League Commissioner": "Head of the league, responsible for coordinating activities and resolving disputes among member states.",
+      "League Councilor": "Representative of a member state within the league's governing council.",
+      "Athletic Director": "Organizes sports tournaments and competitions between member states of the league.",
+      "Trade Commissioner": "Facilitates trade agreements and economic partnerships between league members.",
+      "Environmental Steward": "Implements policies and initiatives to protect the natural environment within the league's territories.",
+      "Educational Coordinator": "Develops educational programs and resources to promote knowledge and learning within the league."
+    },
+    "Confederation": {
+      "Confederation Chancellor": "Leader of the confederation, responsible for coordinating policies and initiatives among member states.",
+      "Confederation Ambassador": "Represents the confederation's interests in diplomatic negotiations with foreign powers.",
+      "Regional Governor": "Administers the affairs of a confederate region, overseeing local governance and development.",
+      "Infrastructure Planner": "Designs and manages transportation and public works projects for the confederation.",
+      "Equality Advocate": "Promotes social justice and equality initiatives within the confederation's territories.",
+      "Health Coordinator": "Implements public health programs and initiatives to improve healthcare access and outcomes."
+    },
+    "United Kingdom": {
+      "Prime Minister": "Head of government for the united kingdom, responsible for executive leadership and policy-making.",
+      "Parliamentarian": "Member of the united kingdom's legislative body, representing constituents in law-making.",
+      "Royal Adviser": "Counsels the monarch and government officials on matters of state and governance.",
+      "Foreign Secretary": "Manages diplomatic relations and international affairs for the united kingdom.",
+      "Home Secretary": "Oversees domestic policy and law enforcement within the united kingdom's borders.",
+      "Royal Judge": "Presides over legal proceedings and interprets laws on behalf of the united kingdom's judiciary."
+    },
+    "United Republic": {
+      "President": "Elected leader of the united republic, serving as both head of state and government.",
+      "Congressional Delegate": "Representative of a constituent state within the united republic's legislative assembly.",
+      "Union Advocate": "Promotes collaboration and cooperation among member states within the united republic.",
+      "Public Health Commissioner": "Oversees healthcare policy and initiatives for the united republic's citizens.",
+      "Environmental Regulator": "Enforces environmental regulations and promotes sustainability practices within the united republic.",
+      "Educational Director": "Develops curriculum and educational standards for schools and universities within the united republic."
+    },
+    "United Provinces": {
+      "Governor-General": "Appointed executive officer of the united provinces, representing the monarch's authority.",
+      "Provincial Councilor": "Elected representative of a province within the united provinces' legislative council.",
+      "Regional Planner": "Designs and implements development strategies and infrastructure projects for the united provinces.",
+      "Cultural Liaison": "Fosters cultural exchange and appreciation between diverse communities within the united provinces.",
+      "Trade Inspector": "Monitors trade activities and ensures compliance with regulations across the united provinces.",
+      "Public Safety Commissioner": "Oversees law enforcement and emergency response efforts within the united provinces."
+    },
+    "Commonwealth": {
+      "Commonwealth Chairperson": "Head of the commonwealth, responsible for coordinating policies and initiatives among member states.",
+      "Commonwealth Representative": "Delegate appointed by a member state to represent its interests within the commonwealth's council.",
+      "Environmental Guardian": "Protects natural resources and promotes conservation efforts across the commonwealth.",
+      "Cultural Ambassador": "Promotes cultural exchange and understanding among diverse communities within the commonwealth.",
+      "Trade Coordinator": "Facilitates trade agreements and economic partnerships between commonwealth members.",
+      "Humanitarian Aid Director": "Oversees relief efforts and humanitarian initiatives within the commonwealth and beyond."
+    }
+  },
+  "Anarchy": {
+    "Free Territory": {
+      "Community Leader": "Influential figure within the free territory, respected for their wisdom and leadership qualities.",
+      "Grassroots Organizer": "Mobilizes local communities to address common challenges and pursue shared goals.",
+      "Mediator": "Resolves disputes and conflicts through dialogue and negotiation within the free territory.",
+      "Environmental Activist": "Advocates for the protection of natural resources and ecosystems within the free territory.",
+      "Self-Defense Coordinator": "Organizes community defense efforts and safeguards against external threats.",
+      "Outreach Worker": "Connects marginalized individuals and communities with resources and support networks."
+    },
+    "Council": {
+      "Council Elder": "Respected elder statesman/woman within the council, offering guidance and wisdom to fellow members.",
+      "Neighborhood Watch Captain": "Leads grassroots efforts to maintain safety and security within the council's jurisdiction.",
+      "Community Gardener": "Cultivates communal gardens and promotes sustainable agriculture practices within the council.",
+      "Artisan Craftsman/Craftswoman": "Skilled artisan who creates handmade goods and fosters local craftsmanship.",
+      "Social Worker": "Provides support and assistance to vulnerable individuals and families within the council.",
+      "Youth Mentor": "Guides and mentors young people, offering guidance and encouragement in their personal development."
+    },
+    "Commune": {
+      "Commune Coordinator": "Facilitates collective decision-making and community organization within the commune.",
+      "Commons Steward": "Manages shared resources and common lands for the benefit of all commune members.",
+      "Community Healer": "Practitioner of herbal medicine and holistic healing, providing healthcare services to commune residents.",
+      "Sustainable Living Advocate": "Promotes eco-friendly practices and sustainable lifestyles within the commune.",
+      "Community Educator": "Facilitates informal learning and skill-sharing initiatives within the commune.",
+      "Volunteer Coordinator": "Organizes community service projects and coordinates volunteer efforts to address local needs."
+    },
+    "Community": {
+      "Community Elder": "Respected elder within the community, offering guidance and wisdom based on years of experience.",
+      "Local Historian": "Preserves and shares the history and heritage of the community through storytelling and documentation.",
+      "Neighborhood Organizer": "Mobilizes residents to address common concerns and improve quality of life within the community.",
+      "Artisan Craftsman/Craftswoman": "Skilled artisan who creates unique handmade goods and supports the local economy.",
+      "Community Gardener": "Cultivates community gardens and promotes access to fresh, locally-grown produce.",
+      "Cultural Liaison": "Bridges cultural divides and fosters understanding between diverse groups within the community."
+    }
+  }
+}
