@@ -60,7 +60,7 @@ export const getAllTags = () => {
 	return tagsData.map((tag) => ({ ...tag, Name: formatTagName(tag.Name) }));
 };
 
-// Utility function to get default tags (you can customize the condition for default tags)
+// Utility function to get default tags
 export const getDefaultTags = () => {
 	return tagsData
 		.filter((tag) => tag.Type === "Default")
