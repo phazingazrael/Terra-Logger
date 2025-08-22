@@ -36,7 +36,6 @@ function CountryView() {
 	const [country, setCountry] = useState<TLCountry>();
 	const [cities, setCities] = useState<TLCity[]>([]);
 	const [activeTab, setActiveTab] = useState<string>("regiments");
-	const [totalPopulation, setTotalPopulation] = useState(0);
 	const [ruralPercentage, setRuralPercentage] = useState(0);
 	const [urbanPercentage, setUrbanPercentage] = useState(0);
 
@@ -83,23 +82,22 @@ function CountryView() {
 
 	useEffect(() => {
 		if (country) {
-			setTotalPopulation(
-				Number(country.population.rural.replace(",", "")) +
-					Number(country.population.urban.replace(",", "")),
+			const ruralPopulation = parseInt(
+				country?.population.rural.replace(",", ""),
+				10,
 			);
+			const urbanPopulation = parseInt(
+				country?.population.urban.replace(",", ""),
+				10,
+			);
+
+			const TotalPopulation = ruralPopulation + urbanPopulation;
+
 			setRuralPercentage(
-				totalPopulation === 0
-					? 0
-					: (Number(country.population.rural.replace(",", "")) /
-							totalPopulation) *
-							100,
+				TotalPopulation === 0 ? 0 : (ruralPopulation / TotalPopulation) * 100,
 			);
 			setUrbanPercentage(
-				totalPopulation === 0
-					? 0
-					: (Number(country.population.urban.replace(",", "")) /
-							totalPopulation) *
-							100,
+				TotalPopulation === 0 ? 0 : (urbanPopulation / TotalPopulation) * 100,
 			);
 		}
 	});
