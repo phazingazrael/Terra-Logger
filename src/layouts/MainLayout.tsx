@@ -132,7 +132,6 @@ function MainLayout() {
 	 * The function is called when the component mounts.
 	 */
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const fetchMapsList = async () => {
 			/**
@@ -152,7 +151,7 @@ function MainLayout() {
 		 * An empty dependency array means that the effect is only run once, when the component is mounted.
 		 */
 		fetchMapsList();
-	}, [mapsList, setMapsList]);
+	}, []);
 
 	return (
 		<ThemeProvider theme={selectedTheme}>
