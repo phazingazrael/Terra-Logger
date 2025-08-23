@@ -24,7 +24,6 @@ import {
 	getSettlementColor,
 	getSizeIcon,
 } from "../Util/cityUtils";
-import { getPoliticalColor } from "../Util/countryUtils";
 
 function CityCard(props: Readonly<TLCity>) {
 	const city = props;
