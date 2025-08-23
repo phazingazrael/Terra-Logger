@@ -46,6 +46,15 @@
   padding-top: 10px;
 }
 
+.country-chips {
+  overflow-y: hidden;
+  overflow-x: scroll;
+  height: auto;
+  display: inline-flex;
+  width: 97%;
+}
+
 .no-results {
   margin-bottom: 15dvh;
+  color: #000000 !important;
 }

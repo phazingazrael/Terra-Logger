@@ -13,7 +13,7 @@ import {
 	Select,
 	Typography,
 } from "@mui/material";
-import React, { useEffect, useState, Suspense, useMemo } from "react";
+import { useEffect, useState, Suspense, useMemo } from "react";
 import { useRecoilState } from "recoil";
 import mapAtom from "../../atoms/map";
 import { initDatabase } from "../../db/database";
@@ -27,9 +27,7 @@ import BookLoader from "../../components/Util/bookLoader.tsx";
 import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
 import type { Tag } from "../../definitions/Common.ts";
 
-const LazyCityCard = React.lazy(
-	() => import("../../components/Cards/city.tsx"),
-);
+import CityCard from "../../components/Cards/city.tsx";
 
 type countriesList = {
 	name: string;
@@ -43,6 +41,7 @@ function CitiesPage() {
 	const [map] = useRecoilState(mapAtom);
 	const [cities, setCities] = useState<TLCity[]>([]);
 
+	// Filtering
 	const [filteredCities, setFilteredCities] = useState<TLCity[]>([]);
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -54,6 +53,8 @@ function CitiesPage() {
 	const [allSizes, setAllSizes] = useState<string[]>([]);
 	const [selectedSize, setSelectedSize] = useState<string>("");
 	const [onlyCapitals, setOnlyCapitals] = useState<boolean>(false);
+	const [allGovForms, setAllGovForms] = useState<string[]>([]);
+	const [selectedGovForm, setSelectedGovForm] = useState<string>("");
 
 	const { mapId } = map;
 
@@ -73,30 +74,7 @@ function CitiesPage() {
 	const CityTags: Tag[] = [];
 	const AllTags: Tag[] = [];
 
-	// const FilteredCities = useMemo(() => {
-	// 	return cities.filter((city) => {
-	// 		if (searchQuery !== "") {
-	// 			return city.name?.toLowerCase().includes(searchQuery);
-	// 		}
-	// 		if (selectedCountry !== null) {
-	// 			return city.country._id === selectedCountry;
-	// 		}
-	// 		if (selectedTags.length > 0) {
-	// 			for (const tag of selectedTags) {
-	// 				if (city.tags.find((t) => t._id === tag._id)) {
-	// 					return true;
-	// 				}
-	// 			}
-	// 		}
-	// 		if (selectedCountry === null && searchQuery === "") {
-	// 			return cities;
-	// 		}
-	// 		return cities;
-	// 	});
-	// }, [cities, searchQuery, selectedCountry, selectedTags]);
-
 	// Build countries, cities
-
 	useEffect(() => {
 		const initializeDatabase = async () => {
 			try {
@@ -180,6 +158,14 @@ function CitiesPage() {
 		setAllSizes((prev) => (strArrayEqual(prev, nextSizes) ? prev : nextSizes));
 		console.log(allSizes);
 
+		// Collect government forms from cities (unique, sorted)
+		const nextGovForms = Array.from(
+			new Set(cities.map((c) => c.country?.govForm).filter(Boolean)),
+		).sort((a, b) => a.localeCompare(b));
+		setAllGovForms((prev) =>
+			strArrayEqual(prev, nextGovForms) ? prev : nextGovForms,
+		);
+
 		// Precedence: if CityTags has items, use CityTags; else use AllTags
 		const nextTags = CityTags.length > 0 ? CityTags : AllTags;
 		setAllTags((prev) => (byIdShallowEqual(prev, nextTags) ? prev : nextTags));
@@ -199,6 +185,10 @@ function CitiesPage() {
 			// size
 			if (selectedSize && city.size !== selectedSize) return false;
 
+			// government form
+			if (selectedGovForm && city.country?.govForm !== selectedGovForm)
+				return false;
+
 			// capitals only
 			if (onlyCapitals && !city.capital) return false;
 
@@ -217,6 +207,7 @@ function CitiesPage() {
 		selectedSize,
 		selectedTagIds,
 		onlyCapitals,
+		selectedGovForm,
 	]);
 
 	// Keep your state-driven rendering the same
@@ -230,6 +221,7 @@ function CitiesPage() {
 		setSelectedTagIds([]);
 		setSelectedSize("");
 		setOnlyCapitals(false);
+		setSelectedGovForm("");
 	};
 
 	return (
@@ -254,7 +246,7 @@ function CitiesPage() {
 						</Button>
 					</div>
 					{/* Country filter chips */}
-					<div>
+					<div className="country-chips">
 						{countriesList.map((country) => (
 							<Chip
 								clickable
@@ -288,7 +280,7 @@ function CitiesPage() {
 							}}
 							input={<OutlinedInput label="Tags" />}
 							renderValue={(ids) =>
-								(ids as string[])
+								ids
 									.map((id) => allTags.find((t) => t._id === id)?.Name ?? id)
 									.join(", ")
 							}
@@ -307,13 +299,31 @@ function CitiesPage() {
 						<Select
 							labelId="size-label"
 							value={selectedSize}
-							onChange={(e) => setSelectedSize(e.target.value as string)}
+							onChange={(e) => setSelectedSize(e.target.value)}
 							input={<OutlinedInput label="Size" />}
 						>
 							<MenuItem value="">Any</MenuItem>
 							{allSizes.map((s) => (
 								<MenuItem key={s} value={s}>
 									{s}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+
+					{/* Government form (single) */}
+					<FormControl sx={{ m: 1, width: 220 }} size="small">
+						<InputLabel id="govform-label">Government Type</InputLabel>
+						<Select
+							labelId="govform-label"
+							value={selectedGovForm}
+							onChange={(e) => setSelectedGovForm(e.target.value)}
+							input={<OutlinedInput label="Government Type" />}
+						>
+							<MenuItem value="">Any</MenuItem>
+							{allGovForms.map((g) => (
+								<MenuItem key={g} value={g}>
+									{g}
 								</MenuItem>
 							))}
 						</Select>
@@ -326,7 +336,7 @@ function CitiesPage() {
 							<Checkbox
 								checked={onlyCapitals}
 								onChange={(e) => setOnlyCapitals(e.target.checked)}
-								inputProps={{ "aria-label": "Show only capitals" }}
+								sx={{ "aria-label": "Show only capitals" }}
 							/>
 						}
 						label="Capitals only"
@@ -340,7 +350,7 @@ function CitiesPage() {
 						{filteredCities.length > 0 ? (
 							filteredCities.map((city) => (
 								<Grid size={3} key={city._id + city.name} id={city._id}>
-									<LazyCityCard {...city} />
+									<CityCard {...city} />
 								</Grid>
 							))
 						) : cities.length === 0 ? (
@@ -348,7 +358,7 @@ function CitiesPage() {
 						) : (
 							<Grid
 								size={12}
-								className="no-results"
+								className={cities.length === 0 ? "loading" : "no-results"}
 								sx={{ display: "flex", justifyContent: "center", mt: 4 }}
 							>
 								<Typography variant="h6" color="text.secondary">

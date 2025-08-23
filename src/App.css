@@ -131,6 +131,13 @@ header {
 }
 
 /* Page Specific styling that doesn't deserve it's own file yet */
+/* Home Page */
+.homePage strong {
+  font-weight: 500;
+  color: #8309ac;
+  font-style: oblique;
+}
+
 /* Settings */
 .Settings {
   padding-left: 0dvw;

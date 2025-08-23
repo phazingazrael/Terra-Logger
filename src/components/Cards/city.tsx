@@ -49,7 +49,6 @@ function CityCard(props: Readonly<TLCity>) {
 			{/* City CoA */}
 			<Avatar
 				sx={{
-					bgcolor: getPoliticalColor(city.country.govForm),
 					position: "absolute",
 					top: -10,
 					right: 16,

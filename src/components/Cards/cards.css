@@ -7,6 +7,10 @@
   width: 100% !important;
   height: 110% !important;
 }
+.CitiesPage .MuiAvatar-root {
+  background: #fff !important;
+  border: 1px solid;
+}
 
 .tile-info {
   display: flex;
