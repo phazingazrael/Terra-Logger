@@ -5,12 +5,13 @@ import {
 	Chip,
 	Container,
 	FormControl,
+	FormControlLabel,
 	Grid2 as Grid,
 	InputLabel,
-	ListItemText,
 	MenuItem,
 	OutlinedInput,
 	Select,
+	Typography,
 } from "@mui/material";
 import React, { useEffect, useState, Suspense, useMemo } from "react";
 import { useRecoilState } from "recoil";
@@ -38,15 +39,22 @@ type countriesList = {
 };
 
 function CitiesPage() {
+	// state management section
 	const [map] = useRecoilState(mapAtom);
 	const [cities, setCities] = useState<TLCity[]>([]);
+
 	const [filteredCities, setFilteredCities] = useState<TLCity[]>([]);
 	const [countriesList, setCountriesList] = useState<countriesList[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
+	// Tags, Sizes and Capital Filtering
 	const [allTags, setAllTags] = useState<Tag[]>([]);
-	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-	const [, setSelectedSize] = useState<string | null>(null);
+	const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+	const [allSizes, setAllSizes] = useState<string[]>([]);
+	const [selectedSize, setSelectedSize] = useState<string>("");
+	const [onlyCapitals, setOnlyCapitals] = useState<boolean>(false);
+
 	const { mapId } = map;
 
 	const excludedIds = [
@@ -61,32 +69,33 @@ function CitiesPage() {
 		"0192be16-c07d-7739-8b58-d67e3913403a",
 	];
 
-	const FullTags = getAllTags();
+	const FullTags = useMemo(() => getAllTags(), []); // array where each item has .Tags: Tag[]
 	const CityTags: Tag[] = [];
 	const AllTags: Tag[] = [];
-	const allSizes: string[] = [];
 
-	const FilteredCities = useMemo(() => {
-		return cities.filter((city) => {
-			if (searchQuery !== "") {
-				return city.name?.toLowerCase().includes(searchQuery);
-			}
-			if (selectedCountry !== null) {
-				return city.country._id === selectedCountry;
-			}
-			if (selectedTags.length > 0) {
-				for (const tag of selectedTags) {
-					if (city.tags.find((t) => t._id === tag._id)) {
-						return true;
-					}
-				}
-			}
-			if (selectedCountry === null && searchQuery === "") {
-				return cities;
-			}
-			return cities;
-		});
-	}, [cities, searchQuery, selectedCountry, selectedTags]);
+	// const FilteredCities = useMemo(() => {
+	// 	return cities.filter((city) => {
+	// 		if (searchQuery !== "") {
+	// 			return city.name?.toLowerCase().includes(searchQuery);
+	// 		}
+	// 		if (selectedCountry !== null) {
+	// 			return city.country._id === selectedCountry;
+	// 		}
+	// 		if (selectedTags.length > 0) {
+	// 			for (const tag of selectedTags) {
+	// 				if (city.tags.find((t) => t._id === tag._id)) {
+	// 					return true;
+	// 				}
+	// 			}
+	// 		}
+	// 		if (selectedCountry === null && searchQuery === "") {
+	// 			return cities;
+	// 		}
+	// 		return cities;
+	// 	});
+	// }, [cities, searchQuery, selectedCountry, selectedTags]);
+
+	// Build countries, cities
 
 	useEffect(() => {
 		const initializeDatabase = async () => {
@@ -127,60 +136,101 @@ function CitiesPage() {
 		initializeDatabase();
 	}, [mapId]);
 
+	// Helpers to avoid unnecessary state updates (reference-stable)
+	function byIdShallowEqual(a: Tag[], b: Tag[]) {
+		if (a === b) return true;
+		if (a.length !== b.length) return false;
+		for (let i = 0; i < a.length; i++) if (a[i]._id !== b[i]._id) return false;
+		return true;
+	}
+	function strArrayEqual(a: string[], b: string[]) {
+		if (a === b) return true;
+		if (a.length !== b.length) return false;
+		for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+		return true;
+	}
+
+	// Build CityTags, AllTags, Sizes, then decide which tag set to use
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (cities.length > 0) {
-			for (const city of cities) {
-				for (const tag of city.tags) {
-					if (!CityTags.find((t) => t._id === tag._id)) {
-						if (!excludedIds.find((id) => id === tag._id)) {
-							CityTags.push(tag);
-						}
+		if (cities.length === 0) return;
+
+		// Collect unique CityTags from cities (excluding excludedIds)
+		for (const city of cities) {
+			for (const tag of city.tags) {
+				if (!CityTags.find((t) => t._id === tag._id)) {
+					if (!excludedIds.find((id) => id === tag._id)) {
+						CityTags.push(tag);
 					}
 				}
 			}
-
-			for (const Tags of FullTags) {
-				for (const Tag of Tags.Tags) {
-					AllTags.push(Tag);
-				}
-			}
-
-			for (const city of cities) {
-				if (!allSizes.find((s) => s === city.size)) {
-					allSizes.push(city.size);
-				}
-			}
-
-			if (CityTags.length > 0) {
-				setAllTags(CityTags);
-			} else if (AllTags.length > 0 && CityTags.length === 0) {
-				setAllTags(AllTags);
-			}
-
-			// const FilteredCities = cities.filter((city) => {
-			// 	if (searchQuery !== "") {
-			// 		return city.name?.toLowerCase().includes(searchQuery.toLowerCase());
-			// 	}
-			// 	if (selectedCountry !== null) {
-			// 		return city.country._id === selectedCountry;
-			// 	}
-			// 	if (selectedTags.length > 0) {
-			// 		for (const tag of selectedTags) {
-			// 			if (city.tags.find((t) => t._id === tag._id)) {
-			// 				return true;
-			// 			}
-			// 		}
-			// 	}
-			// 	if (selectedCountry === null && searchQuery === "") {
-			// 		return cities;
-			// 	}
-			// 	return cities;
-			// });
-			setFilteredCities(FilteredCities);
 		}
 
-		document.getElementById("Content")?.scrollTo({ top: 0 });
-	}, [cities, FullTags, FilteredCities]);
+		// Flatten FullTags.*.Tags into AllTags
+		for (const group of FullTags) {
+			for (const tag of group.Tags) {
+				AllTags.push(tag);
+			}
+		}
+
+		// Collect sizes from cities (as state, so UI updates)
+		const nextSizes = Array.from(
+			new Set(cities.map((c) => c.size).filter(Boolean)),
+		).sort((a, b) => a.localeCompare(b));
+		setAllSizes((prev) => (strArrayEqual(prev, nextSizes) ? prev : nextSizes));
+		console.log(allSizes);
+
+		// Precedence: if CityTags has items, use CityTags; else use AllTags
+		const nextTags = CityTags.length > 0 ? CityTags : AllTags;
+		setAllTags((prev) => (byIdShallowEqual(prev, nextTags) ? prev : nextTags));
+	}, [cities, FullTags]);
+
+	// Derived filtering
+	const derivedFiltered = useMemo(() => {
+		const q = searchQuery.trim().toLowerCase();
+
+		return cities.filter((city) => {
+			// name query
+			if (q && !city.name?.toLowerCase().includes(q)) return false;
+
+			// country
+			if (selectedCountry && city.country._id !== selectedCountry) return false;
+
+			// size
+			if (selectedSize && city.size !== selectedSize) return false;
+
+			// capitals only
+			if (onlyCapitals && !city.capital) return false;
+
+			// tags (city must have at least one of the selected tags)
+			if (selectedTagIds.length) {
+				const cityTagIds = city.tags.map((t) => t._id);
+				if (!selectedTagIds.some((id) => cityTagIds.includes(id))) return false;
+			}
+
+			return true;
+		});
+	}, [
+		cities,
+		searchQuery,
+		selectedCountry,
+		selectedSize,
+		selectedTagIds,
+		onlyCapitals,
+	]);
+
+	// Keep your state-driven rendering the same
+	useEffect(() => {
+		setFilteredCities(derivedFiltered);
+	}, [derivedFiltered]);
+
+	const resetFilters = () => {
+		setSearchQuery("");
+		setSelectedCountry(null);
+		setSelectedTagIds([]);
+		setSelectedSize("");
+		setOnlyCapitals(false);
+	};
 
 	return (
 		<Container>
@@ -198,16 +248,12 @@ function CitiesPage() {
 							variant="contained"
 							color="error"
 							className="filter-all"
-							onClick={() => {
-								setSearchQuery("");
-								setSelectedCountry(null);
-								setSelectedTags([]);
-								setSelectedSize("");
-							}}
+							onClick={resetFilters}
 						>
 							Reset Filters
 						</Button>
 					</div>
+					{/* Country filter chips */}
 					<div>
 						{countriesList.map((country) => (
 							<Chip
@@ -215,7 +261,11 @@ function CitiesPage() {
 								key={country._id}
 								id={country._id}
 								className={country._id === selectedCountry ? "selected" : ""}
-								onClick={() => setSelectedCountry(country._id)}
+								onClick={() =>
+									setSelectedCountry((prev) =>
+										prev === country._id ? null : country._id,
+									)
+								}
 								label={country.name}
 								style={{
 									backgroundColor: country.color,
@@ -225,51 +275,62 @@ function CitiesPage() {
 							/>
 						))}
 					</div>
-					{/* Tag filter */}
-					<FormControl sx={{ m: 1, width: 200 }}>
-						<InputLabel className="tags-label">Tags</InputLabel>
+					{/* Tags (multi by _id, display Name) */}
+					<FormControl sx={{ m: 1, width: 220 }} size="small">
+						<InputLabel id="tags-label">Tags</InputLabel>
 						<Select
 							labelId="tags-label"
 							multiple
-							value={selectedTags.map((tag) => `${tag.Name}`)}
-							onChange={(event) => {
-								console.log("event start");
-								const values = event.target.value;
-								if (Array.isArray(values)) {
-									console.log(values);
-									const SelectedTags = values
-										.map((value) => {
-											const tag = AllTags.find((tag) => tag.Name === value);
-											return tag;
-										})
-										.filter((t) => t !== undefined);
-
-									setSelectedTags((prevSelectedTags) =>
-										SelectedTags.reduce(
-											(acc, tag) =>
-												acc.some((t) => t._id === tag?._id)
-													? acc.filter((t) => t._id !== tag?._id)
-													: acc.concat([tag]),
-											prevSelectedTags,
-										),
-									);
-									console.log(SelectedTags);
-									console.log("event end");
-								}
+							value={selectedTagIds}
+							onChange={(e) => {
+								const values = e.target.value as string[];
+								setSelectedTagIds(values);
 							}}
 							input={<OutlinedInput label="Tags" />}
-							renderValue={(selected) => selected.join(", ")}
+							renderValue={(ids) =>
+								(ids as string[])
+									.map((id) => allTags.find((t) => t._id === id)?.Name ?? id)
+									.join(", ")
+							}
 						>
 							{allTags.map((tag) => (
-								<MenuItem key={tag._id} value={tag.Name}>
-									<Checkbox
-										checked={selectedTags.some((t) => t.Name === tag.Name)}
-									/>
-									<ListItemText primary={tag.Name} />
+								<MenuItem key={tag._id} value={tag._id}>
+									{tag.Name}
 								</MenuItem>
 							))}
 						</Select>
 					</FormControl>
+
+					{/* Size (single) */}
+					<FormControl sx={{ m: 1, width: 160 }} size="small">
+						<InputLabel id="size-label">Size</InputLabel>
+						<Select
+							labelId="size-label"
+							value={selectedSize}
+							onChange={(e) => setSelectedSize(e.target.value as string)}
+							input={<OutlinedInput label="Size" />}
+						>
+							<MenuItem value="">Any</MenuItem>
+							{allSizes.map((s) => (
+								<MenuItem key={s} value={s}>
+									{s}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+
+					{/* Capitals only */}
+					<FormControlLabel
+						sx={{ m: 1 }}
+						control={
+							<Checkbox
+								checked={onlyCapitals}
+								onChange={(e) => setOnlyCapitals(e.target.checked)}
+								inputProps={{ "aria-label": "Show only capitals" }}
+							/>
+						}
+						label="Capitals only"
+					/>
 				</div>
 			</AppBar>
 
@@ -282,8 +343,18 @@ function CitiesPage() {
 									<LazyCityCard {...city} />
 								</Grid>
 							))
-						) : (
+						) : cities.length === 0 ? (
 							<BookLoader />
+						) : (
+							<Grid
+								size={12}
+								className="no-results"
+								sx={{ display: "flex", justifyContent: "center", mt: 4 }}
+							>
+								<Typography variant="h6" color="text.secondary">
+									No results found
+								</Typography>
+							</Grid>
 						)}
 					</Suspense>
 				</Grid>

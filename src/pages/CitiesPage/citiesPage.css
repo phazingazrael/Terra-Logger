@@ -45,3 +45,7 @@
   margin-bottom: 2dvh !important;
   padding-top: 10px;
 }
+
+.no-results {
+  margin-bottom: 15dvh;
+}
