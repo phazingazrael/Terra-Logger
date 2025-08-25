@@ -21,7 +21,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@lexical/react": "^0.23.1",
+    "@lexical/react": "^0.33.1",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
     "@types/delaunator": "^5.0.3",
