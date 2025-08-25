@@ -30,7 +30,7 @@
     "body-parser": "^1.20.3",
     "delaunator": "^5.0.1",
     "idb": "^8.0.1",
-    "lexical": "^0.23.1",
+    "lexical": "^0.33.1",
     "lorem-ipsum": "^2.0.8",
     "module-alias": "^2.2.3",
     "prop-types": "^15.8.1",
