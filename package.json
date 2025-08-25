@@ -38,7 +38,7 @@
     "react-dom": "^18.3.1",
     "react-editext": "^7.0.0",
     "react-icons": "^5.4.0",
-    "react-lines-ellipsis": "^0.15.4",
+    "react-lines-ellipsis": "^0.16.1",
     "react-router-dom": "^6.30.0",
     "react-toastify": "^11.0.3",
     "recoil": "^0.7.7",
