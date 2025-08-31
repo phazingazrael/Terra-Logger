@@ -14,8 +14,8 @@ import { MarkdownExportPanel } from "../../components/Export/Export";
 import type {
 	TLCity,
 	TLCountry,
-	TLCulture,
-	TLNote,
+	// TLCulture,
+	// TLNote,
 	TLReligion,
 } from "../../definitions/TerraLogger";
 import type { DataSets } from "../../definitions/Export";

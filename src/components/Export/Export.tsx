@@ -296,10 +296,6 @@ const defaults: TemplateMap = {
 	Religion: "# {{Religion.name}}\n",
 };
 
-function defaultTemplateFor<K extends keyof TemplateMap>(k: K): TemplateMap[K] {
-	return defaults[k];
-}
-
 function toFullSvg(svg: string): string {
 	const raw = (svg ?? "").trim();
 	if (!raw) return "";
