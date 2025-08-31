@@ -1,9 +1,0 @@
-out
-dist
-pnpm-lock.yaml
-.github/
-.vscode/
-node_modules
-misc
-resources
-src/assets/NameBases.json
