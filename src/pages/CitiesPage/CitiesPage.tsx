@@ -346,6 +346,7 @@ function CitiesPage() {
 			<div className="contentSubBody CitiesPage">
 				<Grid container spacing={2}>
 					<Suspense fallback={<BookLoader />}>
+						{/* BUG: "No Results Found" displaying too early / during loading */}
 						{filteredCities.length > 0 ? (
 							filteredCities.map((city) => (
 								<Grid size={3} key={city._id + city.name} id={city._id}>
