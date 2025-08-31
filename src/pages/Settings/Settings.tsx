@@ -58,7 +58,6 @@ function Settings(): JSX.Element {
 					<div className="contentSubBody">
 						<div className="section">
 							<h4>Map Settings</h4>
-							{/* BUG: mapsList is not being updated when a map is deleted or uploaded */}
 							{mapsList.length > 0 ? (
 								<div className="sectionAlt">
 									<span id="MapsList">

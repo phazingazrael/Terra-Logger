@@ -12,7 +12,12 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { ImDiamonds } from "react-icons/im";
-import { TiCog, TiDocumentText, TiGlobe, TiHome, TiTags } from "react-icons/ti";
+import {
+	TiCog,
+	TiDocumentText,
+	TiGlobe,
+	TiHome /*TiTags*/,
+} from "react-icons/ti";
 import { NavLink } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import mapAtom from "../atoms/map";
@@ -57,9 +62,6 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 		<MenuList>
 			<IconContext.Provider value={iconStyles}>
 				<MenuItem>
-					{/* BUG: mapsList is not being updated when a map is deleted or uploaded
-                   - could be duplicate issue with MapManager Bug
-          */}
 					{mapList.length > 0 ? (
 						<Accordion
 							disableGutters
@@ -166,7 +168,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 								</ListItemIcon>
 							</MenuItem>
 						</NavLink>
-						<NavLink
+						{/* <NavLink
 							to="/tags"
 							className={({ isActive }) => (isActive ? "active" : "")}
 						>
@@ -179,7 +181,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 									<ImDiamonds />
 								</ListItemIcon>
 							</MenuItem>
-						</NavLink>
+						</NavLink> */}
 					</div>
 				) : (
 					""

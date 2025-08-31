@@ -97,11 +97,11 @@ const App = (): JSX.Element => {
 							Component: m.default,
 						})),
 				},
-				{
-					path: "tags",
-					lazy: () =>
-						import("./pages/Tags/Tags").then((m) => ({ Component: m.default })),
-				},
+				// {
+				// 	path: "tags",
+				// 	lazy: () =>
+				// 		import("./pages/Tags/Tags").then((m) => ({ Component: m.default })),
+				// },
 				{
 					path: "settings",
 					lazy: () =>

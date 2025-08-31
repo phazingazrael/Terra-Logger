@@ -138,18 +138,14 @@ function MainLayout() {
 			 * The `getFullStore` function returns a promise that resolves with an array of all data from the "maps" store.
 			 */
 			const mapsData = await getFullStore("maps");
-			/**
-			 * Set the `mapsList` state to the list of maps fetched from the database.
-			 */
 			setMapsList(mapsData);
 		};
 
-		/**
-		 * Call the `fetchMapsList` function when the component mounts.
-		 * The `useEffect` hook takes a dependency array as its second argument.
-		 * An empty dependency array means that the effect is only run once, when the component is mounted.
-		 */
-		fetchMapsList();
+		const intervalId = setInterval(fetchMapsList, 2000); // poll the database every 1 second
+
+		return () => {
+			clearInterval(intervalId);
+		};
 	}, []);
 
 	return (

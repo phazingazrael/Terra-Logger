@@ -58,3 +58,8 @@
   margin-bottom: 15dvh;
   color: #000000 !important;
 }
+
+.CitiesPage .BookLoader {
+  max-height: 44dvh !important;
+  padding-top: 0 !important;
+}
