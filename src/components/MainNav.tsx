@@ -57,6 +57,9 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 		<MenuList>
 			<IconContext.Provider value={iconStyles}>
 				<MenuItem>
+					{/* BUG: mapsList is not being updated when a map is deleted or uploaded
+                   - could be duplicate issue with MapManager Bug
+          */}
 					{mapList.length > 0 ? (
 						<Accordion
 							disableGutters
