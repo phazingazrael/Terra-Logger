@@ -1,5 +1,4 @@
 import Mustache from "mustache";
-import JSZip from "jszip";
 import { useEffect, useRef, useState } from "react";
 
 import { Box, LinearProgress, Typography } from "@mui/material";
@@ -475,6 +474,8 @@ export async function zipFiles(
 	zipName = "export.zip",
 	onProgress?: (percent: number, currentFile?: string) => void,
 ): Promise<Blob> {
+	// Lazy-load JSZip only when export is triggered
+	const { default: JSZip } = await import("jszip");
 	const zip = new JSZip();
 
 	for (const file of files) {
