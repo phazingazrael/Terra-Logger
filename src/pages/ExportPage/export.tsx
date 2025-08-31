@@ -24,8 +24,8 @@ function ExportPage() {
 	const [map] = useRecoilState(mapAtom);
 	const [Cities, setCities] = useState<TLCity[]>([]);
 	const [Countries, setCountries] = useState<TLCountry[]>([]);
-	const [Cultures, setCultures] = useState<TLCulture[]>([]);
-	const [Notes, setNotes] = useState<TLNote[]>([]);
+	// const [Cultures, setCultures] = useState<TLCulture[]>([]);
+	// const [Notes, setNotes] = useState<TLNote[]>([]);
 	const [Religions, setReligions] = useState<TLReligion[]>([]);
 
 	const { mapId } = map;
@@ -36,8 +36,8 @@ function ExportPage() {
 		MapInfo,
 		Cities,
 		Countries,
-		Cultures,
-		Notes,
+		// Cultures,
+		// Notes,
 		Religions,
 	};
 
@@ -74,22 +74,22 @@ function ExportPage() {
 			)) as TLCountry[];
 			setCountries(data);
 		};
-		const loadCultures = async () => {
-			const data = (await queryDataFromStore(
-				"cultures",
-				"mapIdIndex",
-				mapId,
-			)) as TLCulture[];
-			setCultures(data);
-		};
-		const loadNotes = async () => {
-			const data = (await queryDataFromStore(
-				"notes",
-				"mapIdIndex",
-				mapId,
-			)) as TLNote[];
-			setNotes(data);
-		};
+		// const loadCultures = async () => {
+		// 	const data = (await queryDataFromStore(
+		// 		"cultures",
+		// 		"mapIdIndex",
+		// 		mapId,
+		// 	)) as TLCulture[];
+		// 	setCultures(data);
+		// };
+		// const loadNotes = async () => {
+		// 	const data = (await queryDataFromStore(
+		// 		"notes",
+		// 		"mapIdIndex",
+		// 		mapId,
+		// 	)) as TLNote[];
+		// 	setNotes(data);
+		// };
 		const loadReligions = async () => {
 			const data = (await queryDataFromStore(
 				"religions",
@@ -101,8 +101,8 @@ function ExportPage() {
 
 		loadCountries();
 		loadCities();
-		loadCultures();
-		loadNotes();
+		// loadCultures();
+		// loadNotes();
 		loadReligions();
 	}, []);
 	return (
