@@ -30,6 +30,15 @@ import type {
 
 import "./viewStyles.css";
 
+const toInt = (s?: string | number) => {
+	if (typeof s === "number") return Math.trunc(s);
+	if (!s) return 0;
+	// remove commas, spaces (incl. NBSP), and any other non-digits
+	const cleaned = s.replace(/\s|\u00A0/g, "").replace(/,/g, "");
+	const n = Number.parseInt(cleaned, 10);
+	return Number.isFinite(n) ? n : 0;
+};
+
 function CountryView() {
 	const countryId = useParams();
 	const [country, setCountry] = useState<TLCountry>();
@@ -81,16 +90,10 @@ function CountryView() {
 
 	useEffect(() => {
 		if (country) {
-			const ruralPopulation = Number.parseInt(
-				country?.population.rural.replace(",", ""),
-				10,
-			);
-			const urbanPopulation = Number.parseInt(
-				country?.population.urban.replace(",", ""),
-				10,
-			);
+			const ruralPopulation = toInt(country.population.rural);
+			const urbanPopulation = toInt(country.population.urban);
 
-			const TotalPopulation = ruralPopulation + urbanPopulation;
+			const TotalPopulation = toInt(country.population.total);
 
 			setRuralPercentage(
 				TotalPopulation === 0 ? 0 : (ruralPopulation / TotalPopulation) * 100,
