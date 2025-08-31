@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import { getPoliticalColor, getPoliticalIcon } from "../Util/countryUtils";
 
@@ -177,25 +176,4 @@ function CountryCard(props: Readonly<TLCountry>) {
 	);
 }
 
-CountryCard.propTypes = {
-	country: PropTypes.shape({
-		_id: PropTypes.string,
-		name: PropTypes.string,
-		coa: PropTypes.object,
-		description: PropTypes.string,
-		tags: PropTypes.array,
-	}),
-	theme: PropTypes.shape({
-		palette: PropTypes.shape({
-			mode: PropTypes.string,
-			primary: PropTypes.shape({
-				dark: PropTypes.string,
-				light: PropTypes.string,
-			}),
-			text: PropTypes.shape({
-				primary: PropTypes.string,
-			}),
-		}),
-	}),
-};
 export default CountryCard;

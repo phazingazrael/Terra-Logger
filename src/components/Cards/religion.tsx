@@ -11,8 +11,6 @@ import {
 import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
 
-import PropTypes from "prop-types";
-
 import { getFormColor, getFormIcon, getTypeColor } from "../Util/religionUtils";
 
 import type { TLReligion } from "../../definitions/TerraLogger";
@@ -169,25 +167,4 @@ function ReligionCard(props: Readonly<TLReligion>) {
 	);
 }
 
-ReligionCard.propTypes = {
-	religion: PropTypes.shape({
-		_id: PropTypes.string,
-		name: PropTypes.string,
-		coa: PropTypes.object,
-		description: PropTypes.string,
-		tags: PropTypes.array,
-	}),
-	theme: PropTypes.shape({
-		palette: PropTypes.shape({
-			mode: PropTypes.string,
-			primary: PropTypes.shape({
-				dark: PropTypes.string,
-				light: PropTypes.string,
-			}),
-			text: PropTypes.shape({
-				primary: PropTypes.string,
-			}),
-		}),
-	}),
-};
 export default ReligionCard;

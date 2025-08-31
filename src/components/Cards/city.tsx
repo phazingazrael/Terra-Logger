@@ -10,7 +10,6 @@ import {
 	Box,
 } from "@mui/material";
 import { v7 as uuidv7 } from "uuid";
-import PropTypes from "prop-types";
 import { Link, useOutletContext } from "react-router-dom";
 
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -198,26 +197,4 @@ function CityCard(props: Readonly<TLCity>) {
 		</Card>
 	);
 }
-
-CityCard.propTypes = {
-	city: PropTypes.shape({
-		_id: PropTypes.string,
-		name: PropTypes.string,
-		coa: PropTypes.object,
-		description: PropTypes.string,
-		tags: PropTypes.array,
-	}),
-	theme: PropTypes.shape({
-		palette: PropTypes.shape({
-			mode: PropTypes.string,
-			primary: PropTypes.shape({
-				dark: PropTypes.string,
-				light: PropTypes.string,
-			}),
-			text: PropTypes.shape({
-				primary: PropTypes.string,
-			}),
-		}),
-	}),
-};
 export default CityCard;
