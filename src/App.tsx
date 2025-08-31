@@ -3,20 +3,6 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import mapAtom from "./atoms/map";
 import { initDatabase } from "./db/database";
-import MainLayout from "./layouts/MainLayout";
-import {
-	CitiesPage,
-	CountriesPage,
-	ErrorPage,
-	HomePage,
-	ReligionsPage,
-	Settings,
-	Tags,
-	CityView,
-	CountryView,
-	ReligionsView,
-	ExportPage,
-} from "./pages";
 
 import type { MapInf } from "./definitions/TerraLogger";
 
@@ -95,65 +81,89 @@ const App = (): JSX.Element => {
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <MainLayout />,
-			errorElement: <ErrorPage />,
+			async lazy() {
+				const [{ default: MainLayout }, { default: ErrorBoundary }] =
+					await Promise.all([
+						import("./layouts/MainLayout"),
+						import("./pages/ErrorPage/ErrorPage"), // this module should export a React component that uses useRouteError()
+					]);
+				return { Component: MainLayout, ErrorBoundary };
+			},
 			children: [
 				{
-					path: "/",
-					element: <HomePage />,
-					errorElement: <ErrorPage />,
+					index: true, // replaces path: "/"
+					lazy: () =>
+						import("./pages/HomePage/HomePage").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "tags",
-					element: <Tags />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/Tags/Tags").then((m) => ({ Component: m.default })),
 				},
 				{
 					path: "settings",
-					element: <Settings />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/Settings/Settings").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "countries",
-					element: <CountriesPage />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/CountriesPage/CountriesPage").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "cities",
-					element: <CitiesPage />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/CitiesPage/CitiesPage").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "religions",
-					element: <ReligionsPage />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/ReligionsPage/ReligionsPage").then((m) => ({
+							Component: m.default,
+						})),
 				},
-				// view routes here
+				// Viewing Pages
+				{
+					path: "export",
+					lazy: () =>
+						import("./pages/ExportPage/export").then((m) => ({
+							Component: m.default,
+						})),
+				},
 				{
 					path: "view_city/:_id",
-					element: <CityView />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/ViewingPages/city").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "view_country/:_id",
-					element: <CountryView />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/ViewingPages/country").then((m) => ({
+							Component: m.default,
+						})),
 				},
 				{
 					path: "view_religion/:_id",
-					element: <ReligionsView />,
-					errorElement: <ErrorPage />,
-				},
-				{
-					path: "export",
-					element: <ExportPage />,
-					errorElement: <ErrorPage />,
+					lazy: () =>
+						import("./pages/ViewingPages/religion").then((m) => ({
+							Component: m.default,
+						})),
 				},
 			],
 		},
 	]);
 
-	return <RouterProvider router={router} />;
+	return <RouterProvider router={router} fallbackElement={<div />} />;
 };
 
 export default App;

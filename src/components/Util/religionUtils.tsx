@@ -1,19 +1,17 @@
-import {
-	AutoAwesome as AutoAwesomeIcon,
-	Pets as PetsIcon,
-	Public as PublicIcon,
-	Groups as GroupsIcon,
-	Park as ParkIcon,
-	AccountTree as AccountTreeIcon,
-	LooksOne as LooksOneIcon,
-	Compare as CompareIcon,
-	AllInclusive as AllInclusiveIcon,
-	DoNotDisturb as DoNotDisturbIcon,
-	GroupWork as GroupWorkIcon,
-	Nightlight as NightlightIcon,
-	Group as GroupIcon,
-	Warning as WarningIcon,
-} from "@mui/icons-material";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import PetsIcon from "@mui/icons-material/Pets";
+import PublicIcon from "@mui/icons-material/Public";
+import GroupsIcon from "@mui/icons-material/Groups";
+import ParkIcon from "@mui/icons-material/Park";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import LooksOneIcon from "@mui/icons-material/LooksOne";
+import CompareIcon from "@mui/icons-material/Compare";
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
+import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
+import GroupWorkIcon from "@mui/icons-material/GroupWork";
+import NightlightIcon from "@mui/icons-material/Nightlight";
+import GroupIcon from "@mui/icons-material/Group";
+import WarningIcon from "@mui/icons-material/Warning";
 
 const formColors = {
 	Shamanism: "#8e24aa",

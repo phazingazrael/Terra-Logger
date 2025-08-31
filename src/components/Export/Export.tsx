@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { Box, LinearProgress, Typography } from "@mui/material";
 
-import PropTypes from "prop-types";
-
 import type {
 	DataSets,
 	RenderOptions,
@@ -651,7 +649,3 @@ export function MarkdownExportPanel(props: {
 }
 
 export default MarkdownExportPanel;
-
-LinearProgressWithLabel.propTypes = {
-	value: PropTypes.number.isRequired,
-};

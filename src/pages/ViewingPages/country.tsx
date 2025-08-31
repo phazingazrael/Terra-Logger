@@ -19,10 +19,8 @@ import { GiSparkles } from "react-icons/gi";
 import { useParams } from "react-router-dom";
 import { getDataFromStore, getFullStore } from "../../db/interactions";
 
-import {
-	Agriculture as AgricultureIcon,
-	LocationCity as LocationCityIcon,
-} from "@mui/icons-material";
+import AgricultureIcon from "@mui/icons-material/Agriculture";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 import type {
 	TLCountry,

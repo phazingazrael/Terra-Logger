@@ -10,13 +10,11 @@ import {
 	useTheme,
 	LinearProgress,
 } from "@mui/material";
-import {
-	Person as PersonIcon,
-	LocationCity as LocationCityIcon,
-	Agriculture as AgricultureIcon,
-	Groups as GroupsIcon,
-	Place as PlaceIcon,
-} from "@mui/icons-material";
+import PersonIcon from "@mui/icons-material/Person";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import AgricultureIcon from "@mui/icons-material/Agriculture";
+import GroupsIcon from "@mui/icons-material/Groups";
+import PlaceIcon from "@mui/icons-material/Place";
 
 import { getDataFromStore } from "../../db/interactions";
 

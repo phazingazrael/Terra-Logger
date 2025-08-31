@@ -54,24 +54,22 @@ function calculateVoronoi(points: number[], boundary: number[]) {
 export const parseLoadedResult = (
 	result: ArrayBuffer,
 ): [mapFile: string[], mapVersion: number, versionString: string] => {
-	const decoder = new TextDecoder("utf-8");
-	const resultAsString = decoder.decode(result);
+	const resultAsString = new TextDecoder().decode(result);
 	const isDelimited = resultAsString.substring(0, 10).includes("|");
 	const decoded = isDelimited
 		? resultAsString
 		: decodeURIComponent(atob(resultAsString));
 
-	const mapFile = decoded.split(/\r\n/);
-	const versionMatch = mapFile[0].match(/\d+\.\d+\.\d+/);
-	if (!versionMatch) {
-		throw new Error("Invalid version format");
-	}
-	const versionparts = versionMatch.slice(1).map(Number);
-	const mapVersion =
+	const mapFile = decoded.split("\r\n");
+	const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
+	// biome-ignore lint/style/useConst: <explanation>
+	let mapVersion =
 		versionparts[0] * 10000 + versionparts[1] * 100 + versionparts[2];
 	const patchVersion =
 		versionparts[2] > 9 ? versionparts[2] : `0${versionparts[2]}`;
-	const versionString = `${versionparts[0]}.${versionparts[1]}.${patchVersion}`;
+	const versionString = JSON.stringify(
+		`${versionparts[0]}.${versionparts[1]}.${patchVersion}`,
+	);
 	return [mapFile, mapVersion, versionString];
 };
 

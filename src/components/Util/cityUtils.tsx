@@ -1,23 +1,19 @@
-import {
-	// Feature icons
-	Security as CitadelIcon,
-	Park as PlazaIcon,
-	Anchor as PortIcon,
-	Home as ShantyTownIcon,
-	TempleHindu as TempleIcon,
-	Fence as WallsIcon,
-	// Size icons
-	Cottage as ThorpIcon,
-	House as HamletIcon,
-	HomeWork as VillageIcon,
-	LocationCity as SmallTownIcon,
-	Business as LargeTownIcon,
-	AccountBalance as SmallCityIcon,
-	Domain as LargeCityIcon,
-	CorporateFare as MetropolisIcon,
-	LocationCity as LocationCityIcon, // Added import for LocationCity
-	Security as SecurityIcon, // Added import for Security
-} from "@mui/icons-material";
+// Feature icons
+import CitadelIcon from "@mui/icons-material/Security";
+import PlazaIcon from "@mui/icons-material/Park";
+import PortIcon from "@mui/icons-material/Anchor";
+import ShantyTownIcon from "@mui/icons-material/Home";
+import TempleIcon from "@mui/icons-material/TempleHindu";
+import WallsIcon from "@mui/icons-material/Fence";
+// Size icons
+import HamletIcon from "@mui/icons-material/House";
+import LargeCityIcon from "@mui/icons-material/Domain";
+import LargeTownIcon from "@mui/icons-material/Business";
+import MetropolisIcon from "@mui/icons-material/CorporateFare";
+import SmallCityIcon from "@mui/icons-material/AccountBalance";
+import SmallTownIcon from "@mui/icons-material/LocationCity";
+import ThorpIcon from "@mui/icons-material/Cottage";
+import VillageIcon from "@mui/icons-material/HomeWork";
 
 // Feature colors
 const featureColors = {
@@ -82,15 +78,13 @@ export function getSettlementColor(type: string | undefined) {
 }
 
 export function getSettlementIcon(type: string | undefined) {
-	return (
-		settlementIcons[type as keyof typeof settlementIcons] || LocationCityIcon
-	);
+	return settlementIcons[type as keyof typeof settlementIcons] || SmallTownIcon;
 }
 
 export function getFeatureIcon(feature: string | undefined) {
-	return featureIcons[feature as keyof typeof featureIcons] || SecurityIcon;
+	return featureIcons[feature as keyof typeof featureIcons] || CitadelIcon;
 }
 
 export function getSizeIcon(size: string | undefined) {
-	return sizeIcons[size as keyof typeof sizeIcons] || LocationCityIcon;
+	return sizeIcons[size as keyof typeof sizeIcons] || SmallTownIcon;
 }
