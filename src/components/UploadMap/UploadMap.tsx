@@ -160,7 +160,6 @@ function UploadMap() {
 			data as unknown as MapInfo,
 			Pack as unknown as Pack,
 		);
-		console.log(data);
 		const {
 			cities,
 			countries,
@@ -287,7 +286,6 @@ function UploadMap() {
 							parseLoadedResult(result);
 						const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
 							processLoadedData(mapFile, mapVersion.toString());
-						console.log(versionString);
 						handleLoadedData(
 							isUpdated,
 							isNewer,

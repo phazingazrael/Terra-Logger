@@ -119,7 +119,6 @@ export const mutateCountries = async (
 				console.error("Error fetching SVG:", country.name, error);
 			}
 		} else if (!country.coa || country.coa === undefined) {
-			console.log("no coa", country);
 			const response = await fetch(
 				`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
 			).then((response) => response.text());

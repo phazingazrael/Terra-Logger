@@ -306,8 +306,6 @@ export const mutateCities = async (
 			newCity.type = `City - ${newCity.size}`;
 
 			tempMap.cities.push(newCity);
-		} else if (city.removed === true) {
-			console.log("city was removed");
 		} else {
 			console.log("city data not found", city);
 		}

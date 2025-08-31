@@ -286,27 +286,19 @@ export const mutateReligions = async (
 			const _Center = { i: 0, _id: "", name: "" };
 			if (religion.type === "Folk") {
 				_Center.i = data.cultures[religion.culture].i;
-				console.log(data.cultures[religion.culture]);
 				_Center.name = `Culture - ${data.cultures[religion.culture].name}`;
 				_Center._id = newReligion.culture._id;
-				console.log("Folk center:   _Center", _Center);
 			} else {
-				console.log("religion.center", religion.center);
 				const pcbCenter = Pack.cells.burg[religion.center];
-				console.log("pcbCenter", pcbCenter);
 				const Center = tempMap.cities.find((city) => city.id === pcbCenter);
 				if (Center) {
-					console.log("Center", Center);
 					_Center.i = Center.id;
 					_Center.name = Center.name;
 					_Center._id = Center._id;
 				}
-				console.log("Center", _Center);
 			}
 			newReligion.center = _Center;
 		}
-
-		//console.log("newReligion", newReligion);
 
 		newReligion.origins = Origins;
 
