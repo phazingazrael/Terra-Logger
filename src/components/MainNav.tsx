@@ -199,6 +199,24 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						</ListItemIcon>
 					</MenuItem>
 				</NavLink>
+				{mapLoaded ? (
+					<NavLink
+						to="/export"
+						className={({ isActive }) => (isActive ? "active" : "")}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<TiDocumentText />
+							</ListItemIcon>
+							<ListItemText>Export Map</ListItemText>
+							<ListItemIcon className="inactive">
+								<ImDiamonds />
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+				) : (
+					""
+				)}
 			</IconContext.Provider>
 		</MenuList>
 	);

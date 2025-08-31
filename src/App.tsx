@@ -15,6 +15,7 @@ import {
 	CityView,
 	CountryView,
 	ReligionsView,
+  ExportPage
 } from "./pages";
 
 import type { MapInf } from "./definitions/TerraLogger";
@@ -143,6 +144,10 @@ const App = (): JSX.Element => {
 					element: <ReligionsView />,
 					errorElement: <ErrorPage />,
 				},
+        {
+          path: "export",
+          element: <ExportPage />,
+          errorElement: <ErrorPage />,}
 			],
 		},
 	]);

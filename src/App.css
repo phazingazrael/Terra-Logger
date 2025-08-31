@@ -76,6 +76,11 @@ header {
   text-align: left !important;
 }
 
+.exportPage .MuiLinearProgress-root {
+  height: 2dvh !important;
+  border-radius: 6px !important;
+}
+
 /*-- MUI Override --*/
 
 /* Loading display Styling */

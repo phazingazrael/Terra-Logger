@@ -5,6 +5,8 @@ import { IconContext } from "react-icons";
 import { useParams, Link } from "react-router-dom";
 import { getDataFromStore } from "../../db/interactions";
 
+import { GiSparkles } from "react-icons/gi";
+
 import type { TLCity } from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
@@ -40,6 +42,15 @@ function CityView() {
 		fontWeight: "bold",
 	};
 
+	const DynamicSparkleStyle = {
+		height: "1.5rem",
+		width: "1.5rem",
+		marginTop: "-1.5rem",
+		color: "#1794a1",
+	};
+
+	const IconStyles = useMemo(() => ({}), []);
+
 	useEffect(() => {
 		if (cityId !== undefined) {
 			getDataFromStore("cities", cityId._id).then((data) => {
@@ -48,14 +59,21 @@ function CityView() {
 		}
 	}, [cityId]);
 
-	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
-
 	return (
 		<Container className="Settings">
 			<IconContext.Provider value={IconStyles}>
 				<div className="contentSubBody">
 					<div className="flex-container">
 						<div className="wiki">
+							<div className="legend">
+								<details>
+									<summary>Info</summary>
+									<p>
+										<GiSparkles style={DynamicSparkleStyle} /> = Dynamically
+										Loaded Information from Azgaar's Fantasy Map Generator
+									</p>
+								</details>
+							</div>
 							<div className="header">
 								<div
 									className="image"
@@ -63,17 +81,23 @@ function CityView() {
 									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
 								/>
 								<div className="info">
-									<Typography variant="h1">{city?.name}</Typography>
+									<Typography variant="h1">
+										{city?.name}
+										<GiSparkles style={DynamicSparkleStyle} />
+									</Typography>
 									<div className="meta">
 										<p>
 											<Typography color="primary" component="h3">
 												Country: {city?.country.name}
+												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 											<Typography color="primary" component="h3">
 												Population: {city?.population}
+												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 											<Typography color="primary" component="h3">
 												Size: {city?.size}
+												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 											{city?.capital && (
 												<Typography
@@ -82,7 +106,7 @@ function CityView() {
 													// className="capital-badge"
 													style={capitalBadge}
 												>
-													🏛️ Capital
+													🏛️ Capital <GiSparkles style={DynamicSparkleStyle} />
 												</Typography>
 											)}
 										</p>
@@ -105,7 +129,7 @@ function CityView() {
 								<div className="content-grid">
 									<section className="features">
 										<Typography color="primary" component="h2">
-											Features
+											Features <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<Typography color="primary" component="p">
 											<div className="tag-list">
@@ -120,7 +144,7 @@ function CityView() {
 
 									<section className="tags">
 										<Typography color="primary" component="h2">
-											Tags
+											Tags <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="tag-list">
 											{city?.tags.map((tag) => (
@@ -138,7 +162,7 @@ function CityView() {
 
 									<section className="map-link">
 										<Typography color="primary" component="h2">
-											Map
+											Map <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										{city?.mapLink && (
 											<Link
@@ -729,6 +753,7 @@ function CityView() {
 									<section className="additional-info">
 										<Typography color="primary" component="h2">
 											Additional Information
+											<GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="info">
 											<div className="detail-container">

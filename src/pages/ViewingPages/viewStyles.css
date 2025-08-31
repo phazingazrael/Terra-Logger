@@ -6,6 +6,17 @@
   font-family: Arial, sans-serif;
 }
 
+.legend {
+  width: 100%;
+}
+
+.legend details {
+  border: 2px solid rgb(221 221 221 / 65%);
+  padding: 0.5rem;
+  border-radius: 10px;
+  background-color: rgb(221 221 221 / 65%);
+}
+
 .header {
   display: flex;
   gap: 20px;

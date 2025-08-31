@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 
 import { IconContext } from "react-icons";
+import { GiSparkles } from "react-icons/gi";
 import { useParams } from "react-router-dom";
 import { getDataFromStore, getFullStore } from "../../db/interactions";
 
@@ -82,11 +83,11 @@ function CountryView() {
 
 	useEffect(() => {
 		if (country) {
-			const ruralPopulation = parseInt(
+			const ruralPopulation = Number.parseInt(
 				country?.population.rural.replace(",", ""),
 				10,
 			);
-			const urbanPopulation = parseInt(
+			const urbanPopulation = Number.parseInt(
 				country?.population.urban.replace(",", ""),
 				10,
 			);
@@ -104,7 +105,7 @@ function CountryView() {
 
 	const theme = useTheme();
 
-	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
+	const IconStyles = useMemo(() => ({}), []);
 
 	const tagStyle = {
 		display: "inline-flex",
@@ -134,12 +135,35 @@ function CountryView() {
 		transition: "all 0.2s ease",
 	};
 
+	const DynamicSparkleStyle = {
+		height: "1.5rem",
+		width: "1.5rem",
+		marginTop: "-1.5rem",
+		color: "#1794a1",
+	};
+
+	const DynamicSparkleStyleSmall = {
+		height: "1rem",
+		width: "1rem",
+		marginTop: "-1.5rem",
+		color: "#1794a1",
+	};
+
 	return (
 		<Container className="Settings">
 			<IconContext.Provider value={IconStyles}>
 				<div className="contentSubBody">
 					<div className="flex-container">
 						<div className="wiki">
+							<div className="legend">
+								<details>
+									<summary>Info</summary>
+									<p>
+										<GiSparkles style={DynamicSparkleStyle} /> = Dynamically
+										Loaded Information from Azgaar's Fantasy Map Generator
+									</p>
+								</details>
+							</div>
 							<div className="header">
 								<div
 									className="image"
@@ -151,10 +175,12 @@ function CountryView() {
 									<Grid container className="meta">
 										<Grid size={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
 											<Typography color="primary" component="h3">
-												{country?.nameFull}
+												{country?.nameFull}{" "}
+												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 											<Typography color="primary" component="h3">
-												Type: {country?.type}
+												Type: {country?.type}{" "}
+												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 										</Grid>
 										<Grid size={{ xs: 8, sm: 8, md: 8, lg: 8, xl: 8 }}>
@@ -177,7 +203,8 @@ function CountryView() {
 																		color="primary"
 																		variant="subtitle1"
 																	>
-																		Population:
+																		Population:{" "}
+																		<GiSparkles style={DynamicSparkleStyle} />
 																	</Typography>
 																</Box>
 																<Typography
@@ -215,7 +242,10 @@ function CountryView() {
 																				color="primary"
 																				variant="subtitle1"
 																			>
-																				Rural Population:
+																				Rural Population:{" "}
+																				<GiSparkles
+																					style={DynamicSparkleStyle}
+																				/>
 																			</Typography>
 																		</Box>
 																	</Box>
@@ -279,7 +309,10 @@ function CountryView() {
 																				color="primary"
 																				style={{ width: "100%" }}
 																			>
-																				Urban Population:
+																				Urban Population:{" "}
+																				<GiSparkles
+																					style={DynamicSparkleStyle}
+																				/>
 																			</Typography>
 																		</Box>
 																	</Box>
@@ -336,7 +369,7 @@ function CountryView() {
 								<div className="content-grid">
 									<section className="citiesList">
 										<Typography color="primary" component="h2">
-											Cities
+											Cities <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<Typography color="primary" component="p">
 											<div className="tag-list">
@@ -365,7 +398,8 @@ function CountryView() {
 										<div className="info">
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
-													Government Type:
+													Government Type:{" "}
+													<GiSparkles style={DynamicSparkleStyleSmall} />
 												</Typography>
 												<Typography
 													component="span"
@@ -377,7 +411,8 @@ function CountryView() {
 											</div>
 											<div className="detail-container">
 												<Typography component="span" className="detail-label">
-													Capital:
+													Capital:{" "}
+													<GiSparkles style={DynamicSparkleStyleSmall} />
 												</Typography>
 												<Typography
 													component="span"
@@ -442,7 +477,7 @@ function CountryView() {
 
 									<section className="military">
 										<Typography color="primary" component="h2">
-											Military
+											Military <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="military-tabs">
 											<button
@@ -687,7 +722,7 @@ function CountryView() {
 
 									<section className="diplomacy">
 										<Typography color="primary" component="h2">
-											Diplomacy
+											Diplomacy <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										{Object.keys(diplomacyGroups).length > 0 ? (
 											<div className="diplomacy-relations">
@@ -1054,7 +1089,7 @@ function CountryView() {
 
 									<section className="tags">
 										<Typography color="primary" component="h2">
-											Tags
+											Tags <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="tag-list">
 											{country?.tags.map((tag) => (
@@ -1072,7 +1107,8 @@ function CountryView() {
 
 									<section className="additional-info">
 										<Typography color="primary" component="h2">
-											Additional Information
+											Additional Information{" "}
+											<GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="info">
 											<div className="detail-container">

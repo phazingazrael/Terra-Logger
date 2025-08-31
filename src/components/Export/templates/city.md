@@ -1,14 +1,13 @@
-# City of [City Name]
+# City of {{city.name}}
 
+## Emblem / Coat of Arms
+![{{city.name}}.svg]
 ## Overview
-**Country/Empire/Faction:** [Country/Empire Name]
+**Country/Empire/Faction:** [[{{city.country.name}}]]
 **Region/Province/Sector:** [Region Name]
 **Established/Founded by:** [Date / Founder / Mythological Event]
-**Population:** [Population]
-**Area:** [Area in sq km or planetary unit]
-**Time Zone/Chrono-Cycle:** [Time Zone / Galactic Standard Time]
+**Population:** {{city.population}}
 **Demonym:** [Demonym]
-**Alignment (RPG-Based):** [Lawful, Chaotic, Neutral, etc.]
 **Primary Inhabitants/Races:** [Humans, Elves, Dwarves, Androids, etc.]
 
 ## History

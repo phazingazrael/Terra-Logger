@@ -10,3 +10,4 @@ export { default as CityView } from "./ViewingPages/city";
 export { default as CountryView } from "./ViewingPages/country";
 export { default as ReligionsView } from "./ViewingPages/religion";
 // export { default as TagsView } from './ViewingPages/tag';
+export {default as ExportPage} from "./ExportPage/export"
