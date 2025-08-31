@@ -1837,7 +1837,7 @@ const getCOA = async (id: string, coa: TLCoA) => {
 
 	const positions = shield && shieldPositions[shield];
 	const sizeModifier = (shield && shieldSize[shield]) || 1;
-	const viewBox = (shield && shieldBox[shield]) || "0 0 200 200";
+	const viewBox = (shield && shieldBox[shield]) || "0 0 500 500";
 
 	const shieldClip = `<clipPath id="${shield}_${id}"><path d="${shieldPath}"/></clipPath>`;
 	const divisionClip = division
@@ -1855,7 +1855,7 @@ const getCOA = async (id: string, coa: TLCoA) => {
 	const divisionGroup = division ? templateDivision() : "";
 	const overlay = `<path d="${shieldPath}" fill="url(#backlight_${id})" stroke="#333"/>`;
 
-	const svg = `<svg id="${id}" width="200" height="200" viewBox="${viewBox}">
+	const svg = `<svg id="${id}" width="500" height="500" viewBox="${viewBox}">
         <defs>${shieldClip}${divisionClip}${loadedCharges}${loadedPatterns}${blacklight}${style}</defs>
         <g clip-path="url(#${shield}_${id})">${field}${divisionGroup}${templateAboveAll()}</g>
         ${overlay}</svg>`;
