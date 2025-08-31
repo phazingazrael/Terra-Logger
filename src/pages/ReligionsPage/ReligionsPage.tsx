@@ -35,7 +35,6 @@ function ReligionsPage() {
 				"mapIdIndex",
 				mapId,
 			)) as TLReligion[];
-			console.log(data);
 			// const data = (await queryDataFromStore("religions", "mapIdIndex", mapId);)
 			if (data) {
 				setReligions(data);
@@ -48,9 +47,6 @@ function ReligionsPage() {
 	//TODO(SELF): fix white on grey "type Pill"
 	return (
 		<Container>
-			{/* <div className="contentSubHead">
-				<h3>Religions</h3>
-			</div> */}
 			<div className="contentSubBody ReligionsPage">
 				<Grid container spacing={2}>
 					{religions.map((entry) => (

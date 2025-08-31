@@ -170,27 +170,3 @@ t,
   line-height: 1.3em;
   cursor: default;
 }
-
-.glow {
-  animation: glowing 3s infinite ease-in-out;
-}
-
-@keyframes glowing {
-  0% {
-    box-shadow: 0 0 1px #f44336;
-  }
-  50% {
-    box-shadow: 0 0 10px #f44336;
-  }
-  100% {
-    box-shadow: 0 0 1px #f44336;
-  }
-}
-
-.highlighted {
-  outline-width: 2px;
-  outline-style: dashed;
-  outline-color: #0da6ff;
-  outline-offset: 100px;
-  fill: none;
-}

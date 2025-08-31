@@ -156,7 +156,6 @@ function CitiesPage() {
 			new Set(cities.map((c) => c.size).filter(Boolean)),
 		).sort((a, b) => a.localeCompare(b));
 		setAllSizes((prev) => (strArrayEqual(prev, nextSizes) ? prev : nextSizes));
-		console.log(allSizes);
 
 		// Collect government forms from cities (unique, sorted)
 		const nextGovForms = Array.from(

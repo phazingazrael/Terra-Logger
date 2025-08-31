@@ -39,7 +39,6 @@ function ReligionView() {
 	useEffect(() => {
 		if (religionId !== undefined) {
 			getDataFromStore("religions", religionId._id).then((data: TLReligion) => {
-				console.log(data);
 				setReligion(data);
 			});
 		}
@@ -55,7 +54,7 @@ function ReligionView() {
 				totalMembers === 0 ? 0 : (religion.members.urban / totalMembers) * 100,
 			);
 		}
-	});
+	}, [religion, totalMembers]);
 
 	const theme = useTheme();
 

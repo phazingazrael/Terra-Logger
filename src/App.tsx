@@ -102,11 +102,6 @@ const App = (): JSX.Element => {
 					element: <HomePage />,
 					errorElement: <ErrorPage />,
 				},
-				// {
-				// 	path: "overview",
-				// 	element: <Overview />,
-				// 	errorElement: <ErrorPage />,
-				// },
 				{
 					path: "tags",
 					element: <Tags />,
