@@ -42,17 +42,14 @@
     "react-router-dom": "^6.30.0",
     "react-toastify": "^11.0.3",
     "recoil": "^0.7.7",
-    "uuid": "^11.0.5",
-    "yjs": "^13.6.27"
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@testing-library/react": "^16.0.1",
-    "@types/jszip": "^3.4.1",
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.10.7",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@types/react-lines-ellipsis": "^0.15.6",
     "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^3.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
