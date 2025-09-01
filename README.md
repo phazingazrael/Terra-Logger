@@ -1,6 +1,6 @@
 # Terra-Logger
 
-![GitHub](https://img.shields.io/github/license/phazingazrael/terra-logger?style=plastic) ![GitHub all releases](https://img.shields.io/github/downloads/phazingazrael/terra-logger/total?style=plastic) 
+![GitHub](https://img.shields.io/github/license/phazingazrael/terra-logger?style=plastic)
 
 Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator.
 
@@ -8,7 +8,6 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 
 - [Introduction](#introduction)
 - [Features](#features)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Future Plans](#future-plans)
 - [Contributing](#contributing)
@@ -21,24 +20,18 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 
 ## Features
 
-- Convert Azgaar's Fantasy Map Generator JSON files into individual Markdown files for each location and detail.
-- Automatically organize the information for cities, provinces, countries, religious details, and more.
-- Display all available information for easy editing before exporting files.
-- Future plans to include customizable templates for Markdown files, allowing you to further tailor the output to your specific needs.
-
-## Installation
-
-To be provided.
+- Convert Azgaar's Fantasy Map Generator map files into individual Markdown files for each city, country, and religious detail.
+- Automatically organize the information for cities, countries, religious details, and more.
+- Display all available information for easy review before exporting files.
 
 ## Usage
 
 To use Terra-Logger, follow these steps:
 
-1. Export a JSON file from Azgaar's Fantasy Map Generator.
-2. Launch Terra-Logger and import the exported JSON file.
-3. Terra-Logger will display a user-friendly interface with all the available information.
-4. Edit and customize the details as needed.
-5. Export the organized individual Markdown files for each location and detail.
+1. Visit Azgaar's Fantasy Map Generator and save your .map file.
+2. Import Your .map file into Terra-Logger under the settings page.
+3. View your data.
+4. Export the organized Markdown files.
 
 ## Future Plans
 
@@ -46,22 +39,23 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.0 (Release)
 
-- ~~Importing .map file from Azgaar's Fantasy Map Generator.~~
-- ~~Use the included SVG from the .map file to render the actual map as the program's background.~~
-- Exporting of simple markdown files for imported data.
-- Ability to modify data prior to export.
-- Automatically include relevant Emblems or Coat of Arms as an SVG file.
-- Select location for exported files
+- [x] ~~Importing .map file from Azgaar's Fantasy Map Generator.~~
+- [x] ~~Automatically include relevant Emblems or Coat of Arms as an SVG file.~~
+- [x] ~~Rewrite logic, remove NeDB, use either LocalStorage or another option.~~
+- [x] ~~Use the included SVG from the .map file to render the actual map as the program's background.~~
+- [x] ~~Exporting of simple markdown files for imported data. (data export basics started)~~
 
 ### Version 1.1.0
 
-- Ability to choose between multiple Markdown Templates.
-- Customize how exported files are organized.
+- [ ] Ability to choose between multiple Markdown Templates.
+- [ ] Ability to modify data prior to export.
+- [ ] Customize how exported files are organized.
+- [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
+- [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
 
 ### Version 1.2.0
 
-- Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
-
+- [ ] Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
 
 ## Contributing
 
@@ -86,3 +80,7 @@ Terra-Logger is licensed under the [MIT License](LICENSE). You can find the full
 We would like to express our gratitude to the developers of [Azgaar's Fantasy Map Generator](https://github.com/Azgaar/Fantasy-Map-Generator) for their fantastic tool, which inspired and provided the foundation for Terra-Logger.
 
 We would like to express our gratitude to [Shuggaloaf](https://github.com/Shuggaloaf/) for their [System Agnostic RPG NPC Generator](https://github.com/Shuggaloaf/Simple_NPC_Generator/). Currently implemented in basic format to provide basic npc data when loading map. Will be extended with customization later.
+
+We would like to express our gratitude to [u/Oselic](https://www.reddit.com/user/Osellic/) for their work on [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/)
+
+We would like to express our gratitude to Lythande for their work on [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452)
