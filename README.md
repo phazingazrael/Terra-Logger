@@ -15,8 +15,8 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 
 ## Introduction
 
-Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
-**Please note: This is a one-way process, and changes made to exported files will not sync to your map.**
+Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported map file from Azgaar's generator and automatically generate organized individual Markdown files for each city, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
+**Please note: This is a one-way process, and any changes made to exported files will not sync to your map.**
 
 ## Features
 
@@ -39,11 +39,11 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.0 (Release)
 
-- [x] ~~Importing .map file from Azgaar's Fantasy Map Generator.~~
-- [x] ~~Automatically include relevant Emblems or Coat of Arms as an SVG file.~~
-- [x] ~~Rewrite logic, remove NeDB, use either LocalStorage or another option.~~
-- [x] ~~Use the included SVG from the .map file to render the actual map as the program's background.~~
-- [x] ~~Exporting of simple markdown files for imported data. (data export basics started)~~
+- [x] Importing .map file from Azgaar's Fantasy Map Generator.
+- [x] Automatically include relevant Emblems or Coat of Arms as an SVG file.
+- [x] Rewrite logic, remove NeDB, use either LocalStorage or another option.
+- [x] Use the included SVG from the .map file to render the actual map as the program's background.
+- [x] Exporting of simple markdown files for imported data.
 
 ### Version 1.1.0
 
