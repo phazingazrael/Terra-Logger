@@ -147,5 +147,5 @@ dist
 dist-ssr
 *.local
 yarn.lock
-temp/
-TestMaps/
+/temp
+/TestMaps
