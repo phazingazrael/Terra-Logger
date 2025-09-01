@@ -1,7 +1,7 @@
 {
   "name": "terra-logger",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator.",
   "descriptionFull": "Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.",
   "author": {
@@ -15,7 +15,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "licenses": "generate-license-file --config ./license-config.json --input package.json --output ./out/licenses.txt --overwrite",
-    "changelog": "auto-changelog --prepend -p",
+    "changelog": "auto-changelog --commit-limit false --prepend -p",
     "format": "prettier --config .prettierrc . --write"
   },
   "dependencies": {
