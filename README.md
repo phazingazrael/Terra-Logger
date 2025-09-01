@@ -12,11 +12,12 @@ Terra-Logger is a tool that simplifies the process of organizing and managing da
 - [Future Plans](#future-plans)
 - [Contributing](#contributing)
 - [License](#license)
+- [Acknowledgments](#acknowledgments)
 
 ## Introduction
 
 Terra-Logger is a tool that simplifies the process of organizing and managing data from Azgaar's Fantasy Map Generator. With Terra-Logger, you can take an exported JSON file from Azgaar's generator and automatically generate organized individual Markdown files for each city, province, country, religious details, and more. This makes it easier to document and present your world-building project in a structured and easily readable format.
-**Please note: This is a one-way process, and changes made to exported files will not sync to your map.**
+**Please note: This is a one-way process, and any changes made to exported files will not sync to your map.**
 
 ## Features
 
@@ -47,9 +48,10 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.1.0
 
+- [ ] Additional Exports (Cultures & Notes)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Ability to modify data prior to export.
-- [ ] Customize how exported files are organized.
+- [ ] Customize what data is exported.
 - [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
 - [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
 
