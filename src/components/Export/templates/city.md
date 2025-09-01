@@ -1,14 +1,45 @@
-# City of {{city.name}}
+# City of {{name}}
 
-## Emblem / Coat of Arms
-![{{city.name}}.svg]
+## General Information
+- **Type:** {{type}}
+- **Country Name:** {{country.nameFull}} ({{country.name}})
+- **Government Form:** {{country.govForm}} ({{country.govName}})
+- **Population:** {{population}}
+- **Capital:** {{#capital}}Yes{{/capital}}{{^capital}}No{{/capital}}
+- **Map Link:** [City Map]({{mapLink}})
+
+
 ## Overview
-**Country/Empire/Faction:** [[{{city.country.name}}]]
+**Country/Empire/Faction:** [[{{country.name}}]]
 **Region/Province/Sector:** [Region Name]
 **Established/Founded by:** [Date / Founder / Mythological Event]
-**Population:** {{city.population}}
+**Population:** {{population}}
 **Demonym:** [Demonym]
 **Primary Inhabitants/Races:** [Humans, Elves, Dwarves, Androids, etc.]
+
+## Description
+{{description}}
+
+## Coat of Arms
+- **Shield Type:** {{coa.shield}}
+- **Tincture:** {{coa.t1}}
+- **Ordinaries:**
+{{#coa.ordinaries}}
+  - {{ordinary}} with tincture {{t}}
+{{/coa.ordinaries}}
+- **Charges:**
+{{#coa.charges}}
+  - {{charge}} with tincture {{t}}, position {{p}}, size {{size}}
+{{/coa.charges}}
+![[{{name}}.svg]]
+
+## Features
+{{#features}}
+  - {{.}}
+{{/features}}
+{{^features}}
+No notable features.
+{{/features}}
 
 ## History
 [Provide a historical overview, including legendary origins, significant battles, magical events, or technological advancements.]
@@ -111,8 +142,10 @@
 - **Bounty Board:** [List of wanted criminals, beasts, or rogue AI.]
 - **Guilds & Organizations for Adventurers:** [Who offers work and resources?]
 
-## See Also
-- [Related wiki-style articles.]
-
-## References
-[Include sources or citations if needed.]
+## Tags
+{{#tags}}
+- **Name:** {{Name}}
+  Type: {{Type}}
+  Default: {{#Default}}Yes{{/Default}}{{^Default}}No{{/Default}}
+  Description: {{Description}}
+{{/tags}}

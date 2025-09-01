@@ -8,6 +8,7 @@ import { queryDataFromStore } from "../../db/interactions";
 import mapTpl from "../../components/Export/templates/map.md?raw";
 import cityTpl from "../../components/Export/templates/city.md?raw";
 import countryTpl from "../../components/Export/templates/country.md?raw";
+import religionTpl from "../../components/Export/templates/religion.md?raw";
 
 import { MarkdownExportPanel } from "../../components/Export/Export";
 
@@ -72,7 +73,22 @@ function ExportPage() {
 				"mapIdIndex",
 				mapId,
 			)) as TLCountry[];
-			setCountries(data);
+
+			const tempData: TLCountry[] = [];
+			for (const country of data) {
+				if (country.name !== "Unknown") {
+					country.cities = Cities.filter(
+						(city) => city.country.name === country.name,
+					);
+
+					tempData.push(country);
+					console.log(country);
+				}
+			}
+			console.log(tempData);
+			if (tempData.length > 0) {
+				setCountries(tempData);
+			}
 		};
 		// const loadCultures = async () => {
 		// 	const data = (await queryDataFromStore(
@@ -115,6 +131,7 @@ function ExportPage() {
 						MapInfo: mapTpl,
 						City: cityTpl,
 						Country: countryTpl,
+						Religion: religionTpl,
 					}}
 					zipName={`${MapInfo.info.name}-Export-${Date.now()}.zip`}
 				/>

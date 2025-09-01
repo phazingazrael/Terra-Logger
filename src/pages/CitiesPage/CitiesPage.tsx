@@ -274,7 +274,7 @@ function CitiesPage() {
 							onChange={(e) => setSelectedTagIds(e.target.value as string[])}
 							input={<OutlinedInput label="Tags" />}
 							renderValue={(ids) =>
-								(ids as string[])
+								ids
 									.map((id) => allTags.find((t) => t._id === id)?.Name ?? id)
 									.join(", ")
 							}
@@ -330,7 +330,7 @@ function CitiesPage() {
 							<Checkbox
 								checked={onlyCapitals}
 								onChange={(e) => setOnlyCapitals(e.target.checked)}
-								sx={{ "aria-label": "Show only capitals" }}
+								sx={{ ariaLabel: "Show only capitals" }}
 							/>
 						}
 						label="Capitals only"

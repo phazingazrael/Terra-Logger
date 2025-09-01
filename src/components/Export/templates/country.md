@@ -1,4 +1,29 @@
-# Country of [Country Name]
+# Country of {{name}}
+
+## General Information
+- **Type:** {{type}}
+- **Location:** {{location}}
+- **Form of Government:** {{political.formName}} ({{political.form}})
+- **Population Total:** {{population.total}}
+- **Rural Population:** {{population.rural}}
+- **Urban Population:** {{population.urban}}
+
+## Description
+{{description}}
+
+
+## Coat of Arms
+- **Shield Type:** {{coa.shield}}
+- **Tincture:** {{coa.t1}}
+- **Ordinaries:**
+{{#coa.ordinaries}}
+  - {{ordinary}} with tincture {{t}}, line {{line}}
+{{/coa.ordinaries}}
+- **Charges:**
+{{#coa.charges}}
+  - {{charge}} with tincture {{t}}, position {{p}}, size {{size}}
+{{/coa.charges}}
+![[{{name}}.svg]]
 
 ## Overview
 **Region/Continent/Planet:** [Region Name]
@@ -9,6 +34,14 @@
 **Demonym:** [Demonym]
 **Alignment (RPG-Based):** [Lawful, Chaotic, Neutral, etc.]
 **Primary Inhabitants/Races:** [Humans, Elves, Dwarves, Androids, etc.]
+
+## Cities
+{{#cities}}
+  - [[{{name}}]]
+{{/cities}}
+{{^cities}}
+No cities recorded.
+{{/cities}}
 
 ## History
 [Provide a historical overview, including legendary origins, significant wars, cultural milestones, or technological advancements.]
@@ -35,8 +68,23 @@
 - **Government Type:** [Monarchy, Theocracy, AI-Controlled, Mage Council, etc.]
 - **Current Ruler(s):** [King, High Priestess, AI Overlord, Elder Council, etc.]
 - **Noble Houses & Factions:** [Major power groups, noble families, rival factions.]
-- **Laws & Justice System:** [Trial by combat? Magic-enforced law? A dystopian police state?]
-- **Corruption Level:** [Low, moderate, high, controlled by crime syndicates.]
+- **Laws & Justice System:** [Trial by combat? Magic-enforced law?
+
+## Political Relations
+- **Military Units:**
+{{#political.military}}
+  - {{name}} (ID: {{id}})
+    Icon: {{icon}}, Total: {{a}}
+    Composition: Cavalry {{u.cavalry}}, Archers {{u.archers}}, Infantry {{u.infantry}}
+{{/political.military}}
+- **Diplomatic Relations:**
+{{#political.diplomacy}}
+  - {{name}}: {{status}}
+{{/political.diplomacy}}
+- **Neighbors:**
+{{#political.neighbors}}
+  - {{name}} (ID: {{id}})
+{{/political.neighbors}}
 
 ## Demographics & Society
 - **Population Growth & Migration:** [Stable, declining, booming, dependent on magic/artificial births.]
@@ -111,8 +159,18 @@
 - **Bounty Board:** [List of wanted criminals, beasts, or rogue AI.]
 - **Guilds & Organizations for Adventurers:** [Who offers work and resources?]
 
-## See Also
-- [Related wiki-style articles.]
+## Tags
+{{#tags}}
+- **Name:** {{Name}}
+  Type: {{Type}}
+  Default: {{#Default}}Yes{{/Default}}{{^Default}}No{{/Default}}
+  Description: {{Description}}
+{{/tags}}
 
-## References
-[Include sources or citations if needed.]
+## War Campaigns
+{{#warCampaigns}}
+  - {{.}}
+{{/warCampaigns}}
+{{^warCampaigns}}
+No war campaigns recorded.
+{{/warCampaigns}}

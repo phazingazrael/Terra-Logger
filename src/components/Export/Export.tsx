@@ -408,6 +408,7 @@ export function renderMarkdownFiles(
 					});
 				}
 			} else if (singular === "Country") {
+				item.cities = data.Cities?.filter((c) => c.country.id === item.id);
 				files.push({ path: `${prefix}${name}`, name, content });
 				if (rawSvg) {
 					const svgDoc = toFullSvg(String(rawSvg)); // uses helper from earlier
@@ -558,7 +559,7 @@ export function MarkdownExportPanel(props: {
 			log("▶ export started");
 			log(`• options: useFolders=${String(useFolders)} zipName="${zipName}"`);
 			log(
-				`• counts: ${data.Cities ? `cities=${data.Cities?.length},` : ""} ${data.Countries ? `countries=${data.Countries?.length},` : ""}  ${data.Cultures ? `cultures=${data.Cultures?.length},` : ""} ${data.Notes ? `notes=${data.Notes?.length},` : ""} ${data.Religions ? `religions=${data.Religions?.length}` : ""}`,
+				`• counts: ${data.Cities ? `cities=${data.Cities?.length}, ` : ""}${data.Countries ? `countries=${data.Countries?.length}, ` : ""}${data.Cultures ? `cultures=${data.Cultures?.length}, ` : ""}${data.Notes ? `notes=${data.Notes?.length}, ` : ""}${data.Religions ? `religions=${data.Religions?.length}` : ""}`,
 			);
 
 			setStatus("Preparing templates…");
