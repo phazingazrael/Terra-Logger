@@ -6,13 +6,14 @@
 - [x] Automatically include relevant Emblems or Coat of Arms as an SVG file.
 - [x] Rewrite logic, remove NeDB, use either LocalStorage or another option.
 - [x] Use the included SVG from the .map file to render the actual map as the program's background.
-- [ ] Exporting of simple markdown files for imported data. (data export basics started)
+- [x] Exporting of simple markdown files for imported data. (data export basics started)
 
 **Version 1.1.0**
 
+- [ ] Additional Exports (Cultures & Notes)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Ability to modify data prior to export.
-- [ ] Customize how exported files are organized.
+- [ ] Customize what data is exported.
 - [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
 - [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
 
