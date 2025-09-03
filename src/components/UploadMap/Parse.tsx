@@ -1,59 +1,34 @@
 // Modified from the following page.
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/io/load.js
 
-import Delaunator from "delaunator";
-
-// @ts-ignore
-import * as VoronoiModule from "../Util/voronoi.js";
-const Voronoi = VoronoiModule.Voronoi;
-
 import NameBases from "./NameBases.json";
 
-function getTypedArray(maxValue: number | bigint) {
-	const UINT8_MAX = 255;
-	const UINT16_MAX = 65535;
-	const UINT32_MAX = 4294967295;
-	console.assert(
-		Number.isInteger(maxValue) && maxValue >= 0 && maxValue <= UINT32_MAX,
-		`Array maxValue must be an integer between 0 and ${UINT32_MAX}, got ${maxValue}`,
-	);
-
-	if (maxValue <= UINT8_MAX) return Uint8Array;
-	if (maxValue <= UINT16_MAX) return Uint16Array;
-	if (maxValue <= UINT32_MAX) return Uint32Array;
-	return Uint32Array;
-}
-
-function createTypedArray({
-	maxValue,
-	length,
-	from,
-}: { maxValue: number; length: number; from?: number[] }) {
-	const typedArray = getTypedArray(maxValue);
-	if (!from) return new typedArray(length);
-	return typedArray.from(from);
-}
-
-function calculateVoronoi(points: number[], boundary: number[]) {
-	const allPoints = points.concat(boundary);
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const delaunay = Delaunator.from(allPoints as any);
-
-	const voronoi = new Voronoi(delaunay, allPoints, points.length);
-
-	const cells = voronoi.cells;
-	cells.i = createTypedArray({
-		maxValue: points.length,
-		length: points.length,
-	}).map((_, i) => i); // array of indexes
-	const vertices = voronoi.vertices;
-
-	return { cells, vertices };
+interface SettingsOpts {
+	pinNotes: boolean;
+	winds: number[];
+	temperatureEquator: number;
+	temperatureNorthPole: number;
+	temperatureSouthPole: number;
+	stateLabelsMode: string;
+	year: number;
+	era: string;
+	eraShort: string;
+	military: {
+		icon: string;
+		name: string;
+		rural: number;
+		urban: number;
+		crew: number;
+		power: number;
+		type: string;
+		separate: number;
+	}[];
 }
 
 export const parseLoadedResult = (
 	result: ArrayBuffer,
 ): [mapFile: string[], mapVersion: number, versionString: string] => {
+	console.log("parseLoadedResult started");
 	const resultAsString = new TextDecoder().decode(result);
 	const isDelimited = resultAsString.substring(0, 10).includes("|");
 	const decoded = isDelimited
@@ -61,54 +36,28 @@ export const parseLoadedResult = (
 		: decodeURIComponent(atob(resultAsString));
 
 	const mapFile = decoded.split("\r\n");
+	console.log("mapFile: ", mapFile);
 	const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
-	// biome-ignore lint/style/useConst: <explanation>
-	let mapVersion =
-		versionparts[0] * 10000 + versionparts[1] * 100 + versionparts[2];
+	console.log("versionparts: ", versionparts);
+	let mapVersion = `${versionparts[0]}${versionparts[1]}${versionparts[2]}`;
+	console.log("mapVersion: ", mapVersion);
 	const patchVersion =
 		versionparts[2] > 9 ? versionparts[2] : `0${versionparts[2]}`;
+	console.log("patchVersion: ", patchVersion);
 	const versionString = JSON.stringify(
 		`${versionparts[0]}.${versionparts[1]}.${patchVersion}`,
 	);
-	return [mapFile, mapVersion, versionString];
+	mapVersion = `${versionparts[0]}${versionparts[1]}${patchVersion}`;
+
+	const MapVersion = mapVersion as unknown as number;
+	console.log("MapVersion: ", MapVersion);
+
+	return [mapFile, MapVersion, versionString];
 };
 
 export const parseLoadedData = (data: string[]) => {
-	interface SettingsOpts {
-		pinNotes: boolean;
-		winds: number[];
-		temperatureEquator: number;
-		temperatureNorthPole: number;
-		temperatureSouthPole: number;
-		stateLabelsMode: string;
-		year: number;
-		era: string;
-		eraShort: string;
-		military: {
-			icon: string;
-			name: string;
-			rural: number;
-			urban: number;
-			crew: number;
-			power: number;
-			type: string;
-			separate: number;
-		}[];
-	}
+	console.log("parseLoadedData started");
 
-	interface GridData {
-		points?: number[];
-		boundary?: number[];
-		// biome-ignore lint/suspicious/noExplicitAny: data isn't being used, only for reference
-		cells?: any;
-		vertices?: number[];
-		cellsDesired?: number;
-		cellsX?: number;
-		cellsY?: number;
-		// biome-ignore lint/suspicious/noExplicitAny: data isn't being used, only for reference
-		features?: any[];
-		spacing?: number;
-	}
 	// Parse Map Parameters //
 
 	let params: string[];
@@ -124,14 +73,6 @@ export const parseLoadedData = (data: string[]) => {
 
 	let biomes: string[];
 
-	let Grid: GridData = {
-		points: [],
-		boundary: [],
-		cellsDesired: 0,
-		cellsX: 0,
-		cellsY: 0,
-		spacing: 0,
-	};
 	// biome-ignore lint/style/useConst: <explanation>
 	let Pack = {
 		burgs: [], // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
@@ -274,22 +215,6 @@ export const parseLoadedData = (data: string[]) => {
 	}
 
 	// data[5] is called last to ensure less processing time
-
-	// "gridGeneral"
-	if (data[6]) {
-		Grid = JSON.parse(data[6]) as GridData;
-		const { cells, vertices } = calculateVoronoi(
-			JSON.parse(data[6]).points,
-			JSON.parse(data[6]).boundary,
-		);
-		Grid.cells = cells;
-		Grid.vertices = vertices;
-		Grid.cells.h = Uint8Array.from(data[7].split(","));
-		Grid.cells.prec = Uint8Array.from(data[8].split(","));
-		Grid.cells.f = Uint16Array.from(data[9].split(","));
-		Grid.cells.t = Int8Array.from(data[10].split(","));
-		Grid.cells.temp = Int8Array.from(data[11].split(","));
-	}
 
 	// grid.cells.h
 	// data[7]
