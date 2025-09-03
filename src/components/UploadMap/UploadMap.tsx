@@ -31,8 +31,8 @@ function UploadMap() {
 	const [isLoading, setLoading] = useRecoilState(loadingAtom);
 	const [, setMapsList] = useRecoilState(mapsAtom);
 
-	const OLDEST_SUPPORTED_VERSION = "1.95.00";
-	const afmgMin = "1.95.00";
+	const OLDEST_SUPPORTED_VERSION = "1.105.15";
+	const afmgMin = "1.105.15";
 	const currentVersion = Number.parseFloat(app.application.afmgVer);
 
 	useEffect(() => {
@@ -359,11 +359,14 @@ function UploadMap() {
 									</p>
 									<h4>Why does this matter?</h4>
 									<p>
-										In honesty, It really does not have any effect on how things
-										would be handled but it will make it so that your map is
-										shown in the background of the program as well as exporting
-										an svg copy of the map when you export the rest of the files
-										as well.
+										The .map file is a binary file that contains all of the data
+										you need to load your map into Azgaar&apos;s Fantasy Map
+										Generator.
+										<br />
+										It also contains a lot of additional data used for various
+										generated information when used in Azgaar&apos;s Fantasy Map
+										Generator, Terra-Logger also uses this information to
+										generate accurate data for other details of the map.
 									</p>
 								</Alert>
 							</div>
