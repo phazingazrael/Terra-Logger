@@ -12,6 +12,7 @@ export const mutateCities = async (
 	populationRate: number,
 	urbanization: string,
 	urbanDensity: number,
+	mapSVG: string,
 ) => {
 	// mutate cities
 	for (const city of data.cities) {
@@ -66,24 +67,47 @@ export const mutateCities = async (
 			const randomSeed = randomNumberInRange(1000, 1000000);
 
 			if (city.coa) {
-				// get coa svg from armoria and save to string inside of city data
+				if ((city.coa as unknown as { custom: boolean }).custom !== true) {
+					// get coa svg from armoria and save to string inside of city data
 
-				const coa = city.coa;
+					const coa = city.coa;
 
-				try {
-					const response = await (typeof coa === "object" &&
-					Object.keys(coa).length > 0
-						? getCOA(city.i as unknown as string, coa)
-						: fetch(
-								`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-							).then((response) => response.text()));
-					const svg = response;
-					if (svg.startsWith("<!DOCTYPE html>")) {
-						throw new Error("Received HTML error page");
+					try {
+						const response = await (typeof coa === "object" &&
+						Object.keys(coa).length > 0
+							? getCOA(city.i as unknown as string, coa)
+							: fetch(
+									`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
+								).then((response) => response.text()));
+						const svg = response;
+						if (svg.startsWith("<!DOCTYPE html>")) {
+							throw new Error("Received HTML error page");
+						}
+						newCity.coaSVG = svg;
+					} catch (error) {
+						console.error("Error fetching SVG:", city.name, error);
 					}
-					newCity.coaSVG = svg;
-				} catch (error) {
-					console.error("Error fetching SVG:", city.name, error);
+				} else {
+					const start = mapSVG.indexOf('<g id="defs-emblems">');
+					if (start === -1) {
+						throw new Error('Error: could not find <g id="defs-emblems">');
+					}
+					const end = mapSVG.indexOf("</g>", start);
+					if (end === -1) {
+						throw new Error("Error: could not find </g>");
+					}
+					const emblems = mapSVG
+						.slice(start, end)
+						.match(/<svg.*?<\/svg>/gs) as string[];
+					const cityCOA = emblems.find((svg) =>
+						svg.includes(`<svg id="burgCOA${city.i}"`),
+					);
+					if (!cityCOA) {
+						throw new Error(
+							`Error: could not find <svg id="burgCOA${city.i}" in mapSVG`,
+						);
+					}
+					newCity.coaSVG = cityCOA;
 				}
 			} else if (!city.coa || city.coa === undefined) {
 				const response = await fetch(

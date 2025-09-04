@@ -16,6 +16,7 @@ export const mutateCountries = async (
 	tempMap: TLMapInfo,
 	populationRate: number,
 	urbanization: string,
+	mapSVG: string,
 ) => {
 	for (const country of data.countries) {
 		if (country.name !== "Unknown" && country.removed !== true) {
@@ -66,6 +67,7 @@ export const mutateCountries = async (
 					});
 				}
 			}
+
 			if (country.neighbors) {
 				for (const neighbor of country.neighbors) {
 					newCountry.political.neighbors.push({
@@ -77,6 +79,7 @@ export const mutateCountries = async (
 					});
 				}
 			}
+
 			if (country.name !== "Neutrals") {
 				if (country.diplomacy) {
 					country.diplomacy.forEach((diplomacyStatus, index) => {
@@ -97,6 +100,8 @@ export const mutateCountries = async (
 						newCountry.political.diplomacy.push(dipObj);
 					});
 				}
+			} else {
+				newCountry.political.diplomacy = [];
 			}
 
 			const randomNumberInRange = (min: number, max: number): number => {
@@ -106,22 +111,45 @@ export const mutateCountries = async (
 			const randomSeed = randomNumberInRange(1000, 1000000);
 
 			if (country.coa) {
-				// get coa svg from armoria and save to string inside of city data			const coa = country.coa;
-				const coa = country.coa;
-				try {
-					const response = await (typeof coa === "object" &&
-					Object.keys(coa).length > 0
-						? getCOA(country.i as unknown as string, coa)
-						: fetch(
-								`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-							).then((response) => response.text()));
-					const svg = response.replace(/_coa/g, "");
-					if (svg.startsWith("<!DOCTYPE html>")) {
-						throw new Error("Received HTML error page");
+				if ((country.coa as unknown as { custom: boolean }).custom !== true) {
+					// get coa svg from armoria and save to string inside of city data			const coa = country.coa;
+					const coa = country.coa;
+					try {
+						const response = await (typeof coa === "object" &&
+						Object.keys(coa).length > 0
+							? getCOA(country.i as unknown as string, coa)
+							: fetch(
+									`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
+								).then((response) => response.text()));
+						const svg = response.replace(/_coa/g, "");
+						if (svg.startsWith("<!DOCTYPE html>")) {
+							throw new Error("Received HTML error page");
+						}
+						newCountry.coaSVG = svg;
+					} catch (error) {
+						console.error("Error fetching SVG:", country.name, error);
 					}
-					newCountry.coaSVG = svg;
-				} catch (error) {
-					console.error("Error fetching SVG:", country.name, error);
+				} else {
+					const start = mapSVG.indexOf('<g id="defs-emblems">');
+					if (start === -1) {
+						throw new Error('Error: could not find <g id="defs-emblems">');
+					}
+					const end = mapSVG.indexOf("</g>", start);
+					if (end === -1) {
+						throw new Error("Error: could not find </g>");
+					}
+					const emblems = mapSVG
+						.slice(start, end)
+						.match(/<svg.*?<\/svg>/gs) as string[];
+					const stateCOA = emblems.find((svg) =>
+						svg.includes(`<svg id="stateCOA${country.i}"`),
+					);
+					if (!stateCOA) {
+						throw new Error(
+							`Error: could not find <svg id="stateCOA${country.i}" in mapSVG`,
+						);
+					}
+					newCountry.coaSVG = stateCOA;
 				}
 			} else if (!country.coa || country.coa === undefined) {
 				const response = await fetch(

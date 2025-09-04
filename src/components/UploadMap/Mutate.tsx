@@ -62,6 +62,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 			populationRate,
 			urbanization,
 			urbanDensity,
+			tempMap.SVG,
 		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
@@ -77,6 +78,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 			tempMap,
 			populationRate,
 			urbanization,
+			tempMap.SVG,
 		);
 		// set timeout for 3 seconds
 		setTimeout(() => {}, 3000);
