@@ -75,23 +75,25 @@ export const mutateCountries = async (
 				});
 			}
 		}
-		if (country.diplomacy) {
-			country.diplomacy.forEach((diplomacyStatus, index) => {
-				let status = diplomacyStatus;
-				if (status === "Suspicion") {
-					status = "Suspicious";
-				}
-				if (index === country.i) {
-					status = "-";
-				}
+		if (country.name !== "Neutrals") {
+			if (country.diplomacy) {
+				country.diplomacy.forEach((diplomacyStatus, index) => {
+					let status = diplomacyStatus;
+					if (status === "Suspicion") {
+						status = "Suspicious";
+					}
+					if (index === country.i) {
+						status = "-";
+					}
 
-				const dipObj: TLDiplomacy = {
-					name: data.countries[index].fullName || data.countries[index].name,
-					status,
-					id: data.countries[index].i,
-				};
-				newCountry.political.diplomacy.push(dipObj);
-			});
+					const dipObj: TLDiplomacy = {
+						name: data.countries[index].fullName || data.countries[index].name,
+						status,
+						id: data.countries[index].i,
+					};
+					newCountry.political.diplomacy.push(dipObj);
+				});
+			}
 		}
 
 		const randomNumberInRange = (min: number, max: number): number => {
