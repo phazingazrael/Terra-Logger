@@ -6,7 +6,6 @@ export { default as Ellipsis } from "./ellipsis.tsx";
 export { default as rgbToRgba } from "./rgb2rgba.ts";
 export { minmax } from "./minmax.ts";
 export { handleSvgReplace } from "./handleSvgReplace.ts";
-export { findCultureByID } from "./findCultureByID.ts";
 
 /* make empty functions */
 export { createEmptyCity } from "./mkEmpty/tlCity.ts";

@@ -1,6 +1,5 @@
 import { v7 as uuidv7 } from "uuid";
 
-import { findCultureByID } from "../../Util";
 import { createEmptyCountry } from "../mkEmpty/tlCountry";
 
 import getCOA from "../generators/coa/render.tsx";
@@ -34,12 +33,12 @@ export const mutateCountries = async (
 			newCountry.political.form = country.form;
 			newCountry.political.formName = country.formName;
 
-			const Culture = findCultureByID(country.culture, data);
+			const Culture = tempMap.cultures.find((c) => c.id === country.culture);
 
 			if (Culture) {
 				newCountry.culture = {
 					_id: "",
-					id: Culture.i as unknown as string,
+					id: Culture.id as unknown as string,
 				};
 			}
 

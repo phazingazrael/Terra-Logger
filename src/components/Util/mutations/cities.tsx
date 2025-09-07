@@ -1,4 +1,4 @@
-import { minmax, findCultureByID } from "../../Util";
+import { minmax } from "../../Util";
 
 import { v7 as uuidv7 } from "uuid";
 
@@ -190,12 +190,12 @@ export const mutateCities = async (
 					});
 			}
 
-			const Culture = findCultureByID(city.culture, data);
+			const Culture = tempMap.cultures.find((c) => c.id === city.culture);
 
 			if (Culture) {
 				newCity.culture = {
 					_id: "",
-					id: Culture.i as unknown as string,
+					id: Culture.id as unknown as string,
 				};
 			}
 
