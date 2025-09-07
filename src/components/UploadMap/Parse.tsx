@@ -5,6 +5,12 @@ import NameBases from "./json/NameBases.json";
 import svgDefs from "./json/svgDefs.json";
 import b64Imgs from "./json/b64Img.json";
 
+import {
+	setAllMarkerTextsToPercent,
+	ensureDefsHasBatch,
+	inlinePatternImages,
+} from "./util";
+
 import type { SettingsOpts } from "../../definitions/TerraLogger";
 
 export const parseLoadedResult = (
@@ -392,6 +398,28 @@ export const parseLoadedData = (data: string[]) => {
 		const parser = new DOMParser();
 		const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
 		const svgElement = svgDoc.documentElement;
+
+		setAllMarkerTextsToPercent(
+			svgElement as unknown as SVGSVGElement,
+			25,
+			62.5,
+		);
+
+		// Insert SVG Defs for each of the following ids:
+		// - end-arrow
+		// - end-arrow-small
+		// - icon-store
+		// - icon-anchor
+		// - icon-route
+		// - defs-relief
+		// - defs-compass-rose
+		// - gridPatterns
+		// - defs-hatching
+
+		ensureDefsHasBatch(svgElement as unknown as SVGSVGElement, svgDefs);
+
+		// Replace <image> hrefs inside <pattern id="oceanic"> with provided base64 payloads
+		inlinePatternImages(svgElement as unknown as SVGSVGElement, b64Imgs);
 
 		// Replace the original SVG string with the modified one
 		SVG = new XMLSerializer().serializeToString(svgElement);

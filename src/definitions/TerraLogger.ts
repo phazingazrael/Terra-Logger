@@ -360,3 +360,25 @@ export interface MapInf {
   SVG: string;
   svgMod: string;
 }
+
+export interface SettingsOpts {
+  pinNotes: boolean;
+  winds: number[];
+  temperatureEquator: number;
+  temperatureNorthPole: number;
+  temperatureSouthPole: number;
+  stateLabelsMode: string;
+  year: number;
+  era: string;
+  eraShort: string;
+  military: {
+    icon: string;
+    name: string;
+    rural: number;
+    urban: number;
+    crew: number;
+    power: number;
+    type: string;
+    separate: number;
+  }[];
+}
