@@ -174,7 +174,7 @@ function CountryView() {
 								<div className="info">
 									<Typography variant="h1">{country?.name}</Typography>
 									<Grid container className="meta">
-										<Grid size={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
+										<Grid size={{ xs: 3, sm: 3, md: 3, lg: 3, xl: 3 }}>
 											<Typography color="primary" component="h3">
 												{country?.nameFull}{" "}
 												<GiSparkles style={DynamicSparkleStyle} />
