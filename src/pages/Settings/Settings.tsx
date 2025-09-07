@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 import type { Context } from "../../definitions/Common";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { IconContext } from "react-icons";
 import { useRecoilState } from "recoil";
 
@@ -14,34 +14,8 @@ import { useOutletContext } from "react-router-dom";
 function Settings(): JSX.Element {
 	const [app, setApp] = useRecoilState(appAtom);
 	const { userSettings } = app;
-	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
-	const [defaults, setDefaults] = useState<Array<string>>([]);
 
 	const { mapsList }: Context = useOutletContext();
-
-	const defaultExports: Array<string> = [
-		"Cities",
-		"Countries",
-		"Religions",
-		"Cultures",
-		"NPCs",
-		"Governments",
-		"Notes",
-		"Map SVG",
-		"Coat of Arms SVGs",
-	];
-	const handleSelectAllDefaults = () => {
-		setSelectAllDefaults(!selectAllDefaults);
-		setDefaults(selectAllDefaults ? [] : [...defaultExports]);
-	};
-
-	const handleSelectDefault = (option: string) => {
-		const updatedDefaults = defaults.includes(option)
-			? defaults.filter((item) => item !== option)
-			: [...defaults, option];
-
-		setDefaults(updatedDefaults);
-	};
 
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
 
