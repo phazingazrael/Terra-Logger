@@ -1,29 +1,11 @@
 // Modified from the following page.
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/io/load.js
 
-import NameBases from "./NameBases.json";
+import NameBases from "./json/NameBases.json";
+import svgDefs from "./json/svgDefs.json";
+import b64Imgs from "./json/b64Img.json";
 
-interface SettingsOpts {
-	pinNotes: boolean;
-	winds: number[];
-	temperatureEquator: number;
-	temperatureNorthPole: number;
-	temperatureSouthPole: number;
-	stateLabelsMode: string;
-	year: number;
-	era: string;
-	eraShort: string;
-	military: {
-		icon: string;
-		name: string;
-		rural: number;
-		urban: number;
-		crew: number;
-		power: number;
-		type: string;
-		separate: number;
-	}[];
-}
+import type { SettingsOpts } from "../../definitions/TerraLogger";
 
 export const parseLoadedResult = (
 	result: ArrayBuffer,

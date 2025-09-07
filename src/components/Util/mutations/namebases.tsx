@@ -1,6 +1,6 @@
 import { v7 as uuidv7 } from "uuid";
 
-import nameBaseJSON from "../../UploadMap/NameBases.json";
+import nameBaseJSON from "../../UploadMap/json/NameBases.json";
 
 import type { TLMapInfo, TLNameBase } from "../../../definitions/TerraLogger";
 
