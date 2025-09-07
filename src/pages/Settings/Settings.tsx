@@ -54,16 +54,12 @@ function Settings(): JSX.Element {
 		<Container className="Settings">
 			<IconContext.Provider value={IconStyles}>
 				<form>
-					<h3>Settings</h3>
 					<div className="contentSubBody">
 						<div className="section">
-							<h4>Map Settings</h4>
 							{mapsList.length > 0 ? (
-								<div className="sectionAlt">
-									<span id="MapsList">
-										<MapManager />
-									</span>
-								</div>
+								<span id="MapsList">
+									<MapManager />
+								</span>
 							) : (
 								<UploadMap />
 							)}
@@ -71,22 +67,6 @@ function Settings(): JSX.Element {
 
 						<div className="section">
 							<h4>General & Appearance Settings</h4>
-							{/* <div>
-                <label htmlFor="languageSelect">Language</label>
-                <select id="languageSelect" className="select">
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                </select>
-                <div className="checkboxContainer">
-                  <input
-                    id="showLanguageSelector"
-                    type="checkbox"
-                    style={checkbox}
-                  />
-                  <label htmlFor="showLanguageSelector">Show Language Selector</label>
-                </div>
-              </div> */}
 							<div>
 								<label htmlFor="themeSelect">Theme</label>
 								<select
@@ -107,18 +87,6 @@ function Settings(): JSX.Element {
 									<option value="dark">Dark</option>
 								</select>
 							</div>
-							{/* <div className="checkboxContainer">
-                <input id="darkModeToggle" type="checkbox" style={checkbox} />
-                <label htmlFor="darkModeToggle">Show Dark Mode Toggle</label>
-              </div> */}
-							{/*<div>
-                <label htmlFor="fontSizeSelect">Font Size</label>
-                <select className="select" id="fontSizeSelect">
-                  <option>Small</option>
-                  <option>Medium</option>
-                  <option>Large</option>
-                </select>
-              </div>  */}
 						</div>
 
 						<div className="section">
@@ -128,57 +96,9 @@ function Settings(): JSX.Element {
 									Screen Size
 								</label>
 								<span id="screenSize">
-									appInfo.userSettings.screen.outerWidth x
-									appInfo.userSettings.screen.outerHeight
+									{app.userSettings.screen.outerWidth} x
+									{app.userSettings.screen.outerHeight}
 								</span>
-							</div>
-							<div className="checkboxContainer">
-								<input
-									id="welcomeMessage"
-									type="checkbox"
-									className="checkbox"
-								/>
-								<label htmlFor="welcomeMessage">Show Welcome Message?</label>
-							</div>
-						</div>
-
-						<div className="section">
-							<h4>Export Settings</h4>
-							<select id="languageSelect" className="select">
-								<option>English</option>
-								<option>Spanish</option>
-								<option>French</option>
-							</select>
-							<div className="checkboxContainer">
-								<div className="sectionAlt">
-									<h5>Default Exports</h5>
-									<p>
-										These are the default exports. (not functional currently)
-									</p>
-								</div>
-								<FormGroup>
-									<FormControlLabel
-										control={
-											<Checkbox
-												checked={selectAllDefaults}
-												onChange={handleSelectAllDefaults}
-											/>
-										}
-										label="Select All Defaults"
-									/>
-									{defaultExports.map((option) => (
-										<FormControlLabel
-											key={option}
-											control={
-												<Checkbox
-													checked={defaults.includes(option)}
-													onChange={() => handleSelectDefault(option)}
-												/>
-											}
-											label={option}
-										/>
-									))}
-								</FormGroup>
 							</div>
 						</div>
 					</div>

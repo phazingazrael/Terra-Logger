@@ -11,8 +11,6 @@ div#root.dark .section {
 }
 
 .sectionAlt {
-  padding: 12px;
-  padding-left: 0px;
   margin-bottom: 24px;
 }
 
@@ -45,7 +43,7 @@ div#root.dark .section {
 }
 
 div#root.dark select,
-div#root.dark input[type='checkbox'] {
+div#root.dark input[type="checkbox"] {
   background-color: #2d3748;
   border-color: #708090;
   color: #fff;
