@@ -4,13 +4,12 @@
 
 - [x] Importing .map file from Azgaar's Fantasy Map Generator.
 - [x] Automatically include relevant Emblems or Coat of Arms as an SVG file.
-- [x] Rewrite logic, remove NeDB, use either LocalStorage or another option.
 - [x] Use the included SVG from the .map file to render the actual map as the program's background.
-- [x] Exporting of simple markdown files for imported data. (data export basics started)
+- [x] Exporting of simple markdown and SVG files where relevant.
 
 **Version 1.1.0**
 
-- [ ] Additional Exports (Cultures & Notes)
+- [ ] Additional Exports (Cultures, Notes, more?)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Ability to modify data prior to export.
 - [ ] Customize what data is exported.
