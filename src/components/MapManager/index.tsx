@@ -251,7 +251,7 @@ const MapManager: React.FC = () => {
 
 	return (
 		<div>
-			<h2>Saved maps</h2>
+			<h4>Saved maps</h4>
 			<Grid container spacing={2}>
 				{mapsList.map((map) => (
 					<Grid size={3} key={map.id} id={map.id}>
