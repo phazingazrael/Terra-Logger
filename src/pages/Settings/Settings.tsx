@@ -1,9 +1,4 @@
-import {
-	Checkbox,
-	Container,
-	FormControlLabel,
-	FormGroup,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import type { Context } from "../../definitions/Common";
 import { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
