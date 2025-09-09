@@ -88,12 +88,15 @@ export async function updateDataInStore(
 	const db = await initDatabase();
 	const tx = db.transaction(storeName, "readwrite");
 	const store = tx.objectStore(storeName);
-	const keyExists = await store.getKey(key);
-	if (!keyExists) {
-		store.add(updatedData, key);
-		return;
-	}
-	store.put(updatedData);
+
+  if (store.keyPath){
+    // Store is configured to use in-line keys, use put instead of add
+    store.put(updatedData)
+  } else {
+    // Store is not configured to use in-line keys, use add with key
+    store.add(updatedData, key);
+  }
+
 	await tx.done;
 }
 
