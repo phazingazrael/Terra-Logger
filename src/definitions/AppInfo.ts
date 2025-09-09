@@ -3,7 +3,7 @@
 // visual effects only for eslint-disable //
 
 // Application Information Interface
-interface AppInfo {
+export interface AppInfo {
   id: string;
   application: {
     name: string;
