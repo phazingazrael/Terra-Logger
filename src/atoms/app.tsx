@@ -1,21 +1,12 @@
 import { atom } from "recoil";
+
+import type { AppInfo } from "../definitions/AppInfo";
+
 import Package from "../../package.json";
+
 import { updateDataInStore, getDataFromStore } from "../db/interactions";
 
-let LocalSaveData: AppInfo | null = null;
-// Retrieve the saved data from the database
-async function initApp() {
-	await getDataFromStore("appSettings", `TL_${Package.version}`).then(
-		(data) => {
-			LocalSaveData = data;
-		},
-	);
-}
-
-initApp();
-
-// Set the localSaveData to null if it is undefined
-const localSave: AppInfo | null = LocalSaveData ?? null;
+let AppData: AppInfo;
 
 // Set the defaultApp info object
 const defaultApp: AppInfo = {
@@ -45,18 +36,26 @@ const defaultApp: AppInfo = {
 	},
 };
 
-// Set the appData object
-const appData: AppInfo = localSave ?? defaultApp;
-
-// Add the appData object to the database if it is null
-if (localSave === null) {
-	updateDataInStore("appSettings", `TL_${Package.version}`, appData);
+// Retrieve the saved data from the database
+async function initApp() {
+  console.log("getting App info from db")
+	const data = await getDataFromStore("appSettings", `TL_${Package.version}`);
+  if (data === null){
+    updateDataInStore("appSettings",`TL_${Package.version}`,defaultApp);
+    AppData = defaultApp
+  } else {
+    AppData = data
+  }
 }
+
+initApp();
+
+
 
 // Set the appAtom
 export const appAtom = atom<AppInfo>({
 	key: "Application",
-	default: appData,
+	default: initApp().then(()=>AppData)
 });
 
 // Export the appAtom
