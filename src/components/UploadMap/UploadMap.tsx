@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-console */
-import { Alert, AlertTitle, Stack } from "@mui/material";
+import { Alert, AlertTitle, Divider, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ import {
 } from "../../db/interactions.tsx";
 
 import type { MapInf } from "../../definitions/TerraLogger.ts";
+import type { AppInfo } from "../../definitions/AppInfo.ts";
 
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -335,13 +336,19 @@ function UploadMap() {
 										/>
 									</Alert>
 									<Alert severity="info">
+                  <AlertTitle>
+										Notice
+									</AlertTitle>
 										<p>
 											Please note, This will only work with maps exported from
 											versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin}
 											&nbsp; and Newer.
+
 											<br />
 											The current maximum version supported by this program is V
 											{currentVersion}.
+                      <Divider sx={{ marginTop: "5px",marginBottom:"5px",borderBottomWidth:"thick"}}/>
+                      <strong>Please note: This is a one-way process, any changes made to exported files will not sync to your map.</strong>
 										</p>
 									</Alert>
 								</Stack>

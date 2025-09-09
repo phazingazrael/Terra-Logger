@@ -5,11 +5,13 @@ import { IconContext } from "react-icons";
 import { useRecoilState } from "recoil";
 
 import "./Settings.css";
+import Package from "../../../package.json"
 
 import appAtom from "../../atoms/app.tsx";
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 import { useOutletContext } from "react-router-dom";
+import { updateDataInStore } from "../../db/interactions.tsx";
 
 function Settings(): JSX.Element {
 	const [app, setApp] = useRecoilState(appAtom);
@@ -18,6 +20,25 @@ function Settings(): JSX.Element {
 	const { mapsList }: Context = useOutletContext();
 
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
+
+  const updateTheme = async (newTheme:string) => {
+    setApp((prev)=>({
+      ...prev,
+      userSettings:{
+        ...prev.userSettings,
+        theme: newTheme,
+      },
+    }));
+
+    updateDataInStore("appSettings", `TL_${Package.version}`,{
+      ...app,
+      userSettings:{
+        ...app.userSettings,
+        theme:newTheme,
+      },
+    })
+  }
+
 
 	return (
 		<Container className="Settings">
@@ -42,15 +63,7 @@ function Settings(): JSX.Element {
 									id="themeSelect"
 									className="select"
 									value={userSettings.theme}
-									onChange={(e) =>
-										setApp((prev) => ({
-											...prev,
-											userSettings: {
-												...prev.userSettings,
-												theme: e.target.value,
-											},
-										}))
-									}
+									onChange={(e) =>updateTheme(e.target.value)}
 								>
 									<option value="light">Light</option>
 									<option value="dark">Dark</option>
@@ -65,8 +78,7 @@ function Settings(): JSX.Element {
 									Screen Size
 								</label>
 								<span id="screenSize">
-									{app.userSettings.screen.outerWidth} x
-									{app.userSettings.screen.outerHeight}
+									{`${app.userSettings.screen.outerWidth} x ${app.userSettings.screen.outerHeight}`}
 								</span>
 							</div>
 						</div>
