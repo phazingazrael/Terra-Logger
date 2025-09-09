@@ -1,6 +1,7 @@
 import { Container, Divider, Typography } from "@mui/material";
 import { useRecoilState } from "recoil";
 import appAtom from "../../atoms/app";
+import type { AppInfo } from "../../definitions/AppInfo";
 
 const HomePage = () => {
 	const [app] = useRecoilState<AppInfo>(appAtom);
