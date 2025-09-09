@@ -12,6 +12,7 @@ import {
 	TableRow,
 	TableBody,
 	TableCell,
+  Paper
 } from "@mui/material";
 
 import { IconContext } from "react-icons";
@@ -175,11 +176,11 @@ function CountryView() {
 									<Typography variant="h1">{country?.name}</Typography>
 									<Grid container className="meta">
 										<Grid size={{ xs: 3, sm: 3, md: 3, lg: 3, xl: 3 }}>
-											<Typography color="primary" component="h3">
+											<Typography color="text.secondary" component="h3">
 												{country?.nameFull}{" "}
 												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
-											<Typography color="primary" component="h3">
+											<Typography color="text.secondary" component="h3">
 												Type: {country?.type}{" "}
 												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
@@ -187,7 +188,7 @@ function CountryView() {
 										<Grid size={{ xs: 8, sm: 8, md: 8, lg: 8, xl: 8 }}>
 											<Grid container className="popGrid">
 												<Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-													<section>
+													<Paper color="text.secondary" className="section">
 														<Box>
 															<Box
 																sx={{
@@ -201,7 +202,7 @@ function CountryView() {
 																	sx={{ display: "flex", alignItems: "center" }}
 																>
 																	<Typography
-																		color="primary"
+																		color="text.secondary"
 																		variant="subtitle1"
 																	>
 																		Population:{" "}
@@ -210,17 +211,17 @@ function CountryView() {
 																</Box>
 																<Typography
 																	variant="h6"
-																	color="primary"
+																	color="text.secondary"
 																	sx={{ fontWeight: "bold" }}
 																>
 																	{country?.population.total}
 																</Typography>
 															</Box>
 														</Box>
-													</section>
+													</Paper>
 													<Grid container spacing={4} sx={{ mt: 2 }}>
 														<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-															<section>
+															<Paper color="text.secondary" className="section">
 																<Box>
 																	<Box
 																		sx={{
@@ -240,7 +241,7 @@ function CountryView() {
 																				sx={{ mr: 1, color: "#4caf50" }}
 																			/>
 																			<Typography
-																				color="primary"
+																				color="text.secondary"
 																				variant="subtitle1"
 																			>
 																				Rural Population:{" "}
@@ -253,7 +254,7 @@ function CountryView() {
 
 																	<Typography
 																		variant="h6"
-																		color="primary"
+																		color="text.secondary"
 																		sx={{ fontWeight: "bold" }}
 																	>
 																		{country?.population.rural}
@@ -274,7 +275,7 @@ function CountryView() {
 																	/>
 																	<Typography
 																		variant="body2"
-																		color="primary"
+																		color="text.secondary"
 																		sx={{ mt: 0.5 }}
 																	>
 																		{ruralPercentage !== 0
@@ -283,10 +284,10 @@ function CountryView() {
 																		% of total
 																	</Typography>
 																</Box>
-															</section>
+															</Paper>
 														</Grid>
 														<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-															<section>
+															<Paper color="text.secondary" className="section">
 																<Box>
 																	<Box
 																		sx={{
@@ -307,7 +308,7 @@ function CountryView() {
 																			/>
 																			<Typography
 																				variant="subtitle1"
-																				color="primary"
+																				color="text.secondary"
 																				style={{ width: "100%" }}
 																			>
 																				Urban Population:{" "}
@@ -319,7 +320,7 @@ function CountryView() {
 																	</Box>
 																	<Typography
 																		variant="h6"
-																		color="primary"
+																		color="text.secondary"
 																		sx={{ fontWeight: "bold" }}
 																	>
 																		{country?.population.urban}
@@ -339,13 +340,13 @@ function CountryView() {
 																	/>
 																	<Typography
 																		variant="body2"
-																		color="primary"
+																		color="text.secondary"
 																		sx={{ mt: 0.5 }}
 																	>
 																		{urbanPercentage.toFixed(1)}% of total
 																	</Typography>
 																</Box>
-															</section>
+															</Paper>
 														</Grid>
 													</Grid>
 												</Grid>
@@ -356,23 +357,23 @@ function CountryView() {
 							</div>
 
 							<main className="content">
-								<section className="description">
-									<Typography color="primary" component="h2">
+								<Paper color="text.secondary" className="section description">
+									<Typography color="text.secondary" component="h2">
 										Description
 									</Typography>
-									<Typography color="primary" component="p">
+									<Typography color="text.secondary" component="p">
 										{country?.description && country?.description.length > 0
 											? country?.description
 											: `${country?.name} is a country.`}
 									</Typography>
-								</section>
+								</Paper>
 
 								<div className="content-grid">
-									<section className="citiesList">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section citiesList">
+										<Typography color="text.secondary" component="h2">
 											Cities <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
-										<Typography color="primary" component="p">
+										<Typography color="text.secondary" component="p">
 											<div className="tag-list">
 												{cities?.map((city) => (
 													<span
@@ -390,10 +391,10 @@ function CountryView() {
 												))}
 											</div>
 										</Typography>
-									</section>
+									</Paper>
 
-									<section className="political-info">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section political-info">
+										<Typography color="text.secondary" component="h2">
 											Political Information
 										</Typography>
 										<div className="info">
@@ -474,10 +475,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="military">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section military">
+										<Typography color="text.secondary" component="h2">
 											Military <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="military-tabs">
@@ -585,10 +586,10 @@ function CountryView() {
 												</div>
 											)}
 										</div>
-									</section>
+									</Paper>
 
-									<section className="economy">
-										<Typography component="h2" color="primary">
+									<Paper color="text.secondary" className="section economy">
+										<Typography component="h2" color="text.secondary">
 											Economy
 										</Typography>
 										<p>
@@ -719,10 +720,10 @@ function CountryView() {
 												[Contraband, smugglers, underground syndicates.]
 											</Typography>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="diplomacy">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section diplomacy">
+										<Typography color="text.secondary" component="h2">
 											Diplomacy <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										{Object.keys(diplomacyGroups).length > 0 ? (
@@ -760,10 +761,10 @@ function CountryView() {
 										) : (
 											<p>No diplomatic relations listed</p>
 										)}
-									</section>
+									</Paper>
 
-									<section className="history">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section history">
+										<Typography color="text.secondary" component="h2">
 											History
 										</Typography>
 										<div className="info">
@@ -819,10 +820,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="demographics-society">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section demographics-society">
+										<Typography color="text.secondary" component="h2">
 											Demographics & Society
 										</Typography>
 										<div className="info">
@@ -891,10 +892,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="education-knowledge">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section education-knowledge">
+										<Typography color="text.secondary" component="h2">
 											Education & Knowledge
 										</Typography>
 										<div className="info">
@@ -950,10 +951,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="culture-arts">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section culture-arts">
+										<Typography color="text.secondary" component="h2">
 											Culture, Arts & Entertainment
 										</Typography>
 										<div className="info">
@@ -1008,10 +1009,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="religion-mythology">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section religion-mythology">
+										<Typography color="text.secondary" component="h2">
 											Religion & Mythology
 										</Typography>
 										<div className="info">
@@ -1065,10 +1066,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="notable-figures">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section notable-figures">
+										<Typography color="text.secondary" component="h2">
 											Notable Figures & Legends
 										</Typography>
 										<div className="info">
@@ -1086,10 +1087,10 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="tags">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section tags">
+										<Typography color="text.secondary" component="h2">
 											Tags <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="tag-list">
@@ -1104,10 +1105,10 @@ function CountryView() {
 												</span>
 											))}
 										</div>
-									</section>
+									</Paper>
 
-									<section className="additional-info">
-										<Typography color="primary" component="h2">
+									<Paper color="text.secondary" className="section additional-info">
+										<Typography color="text.secondary" component="h2">
 											Additional Information{" "}
 											<GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
@@ -1157,7 +1158,7 @@ function CountryView() {
 												</Typography>
 											</div>
 										</div>
-									</section>
+									</Paper>
 								</div>
 							</main>
 						</div>

@@ -24,7 +24,6 @@ export const parseLoadedResult = (
 		: decodeURIComponent(atob(resultAsString));
 
 	const mapFile = decoded.split("\r\n");
-	console.log("mapFile: ", mapFile);
 	const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
 	console.log("versionparts: ", versionparts);
 	let mapVersion = `${versionparts[0]}${versionparts[1]}${versionparts[2]}`;
@@ -38,7 +37,6 @@ export const parseLoadedResult = (
 	mapVersion = `${versionparts[0]}${versionparts[1]}${patchVersion}`;
 
 	const MapVersion = mapVersion as unknown as number;
-	console.log("MapVersion: ", MapVersion);
 
 	return [mapFile, MapVersion, versionString];
 };
@@ -113,8 +111,7 @@ export const parseLoadedData = (data: string[]) => {
 		SetOpt = JSON.parse(settings[19]) as SettingsOpts;
 	}
 
-	// latLongs ("coords")
-	// data[2]
+
 
 	// biomes
 	if (data[3]) {
@@ -199,25 +196,15 @@ export const parseLoadedData = (data: string[]) => {
 
 	// notes
 	if (data[4]) {
-		Notes = JSON.parse(data[4]) as Note[];
+		const tempNotes: Note[] = JSON.parse(data[4]);
+    Notes = tempNotes.filter((note) => note.legend !== "");
+    console.log(Notes)
+
 	}
 
 	// data[5] is called last to ensure less processing time
 
-	// grid.cells.h
-	// data[7]
 
-	// grid.cells.prec
-	// data[8]
-
-	// grid.cells.f
-	// data[9]
-
-	// grid.cells.t
-	// data[10]
-
-	// grid.cells.temp
-	// data[11]
 
 	// packFeatures
 	if (data[12]) {
@@ -291,8 +278,7 @@ export const parseLoadedData = (data: string[]) => {
 		);
 	}
 
-	// Deprecated || pack.cells.road
-	// data[23]
+
 
 	// pack.cells.s
 	if (data[24]) {
@@ -321,9 +307,6 @@ export const parseLoadedData = (data: string[]) => {
 			data[27].split(","),
 		);
 	}
-
-	// Deprecated || pack.cells.crossroad
-	// data[28]
 
 	// religions
 	if (data[29]) {
@@ -361,9 +344,6 @@ export const parseLoadedData = (data: string[]) => {
 	if (data[32]) {
 		Pack.rivers = JSON.parse(data[32]);
 	}
-
-	// rulersString
-	// data[33]
 
 	// fonts
 	// data[34]
@@ -487,3 +467,22 @@ export const parseLoadedData = (data: string[]) => {
 
 	return { parsedMap, Pack };
 };
+// Unused data sections
+  // latLongs ("coords")
+	// data[2]
+	// grid.cells.h
+	// data[7]
+	// grid.cells.prec
+	// data[8]
+	// grid.cells.f
+	// data[9]
+	// grid.cells.t
+	// data[10]
+	// grid.cells.temp
+	// data[11]
+	// Deprecated || pack.cells.road
+	// data[23]
+	// Deprecated || pack.cells.crossroad
+	// data[28]
+	// rulersString
+	// data[33]

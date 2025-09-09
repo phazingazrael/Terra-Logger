@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState, useMemo } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Paper } from "@mui/material";
 import { IconContext } from "react-icons";
 import { useParams, Link } from "react-router-dom";
 import { getDataFromStore } from "../../db/interactions";
@@ -60,7 +60,7 @@ function CityView() {
 	}, [cityId]);
 
 	return (
-		<Container className="Settings">
+		<Container className="Settings" color="text.secondary">
 			<IconContext.Provider value={IconStyles}>
 				<div className="contentSubBody">
 					<div className="flex-container">
@@ -81,27 +81,27 @@ function CityView() {
 									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
 								/>
 								<div className="info">
-									<Typography variant="h1">
+									<Typography color="text.secondary" variant="h1">
 										{city?.name}
 										<GiSparkles style={DynamicSparkleStyle} />
 									</Typography>
 									<div className="meta">
 										<p>
-											<Typography color="primary" component="h3">
+											<Typography color="text.secondary" component="h3">
 												Country: {city?.country.name}
 												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
-											<Typography color="primary" component="h3">
+											<Typography color="text.secondary" component="h3">
 												Population: {city?.population}
 												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
-											<Typography color="primary" component="h3">
+											<Typography color="text.secondary" component="h3">
 												Size: {city?.size}
 												<GiSparkles style={DynamicSparkleStyle} />
 											</Typography>
 											{city?.capital && (
 												<Typography
-													color="primary"
+													color="text.secondary"
 													component="h3"
 													// className="capital-badge"
 													style={capitalBadge}
@@ -115,23 +115,23 @@ function CityView() {
 							</div>
 
 							<main className="content">
-								<section className="description">
-									<Typography color="primary" component="h2">
+								<Paper className="section description">
+									<Typography color="text.secondary" component="h2">
 										Description
 									</Typography>
-									<Typography color="primary" component="p">
+									<Typography color="text.secondary" component="p">
 										{city?.description && city?.description.length > 0
 											? city?.description
 											: `${city?.name} is a country.`}
 									</Typography>
-								</section>
+								</Paper>
 
 								<div className="content-grid">
-									<section className="features">
-										<Typography color="primary" component="h2">
+									<Paper className="section features">
+										<Typography color="text.secondary" component="h2">
 											Features <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
-										<Typography color="primary" component="p">
+										<Typography color="text.secondary" component="p">
 											<div className="tag-list">
 												{city?.features.map((feature) => (
 													<span key={feature} className="tag" style={tagStyles}>
@@ -140,10 +140,10 @@ function CityView() {
 												))}
 											</div>
 										</Typography>
-									</section>
+									</Paper>
 
-									<section className="tags">
-										<Typography color="primary" component="h2">
+									<Paper className="section tags">
+										<Typography color="text.secondary" component="h2">
 											Tags <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										<div className="tag-list">
@@ -158,10 +158,10 @@ function CityView() {
 												</span>
 											))}
 										</div>
-									</section>
+									</Paper>
 
-									<section className="map-link">
-										<Typography color="primary" component="h2">
+									<Paper className="section map-link">
+										<Typography color="text.secondary" component="h2">
 											Map <GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
 										{city?.mapLink && (
@@ -173,10 +173,10 @@ function CityView() {
 												🗺️ View City Map
 											</Link>
 										)}
-									</section>
+									</Paper>
 
-									<section className="history">
-										<Typography color="primary" component="h2">
+									<Paper className="section history">
+										<Typography color="text.secondary" component="h2">
 											History
 										</Typography>
 										<div className="info">
@@ -216,10 +216,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="geography-environment">
-										<Typography color="primary" component="h2">
+									<Paper className="section geography-environment">
+										<Typography color="text.secondary" component="h2">
 											Geography & Environment
 										</Typography>
 										<div className="info">
@@ -269,10 +269,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="economy-trade">
-										<Typography color="primary" component="h2">
+									<Paper className="section economy-trade">
+										<Typography color="text.secondary" component="h2">
 											Economy & Trade
 										</Typography>
 										<div className="info">
@@ -321,10 +321,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="government-power">
-										<Typography color="primary" component="h2">
+									<Paper className="section government-power">
+										<Typography color="text.secondary" component="h2">
 											Government & Power Structure
 										</Typography>
 										<div className="info">
@@ -372,10 +372,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="demographics-society">
-										<Typography color="primary" component="h2">
+									<Paper className="section demographics-society">
+										<Typography color="text.secondary" component="h2">
 											Demographics & Society
 										</Typography>
 										<div className="info">
@@ -424,10 +424,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="military-defense">
-										<Typography color="primary" component="h2">
+									<Paper className="section military-defense">
+										<Typography color="text.secondary" component="h2">
 											Military & Defense
 										</Typography>
 										<div className="info">
@@ -474,10 +474,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="education-knowledge">
-										<Typography color="primary" component="h2">
+									<Paper className="section education-knowledge">
+										<Typography color="text.secondary" component="h2">
 											Education & Knowledge
 										</Typography>
 										<div className="info">
@@ -517,10 +517,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="culture-arts">
-										<Typography color="primary" component="h2">
+									<Paper className="section culture-arts">
+										<Typography color="text.secondary" component="h2">
 											Culture, Arts & Entertainment
 										</Typography>
 										<div className="info">
@@ -559,10 +559,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="crime-underworld">
-										<Typography color="primary" component="h2">
+									<Paper className="section crime-underworld">
+										<Typography color="text.secondary" component="h2">
 											Crime & Underworld
 										</Typography>
 										<div className="info">
@@ -600,10 +600,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="religion-mythology">
-										<Typography color="primary" component="h2">
+									<Paper className="section religion-mythology">
+										<Typography color="text.secondary" component="h2">
 											Religion & Mythology
 										</Typography>
 										<div className="info">
@@ -641,10 +641,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="notable-locations">
-										<Typography color="primary" component="h2">
+									<Paper className="section notable-locations">
+										<Typography color="text.secondary" component="h2">
 											Notable Locations & Landmarks
 										</Typography>
 										<div className="info">
@@ -681,10 +681,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="sister-cities">
-										<Typography color="primary" component="h2">
+									<Paper className="section sister-cities">
+										<Typography color="text.secondary" component="h2">
 											Sister Cities & Interstellar Relations
 										</Typography>
 										<div className="info">
@@ -698,10 +698,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="notable-figures">
-										<Typography color="primary" component="h2">
+									<Paper className="section notable-figures">
+										<Typography color="text.secondary" component="h2">
 											Notable Figures & Legends
 										</Typography>
 										<div className="info">
@@ -715,10 +715,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="adventurers-mercenaries">
-										<Typography color="primary" component="h2">
+									<Paper className="section adventurers-mercenaries">
+										<Typography color="text.secondary" component="h2">
 											Adventurers & Mercenary Work
 										</Typography>
 										<div className="info">
@@ -748,10 +748,10 @@ function CityView() {
 												</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 
-									<section className="additional-info">
-										<Typography color="primary" component="h2">
+									<Paper className="section additional-info">
+										<Typography color="text.secondary" component="h2">
 											Additional Information
 											<GiSparkles style={DynamicSparkleStyle} />
 										</Typography>
@@ -781,7 +781,7 @@ function CityView() {
 												<span className="detail-value">{city?.culture.id}</span>
 											</div>
 										</div>
-									</section>
+									</Paper>
 								</div>
 							</main>
 						</div>

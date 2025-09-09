@@ -138,6 +138,7 @@ const App = (): JSX.Element => {
 							Component: m.default,
 						})),
 				},
+				// Viewing Pages
 				{
 					path: "view_city/:_id",
 					lazy: () =>
