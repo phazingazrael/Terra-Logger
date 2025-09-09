@@ -25,6 +25,7 @@
     "@mui/material": "^6.4.1",
     "@vercel/analytics": "^1.4.1",
     "delaunator": "^5.0.1",
+    "dompurify": "^3.2.6",
     "idb": "^8.0.1",
     "jszip": "^3.10.1",
     "lorem-ipsum": "^2.0.8",
