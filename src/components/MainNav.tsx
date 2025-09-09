@@ -80,7 +80,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 									<TiGlobe />
 								</ListItemIcon>
 								<ListItemText>
-									{mapLoaded ? mapName : "No Map Loaded"}
+									{mapLoaded ? mapName : "Select Map"}
 								</ListItemText>
 							</AccordionSummary>
 							<AccordionDetails>
