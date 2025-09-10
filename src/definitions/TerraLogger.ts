@@ -178,6 +178,7 @@ export type TLCity = {
   culture: {
     id: string;
     _id: string;
+    name: string;
   };
   features: string[];
   id: number;

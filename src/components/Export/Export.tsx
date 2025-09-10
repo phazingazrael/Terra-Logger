@@ -11,6 +11,8 @@ import type {
 	TemplateMap,
 } from "../../definitions/Export";
 
+import afmgcss from "../../assets/afmg.css?raw";
+
 function LinearProgressWithLabel(props: { value: number }) {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
@@ -38,7 +40,7 @@ const DEFAULT_RENDER_OPTIONS: Required<RenderOptions> = {
 		Religions: ["name", "code", "_id"],
 	},
 	extension: ".md", // default file extension for markdown files
-	css: require("../assets/afmg.css"),
+	css: afmgcss,
 };
 
 const slug = (s: unknown, fb: string) =>
@@ -117,7 +119,7 @@ const defaults: TemplateMap = {
 	// The default template for the key "Culture".
 	Culture: "# {{Culture.name}}\n",
 	// The default template for the key "Note".
-	Note: "# {{Note.name}}\n",
+	Note: "# {{Note.name}}\n{{Note.legend}}",
 	// The default template for the key "Religion".
 	Religion: "# {{Religion.name}}\n",
 };

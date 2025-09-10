@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { ToastContainer } from "react-toastify";
 import Icon from "../assets/icon.png";
 import { appAtom } from "../atoms";
-
+import mapLoadedAtom from "../atoms/mapLoaded";
 import { MainNav } from "../components";
 
 import { ContentMain } from "../components/Styled";
@@ -94,6 +94,9 @@ function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const [Theme, setTheme] = useState({});
 	const [appData] = useRecoilState(appAtom);
+  const [mapLoaded,] = useRecoilState(mapLoadedAtom);
+    const navigate = useNavigate();
+    const location = useLocation();
 
 	const {
 		userSettings: { theme },
@@ -147,6 +150,12 @@ function MainLayout() {
 			clearInterval(intervalId);
 		};
 	}, []);
+
+  useEffect(() => {
+      if (!mapLoaded && location.pathname !== "/" && location.pathname !== "/settings") {
+        navigate("/");
+      }
+    }, [mapLoaded, location.pathname, navigate]);
 
 	return (
 		<ThemeProvider theme={selectedTheme}>

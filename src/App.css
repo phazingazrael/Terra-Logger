@@ -31,8 +31,21 @@ header {
   display: inline-flex;
 }
 
+.Navigation .mapSelect {
+  padding: 0 !important;
+}
+
+.Navigation .mapSelect .MuiAccordionDetails-root {
+  padding: 0;
+}
+
+.Navigation .mapSelect li {
+  padding-left: 1.75dvw;
+}
+
 .Navigation .MuiMenuItem-gutters {
   padding-left: 0px;
+  padding-right: 0px;
 }
 
 .Navigation .MuiAccordion-root {
@@ -79,6 +92,10 @@ header {
 .exportPage .MuiLinearProgress-root {
   height: 2dvh !important;
   border-radius: 6px !important;
+}
+
+.MuiAccordion-root.Mui-expanded {
+  margin: 0px !important;
 }
 
 /*-- MUI Override --*/

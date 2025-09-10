@@ -149,6 +149,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 				city.culture = {
 					id: tempCulture.id as unknown as string,
 					_id: tempCulture._id,
+					name: tempCulture.name,
 				};
 			}
 		}

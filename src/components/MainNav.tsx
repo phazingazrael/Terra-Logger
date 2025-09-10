@@ -16,7 +16,8 @@ import {
 	TiCog,
 	TiDocumentText,
 	TiGlobe,
-	TiHome /*TiTags*/,
+	TiHome,
+	TiExportOutline,
 } from "react-icons/ti";
 import { NavLink } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -61,7 +62,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	return (
 		<MenuList>
 			<IconContext.Provider value={iconStyles}>
-				<MenuItem>
+				<MenuItem className="mapSelect">
 					{mapList.length > 0 ? (
 						<Accordion
 							disableGutters
@@ -208,7 +209,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 					>
 						<MenuItem>
 							<ListItemIcon>
-								<TiDocumentText />
+								<TiExportOutline />
 							</ListItemIcon>
 							<ListItemText>Export Map</ListItemText>
 							<ListItemIcon className="inactive">
