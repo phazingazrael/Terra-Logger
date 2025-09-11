@@ -16,11 +16,12 @@ const HomePage = () => {
 			<div className="contentSubHead">
 				<Typography variant="h5">
 					Welcome to Terra-Logger!{" "}
-					<sup>V{app.application.version ?? "0.0.0"}</sup>
+					<sup>V{app ? app.application.version : "0.0.0"}</sup>
 				</Typography>
 				<Typography variant="h6" component="div">
-					Currently compatible with version {app.application.afmgVer ?? "0.0.0"}{" "}
-					of Azgaar&#39;s Fantasy Map Generator and newer!
+					Currently compatible with version{" "}
+					{app ? app.application.afmgVer : "0.0.0"} of Azgaar&#39;s Fantasy Map
+					Generator and newer!
 				</Typography>
 			</div>
 			<Divider sx={{ margin: "0.75rem" }} />

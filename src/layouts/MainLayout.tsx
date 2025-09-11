@@ -155,11 +155,15 @@ function MainLayout() {
 		};
 	}, []);
 
-  useEffect(() => {
-      if (!mapLoaded && location.pathname !== "/" && location.pathname !== "/settings") {
-        navigate("/");
-      }
-    }, [mapLoaded, location.pathname, navigate]);
+	useEffect(() => {
+		if (
+			!mapLoaded &&
+			location.pathname !== "/" &&
+			location.pathname !== "/settings"
+		) {
+			navigate("/");
+		}
+	}, [mapLoaded, location.pathname, navigate]);
 
 	return (
 		<ThemeProvider theme={selectedTheme}>
