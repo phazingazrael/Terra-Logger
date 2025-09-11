@@ -6,7 +6,7 @@ import Package from "../../package.json";
 
 import { updateDataInStore, getDataFromStore } from "../db/interactions";
 
-let AppData: AppInfo;
+let AppData: AppInfo | null = null;
 
 // Set the defaultApp info object
 const defaultApp: AppInfo = {
@@ -38,25 +38,22 @@ const defaultApp: AppInfo = {
 
 // Retrieve the saved data from the database
 async function initApp() {
-  console.log("getting App info from db")
+	console.log("getting App info from db");
 	const data = await getDataFromStore("appSettings", `TL_${Package.version}`);
-  if (data === null){
-    updateDataInStore("appSettings",`TL_${Package.version}`,defaultApp);
-    AppData = defaultApp
-  } else {
-    AppData = data
-  }
+	if (!data) {
+		updateDataInStore("appSettings", `TL_${Package.version}`, defaultApp);
+		AppData = defaultApp;
+	} else {
+		AppData = data;
+	}
 }
 
 initApp();
 
-
-
 // Set the appAtom
-export const appAtom = atom<AppInfo>({
+const appAtom = atom<AppInfo>({
 	key: "Application",
-	default: initApp().then(()=>AppData)
+	default: AppData ?? defaultApp,
 });
 
-// Export the appAtom
 export default appAtom;
