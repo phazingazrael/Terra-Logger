@@ -1,7 +1,7 @@
 import Mustache from "mustache";
 import { useEffect, useRef, useState } from "react";
 
-import { Box, LinearProgress, Typography } from "@mui/material";
+import { Button, Box, LinearProgress, Typography } from "@mui/material";
 
 import type {
 	DataSets,
@@ -350,11 +350,25 @@ export function MarkdownExportPanel(props: {
 		useFolders = true,
 	} = props;
 
+	const downloadLogs = () => {
+		const logsText = logs.join("\n");
+		const blob = new Blob([logsText], { type: "text/plain" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `${zipName.replace(".zip", "")} export log.txt`;
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+		URL.revokeObjectURL(url);
+	};
+
 	// State variables
 	const [status, setStatus] = useState<string>("Idle"); // shows the current status of the export process
 	const [percent, setPercent] = useState<number>(0); // shows the percentage complete of the export process
 	const [logs, setLogs] = useState<string[]>([]); // an array of log messages that show the progress of the export
 	const exportingRef = useRef(false); // a flag that indicates whether the export is currently running
+	const [zipDownloaded, setZipDownloaded] = useState(false); // new state variable
 
 	// References to the last progress percentage and the last file that was being processed
 	const lastPctRef = useRef(0);
@@ -370,12 +384,12 @@ export function MarkdownExportPanel(props: {
 		if (el) el.scrollTo({ top: el.scrollHeight });
 	}, [logs]);
 
-	// a function that returns the current time as a string, formatted like "HH:MM:SS"
-	const time = () =>
-		new Date().toLocaleTimeString(undefined, { hour12: false });
-
 	// a function that adds a new log message to the logs state variable
-	const log = (line: string) => setLogs((l) => [...l, `[${time()}] ${line}`]);
+	const log = (type: string, line: string) =>
+		setLogs((l) => [
+			...l,
+			`[${new Date().toISOString().slice(0, 19).replace("T", " ")}] [{${type}}] ${line}`,
+		]);
 
 	// The main export function
 	const run = async () => {
@@ -387,21 +401,25 @@ export function MarkdownExportPanel(props: {
 		lastFileRef.current = undefined; // reset the last file that was being processed
 
 		try {
-			log("▶ export started");
-			log(`• options: useFolders=${String(useFolders)} zipName="${zipName}"`);
+			log("INFO", "▶ export started");
 			log(
+				"INFO",
+				`• options: useFolders=${String(useFolders)} zipName="${zipName}"`,
+			);
+			log(
+				"INFO",
 				`• counts: ${data.Cities ? `cities=${data.Cities?.length}, ` : ""}${data.Countries ? `countries=${data.Countries?.length}, ` : ""}${data.Cultures ? `cultures=${data.Cultures?.length}, ` : ""}${data.Notes ? `notes=${data.Notes?.length}, ` : ""}${data.Religions ? `religions=${data.Religions?.length}` : ""}`,
 			);
 
 			setStatus("Preparing templates…");
-			log("→ using selected template (or default)…");
+			log("INFO", "→ using selected template (or default)…");
 
 			const tpls = fillMissingTemplates(templates || {});
-			log("✔ templates ready");
+			log("INFO", "✔ templates ready");
 
 			setStatus("Rendering markdown files…");
 			const files = renderMarkdownFiles(data, tpls, { useFolders });
-			log(`✔ rendered ${files.length} files`);
+			log("INFO", `✔ rendered ${files.length} files`);
 
 			setStatus("Zipping…");
 			const blob = await zipFiles(files, zipName, (p, file) => {
@@ -409,23 +427,22 @@ export function MarkdownExportPanel(props: {
 				setStatus(`Zipping… ${p}%`);
 				if (file && file !== lastFileRef.current) {
 					lastFileRef.current = file;
-					log(`… writing ${file}`);
-				}
-				if (p === 100 || p - lastPctRef.current >= 10) {
-					lastPctRef.current = p;
-					log(`progress ${p}%`);
+					log("FILE", `… writing ${file}`);
 				}
 			});
 
 			log(
+				"INFO",
 				`✔ zip generated (${(blob.size / 1024).toFixed(1)} KB), download triggered`,
 			);
 			setStatus("Done. Download started.");
 
+			setZipDownloaded(true);
+
 			// biome-ignore lint/suspicious/noExplicitAny: We want to catch the error here, regardless of it's type
 		} catch (e: any) {
 			const msg = e?.message ?? String(e); // get the error message
-			log(`✖ error: ${msg}`); // log an error message
+			log("ERROR", `✖ error: ${msg}`); // log an error message
 			setStatus(`Error: ${msg}`); // set the status to indicate an error
 		} finally {
 			exportingRef.current = false; // reset the flag to indicate that the export is not running
@@ -435,15 +452,27 @@ export function MarkdownExportPanel(props: {
 	return (
 		<div className={className ?? "p-2 border rounded"}>
 			{/* Button to trigger the export */}
-			<button
+			<Button
 				type="button"
 				onClick={run}
+				variant="contained"
+				color="success"
 				disabled={exportingRef.current} // disable the button if the export is running
-				style={{ marginBottom: 8 }}
 			>
 				{exportingRef.current ? "Exporting…" : "Export Markdown"}
 				{/* show "Working…" if the export is running, otherwise show "Export Markdown" */}
-			</button>
+			</Button>
+			{zipDownloaded && (
+				<Button
+					type="button"
+					color="secondary"
+					variant="contained"
+					onClick={downloadLogs}
+					style={{ float: "right" }}
+				>
+					Download Logs
+				</Button>
+			)}
 			<LinearProgressWithLabel value={percent} />
 			{/* Terminal-style element to display the log messages */}
 			<div
@@ -465,7 +494,7 @@ export function MarkdownExportPanel(props: {
 				}}
 			>
 				{logs.length === 0 ? (
-					<div>[{time()}] ready. click “Export Markdown”.</div>
+					<div>{`[${new Date().toISOString().slice(0, 19).replace("T", " ")}] [{Ready}] ready. click “Export Markdown”.`}</div>
 				) : (
 					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 					logs.map((line, i) => <div key={i}>{line}</div>)

@@ -133,7 +133,7 @@ function ExportPage() {
 						Country: countryTpl,
 						Religion: religionTpl,
 					}}
-					zipName={`${MapInfo.info.name}-Export-${Date.now()}.zip`}
+					zipName={`${MapInfo.info.name}-Export-${new Date().toISOString().slice(0, 19).replace("T", " ")}.zip`}
 				/>
 			</div>
 		</Container>
