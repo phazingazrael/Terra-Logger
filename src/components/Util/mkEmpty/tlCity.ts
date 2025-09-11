@@ -32,6 +32,7 @@ export const createEmptyCity = (): TLCity => ({
   culture: {
     id: "",
     _id: "",
+    name: "",
   },
   features: [],
   id: 0,

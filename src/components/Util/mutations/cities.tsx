@@ -35,6 +35,7 @@ export const mutateCities = async (
 				culture: {
 					_id: "",
 					id: "",
+					name: "",
 				},
 				features: [],
 				id: city.i, // set city id
@@ -196,6 +197,7 @@ export const mutateCities = async (
 				newCity.culture = {
 					_id: "",
 					id: Culture.id as unknown as string,
+					name: Culture.name,
 				};
 			}
 
