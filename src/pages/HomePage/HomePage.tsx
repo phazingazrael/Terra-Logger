@@ -5,15 +5,22 @@ import type { AppInfo } from "../../definitions/AppInfo";
 
 const HomePage = () => {
 	const [app] = useRecoilState<AppInfo>(appAtom);
+
+	if (app) {
+		console.log(app);
+	} else {
+	}
+
 	return (
 		<Container className="homePage">
 			<div className="contentSubHead">
 				<Typography variant="h5">
-					Welcome to Terra-Logger! <sup>V{app.application.version}</sup>
+					Welcome to Terra-Logger!{" "}
+					<sup>V{app.application.version ?? "0.0.0"}</sup>
 				</Typography>
 				<Typography variant="h6" component="div">
-					Currently compatible with version {app.application.afmgVer} of
-					Azgaar&#39;s Fantasy Map Generator and newer!
+					Currently compatible with version {app.application.afmgVer ?? "0.0.0"}{" "}
+					of Azgaar&#39;s Fantasy Map Generator and newer!
 				</Typography>
 			</div>
 			<Divider sx={{ margin: "0.75rem" }} />
