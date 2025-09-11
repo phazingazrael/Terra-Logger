@@ -94,13 +94,17 @@ function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const [Theme, setTheme] = useState({});
 	const [appData] = useRecoilState(appAtom);
-  const [mapLoaded,] = useRecoilState(mapLoadedAtom);
-    const navigate = useNavigate();
-    const location = useLocation();
+	const [mapLoaded] = useRecoilState(mapLoadedAtom);
+	const navigate = useNavigate();
+	const location = useLocation();
 
-	const {
-		userSettings: { theme },
-	} = appData;
+	let theme: string;
+
+	if (appData) {
+		theme = appData.userSettings.theme;
+	} else {
+		theme = "light";
+	}
 
 	const selectedTheme = theme === "light" ? light : dark;
 
