@@ -48,7 +48,7 @@ const App = (): JSX.Element => {
 					const sy = innerHeight / (originalHeight || 1);
 
 					// optional: tidy decimals
-					const fmt = (n) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
+					const fmt = (n: number) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
 
 					// Apply transformation to scale content
 					viewBox.setAttribute("transform", `scale(${fmt(sx)} ${fmt(sy)})`);
