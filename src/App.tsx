@@ -5,6 +5,7 @@ import { useDB } from "./db/DataContext";
 import type { MapInf } from "./definitions/TerraLogger";
 
 import "./App.css";
+import { handleSvgReplace } from "./components/Util";
 
 const App = (): JSX.Element => {
 	const { useActiveMap } = useDB();
@@ -18,6 +19,16 @@ const App = (): JSX.Element => {
 		 * Handles the window's resize event.
 		 * This function is called whenever the user resizes the window.
 		 */
+
+		if (activeMap.SVG !== "" || activeMap.SVG !== undefined) {
+			handleSvgReplace({
+				svg: activeMap.SVG,
+				height: activeMap.info.height,
+				width: activeMap.info.width,
+			});
+			// handleResize();
+		}
+
 		function handleResize() {
 			// Get the new window dimensions
 			const { innerHeight, innerWidth } = window;
