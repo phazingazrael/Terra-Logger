@@ -33,3 +33,15 @@
   cursor: pointer;
   padding: 0.2rem !important;
 }
+
+/* note styles */
+.note-card a {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.note-name {
+  text-wrap: auto;
+  overflow: auto;
+}

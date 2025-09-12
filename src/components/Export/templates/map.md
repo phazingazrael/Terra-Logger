@@ -1,4 +1,6 @@
 # {{info.name}}
+![[World Map.svg]]
+
 
 ## Map Overview
 - **Map ID:** {{id}}

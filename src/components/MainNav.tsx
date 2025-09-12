@@ -168,6 +168,34 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 								</ListItemIcon>
 							</MenuItem>
 						</NavLink>
+						<NavLink
+							to="/cultures"
+							className={({ isActive }) => (isActive ? "active" : "")}
+						>
+							<MenuItem>
+								<ListItemIcon>
+									<TiDocumentText />
+								</ListItemIcon>
+								<ListItemText>Cultures</ListItemText>
+								<ListItemIcon className="inactive">
+									<ImDiamonds />
+								</ListItemIcon>
+							</MenuItem>
+						</NavLink>
+						<NavLink
+							to="/notes"
+							className={({ isActive }) => (isActive ? "active" : "")}
+						>
+							<MenuItem>
+								<ListItemIcon>
+									<TiDocumentText />
+								</ListItemIcon>
+								<ListItemText>Notes</ListItemText>
+								<ListItemIcon className="inactive">
+									<ImDiamonds />
+								</ListItemIcon>
+							</MenuItem>
+						</NavLink>
 						{/* <NavLink
 							to="/tags"
 							className={({ isActive }) => (isActive ? "active" : "")}

@@ -266,6 +266,12 @@ ul {
   border-bottom: 1px solid #eee;
 }
 
+/* note cards styling */
+.noteBody {
+  overflow: auto;
+  text-wrap: auto;
+}
+
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .detail-row {

@@ -1,7 +1,5 @@
 # {{name}}
 
-![[World Map.svg]]
-
 ## General Information
 - **Code:** {{code}}
 - **Culture Center:** {{center.name}}

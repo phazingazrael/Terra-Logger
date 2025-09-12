@@ -211,6 +211,7 @@ function MainLayout() {
 					</Grid>
 					<Grid size={9}>
 						<ContentMain className="Content">
+							<NavTrail />
 							<div className="contentBody">
 								<Outlet context={{ Theme, mapsList }} />
 							</div>

@@ -1860,8 +1860,6 @@ const getCOA = async (id: string, coa: TLCoA) => {
         <g clip-path="url(#${shield}_${id})">${field}${divisionGroup}${templateAboveAll()}</g>
         ${overlay}</svg>`;
 
-	// insert coa svg to defs
-
 	return svg;
 
 	function templateDivision() {

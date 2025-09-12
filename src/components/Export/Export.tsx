@@ -249,6 +249,21 @@ export function renderMarkdownFiles(
 						content: svgDoc,
 					});
 				}
+			} else if (singular === "Note") {
+				let subDir = "";
+				// The id is a string that looks like "burg23"
+				// We want to extract the word part ("burg") and use that as the subdirectory
+				// We're doing this because the notes are organized by category in the database
+				// And we want to replicate that in the markdown files
+				const idParts = item.id.split(/(\d+)/);
+				if (idParts[0] === "burg") {
+					subDir = "city";
+				} else if (idParts[0] === "state" || idParts[0] === "stateLabel") {
+					subDir = "country";
+				} else {
+					subDir = idParts[0];
+				}
+				files.push({ path: `${prefix}${subDir}/${name}`, name, content });
 			} else {
 				files.push({ path: `${prefix}${name}`, name, content });
 			}

@@ -1,0 +1,13 @@
+.NotesPage .noteGrid {
+  max-height: 50dvh;
+  overflow: auto;
+  padding-right: 1dvw;
+  padding-left: 1dvw;
+  padding-top: 1dvh;
+  background-blend-mode: color-burn;
+  background: rgb(190 190 190 / 25%);
+}
+
+.NotesPage .noteType {
+  text-transform: capitalize;
+}

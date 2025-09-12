@@ -5,6 +5,8 @@ import { useDB } from "../../db/DataContext";
 import mapTpl from "../../components/Export/templates/map.md?raw";
 import cityTpl from "../../components/Export/templates/city.md?raw";
 import countryTpl from "../../components/Export/templates/country.md?raw";
+import cultureTpl from "../../components/Export/templates/culture.md?raw";
+import noteTpl from "../../components/Export/templates/note.md?raw";
 import religionTpl from "../../components/Export/templates/religion.md?raw";
 
 import { MarkdownExportPanel } from "../../components/Export/Export";
@@ -13,8 +15,8 @@ import type {
 	MapInf,
 	TLCity,
 	TLCountry,
-	// TLCulture,
-	// TLNote,
+	TLCulture,
+	TLNote,
 	TLReligion,
 } from "../../definitions/TerraLogger";
 
@@ -25,7 +27,7 @@ function ExportPage() {
 	const MapInfo = useActiveMap<MapInf>();
 	const Cities = useActive<TLCity>("cities");
 	const CountriesRaw = useActive<TLCountry>("countries");
-	// const Cultures = useActive<TLCulture>("cultures");
+	const Cultures = useActive<TLCulture>("cultures");
 	const Notes = useActive<TLNote>("notes");
 	const Religions = useActive<TLReligion>("religions");
 
@@ -44,8 +46,8 @@ function ExportPage() {
 		MapInfo: MapInfo as any,
 		Cities,
 		Countries,
-		// Cultures,
-		// Notes,
+		Cultures,
+		Notes,
 		Religions,
 	};
 
@@ -60,6 +62,8 @@ function ExportPage() {
 						City: cityTpl,
 						Country: countryTpl,
 						Religion: religionTpl,
+						Note: noteTpl,
+						Culture: cultureTpl,
 					}}
 					zipName={`${MapInfo?.info?.name ?? "Map"}-Export-${new Date()
 						.toISOString()
