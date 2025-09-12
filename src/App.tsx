@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import mapAtom from "./atoms/map";
-import { initDatabase } from "./db/database";
+import { useDB } from "./db/DataContext";
 
 import type { MapInf } from "./definitions/TerraLogger";
 
 import "./App.css";
 
 const App = (): JSX.Element => {
-	const [map] = useRecoilState<MapInf>(mapAtom);
+	const { useActiveMap } = useDB();
+	const activeMap = useActiveMap<MapInf>();
 
 	// resize map
+	// biome-ignore lint/correctness/useExhaustiveDependencies: needs to run on each map change
 	useEffect(() => {
+		if (!activeMap) return;
 		/**
 		 * Handles the window's resize event.
 		 * This function is called whenever the user resizes the window.
@@ -29,8 +30,8 @@ const App = (): JSX.Element => {
 			const viewBox = document.getElementById("viewbox");
 
 			// Get the original dimensions of the map
-			const originalHeight = map.info.height;
-			const originalWidth = map.info.width;
+			const originalHeight = activeMap?.info.height;
+			const originalWidth = activeMap?.info.width;
 
 			// Scale the map to fit the new window dimensions
 			if (mapElement) {
@@ -46,37 +47,17 @@ const App = (): JSX.Element => {
 					// Apply transformation to scale content
 					viewBox.setAttribute(
 						"transform",
-						`scale(${innerWidth / originalWidth},${innerHeight / originalHeight})`,
+						`scale(${innerWidth} / ${originalWidth},${innerHeight} / ${originalHeight})`,
 					);
 				}
 			}
 		}
 
 		window.addEventListener("resize", handleResize);
-	});
-
-	// Initialize the database
-	useEffect(() => {
-		/**
-		 * Initializes the IndexedDB database.
-		 * This function is called once, when the component mounts.
-		 */
-		const initializeDatabase = async () => {
-			try {
-				// Initialize the IndexedDB database
-				const database = await initDatabase();
-
-				if (database) {
-					console.info("Database initialized");
-				}
-			} catch (error) {
-				// Handle any errors that occur when initializing the database
-				console.error("Failed to initialize database:", error);
-			}
-		};
-
-		initializeDatabase();
-	}, []);
+		// do an initial fit when map changes
+		handleResize();
+		return () => window.removeEventListener("resize", handleResize);
+	}, [activeMap?.info.width, activeMap?.info.height]);
 
 	const router = createBrowserRouter([
 		{

@@ -9,12 +9,10 @@ import {
 import { createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useDB } from "../db/DataContext";
 import { ToastContainer } from "react-toastify";
 import Icon from "../assets/icon.png";
-import { appAtom } from "../atoms";
-import mapLoadedAtom from "../atoms/mapLoaded";
-import { MainNav } from "../components";
+import { MainNav, NavTrail } from "../components";
 
 import { ContentMain } from "../components/Styled";
 
@@ -93,20 +91,33 @@ const dark = createTheme({
 function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const [Theme, setTheme] = useState({});
-	const [appData] = useRecoilState(appAtom);
-	const [mapLoaded] = useRecoilState(mapLoadedAtom);
+	const { activeMapId } = useDB();
+	const [themeName, setThemeName] = useState<"light" | "dark">("light");
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	let theme: string;
+	const selectedTheme = themeName === "light" ? light : dark;
 
-	if (appData) {
-		theme = appData.userSettings.theme;
-	} else {
-		theme = "light";
-	}
+	// Load theme from appSettings once on mount
+	useEffect(() => {
+		(async () => {
+			const settings = await getFullStore("appSettings");
+			const latest = settings?.[settings.length - 1];
+			const next = latest?.userSettings?.theme ?? "light";
+			setThemeName(next);
+		})();
+	}, []);
 
-	const selectedTheme = theme === "light" ? light : dark;
+	// Live-update theme when Settings broadcasts a change
+	useEffect(() => {
+		const handler = (e: Event) => {
+			const ce = e as CustomEvent<{ theme: "light" | "dark" }>;
+			if (ce.detail?.theme) setThemeName(ce.detail.theme);
+		};
+		window.addEventListener("theme-change", handler as EventListener);
+		return () =>
+			window.removeEventListener("theme-change", handler as EventListener);
+	}, []);
 
 	/**
 	 * Function to set the theme based on the user's preference.
@@ -117,7 +128,7 @@ function MainLayout() {
 		const rootElement = document.getElementById("root");
 
 		if (rootElement) {
-			if (theme === "dark") {
+			if (themeName === "dark") {
 				// Add class "dark" to the root element
 				rootElement.classList.add("dark");
 				setTheme(dark);
@@ -131,7 +142,7 @@ function MainLayout() {
 		 * The dependency array is set to [theme] so that the effect is re-run whenever the theme changes.
 		 * This ensures that the theme is updated correctly when the user changes their preference.
 		 */
-	}, [theme]);
+	}, [themeName]);
 
 	/**
 	 * Function to fetch the list of maps from the database and set it to the `mapsList` state.
@@ -157,13 +168,13 @@ function MainLayout() {
 
 	useEffect(() => {
 		if (
-			!mapLoaded &&
+			!activeMapId &&
 			location.pathname !== "/" &&
 			location.pathname !== "/settings"
 		) {
 			navigate("/");
 		}
-	}, [mapLoaded, location.pathname, navigate]);
+	}, [activeMapId, location.pathname, navigate]);
 
 	return (
 		<ThemeProvider theme={selectedTheme}>

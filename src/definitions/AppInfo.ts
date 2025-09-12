@@ -28,4 +28,5 @@ export interface AppInfo {
       devicePixelRatio: number;
     };
   };
+  activeMapId: string | null;
 }

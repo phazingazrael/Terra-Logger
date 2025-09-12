@@ -34,6 +34,7 @@ const defaultApp: AppInfo = {
 			devicePixelRatio: window.devicePixelRatio,
 		},
 	},
+	activeMapId: "",
 };
 
 // Retrieve the saved data from the database

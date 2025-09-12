@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
 	Container,
@@ -16,7 +16,7 @@ import AgricultureIcon from "@mui/icons-material/Agriculture";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PlaceIcon from "@mui/icons-material/Place";
 
-import { getDataFromStore } from "../../db/interactions";
+import { useDB } from "../../db/DataContext";
 
 import {
 	getFormColor,
@@ -29,29 +29,25 @@ import "./viewStyles.css";
 
 function ReligionView() {
 	const religionId = useParams();
-	const [religion, setReligion] = useState<TLReligion>();
-	const [totalMembers, setTotalMembers] = useState(0);
-	const [ruralPercentage, setRuralPercentage] = useState(0);
-	const [urbanPercentage, setUrbanPercentage] = useState(0);
 
-	useEffect(() => {
-		if (religionId !== undefined) {
-			getDataFromStore("religions", religionId._id).then((data: TLReligion) => {
-				setReligion(data);
-			});
-		}
-	}, [religionId]);
-
-	useEffect(() => {
-		if (religion) {
-			setTotalMembers(religion.members.rural + religion.members.urban);
-			setRuralPercentage(
-				totalMembers === 0 ? 0 : (religion.members.rural / totalMembers) * 100,
-			);
-			setUrbanPercentage(
-				totalMembers === 0 ? 0 : (religion.members.urban / totalMembers) * 100,
-			);
-		}
+	const { useActive } = useDB();
+	const religions = useActive<TLReligion>("religions");
+	const religion = useMemo(
+		() => religions.find((r) => r._id === religionId?._id),
+		[religions, religionId?._id],
+	);
+	const totalMembers = useMemo(() => {
+		const rural = religion?.members.rural ?? 0;
+		const urban = religion?.members.urban ?? 0;
+		return rural + urban;
+	}, [religion]);
+	const ruralPercentage = useMemo(() => {
+		if (!religion || totalMembers === 0) return 0;
+		return (religion.members.rural / totalMembers) * 100;
+	}, [religion, totalMembers]);
+	const urbanPercentage = useMemo(() => {
+		if (!religion || totalMembers === 0) return 0;
+		return (religion.members.urban / totalMembers) * 100;
 	}, [religion, totalMembers]);
 
 	const theme = useTheme();

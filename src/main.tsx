@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RecoilRoot } from "recoil";
+import { DBProvider } from "./db/DataContext";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -9,8 +10,10 @@ const root = document.getElementById("root")!;
 
 ReactDOM.createRoot(root).render(
 	<React.StrictMode>
-		<RecoilRoot>
-			<App />
-		</RecoilRoot>
+		<DBProvider>
+			<RecoilRoot>
+				<App />
+			</RecoilRoot>
+		</DBProvider>
 	</React.StrictMode>,
 );

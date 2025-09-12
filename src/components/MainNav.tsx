@@ -1,3 +1,7 @@
+import { useMemo, useState } from "react";
+import { useDB } from "../db/DataContext";
+
+import { NavLink } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
 	Accordion,
@@ -9,7 +13,6 @@ import {
 	MenuItem,
 	MenuList,
 } from "@mui/material/";
-import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { ImDiamonds } from "react-icons/im";
 import {
@@ -19,44 +22,42 @@ import {
 	TiHome,
 	TiExportOutline,
 } from "react-icons/ti";
-import { NavLink } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import mapAtom from "../atoms/map";
-import mapLoadedAtom from "../atoms/mapLoaded";
-import mapNameAtom from "../atoms/mapName";
+
 import { handleSvgReplace } from "./Util/handleSvgReplace";
 
 import type { MapInf } from "../definitions/TerraLogger";
 
 const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
+	const { activeMapId, setActive } = useDB();
 	const iconStyles = useMemo(() => ({ size: "1.75rem" }), []);
-	const [map, setMap] = useRecoilState(mapAtom);
-	const [mapLoaded, setMapLoaded] = useRecoilState(mapLoadedAtom);
-	const [mapName, setMapName] = useRecoilState(mapNameAtom);
 	const [expanded, setExpanded] = useState(false); // State to manage accordion expansion
 
 	const mapList = mapsList.mapsList;
-	useEffect(() => {
-		if (map.info.name !== "") {
-			setMapName(map.info.name);
-			setMapLoaded(true);
-		}
-	}, [map, setMapName, setMapLoaded]);
+
+	const activeMap = useMemo(
+		() => mapList.find((m) => m.mapId === activeMapId),
+		[mapList, activeMapId],
+	);
+	const mapName = activeMap?.info.name ?? "";
+	const mapLoaded = !!activeMap;
 
 	const handleAccordionChange = (isExpanded: boolean) => {
 		setExpanded(isExpanded);
 	};
 
-	const handleMenuItemClick = (map: MapInf) => {
-		setMapName(map.info.name);
-		setMap(map);
+	const handleMenuItemClick = (m: MapInf) => {
+		// canonical: store-wide mapId
+		if (!m.mapId) {
+			console.warn("Selected map has no mapId; cannot set active.", m);
+			return;
+		}
+		setActive(m.mapId);
 		handleSvgReplace({
-			svg: map.SVG,
-			height: map.info.height,
-			width: map.info.width,
+			svg: m.SVG,
+			height: m.info.height,
+			width: m.info.width,
 		});
-		setMapLoaded(true);
-		setExpanded(false); // Close the accordion
+		setExpanded(false);
 	};
 
 	return (
@@ -86,16 +87,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							</AccordionSummary>
 							<AccordionDetails>
 								<MenuList>
-									{mapList.map((map: MapInf) => {
-										return (
-											<MenuItem
-												key={map.info.ID}
-												onClick={() => handleMenuItemClick(map)}
-											>
-												{map.info.name}
-											</MenuItem>
-										);
-									})}
+									{mapList.map((m: MapInf) => (
+										<MenuItem
+											key={m.info.ID}
+											onClick={() => handleMenuItemClick(m)}
+										>
+											{m.info.name}
+										</MenuItem>
+									))}
 								</MenuList>
 							</AccordionDetails>
 						</Accordion>

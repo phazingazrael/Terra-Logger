@@ -12,13 +12,13 @@ import {
 	TableRow,
 	TableBody,
 	TableCell,
-  Paper
+	Paper,
 } from "@mui/material";
 
 import { IconContext } from "react-icons";
 import { GiSparkles } from "react-icons/gi";
 import { useParams } from "react-router-dom";
-import { getDataFromStore, getFullStore } from "../../db/interactions";
+import { useDB } from "../../db/DataContext";
 
 import AgricultureIcon from "@mui/icons-material/Agriculture";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -42,8 +42,17 @@ const toInt = (s?: string | number) => {
 
 function CountryView() {
 	const countryId = useParams();
-	const [country, setCountry] = useState<TLCountry>();
-	const [cities, setCities] = useState<TLCity[]>([]);
+	const { useActive } = useDB();
+	const countries = useActive<TLCountry>("countries");
+	const allCities = useActive<TLCity>("cities");
+	const country = useMemo(
+		() => countries.find((c) => c._id === countryId?._id),
+		[countries, countryId?._id],
+	);
+	const cities = useMemo(
+		() => allCities.filter((city) => city.country._id === countryId?._id),
+		[allCities, countryId?._id],
+	);
 	const [activeTab, setActiveTab] = useState<string>("regiments");
 	const [ruralPercentage, setRuralPercentage] = useState(0);
 	const [urbanPercentage, setUrbanPercentage] = useState(0);
@@ -65,31 +74,6 @@ function CountryView() {
 	}
 
 	useEffect(() => {
-		if (countryId !== undefined) {
-			getDataFromStore("countries", countryId._id).then((data) => {
-				setCountry(data as TLCountry);
-			});
-		}
-	}, [countryId]);
-
-	useEffect(() => {
-		if (countryId !== undefined) {
-			const fullCities = [] as TLCity[];
-
-			getFullStore("cities").then((data) => {
-				if (data) {
-					for (const city of data) {
-						if (city.country._id === countryId._id) {
-							fullCities.push(city);
-						}
-					}
-					setCities(fullCities);
-				}
-			});
-		}
-	}, [countryId]);
-
-	useEffect(() => {
 		if (country) {
 			const ruralPopulation = toInt(country.population.rural);
 			const urbanPopulation = toInt(country.population.urban);
@@ -103,7 +87,7 @@ function CountryView() {
 				TotalPopulation === 0 ? 0 : (urbanPopulation / TotalPopulation) * 100,
 			);
 		}
-	});
+	}, [country]);
 
 	const theme = useTheme();
 
@@ -393,7 +377,10 @@ function CountryView() {
 										</Typography>
 									</Paper>
 
-									<Paper color="text.secondary" className="section political-info">
+									<Paper
+										color="text.secondary"
+										className="section political-info"
+									>
 										<Typography color="text.secondary" component="h2">
 											Political Information
 										</Typography>
@@ -822,7 +809,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section demographics-society">
+									<Paper
+										color="text.secondary"
+										className="section demographics-society"
+									>
 										<Typography color="text.secondary" component="h2">
 											Demographics & Society
 										</Typography>
@@ -894,7 +884,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section education-knowledge">
+									<Paper
+										color="text.secondary"
+										className="section education-knowledge"
+									>
 										<Typography color="text.secondary" component="h2">
 											Education & Knowledge
 										</Typography>
@@ -953,7 +946,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section culture-arts">
+									<Paper
+										color="text.secondary"
+										className="section culture-arts"
+									>
 										<Typography color="text.secondary" component="h2">
 											Culture, Arts & Entertainment
 										</Typography>
@@ -1011,7 +1007,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section religion-mythology">
+									<Paper
+										color="text.secondary"
+										className="section religion-mythology"
+									>
 										<Typography color="text.secondary" component="h2">
 											Religion & Mythology
 										</Typography>
@@ -1068,7 +1067,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section notable-figures">
+									<Paper
+										color="text.secondary"
+										className="section notable-figures"
+									>
 										<Typography color="text.secondary" component="h2">
 											Notable Figures & Legends
 										</Typography>
@@ -1107,7 +1109,10 @@ function CountryView() {
 										</div>
 									</Paper>
 
-									<Paper color="text.secondary" className="section additional-info">
+									<Paper
+										color="text.secondary"
+										className="section additional-info"
+									>
 										<Typography color="text.secondary" component="h2">
 											Additional Information{" "}
 											<GiSparkles style={DynamicSparkleStyle} />

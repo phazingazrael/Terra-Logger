@@ -1,48 +1,20 @@
 import { Container, Grid2 as Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import mapAtom from "../../atoms/map";
-import { initDatabase } from "../../db/database";
-import { queryDataFromStore } from "../../db/interactions";
+import { useEffect } from "react";
+import { useDB } from "../../db/DataContext";
 
 import { ReligionCard } from "../../components/Cards";
 
 import type { TLReligion } from "../../definitions/TerraLogger";
 
 function ReligionsPage() {
-	const [map] = useRecoilState(mapAtom);
-	const [religions, setReligions] = useState<TLReligion[]>([]);
-	const { mapId } = map;
+	const { useActive, activeMapId } = useDB();
+	const religions = useActive<TLReligion>("religions");
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Map change should scroll to top
 	useEffect(() => {
-		const initializeDatabase = async () => {
-			try {
-				const database = await initDatabase();
-				if (database) {
-					console.info("Database initialized");
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
+		document.getElementById("Content")?.scrollTo({ top: 0 });
+	}, [activeMapId]);
 
-		initializeDatabase();
-	}, []);
-
-	useEffect(() => {
-		const loadReligions = async () => {
-			const data = (await queryDataFromStore(
-				"religions",
-				"mapIdIndex",
-				mapId,
-			)) as TLReligion[];
-			// const data = (await queryDataFromStore("religions", "mapIdIndex", mapId);)
-			if (data) {
-				setReligions(data);
-			}
-		};
-
-		loadReligions();
-	}, [mapId]);
 	//TODO(SELF): filter out "dead" religions by default?
 	//TODO(SELF): fix white on grey "type Pill"
 	return (

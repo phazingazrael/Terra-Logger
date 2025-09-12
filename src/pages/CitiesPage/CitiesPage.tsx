@@ -21,10 +21,7 @@ import {
 	lazy,
 	useDeferredValue,
 } from "react";
-import { useRecoilState } from "recoil";
-import mapAtom from "../../atoms/map";
-import { initDatabase } from "../../db/database";
-import { queryDataFromStore } from "../../db/interactions";
+import { useDB } from "../../db/DataContext";
 import { getAllTags } from "../../components/Tags/Tags.tsx";
 
 import "./citiesPage.css";
@@ -57,10 +54,21 @@ const EXCLUDED_TAG_IDS = new Set<string>([
 ]);
 
 function CitiesPage() {
-	// state management section
-	const [map] = useRecoilState(mapAtom);
-	const [cities, setCities] = useState<TLCity[]>([]);
-	const [countriesList, setCountriesList] = useState<CountryListItem[]>([]);
+	const { useActive, activeMapId } = useDB();
+	const cities = useActive<TLCity>("cities");
+	const countries = useActive<TLCountry>("countries");
+	const countriesList = useMemo<CountryListItem[]>(
+		() =>
+			[...countries]
+				.map((c) => ({
+					name: c.name,
+					_id: c._id,
+					nameFull: (c as TLCountry).nameFull ?? c.name,
+					color: (c as TLCountry).color ?? "#cccccc",
+				}))
+				.sort((a, b) => (a.name > b.name ? 1 : -1)),
+		[countries],
+	);
 
 	// Filtering
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -72,57 +80,21 @@ function CitiesPage() {
 	const [onlyCapitals, setOnlyCapitals] = useState<boolean>(false);
 	const [selectedGovForm, setSelectedGovForm] = useState<string>("");
 
-	const { mapId } = map;
-
 	// Defer heavy filtering while the user is typing
 	const deferredQuery = useDeferredValue(searchQuery.trim().toLowerCase());
 
 	const FullTags = useMemo(() => getAllTags(), []); // array where each item has .Tags: Tag[]
 
-	// Build countries & cities once
+	// biome-ignore lint/correctness/useExhaustiveDependencies: map changed, needs to be reset
 	useEffect(() => {
-		let cancelled = false;
-
-		const initializeDatabase = async () => {
-			try {
-				const database = await initDatabase();
-				if (database) console.info("Database initialized");
-			} catch (error) {
-				console.error(error);
-			}
-
-			const countries = (await queryDataFromStore(
-				"countries",
-				"mapIdIndex",
-				mapId,
-			)) as TLCountry[];
-
-			if (!cancelled) {
-				const sortedCountries = [...countries].sort((a, b) =>
-					a.name > b.name ? 1 : -1,
-				);
-				setCountriesList(sortedCountries as unknown as CountryListItem[]);
-			}
-
-			const data = (await queryDataFromStore(
-				"cities",
-				"mapIdIndex",
-				mapId,
-			)) as TLCity[];
-
-			if (!cancelled && data) {
-				const sortedData = [...data].sort((a, b) => (a.name > b.name ? 1 : -1));
-				setCities(sortedData);
-				setSearchQuery("");
-				setSelectedCountry(null);
-			}
-		};
-
-		initializeDatabase();
-		return () => {
-			cancelled = true;
-		};
-	}, [mapId]);
+		setSearchQuery("");
+		setSelectedCountry(null);
+		setSelectedTagIds([]);
+		setSelectedSize("");
+		setOnlyCapitals(false);
+		setSelectedGovForm("");
+		document.getElementById("Content")?.scrollTo({ top: 0 });
+	}, [activeMapId]);
 
 	// Derived: sizes, gov forms
 	const allSizes = useMemo(() => {

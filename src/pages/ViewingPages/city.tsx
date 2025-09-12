@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Container, Typography, Paper } from "@mui/material";
 import { IconContext } from "react-icons";
 import { useParams, Link } from "react-router-dom";
-import { getDataFromStore } from "../../db/interactions";
+import { useDB } from "../../db/DataContext";
 
 import { GiSparkles } from "react-icons/gi";
 
@@ -13,7 +13,12 @@ import "./viewStyles.css";
 
 function CityView() {
 	const cityId = useParams();
-	const [city, setCity] = useState<TLCity>();
+	const { useActive } = useDB();
+	const cities = useActive<TLCity>("cities");
+	const city = useMemo(
+		() => cities.find((c) => c._id === cityId?._id),
+		[cities, cityId?._id],
+	);
 
 	const tagStyles = {
 		display: "inline-flex",
@@ -50,14 +55,6 @@ function CityView() {
 	};
 
 	const IconStyles = useMemo(() => ({}), []);
-
-	useEffect(() => {
-		if (cityId !== undefined) {
-			getDataFromStore("cities", cityId._id).then((data) => {
-				setCity(data as TLCity);
-			});
-		}
-	}, [cityId]);
 
 	return (
 		<Container className="Settings" color="text.secondary">

@@ -1,44 +1,50 @@
 import { Container } from "@mui/material";
 import type { Context } from "../../definitions/Common";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
-import { useRecoilState } from "recoil";
 
 import "./Settings.css";
-import Package from "../../../package.json"
+import Package from "../../../package.json";
 
-import appAtom from "../../atoms/app.tsx";
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 import { useOutletContext } from "react-router-dom";
-import { updateDataInStore } from "../../db/interactions.tsx";
+
+import { getFullStore, updateDataInStore } from "../../db/interactions.tsx";
+import type { AppInfo } from "../../definitions/AppInfo";
 
 function Settings(): JSX.Element {
-	const [app, setApp] = useRecoilState(appAtom);
-	const { userSettings } = app;
+	const [app, setApp] = useState<AppInfo | null>(null);
 
 	const { mapsList }: Context = useOutletContext();
 
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
 
-  const updateTheme = async (newTheme:string) => {
-    setApp((prev)=>({
-      ...prev,
-      userSettings:{
-        ...prev.userSettings,
-        theme: newTheme,
-      },
-    }));
+	// Load current app settings from IndexedDB
+	useEffect(() => {
+		(async () => {
+			const rows = await getFullStore("appSettings");
+			const latest = rows?.[rows.length - 1] as AppInfo | undefined;
+			if (latest) setApp(latest);
+		})();
+	}, []);
 
-    updateDataInStore("appSettings", `TL_${Package.version}`,{
-      ...app,
-      userSettings:{
-        ...app.userSettings,
-        theme:newTheme,
-      },
-    })
-  }
-
+	const updateTheme = (newTheme: "light" | "dark") => {
+		setApp((prev) => {
+			if (!prev) return prev;
+			const next = {
+				...prev,
+				userSettings: { ...prev.userSettings, theme: newTheme },
+			};
+			// persist using the same object we just committed to state (no stale reads)
+			void updateDataInStore("appSettings", `TL_${Package.version}`, next);
+			// notify the app so MainLayout can swap themes immediately
+			window.dispatchEvent(
+				new CustomEvent("theme-change", { detail: { theme: newTheme } }),
+			);
+			return next;
+		});
+	};
 
 	return (
 		<Container className="Settings">
@@ -62,8 +68,10 @@ function Settings(): JSX.Element {
 								<select
 									id="themeSelect"
 									className="select"
-									value={userSettings.theme}
-									onChange={(e) =>updateTheme(e.target.value)}
+									value={app?.userSettings?.theme ?? "light"}
+									onChange={(e) =>
+										updateTheme(e.target.value as "light" | "dark")
+									}
 								>
 									<option value="light">Light</option>
 									<option value="dark">Dark</option>
@@ -78,7 +86,9 @@ function Settings(): JSX.Element {
 									Screen Size
 								</label>
 								<span id="screenSize">
-									{`${app.userSettings.screen.outerWidth} x ${app.userSettings.screen.outerHeight}`}
+									{app
+										? `${app.userSettings.screen.outerWidth} x ${app.userSettings.screen.outerHeight}`
+										: "—"}
 								</span>
 							</div>
 						</div>
