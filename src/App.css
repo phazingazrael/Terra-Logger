@@ -58,6 +58,7 @@ header {
   padding-top: 0;
   padding-bottom: 0;
 }
+
 .Navigation .MuiList-root {
   padding-top: 0;
   padding-bottom: 0;
@@ -65,6 +66,10 @@ header {
 
 .Navigation .MuiAccordionSummary-content {
   margin: 0;
+}
+
+.navTrail .MuiBreadcrumbs-li {
+  text-transform: capitalize;
 }
 
 /* Content Styling */

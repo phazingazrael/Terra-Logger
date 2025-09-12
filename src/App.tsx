@@ -44,11 +44,14 @@ const App = (): JSX.Element => {
 					viewBox.setAttribute("height", innerHeight as unknown as string);
 					viewBox.setAttribute("width", innerWidth as unknown as string);
 
+					const sx = innerWidth / (originalWidth || 1);
+					const sy = innerHeight / (originalHeight || 1);
+
+					// optional: tidy decimals
+					const fmt = (n) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
+
 					// Apply transformation to scale content
-					viewBox.setAttribute(
-						"transform",
-						`scale(${innerWidth} / ${originalWidth},${innerHeight} / ${originalHeight})`,
-					);
+					viewBox.setAttribute("transform", `scale(${fmt(sx)} ${fmt(sy)})`);
 				}
 			}
 		}
@@ -111,7 +114,20 @@ const App = (): JSX.Element => {
 							Component: m.default,
 						})),
 				},
-				// Viewing Pages
+				{
+					path: "notes",
+					lazy: () =>
+						import("./pages/Notes/Notes").then((m) => ({
+							Component: m.default,
+						})),
+				},
+				{
+					path: "cultures",
+					lazy: () =>
+						import("./pages/CulturesPage/CulturesPage").then((m) => ({
+							Component: m.default,
+						})),
+				},
 				{
 					path: "export",
 					lazy: () =>
@@ -138,6 +154,20 @@ const App = (): JSX.Element => {
 					path: "view_religion/:_id",
 					lazy: () =>
 						import("./pages/ViewingPages/religion").then((m) => ({
+							Component: m.default,
+						})),
+				},
+				{
+					path: "view_note/:_id",
+					lazy: () =>
+						import("./pages/ViewingPages/note").then((m) => ({
+							Component: m.default,
+						})),
+				},
+				{
+					path: "view_culture/:_id",
+					lazy: () =>
+						import("./pages/ViewingPages/culture").then((m) => ({
 							Component: m.default,
 						})),
 				},
