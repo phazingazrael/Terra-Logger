@@ -2,7 +2,6 @@ export { default as CitiesPage } from "./CitiesPage/CitiesPage";
 export { default as CountriesPage } from "./CountriesPage/CountriesPage";
 export { default as ErrorPage } from "./ErrorPage/ErrorPage";
 export { default as HomePage } from "./HomePage/HomePage";
-export { default as Overview } from "./Overview/Overview";
 export { default as ReligionsPage } from "./ReligionsPage/ReligionsPage";
 export { default as Settings } from "./Settings/Settings";
 export { default as Tags } from "./Tags/Tags";
@@ -10,4 +9,4 @@ export { default as CityView } from "./ViewingPages/city";
 export { default as CountryView } from "./ViewingPages/country";
 export { default as ReligionsView } from "./ViewingPages/religion";
 // export { default as TagsView } from './ViewingPages/tag';
-export {default as ExportPage} from "./ExportPage/export"
+export { default as ExportPage } from "./ExportPage/export";
