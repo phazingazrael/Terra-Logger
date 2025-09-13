@@ -21,6 +21,7 @@ import {
 	TiGlobe,
 	TiHome,
 	TiExportOutline,
+	TiStarOutline,
 } from "react-icons/ti";
 
 import { handleSvgReplace } from "./Util/handleSvgReplace";
@@ -243,6 +244,20 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 				) : (
 					""
 				)}
+				<NavLink
+					to="/about"
+					className={({ isActive }) => (isActive ? "active" : "")}
+				>
+					<MenuItem>
+						<ListItemIcon>
+							<TiStarOutline />
+						</ListItemIcon>
+						<ListItemText>About</ListItemText>
+						<ListItemIcon className="inactive">
+							<ImDiamonds />
+						</ListItemIcon>
+					</MenuItem>
+				</NavLink>
 			</IconContext.Provider>
 		</MenuList>
 	);
