@@ -146,6 +146,13 @@ const App = (): JSX.Element => {
 							Component: m.default,
 						})),
 				},
+				{
+					path: "overview",
+					lazy: () =>
+						import("./pages/Overview/Overview").then((m) => ({
+							Component: m.default,
+						})),
+				},
 				// Viewing Pages
 				{
 					path: "view_city/:_id",
