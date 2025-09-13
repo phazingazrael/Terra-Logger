@@ -8,6 +8,7 @@ import {
 	Avatar,
 	Box,
 } from "@mui/material";
+import { useMemo } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
 import type { TLCulture } from "../../definitions/TerraLogger";
@@ -19,6 +20,18 @@ function CultureCard(props: Readonly<TLCulture>) {
 	const culture = props;
 
 	const { Theme }: Context = useOutletContext();
+
+	const totalPopulation = useMemo(() => {
+		const urbNum = Number.parseInt(
+			culture?.urbanPop?.replace(/,/g, "") ?? "0",
+			10,
+		);
+		const ruralNum = Number.parseInt(
+			culture?.ruralPop?.replace(/,/g, "") ?? "0",
+			10,
+		);
+		return ruralNum + urbNum;
+	}, [culture]);
 
 	return (
 		<Card
@@ -68,10 +81,15 @@ function CultureCard(props: Readonly<TLCulture>) {
 							size="small"
 							sx={{
 								color: Theme.palette.common.white,
+								backgroundColor: culture.color,
 							}}
 						/>
 					) : null}
 				</Box>
+
+				<Typography variant="body2" color="text.secondary">
+					Population: {totalPopulation.toLocaleString()}
+				</Typography>
 			</CardContent>
 
 			<CardActions className="tile-info">

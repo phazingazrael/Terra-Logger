@@ -1,8 +1,7 @@
-# {{name}} ({{code}})
+# {{name}}
 
 **Type:** {{type}}
 **ID:** {{id}}
-**Map ID:** {{mapId}}
 
 ---
 

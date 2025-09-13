@@ -29,6 +29,7 @@ function CultureView() {
 		() => cultures.find((c) => c._id === cultureId?._id),
 		[cultures, cultureId?._id],
 	);
+	console.log(culture);
 	const totalPopulation = useMemo(() => {
 		const urbNum = Number.parseInt(
 			culture?.urbanPop?.replace(/,/g, "") ?? "0",
@@ -90,10 +91,10 @@ function CultureView() {
 											<Chip
 												sx={{
 													color: theme.palette.text.primary,
-													backgroundColor: theme.palette.background.default,
+													backgroundColor: culture.color,
 													fontWeight: "bold",
 												}}
-												label={culture?.type}
+												label={`Type: ${culture?.type}`}
 											/>
 										) : null
 									}
@@ -103,10 +104,10 @@ function CultureView() {
 											<Chip
 												sx={{
 													color: theme.palette.text.primary,
-													backgroundColor: theme.palette.background.default,
+													backgroundColor: culture.color,
 													fontWeight: "bold",
 												}}
-												label={culture?.code}
+												label={`Code: ${culture?.code}`}
 											/>
 										) : null
 									}
