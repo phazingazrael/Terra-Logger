@@ -1,3 +1,4 @@
+// biome-ignore assist/source/organizeImports: not important, visual clearing only.
 import { useEffect, useState, useMemo } from "react";
 import {
 	Container,
@@ -185,8 +186,10 @@ function CountryView() {
 							<div className="header">
 								<div
 									className="image"
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-									dangerouslySetInnerHTML={{ __html: country?.coaSVG ?? "" }}
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: domPurify in effect.
+									dangerouslySetInnerHTML={{
+										__html: country?.coaSVG ?? "",
+									}}
 								/>
 								<div className="info">
 									<Typography variant="h1">{country?.name}</Typography>

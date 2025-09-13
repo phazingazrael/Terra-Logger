@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+// biome-ignore assist/source/organizeImports: not important, visual clearing only.
 import { Container, Paper, Typography } from "@mui/material";
 import { IconContext } from "react-icons";
 import { useDB } from "../../db/DataContext";
@@ -96,8 +97,10 @@ function CityView() {
 							<div className="header">
 								<div
 									className="image"
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-									dangerouslySetInnerHTML={{ __html: city?.coaSVG ?? "" }}
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: domPUrify in effect
+									dangerouslySetInnerHTML={{
+										__html: city?.coaSVG ?? "",
+									}}
 								/>
 								<div className="info">
 									<Typography color="text.secondary" variant="h1">
