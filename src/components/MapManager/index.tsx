@@ -1,13 +1,9 @@
 import { Button, Grid2 as Grid, Modal, Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-
-import mapAtom from "../../atoms/map.tsx";
-import mapLoadedAtom from "../../atoms/mapLoaded.tsx";
-import mapNameAtom from "../../atoms/mapName.tsx";
+import { useState } from "react";
+import { useDB } from "../../db/DataContext";
 import {
 	deleteDataFromStore,
-	queryDataFromStore,
+	deleteDataFromStoreByMapId,
 } from "../../db/interactions.tsx";
 
 import "./index.css";
@@ -17,15 +13,7 @@ import shadows from "@mui/material/styles/shadows";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common.ts";
 
-import type {
-	TLCity,
-	TLCountry,
-	TLCulture,
-	TLNameBase,
-	TLNote,
-	TLReligion,
-	MapInf,
-} from "../../definitions/TerraLogger.ts";
+import type { MapInf } from "../../definitions/TerraLogger.ts";
 
 const modalStyle = {
 	position: "absolute",
@@ -39,130 +27,13 @@ const modalStyle = {
 };
 
 const MapManager: React.FC = () => {
-	const [map, setMap] = useRecoilState(mapAtom);
+	const { activeMapId, setActive } = useDB();
 	const { mapsList }: Context = useOutletContext();
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
-	const [selectedCities, setSelectedCities] = useState<TLCity[]>([]);
-	const [selectedCountries, setSelectedCountries] = useState<TLCountry[]>([]);
-	const [selectedCultures, setSelectedCultures] = useState<TLCulture[]>([]);
-	const [selectedNotes, setSelectedNotes] = useState<TLNote[]>([]);
-	// const [selectedNpcs, setSelectedNpcs] = useState<string[]>([]);
-	const [selectedReligions, setSelectedReligions] = useState<TLReligion[]>([]);
-	const [selectedNameBases, setSelectedNameBases] = useState<TLNameBase[]>([]);
-	const [, setMapName] = useRecoilState(mapNameAtom);
-	const [, setMapLoaded] = useRecoilState(mapLoadedAtom);
 
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-
-	const createEmptyMap = (): MapInf => ({
-		id: "",
-		info: {
-			name: "",
-			seed: "",
-			width: 0,
-			height: 0,
-			ID: "",
-			ver: "",
-		},
-		mapId: "",
-		settings: {
-			mapName: "",
-			distanceUnit: "",
-			distanceScale: "",
-			areaUnit: "",
-			heightUnit: "",
-			heightExponent: "",
-			temperatureScale: "",
-			barSize: "",
-			barLabel: "",
-			barBackOpacity: "",
-			barPosX: "",
-			barPosY: "",
-			populationRate: 0,
-			urbanization: "",
-			mapSize: "",
-			latitude0: "",
-			prec: "",
-			options: {
-				pinNotes: false,
-				winds: [],
-				temperatureEquator: 0,
-				temperatureNorthPole: 0,
-				temperatureSouthPole: 0,
-				stateLabelsMode: "",
-				year: 0,
-				era: "",
-				eraShort: "",
-				militaryTypes: [
-					{
-						icon: "",
-						name: "",
-						rural: 0,
-						urban: 0,
-						crew: 0,
-						power: 0,
-						type: "",
-						separate: 0,
-					},
-				],
-			},
-			hideLabels: 0,
-			stylePreset: "",
-			rescaleLabels: 0,
-			urbanDensity: 0,
-		},
-		SVG: "",
-		svgMod: "",
-	});
-	const emptyMap: MapInf = createEmptyMap();
-
-	useEffect(() => {
-		const fetchObjectsList = async () => {
-			if (selectedMaps.length > 0) {
-				for (const map of selectedMaps) {
-					const cityObjs = await queryDataFromStore(
-						"cities",
-						"mapIdIndex",
-						map,
-					);
-					const countryObjs = await queryDataFromStore(
-						"countries",
-						"mapIdIndex",
-						map,
-					);
-					const cultureObjs = await queryDataFromStore(
-						"cultures",
-						"mapIdIndex",
-						map,
-					);
-					const noteObjs = await queryDataFromStore("notes", "mapIdIndex", map);
-					//const npcObjs = await queryDataFromStore("npcs", "mapIdIndex", map);
-					const religionObjs = await queryDataFromStore(
-						"religions",
-						"mapIdIndex",
-						map,
-					);
-					const nameBaseObjs = await queryDataFromStore(
-						"nameBases",
-						"mapIdIndex",
-						map,
-					);
-
-					setSelectedCities(cityObjs);
-					setSelectedCountries(countryObjs);
-					setSelectedCultures(cultureObjs);
-					setSelectedNotes(noteObjs);
-					//setSelectedNpcs(npcObjs);
-					setSelectedReligions(religionObjs);
-					setSelectedNameBases(nameBaseObjs);
-				}
-			}
-		};
-
-		fetchObjectsList();
-	}, [selectedMaps]);
 
 	const handleMapSelect = (mapId: string) => {
 		if (selectedMaps.includes(mapId)) {
@@ -179,67 +50,35 @@ const MapManager: React.FC = () => {
 		const allPromises = selectedMaps.map(async (mapId) => {
 			console.group(`========= Deleting Map:  ${mapId} =========`);
 
-			console.groupCollapsed("========= Deleting Cities =========");
-			for (const city of selectedCities) {
-				console.info(city.name);
-				await deleteDataFromStore("cities", city._id);
-			}
-			console.groupEnd();
-
-			console.groupCollapsed("========= Deleting Countries =========");
-			for (const country of selectedCountries) {
-				console.info(country.name);
-				await deleteDataFromStore("countries", country._id);
-			}
-			console.groupEnd();
-
-			console.groupCollapsed("========= Deleting Cultures =========");
-			for (const culture of selectedCultures) {
-				console.info(culture.name);
-				await deleteDataFromStore("cultures", culture._id);
-			}
-			console.groupEnd();
-
-			console.groupCollapsed("========= Deleting Notes =========");
-			for (const note of selectedNotes) {
-				console.info(note.name);
-				await deleteDataFromStore("notes", note._id);
-			}
-			console.groupEnd();
-
 			// TODO: implement NPCs
-			// console.groupCollapsed("========= Deleting NPCs =========");
-			// for (const npc of selectedNpcs) {
-			// 	console.info(npc.name);
-			// 	await deleteDataFromStore("npcs", npc._id);
-			// }
-			// console.groupEnd()
-
-			console.groupCollapsed("========= Deleting Religions =========");
-			for (const religion of selectedReligions) {
-				console.info(religion.name);
-				await deleteDataFromStore("religions", religion._id);
-			}
-			console.groupEnd();
-
-			console.groupCollapsed("========= Deleting NameBases =========");
-			for (const nameBase of selectedNameBases) {
-				console.info(nameBase.name);
-				await deleteDataFromStore("nameBases", nameBase._id);
-			}
+			console.groupCollapsed(
+				"========= Deleting by mapId across stores =========",
+			);
+			await deleteDataFromStoreByMapId("cities", "mapIdIndex", mapId);
+			await deleteDataFromStoreByMapId("countries", "mapIdIndex", mapId);
+			await deleteDataFromStoreByMapId("cultures", "mapIdIndex", mapId);
+			await deleteDataFromStoreByMapId("notes", "mapIdIndex", mapId);
+			await deleteDataFromStoreByMapId("religions", "mapIdIndex", mapId);
+			await deleteDataFromStoreByMapId("nameBases", "mapIdIndex", mapId);
 			console.groupEnd();
 
 			await deleteDataFromStore("maps", mapId);
-			console.info(`========= Deleted Map: ${map.id} (${mapId}) =========`);
+			console.info(`========= Deleted Map: (${mapId}) =========`);
 			console.groupEnd();
 		});
 
 		await Promise.all(allPromises);
 
-		// set the flag  to indicate that all objects have been deleted
-		setMap(emptyMap);
-		setMapLoaded(false);
-		setMapName("");
+		// If the active map was deleted, pick a new one if available
+		if (selectedMaps.includes(activeMapId ?? "")) {
+			const remaining = mapsList.filter(
+				(m: MapInf) => !selectedMaps.includes(m.mapId),
+			);
+			if (remaining.length > 0) {
+				await setActive(remaining[0].mapId);
+			}
+		}
+
 		const mapElement = document.getElementById("map");
 
 		if (mapElement) {

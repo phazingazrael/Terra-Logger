@@ -1,24 +1,15 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-console */
+// biome-ignore assist/source/organizeImports: no effect, visual only
 import { Alert, AlertTitle, Divider, Stack } from "@mui/material";
-import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import mutateData from "./Mutate.tsx";
 import { parseLoadedData, parseLoadedResult } from "./Parse.tsx";
 import BookLoader from "../Util/bookLoader.tsx";
 
-import appAtom from "../../atoms/app.tsx";
-import mapAtom from "../../atoms/map.tsx";
-import mapsAtom from "../../atoms/mapsList.tsx";
-import loadingAtom from "../../atoms/loading.tsx";
+import { useDB } from "../../db/DataContext";
 
-import {
-	addDataToStore,
-	getFullStore,
-	updateDataInStore,
-} from "../../db/interactions.tsx";
+import { addDataToStore, getFullStore } from "../../db/interactions.tsx";
 
 import type { MapInf } from "../../definitions/TerraLogger.ts";
 import type { AppInfo } from "../../definitions/AppInfo.ts";
@@ -26,24 +17,36 @@ import type { AppInfo } from "../../definitions/AppInfo.ts";
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
 
+const ToastSuccess = () =>
+	toast.success(
+		"Map Loaded Successfully! \n Please wait for the map to be fully loaded.",
+	);
+const ToastInvalid = () =>
+	toast.error("Invalid map file. Please upload a valid map file.");
+const ToastAncient = (mapVersion: number) =>
+	toast.error(
+		`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`,
+	);
+
 function UploadMap() {
-	const [app] = useRecoilState<AppInfo>(appAtom);
-	const [, setMap] = useRecoilState<MapInf>(mapAtom);
-	const [isLoading, setLoading] = useRecoilState(loadingAtom);
-	const [, setMapsList] = useRecoilState(mapsAtom);
+	const { setActive } = useDB();
+	const [app, setApp] = useState<AppInfo | null>(null);
+	const [isLoading, setLoading] = useState(false);
 
 	const OLDEST_SUPPORTED_VERSION = "1.105.15";
 	const afmgMin = "1.105.15";
-	const currentVersion = Number.parseFloat(app.application.afmgVer);
+	const currentVersion = Number.parseFloat(
+		app?.application?.afmgVer ?? OLDEST_SUPPORTED_VERSION,
+	);
 
+	// Load current app settings (for version info)
 	useEffect(() => {
-		const fetchMapsList = async () => {
-			const mapsData: MapInf[] = await getFullStore("maps");
-			setMapsList(() => Promise.resolve(mapsData));
-		};
-
-		fetchMapsList();
-	}, [setMapsList]);
+		(async () => {
+			const rows = await getFullStore("appSettings");
+			const latest = rows?.[rows.length - 1] as AppInfo | undefined;
+			if (latest) setApp(latest);
+		})();
+	}, []);
 
 	function isValidVersion(versionString: string) {
 		if (!versionString) return false;
@@ -118,17 +121,6 @@ function UploadMap() {
 		mapFile: string[],
 		versionString: string,
 	) {
-		const ToastSuccess = () =>
-			toast.success(
-				"Map Loaded Successfully! \n Please wait for the map to be fully loaded.",
-			);
-		const ToastInvalid = () =>
-			toast.error("Invalid map file. Please upload a valid map file.");
-		const ToastAncient = () =>
-			toast.error(
-				`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`,
-			);
-
 		if (isNewer || isUpdated || isOutdated) {
 			const parsedMap = parseLoadedData(mapFile);
 			saveMapData(
@@ -146,7 +138,7 @@ function UploadMap() {
 		}
 		if (isAncient) {
 			console.info("ancient");
-			ToastAncient();
+			ToastAncient(mapVersion);
 			setLoading(false);
 		}
 		return null;
@@ -195,24 +187,9 @@ function UploadMap() {
 			MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
 		}
 
-		addDataToStore("maps", MapInf);
-		setMap(MapInf);
-
-		const Maps: MapInf[] = [];
-		const mapsListValue = await getFullStore("maps");
-		if (mapsListValue.length > 0) {
-			for (const map of mapsListValue) {
-				Maps.push(map);
-			}
-		} else {
-			Maps.push(MapInf);
-		}
-
-		if (Maps.length > 0) {
-			for (const map of Maps) {
-				updateDataInStore("maps", map.id, map);
-			}
-		}
+		// Persist the new map, then make it active via DBProvider
+		await addDataToStore("maps", MapInf);
+		await setActive(mapId);
 
 		for (const city of cities) {
 			const obj = {
@@ -310,7 +287,7 @@ function UploadMap() {
 			<div>
 				<div className="custom-card" data-v0-t="card">
 					{isLoading ? (
-						<div id="Loading" className="custom-loading">
+						<div className="custom-loading">
 							<BookLoader />
 						</div>
 					) : null}
@@ -330,25 +307,30 @@ function UploadMap() {
 										<input
 											type="file"
 											name="map-file-upload"
-											id="map-file-upload"
 											accept=".map"
 											onChange={readMAP}
 										/>
 									</Alert>
 									<Alert severity="info">
-                  <AlertTitle>
-										Notice
-									</AlertTitle>
+										<AlertTitle>Notice</AlertTitle>
 										<p>
 											Please note, This will only work with maps exported from
 											versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin}
 											&nbsp; and Newer.
-
 											<br />
 											The current maximum version supported by this program is V
 											{currentVersion}.
-                      <Divider sx={{ marginTop: "5px",marginBottom:"5px",borderBottomWidth:"thick"}}/>
-                      <strong>Please note: This is a one-way process, any changes made to exported files will not sync to your map.</strong>
+											<Divider
+												sx={{
+													marginTop: "5px",
+													marginBottom: "5px",
+													borderBottomWidth: "thick",
+												}}
+											/>
+											<strong>
+												Please note: This is a one-way process, any changes made
+												to exported files will not sync to your map.
+											</strong>
 										</p>
 									</Alert>
 								</Stack>
@@ -381,8 +363,8 @@ function UploadMap() {
 					</div>
 				</div>
 			</div>
-			<div id="alert" style={{ display: "none" }} className="custom-alert">
-				<p id="alertMessage">Warning!</p>
+			<div style={{ display: "none" }} className="alert custom-alert">
+				<p className="alertMessage">Warning!</p>
 			</div>
 		</div>
 	);
