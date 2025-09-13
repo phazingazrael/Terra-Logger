@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: ID's Are Unique */
+// biome-ignore assist/source/organizeImports: no effect, visual only
 import {
 	AppBar,
 	Button,

@@ -47,7 +47,7 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.1.0
 
-- [ ] Additional Exports (Cultures, Notes, more?)
+- [x] Additional Exports (Cultures, Notes, more?)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Ability to modify data prior to export.
 - [ ] Customize what data is exported.

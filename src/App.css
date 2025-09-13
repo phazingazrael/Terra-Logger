@@ -73,8 +73,12 @@ header {
 }
 
 /* Content Styling */
+.pageBody {
+  max-height: 83dvh;
+}
+
 .Content {
-  max-height: 75vh;
+  max-height: 80vh;
 }
 
 .contentSubHead .MuiAlert-root {
@@ -87,6 +91,7 @@ header {
 
 .contentSubBody {
   padding: 0.6em;
+  min-height: 70dvh;
 }
 
 /*-- MUI Override --*/
