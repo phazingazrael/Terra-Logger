@@ -73,11 +73,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 								console.info(event);
 							}}
 						>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls="mapSelect-content"
-								id="mapSelect-header"
-							>
+							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 								<ListItemIcon>
 									<TiGlobe />
 								</ListItemIcon>

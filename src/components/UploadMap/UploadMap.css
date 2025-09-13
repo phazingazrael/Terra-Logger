@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/complexity/noImportantStyles: must override some styles */
 .custom-card {
   border-radius: 0.375rem;
   border: 1px solid #e2e8f0;
@@ -35,10 +36,6 @@ div#root.dark .custom-card {
 
 .file-input {
   padding: 1rem;
-}
-
-.UploadBox {
-  /* min-height: 34vh; */
 }
 
 .UploadBox .MuiAlert-message {
@@ -92,7 +89,7 @@ div#root.dark .file-input select {
   background-color: #2c5282;
 }
 
-#alert {
+.alert {
   background-color: #ffe3e3; /* Light red */
   border: 1px solid #cc0000; /* Dark red */
   color: #cc0000; /* Dark red */
@@ -101,7 +98,7 @@ div#root.dark .file-input select {
   position: relative;
 }
 
-#alertMessage {
+.alertMessage {
   margin-bottom: 1em;
 }
 
