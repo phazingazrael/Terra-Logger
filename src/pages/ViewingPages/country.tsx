@@ -154,7 +154,7 @@ function CountryView() {
 			: notes?.some(
 						(note) =>
 							note.name === country?.name || note.name === country?.nameFull,
-					)
+					) && notes.some((note) => note.type === "country")
 				? DOMPurify.sanitize(
 						notes?.find(
 							(note) =>

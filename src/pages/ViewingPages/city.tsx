@@ -67,7 +67,8 @@ function CityView() {
 	const Description =
 		city?.description && city?.description.length > 0
 			? city?.description
-			: notes?.some((note) => note.name === city?.name)
+			: notes?.some((note) => note.name === city?.name) &&
+					notes.some((note) => note.type === "city")
 				? DOMPurify.sanitize(
 						notes?.find((note) => note.name === city?.name)?.legend as string,
 					)

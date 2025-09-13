@@ -108,6 +108,7 @@ export type TLNote = {
   mapId?: string;
   name: string;
   _id: string;
+  type: string;
 };
 
 export type TLReligion = {
