@@ -1,10 +1,11 @@
 import { Container, Typography } from "@mui/material";
 
+import "./AboutPage.css";
 const AboutPage = () => {
 	return (
 		<Container className="aboutPage">
 			<div className="contentSubBody">
-				<section className="section">
+				<section className="section tlAbout">
 					<Typography variant="h5">About Terra-Logger's history</Typography>
 					<p>
 						Terra-Logger was first come up with in June of 2023.
@@ -47,11 +48,11 @@ const AboutPage = () => {
 							</li>
 						</ul>
 						In the end I went with a Web Host solution. Currently code is hosted
-						On Github with Vercel pulling and hosting the code for public
+						on Github with Vercel pulling and hosting the code for public
 						access.
 					</p>
 				</section>
-				<section className="section">
+				<section className="section devAbout">
 					<Typography variant="h5">About the Developer</Typography>
 					<p>
 						Hi there! I'm Phazingazrael, But I go by Phaze.
@@ -59,8 +60,21 @@ const AboutPage = () => {
 						I'm a Hobbyist Web Developer and a Table Top RPG Enthusiast.
 						<br />
 						You can find me on{" "}
-						<a href="https://github.com/phazingazrael">Github</a> as well as on{" "}
-						<a href="https://www.reddit.com/user/Phazingazrael/">Reddit</a>
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://github.com/phazingazrael"
+						>
+							Github
+						</a>{" "}
+						as well as on{" "}
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://www.reddit.com/user/Phazingazrael/"
+						>
+							Reddit
+						</a>
 					</p>
 					<p>
 						<Typography variant="h6">A little bit about me</Typography>
@@ -97,11 +111,15 @@ const AboutPage = () => {
 						</ul>
 					</p>
 				</section>
-				<section className="section">
+				<section className="section credits">
 					<Typography variant="h5">Credits and Acknowledgments</Typography>
 					<p>
 						We would like to express our gratitude to the developers of{" "}
-						<a href="https://github.com/Azgaar/Fantasy-Map-Generator">
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://github.com/Azgaar/Fantasy-Map-Generator"
+						>
 							Azgaar's Fantasy Map Generator
 						</a>{" "}
 						for their fantastic tool, which inspired and provided the foundation
@@ -109,8 +127,19 @@ const AboutPage = () => {
 					</p>
 					<p>
 						We would like to express our gratitude to{" "}
-						<a href="https://github.com/Shuggaloaf/">Shuggaloaf</a> for their{" "}
-						<a href="https://github.com/Shuggaloaf/Simple_NPC_Generator/">
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://github.com/Shuggaloaf/"
+						>
+							Shuggaloaf
+						</a>{" "}
+						for their{" "}
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://github.com/Shuggaloaf/Simple_NPC_Generator/"
+						>
 							System Agnostic RPG NPC Generator
 						</a>
 						. Currently needs to be implemented in basic format to provide basic
@@ -119,16 +148,30 @@ const AboutPage = () => {
 					</p>
 					<p>
 						We would like to express our gratitude to{" "}
-						<a href="https://www.reddit.com/user/Osellic/">u/Oselic</a> for
-						their work on{" "}
-						<a href="https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/">
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://www.reddit.com/user/Osellic/"
+						>
+							u/Oselic
+						</a>{" "}
+						for their work on{" "}
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/"
+						>
 							This
 						</a>
 						.
 					</p>
 					<p>
 						We would like to express our gratitude to Lythande for their work on{" "}
-						<a href="https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452">
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href="https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452"
+						>
 							This
 						</a>
 						.
