@@ -57,13 +57,11 @@ type MapsCardProps = {
 		height: number;
 		ID: string;
 		ver: string;
-		// ... other properties ...
 	};
 	mapId: string;
 	settings: {
 		mapName: string;
 		distanceUnit: string;
-		// ... other properties ...
 	};
 	SVG: string;
 	svgMod: string;

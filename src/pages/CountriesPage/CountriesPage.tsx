@@ -13,8 +13,6 @@ function CountriesPage() {
 		() => [...countries].sort((a, b) => (a.name > b.name ? 1 : -1)),
 		[countries],
 	);
-	console.log(countries);
-	console.log(activeMapId);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: should scroll to top of page when map changes
 	useEffect(() => {

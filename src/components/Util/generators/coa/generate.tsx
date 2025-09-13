@@ -2133,11 +2133,8 @@ const generate = (
 	type: string,
 ) => {
 	if (!parent) {
-		// biome-ignore lint/style/noParameterAssign: <explanation>
 		parent = null;
-		// biome-ignore lint/style/noParameterAssign: <explanation>
 		kinship = 0;
-		// biome-ignore lint/style/noParameterAssign: <explanation>
 		dominion = 0;
 	}
 
@@ -2398,12 +2395,11 @@ const generate = (
 		const invert = isSameType(parent.t1 ?? "", coa.t1 ?? "");
 		const t = invert
 			? getTincture("division", usedTinctures, coa.t1)
-			: parent.t1 ?? "";
+			: (parent.t1 ?? "");
 		const canton = { ordinary: "canton", t };
 
 		coa.charges?.forEach((charge, i) => {
 			if (charge.size === 1.5) charge.size = 1.4;
-			// @ts-ignore
 			charge.p = charge.p?.replaceAll(/[ajy]/g, "");
 			if (!charge.p) coa.charges?.splice(i, 1);
 		});
@@ -2523,13 +2519,9 @@ const generate = (
 	function definePattern(pattern: string, element: string, size = "") {
 		let t1 = "";
 		let t2 = "";
-		// biome-ignore lint/style/noParameterAssign:
+
 		if (P(0.1)) size = "-small";
-		// biome-ignore lint/style/noParameterAssign:
-		else if (P(0.1)) size = "-smaller";
-		// biome-ignore lint/style/noParameterAssign:
 		else if (P(0.01)) size = "-big";
-		// biome-ignore lint/style/noParameterAssign:
 		else if (P(0.005)) size = "-smallest";
 
 		// apply standard tinctures
@@ -2543,20 +2535,11 @@ const generate = (
 			if (P(0.2)) {
 				t1 = "gules";
 				t2 = "or";
-			} else if (P(0.2)) {
-				t1 = "argent";
-				t2 = "sable";
-			} else if (P(0.2)) {
-				t1 = "azure";
-				t2 = "argent";
 			}
 		} else if (pattern === "masoned") {
 			if (P(0.3)) {
 				t1 = "gules";
 				t2 = "argent";
-			} else if (P(0.3)) {
-				t1 = "argent";
-				t2 = "sable";
 			} else if (P(0.1)) {
 				t1 = "or";
 				t2 = "sable";
@@ -2573,7 +2556,6 @@ const generate = (
 				t2 = "argent";
 			}
 		} else if (pattern === "semy")
-			// biome-ignore lint/style/noParameterAssign:
 			pattern += `_of_${selectCharge(charges.semy)}`;
 
 		if (!t1 || !t2) {
@@ -2587,11 +2569,11 @@ const generate = (
 			if (!t1 || !t2) {
 				const startWithMetal = P(0.7);
 				t1 = startWithMetal
-					? rw(tinctures.metals) ?? ""
-					: rw(tinctures.colours) ?? "";
+					? (rw(tinctures.metals) ?? "")
+					: (rw(tinctures.colours) ?? "");
 				t2 = startWithMetal
-					? rw(tinctures.colours) ?? ""
-					: rw(tinctures.metals) ?? "";
+					? (rw(tinctures.colours) ?? "")
+					: (rw(tinctures.metals) ?? "");
 			}
 		}
 
@@ -2635,9 +2617,7 @@ declare global {
 	}
 }
 
-// @ts-ignore
 if (!String.prototype.replaceAll) {
-	// @ts-ignore
 	String.prototype.replaceAll = function (str: string, newStr: string) {
 		if (Object.prototype.toString.call(str).toLowerCase() === "[object regexp]")
 			return this.replace(str, newStr);
@@ -2654,20 +2634,6 @@ const getShield = () => {
 	if (shapeGroup !== "Diversiform")
 		return (emblemShape as HTMLSelectElement)?.value;
 
-	// if (pack !== undefined) {
-	// 	if (
-	// 		(emblemShape as HTMLSelectElement)?.value === "state" &&
-	// 		state &&
-	// 		pack.states[state].coa
-	// 	)
-	// 		return pack.states[state].coa.shield;
-	// 	if (pack.cultures[culture].shield) return pack.cultures[culture].shield;
-	// 	ERROR &&
-	// 		console.error(
-	// 			"Shield shape is not defined on culture level",
-	// 			pack.cultures[culture],
-	// 		);
-	// }
 	return "heater";
 };
 

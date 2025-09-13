@@ -48,23 +48,16 @@ const MapManager: React.FC = () => {
 	) => {
 		event.preventDefault();
 		const allPromises = selectedMaps.map(async (mapId) => {
-			console.group(`========= Deleting Map:  ${mapId} =========`);
-
 			// TODO: implement NPCs
-			console.groupCollapsed(
-				"========= Deleting by mapId across stores =========",
-			);
+
 			await deleteDataFromStoreByMapId("cities", "mapIdIndex", mapId);
 			await deleteDataFromStoreByMapId("countries", "mapIdIndex", mapId);
 			await deleteDataFromStoreByMapId("cultures", "mapIdIndex", mapId);
 			await deleteDataFromStoreByMapId("notes", "mapIdIndex", mapId);
 			await deleteDataFromStoreByMapId("religions", "mapIdIndex", mapId);
 			await deleteDataFromStoreByMapId("nameBases", "mapIdIndex", mapId);
-			console.groupEnd();
 
 			await deleteDataFromStore("maps", mapId);
-			console.info(`========= Deleted Map: (${mapId}) =========`);
-			console.groupEnd();
 		});
 
 		await Promise.all(allPromises);

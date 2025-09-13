@@ -132,12 +132,10 @@ function UploadMap() {
 			ToastSuccess();
 		}
 		if (isInvalid) {
-			console.info("invalid");
 			ToastInvalid();
 			setLoading(false);
 		}
 		if (isAncient) {
-			console.info("ancient");
 			ToastAncient(mapVersion);
 			setLoading(false);
 		}

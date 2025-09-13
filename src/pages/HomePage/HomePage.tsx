@@ -14,11 +14,6 @@ const HomePage = () => {
 		})();
 	}, []);
 
-	if (app) {
-		console.log(app);
-	} else {
-	}
-
 	return (
 		<Container className="homePage">
 			<div className="contentSubHead">

@@ -59,7 +59,6 @@ function CultureView() {
 
 	const theme = useTheme();
 
-	console.log(culture);
 	return (
 		<Container className="Culture">
 			<div className="contentSubBody">

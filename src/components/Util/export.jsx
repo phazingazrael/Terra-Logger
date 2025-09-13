@@ -50,10 +50,6 @@ export const Export = () => {
       body: JSON.stringify({ exportOptions, dataToExport }),
     })
       .then(response => response.json())
-      .then(apiResponse => {
-        // Handle the API response, if needed
-        onClose()
-      })
       .catch(error => {
         console.error('Error exporting data:', error);
       });

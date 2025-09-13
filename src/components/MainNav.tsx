@@ -30,7 +30,7 @@ import type { MapInf } from "../definitions/TerraLogger";
 const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	const { activeMapId, setActive } = useDB();
 	const iconStyles = useMemo(() => ({ size: "1.75rem" }), []);
-	const [expanded, setExpanded] = useState(false); // State to manage accordion expansion
+	const [expanded, setExpanded] = useState(false);
 
 	const mapList = mapsList.mapsList;
 
@@ -46,11 +46,6 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	};
 
 	const handleMenuItemClick = (m: MapInf) => {
-		// canonical: store-wide mapId
-		if (!m.mapId) {
-			console.warn("Selected map has no mapId; cannot set active.", m);
-			return;
-		}
 		setActive(m.mapId);
 		handleSvgReplace({
 			svg: m.SVG,
@@ -68,9 +63,8 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						<Accordion
 							disableGutters
 							expanded={expanded}
-							onChange={(event, isExpanded) => {
+							onChange={(isExpanded) => {
 								handleAccordionChange(isExpanded);
-								console.info(event);
 							}}
 						>
 							<AccordionSummary expandIcon={<ExpandMoreIcon />}>

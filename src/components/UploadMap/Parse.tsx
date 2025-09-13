@@ -16,7 +16,6 @@ import type { SettingsOpts } from "../../definitions/TerraLogger";
 export const parseLoadedResult = (
 	result: ArrayBuffer,
 ): [mapFile: string[], mapVersion: number, versionString: string] => {
-	console.log("parseLoadedResult started");
 	const resultAsString = new TextDecoder().decode(result);
 	const isDelimited = resultAsString.substring(0, 10).includes("|");
 	const decoded = isDelimited
@@ -25,12 +24,9 @@ export const parseLoadedResult = (
 
 	const mapFile = decoded.split("\r\n");
 	const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
-	console.log("versionparts: ", versionparts);
 	let mapVersion = `${versionparts[0]}${versionparts[1]}${versionparts[2]}`;
-	console.log("mapVersion: ", mapVersion);
 	const patchVersion =
 		versionparts[2] > 9 ? versionparts[2] : `0${versionparts[2]}`;
-	console.log("patchVersion: ", patchVersion);
 	const versionString = JSON.stringify(
 		`${versionparts[0]}.${versionparts[1]}.${patchVersion}`,
 	);
@@ -42,8 +38,6 @@ export const parseLoadedResult = (
 };
 
 export const parseLoadedData = (data: string[]) => {
-	console.log("parseLoadedData started");
-
 	// Parse Map Parameters //
 
 	let params: string[];
@@ -110,8 +104,6 @@ export const parseLoadedData = (data: string[]) => {
 		settings = data[1].split("|");
 		SetOpt = JSON.parse(settings[19]) as SettingsOpts;
 	}
-
-
 
 	// biomes
 	if (data[3]) {
@@ -197,14 +189,10 @@ export const parseLoadedData = (data: string[]) => {
 	// notes
 	if (data[4]) {
 		const tempNotes: Note[] = JSON.parse(data[4]);
-    Notes = tempNotes.filter((note) => note.legend !== "");
-    console.log(Notes)
-
+		Notes = tempNotes.filter((note) => note.legend !== "");
 	}
 
 	// data[5] is called last to ensure less processing time
-
-
 
 	// packFeatures
 	if (data[12]) {
@@ -277,8 +265,6 @@ export const parseLoadedData = (data: string[]) => {
 			data[22].split(","),
 		);
 	}
-
-
 
 	// pack.cells.s
 	if (data[24]) {
@@ -468,21 +454,21 @@ export const parseLoadedData = (data: string[]) => {
 	return { parsedMap, Pack };
 };
 // Unused data sections
-  // latLongs ("coords")
-	// data[2]
-	// grid.cells.h
-	// data[7]
-	// grid.cells.prec
-	// data[8]
-	// grid.cells.f
-	// data[9]
-	// grid.cells.t
-	// data[10]
-	// grid.cells.temp
-	// data[11]
-	// Deprecated || pack.cells.road
-	// data[23]
-	// Deprecated || pack.cells.crossroad
-	// data[28]
-	// rulersString
-	// data[33]
+// latLongs ("coords")
+// data[2]
+// grid.cells.h
+// data[7]
+// grid.cells.prec
+// data[8]
+// grid.cells.f
+// data[9]
+// grid.cells.t
+// data[10]
+// grid.cells.temp
+// data[11]
+// Deprecated || pack.cells.road
+// data[23]
+// Deprecated || pack.cells.crossroad
+// data[28]
+// rulersString
+// data[33]

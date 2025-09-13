@@ -26,15 +26,11 @@ const App = (): JSX.Element => {
 				height: activeMap.info.height,
 				width: activeMap.info.width,
 			});
-			// handleResize();
 		}
 
 		function handleResize() {
 			// Get the new window dimensions
 			const { innerHeight, innerWidth } = window;
-
-			// Log the new window dimensions
-			console.info("resized to: ", innerWidth, "x", innerHeight);
 
 			// Get the map elements
 			const mapElement = document.getElementById("map");
@@ -58,7 +54,7 @@ const App = (): JSX.Element => {
 					const sx = innerWidth / (originalWidth || 1);
 					const sy = innerHeight / (originalHeight || 1);
 
-					// optional: tidy decimals
+					// tidy decimals
 					const fmt = (n: number) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
 
 					// Apply transformation to scale content
@@ -80,23 +76,18 @@ const App = (): JSX.Element => {
 				const [{ default: MainLayout }, { default: ErrorBoundary }] =
 					await Promise.all([
 						import("./layouts/MainLayout"),
-						import("./pages/ErrorPage/ErrorPage"), // this module should export a React component that uses useRouteError()
+						import("./pages/ErrorPage/ErrorPage"),
 					]);
 				return { Component: MainLayout, ErrorBoundary };
 			},
 			children: [
 				{
-					index: true, // replaces path: "/"
+					index: true,
 					lazy: () =>
 						import("./pages/HomePage/HomePage").then((m) => ({
 							Component: m.default,
 						})),
 				},
-				// {
-				// 	path: "tags",
-				// 	lazy: () =>
-				// 		import("./pages/Tags/Tags").then((m) => ({ Component: m.default })),
-				// },
 				{
 					path: "settings",
 					lazy: () =>

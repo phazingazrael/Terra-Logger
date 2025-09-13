@@ -1,4 +1,3 @@
-// NavTrail.tsx;
 import { useLocation, Link as RouterLink } from "react-router-dom";
 import {
 	Breadcrumbs,
