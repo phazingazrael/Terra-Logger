@@ -27,7 +27,10 @@ import type {
 	TLCountry,
 	TLDiplomacy,
 	TLCity,
+	TLNote,
 } from "../../definitions/TerraLogger";
+
+import DOMPurify from "dompurify";
 
 import "./viewStyles.css";
 
@@ -45,6 +48,7 @@ function CountryView() {
 	const { useActive } = useDB();
 	const countries = useActive<TLCountry>("countries");
 	const allCities = useActive<TLCity>("cities");
+	const notes = useActive<TLNote>("notes");
 	const country = useMemo(
 		() => countries.find((c) => c._id === countryId?._id),
 		[countries, countryId?._id],
@@ -53,6 +57,7 @@ function CountryView() {
 		() => allCities.filter((city) => city.country._id === countryId?._id),
 		[allCities, countryId?._id],
 	);
+
 	const [activeTab, setActiveTab] = useState<string>("regiments");
 	const [ruralPercentage, setRuralPercentage] = useState(0);
 	const [urbanPercentage, setUrbanPercentage] = useState(0);
@@ -135,6 +140,28 @@ function CountryView() {
 		color: "#1794a1",
 	};
 
+	const SemiDynamicSparkleStyle = {
+		height: "1.5rem",
+		width: "1.5rem",
+		marginTop: "-1.5rem",
+		color: "#17a127",
+	};
+
+	const Description =
+		country?.description && country?.description.length > 0
+			? country?.description
+			: notes?.some(
+						(note) =>
+							note.name === country?.name || note.name === country?.nameFull,
+					)
+				? DOMPurify.sanitize(
+						notes?.find(
+							(note) =>
+								note.name === country?.name || note.name === country?.nameFull,
+						)?.legend as string,
+					)
+				: `${country?.name} is a country.`;
+
 	return (
 		<Container className="Settings">
 			<IconContext.Provider value={IconStyles}>
@@ -147,6 +174,11 @@ function CountryView() {
 									<p>
 										<GiSparkles style={DynamicSparkleStyle} /> = Dynamically
 										Loaded Information from Azgaar's Fantasy Map Generator
+									</p>
+									<p>
+										<GiSparkles style={SemiDynamicSparkleStyle} /> = Semi
+										Dynamic data, Searches for a note with the same name and
+										uses it's data.
 									</p>
 								</details>
 							</div>
@@ -345,11 +377,12 @@ function CountryView() {
 									<Typography color="text.secondary" component="h2">
 										Description
 									</Typography>
-									<Typography color="text.secondary" component="p">
-										{country?.description && country?.description.length > 0
-											? country?.description
-											: `${country?.name} is a country.`}
-									</Typography>
+									<Typography
+										color="text.secondary"
+										component="div"
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: domPurify running on Description
+										dangerouslySetInnerHTML={{ __html: Description }}
+									/>
 								</Paper>
 
 								<div className="content-grid">

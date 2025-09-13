@@ -1,13 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useMemo } from "react";
-import { Container, Typography, Paper } from "@mui/material";
+import { Container, Paper, Typography } from "@mui/material";
 import { IconContext } from "react-icons";
-import { useParams, Link } from "react-router-dom";
 import { useDB } from "../../db/DataContext";
+import { useMemo } from "react";
+import { useParams, Link } from "react-router-dom";
 
 import { GiSparkles } from "react-icons/gi";
 
-import type { TLCity } from "../../definitions/TerraLogger";
+import type { TLCity, TLNote } from "../../definitions/TerraLogger";
+
+import DOMPurify from "dompurify";
 
 import "./viewStyles.css";
 
@@ -15,6 +17,7 @@ function CityView() {
 	const cityId = useParams();
 	const { useActive } = useDB();
 	const cities = useActive<TLCity>("cities");
+	const notes = useActive<TLNote>("notes");
 	const city = useMemo(
 		() => cities.find((c) => c._id === cityId?._id),
 		[cities, cityId?._id],
@@ -53,9 +56,23 @@ function CityView() {
 		marginTop: "-1.5rem",
 		color: "#1794a1",
 	};
+	const SemiDynamicSparkleStyle = {
+		height: "1.5rem",
+		width: "1.5rem",
+		marginTop: "-1.5rem",
+		color: "#17a127",
+	};
+
+	const Description =
+		city?.description && city?.description.length > 0
+			? city?.description
+			: notes?.some((note) => note.name === city?.name)
+				? DOMPurify.sanitize(
+						notes?.find((note) => note.name === city?.name)?.legend as string,
+					)
+				: `${city?.name} is a city.`;
 
 	const IconStyles = useMemo(() => ({}), []);
-
 	return (
 		<Container className="Settings" color="text.secondary">
 			<IconContext.Provider value={IconStyles}>
@@ -68,6 +85,11 @@ function CityView() {
 									<p>
 										<GiSparkles style={DynamicSparkleStyle} /> = Dynamically
 										Loaded Information from Azgaar's Fantasy Map Generator
+									</p>
+									<p>
+										<GiSparkles style={SemiDynamicSparkleStyle} /> = Semi
+										Dynamic data, Searches for a note with the same name and
+										uses it's data.
 									</p>
 								</details>
 							</div>
@@ -115,12 +137,14 @@ function CityView() {
 								<Paper className="section description">
 									<Typography color="text.secondary" component="h2">
 										Description
+										<GiSparkles style={SemiDynamicSparkleStyle} />
 									</Typography>
-									<Typography color="text.secondary" component="p">
-										{city?.description && city?.description.length > 0
-											? city?.description
-											: `${city?.name} is a country.`}
-									</Typography>
+									<Typography
+										color="text.secondary"
+										component="div"
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: domPurify running on Description
+										dangerouslySetInnerHTML={{ __html: Description }}
+									/>
 								</Paper>
 
 								<div className="content-grid">
