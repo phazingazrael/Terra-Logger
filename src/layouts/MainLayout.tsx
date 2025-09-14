@@ -170,7 +170,8 @@ function MainLayout() {
 		if (
 			!activeMapId &&
 			location.pathname !== "/" &&
-			location.pathname !== "/settings"
+			location.pathname !== "/settings" &&
+			location.pathname !== "/about"
 		) {
 			navigate("/");
 		}
