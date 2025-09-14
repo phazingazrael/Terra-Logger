@@ -1,24 +1,56 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useDB } from "./db/DataContext";
+import { useDeviceType } from "./hooks/useDeviceType";
+import { getDataFromStore } from "./db/interactions";
+import Package from "../package.json";
+
+import MobileLayout from "./layouts/MobileLayout";
 
 import type { MapInf } from "./definitions/TerraLogger";
+import type { AppInfo } from "./definitions/AppInfo";
 
 import "./App.css";
-import { handleSvgReplace } from "./components/Util";
+import { BookLoader, handleSvgReplace } from "./components/Util";
 
 const App = (): JSX.Element => {
 	const { useActiveMap } = useDB();
 	const activeMap = useActiveMap<MapInf>();
 
+	// load appSettings from IndexedDB so we can check forceMobile
+	const [appSettings, setAppSettings] = useState<AppInfo | null>(null);
+	const [settingsLoaded, setSettingsLoaded] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		(async () => {
+			try {
+				const id = `TL_${Package.version}`;
+				const settings = (await getDataFromStore(
+					"appSettings",
+					id,
+				)) as AppInfo | null;
+				if (!cancelled) setAppSettings(settings ?? null);
+			} catch (e) {
+				console.error("Failed to load appSettings:", e);
+				if (!cancelled) setAppSettings(null);
+			} finally {
+				if (!cancelled) setSettingsLoaded(true);
+			}
+		})();
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	// detect device once per render
+	const device = useDeviceType();
+	const isHandheld = device === "phone" || device === "tablet";
+
 	// resize map
 	// biome-ignore lint/correctness/useExhaustiveDependencies: needs to run on each map change
 	useEffect(() => {
 		if (!activeMap) return;
-		/**
-		 * Handles the window's resize event.
-		 * This function is called whenever the user resizes the window.
-		 */
 
 		if (activeMap.SVG !== "" || activeMap.SVG !== undefined) {
 			handleSvgReplace({
@@ -29,45 +61,36 @@ const App = (): JSX.Element => {
 		}
 
 		function handleResize() {
-			// Get the new window dimensions
 			const { innerHeight, innerWidth } = window;
 
-			// Get the map elements
 			const mapElement = document.getElementById("map");
 			const viewBox = document.getElementById("viewbox");
 
-			// Get the original dimensions of the map
 			const originalHeight = activeMap?.info.height;
 			const originalWidth = activeMap?.info.width;
 
-			// Scale the map to fit the new window dimensions
-			if (mapElement) {
-				if (viewBox) {
-					// Set the new height and width of the map element
-					mapElement.setAttribute("height", innerHeight as unknown as string);
-					mapElement.setAttribute("width", innerWidth as unknown as string);
+			if (mapElement && viewBox) {
+				mapElement.setAttribute("height", innerHeight as unknown as string);
+				mapElement.setAttribute("width", innerWidth as unknown as string);
 
-					// Set the new height and width of the viewBox element
-					viewBox.setAttribute("height", innerHeight as unknown as string);
-					viewBox.setAttribute("width", innerWidth as unknown as string);
+				viewBox.setAttribute("height", innerHeight as unknown as string);
+				viewBox.setAttribute("width", innerWidth as unknown as string);
 
-					const sx = innerWidth / (originalWidth || 1);
-					const sy = innerHeight / (originalHeight || 1);
+				const sx = innerWidth / (originalWidth || 1);
+				const sy = innerHeight / (originalHeight || 1);
 
-					// tidy decimals
-					const fmt = (n: number) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
-
-					// Apply transformation to scale content
-					viewBox.setAttribute("transform", `scale(${fmt(sx)} ${fmt(sy)})`);
-				}
+				const fmt = (n: number) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
+				viewBox.setAttribute("transform", `scale(${fmt(sx)} ${fmt(sy)})`);
 			}
 		}
 
 		window.addEventListener("resize", handleResize);
-		// do an initial fit when map changes
 		handleResize();
 		return () => window.removeEventListener("resize", handleResize);
 	}, [activeMap?.info.width, activeMap?.info.height]);
+
+	// avoid layout flash while classifying device or loading settings
+	if (device === "unknown" || !settingsLoaded) return <BookLoader />;
 
 	const router = createBrowserRouter([
 		{
@@ -184,7 +207,11 @@ const App = (): JSX.Element => {
 		},
 	]);
 
-	return <RouterProvider router={router} fallbackElement={<div />} />;
+	if (isHandheld && appSettings?.forceMobile === false) {
+		return <MobileLayout />;
+	} else {
+		return <RouterProvider router={router} fallbackElement={<div />} />;
+	}
 };
 
 export default App;

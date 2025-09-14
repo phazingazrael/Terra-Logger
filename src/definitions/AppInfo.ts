@@ -29,4 +29,5 @@ export interface AppInfo {
     };
   };
   activeMapId: string | null;
+  forceMobile: boolean;
 }
