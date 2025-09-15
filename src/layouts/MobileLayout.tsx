@@ -6,7 +6,6 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { getDataFromStore, updateDataInStore } from "../db/interactions";
 import Package from "../../package.json";
 import type { AppInfo } from "../definitions/AppInfo";
@@ -39,22 +38,20 @@ const MobileLayout = () => {
 	}, [settingsId]);
 
 	const enableForceMobile = async () => {
-		if (!appSettings) return; // nothing to update (should exist already in your app flow)
+		if (!appSettings) return; // shouldn't happen
 		setSaving(true);
 		try {
 			await updateDataInStore("appSettings", settingsId, {
 				...appSettings,
-				userSettings: {
-					...appSettings.userSettings,
-					forceMobile: true,
-				},
+				forceMobile: true,
 			});
-			// optional: you could navigate or reload here if your app checks this on load
-			// window.location.reload();
 		} catch (err) {
 			console.error("Failed to update appSettings.forceMobile:", err);
 		} finally {
 			setSaving(false);
+			setTimeout(() => {
+				window.location.reload();
+			}, 3000);
 		}
 	};
 
@@ -65,7 +62,7 @@ const MobileLayout = () => {
 					Hello! Thank you for visiting Terra-Logger!
 				</Typography>
 
-				<Typography variant="body1" align="center">
+				<div>
 					<p>
 						Unfortunately Terra-Logger does not support mobile devices, please
 						use a computer to use this tool.
@@ -83,14 +80,14 @@ const MobileLayout = () => {
 						for your device. If you wish to continue on—go with the saying “Here
 						there be dragons”—you may do so by acknowledging below.
 					</p>
-				</Typography>
+				</div>
 
 				<Stack spacing={2} alignItems="center" sx={{ mt: 2 }}>
 					<FormControlLabel
 						control={
 							<Checkbox
 								checked={confirm}
-								onChange={(e) => setConfirm(e.target.checked)}
+								onChange={(_, checked) => setConfirm(checked)}
 								sx={{ "&::before": { content: '"Acknowledge mobile risks"' } }}
 							/>
 						}
@@ -98,16 +95,14 @@ const MobileLayout = () => {
 					/>
 
 					{confirm ? (
-						<Link to="/">
-							<Button
-								variant="contained"
-								color="warning"
-								disabled={!appSettings || saving}
-								onClick={enableForceMobile}
-							>
-								{saving ? "Enabling…" : "Continue on mobile anyway"}
-							</Button>
-						</Link>
+						<Button
+							variant="contained"
+							color="warning"
+							disabled={!appSettings || saving}
+							onClick={enableForceMobile}
+						>
+							{saving ? "Enabling…" : "Continue on mobile anyway"}
+						</Button>
 					) : null}
 				</Stack>
 			</section>

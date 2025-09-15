@@ -207,11 +207,15 @@ const App = (): JSX.Element => {
 		},
 	]);
 
-	if (isHandheld && appSettings?.forceMobile === false) {
-		return <MobileLayout />;
-	} else {
-		return <RouterProvider router={router} fallbackElement={<div />} />;
+	if (isHandheld) {
+		if (appSettings?.forceMobile === undefined || false) {
+			return <MobileLayout />;
+		}
+		if (appSettings?.forceMobile === true) {
+			return <RouterProvider router={router} fallbackElement={<div />} />;
+		}
 	}
+	return <RouterProvider router={router} fallbackElement={<div />} />;
 };
 
 export default App;
