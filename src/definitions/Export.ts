@@ -50,6 +50,7 @@ export type DataSets = {
  */
 export type TemplateMap = {
   MapInfo: string;
+  Name: string;
   City?: string;
   Country?: string;
   Culture?: string;
@@ -122,8 +123,8 @@ export type FileSpec = {
  */
 export type RenderOptions = {
   mapInfoFilename?: string; // default: "map info.md"
-  useFolders?: boolean; // default: true
   filenameFields?: Partial<Record<keyof Omit<DataSets, "MapInfo">, string[]>>; // default: see above
   extension?: string; // default: ".md"
   css?: string;
+  templateName?: string;
 };

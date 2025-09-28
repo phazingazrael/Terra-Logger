@@ -1,13 +1,5 @@
-import { Container } from "@mui/material";
 import { useMemo } from "react";
 import { useDB } from "../../db/DataContext";
-
-import mapTpl from "../../components/Export/templates/map.md?raw";
-import cityTpl from "../../components/Export/templates/city.md?raw";
-import countryTpl from "../../components/Export/templates/country.md?raw";
-import cultureTpl from "../../components/Export/templates/culture.md?raw";
-import noteTpl from "../../components/Export/templates/note.md?raw";
-import religionTpl from "../../components/Export/templates/religion.md?raw";
 
 import { MarkdownExportPanel } from "../../components/Export/Export";
 
@@ -52,26 +44,15 @@ function ExportPage() {
 	};
 
 	return (
-		<Container>
-			<div className="contentSubBody exportPage">
-				<h1>Export</h1>
-				<MarkdownExportPanel
-					data={data}
-					templates={{
-						MapInfo: mapTpl,
-						City: cityTpl,
-						Country: countryTpl,
-						Religion: religionTpl,
-						Note: noteTpl,
-						Culture: cultureTpl,
-					}}
-					zipName={`${MapInfo?.info?.name ?? "Map"}-Export-${new Date()
-						.toISOString()
-						.slice(0, 19)
-						.replace("T", " ")}.zip`}
-				/>
-			</div>
-		</Container>
+		<div className="contentSubBody exportPage">
+			<MarkdownExportPanel
+				data={data}
+				zipName={`${MapInfo?.info?.name ?? "Map"}-Export-${new Date()
+					.toISOString()
+					.slice(0, 19)
+					.replace("T", " ")}.zip`}
+			/>
+		</div>
 	);
 }
 
