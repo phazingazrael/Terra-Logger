@@ -148,9 +148,6 @@ No cities recorded.
 - **The Underbelly/Sewers/Shadow City:** [Underground cities full of secrets.]
 - **The Astral Tower/Observatory:** [Study of other planes, stars, and cosmic entities.]
 
-## Sister Cities & Interstellar Relations
-[List of allied countries, rival nations, or otherworldly diplomatic ties.]
-
 ## Notable Figures & Legends
 [List of influential people, such as rulers, warriors, philosophers, criminals, and deities.]
 
