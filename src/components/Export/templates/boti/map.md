@@ -1,10 +1,8 @@
 ---
 BANNER:
 NoteIcon: Map
-# --- Dimensions (Pixels) ---
 Width:  "{{info.width}}"
 Height: "{{info.height}}"
-# --- World Details ---
 Name: "{{settings.mapName}}"
 Seed: "{{info.seed}}"
 Ver: "{{info.ver}}"
@@ -14,6 +12,7 @@ TemperatureEquator: "{{settings.options.temperatureEquator}}"
 TemperatureNorthPole: "{{settings.options.temperatureNorthPole}}"
 TemperatureSouthPole: "{{settings.options.temperatureSouthPole}}"
 Year: "{{settings.options.year}}"
+tags:
 Winds:
  - "90° North: {{settings.options.winds[0]}}"
  - "60° North: {{settings.options.winds[1]}}"

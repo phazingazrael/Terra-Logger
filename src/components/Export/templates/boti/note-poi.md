@@ -11,6 +11,7 @@ Access: ""
 Owner: ""
 Condition: ""
 LastSeen: ""
+tags:
 ---
 
 > [!infobox]

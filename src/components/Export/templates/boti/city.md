@@ -20,7 +20,7 @@ Rulers:
 Terrain:
 Theme: {{type}}
 Type: {{type}}
-Tags:
+tags:
 {{#tags}}
   - {{Name}}
 {{/tags}}

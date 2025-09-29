@@ -22,7 +22,7 @@ NotableFigures:
 Theme:
 Color: {{color}}
 Type: {{type}}
-Tags:
+tags:
 {{#tags}}
   - {{Name}}
 {{/tags}}

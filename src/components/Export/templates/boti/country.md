@@ -10,7 +10,7 @@ Religions:
 Rulers:
 Terrain:
 Theme:
-Tags:
+tags:
 {{#tags}}
   - {{Name}}
 {{/tags}}

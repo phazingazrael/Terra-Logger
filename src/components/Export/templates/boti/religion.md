@@ -10,6 +10,7 @@ Symbols: # holy symbols, colors, animals
 Theme:
 UrbanPopulation: "{{members.urban}}"
 RuralPopulation: "{{members.rural}}"
+tags:
 ---
 
 > [!infobox]

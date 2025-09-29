@@ -1,15 +1,14 @@
 ---
 BANNER:
-# --- Identification ---
 NoteIcon: Note
 Type: "Military"
 Name: "{{name}}"
-# --- Content ---
 Content: "{{legend}}"
 Allegiance:
 Commander:
 Status:     # active, garrisoned, marching, routed
 LastSeen:   # date or session number
+tags:
 ---
 
 > [!infobox]

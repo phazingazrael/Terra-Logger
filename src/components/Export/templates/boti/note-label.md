@@ -1,11 +1,10 @@
 ---
 BANNER:
-# --- Identification ---
 NoteIcon: Note
 Type: "Label"
 Name: "{{name}}"
-# --- Content ---
 Content: "{{legend}}"
+tags:
 ---
 # `=this.Name` Details
 `=this.Content`
