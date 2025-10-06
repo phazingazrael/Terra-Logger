@@ -24,31 +24,29 @@ import type {
 } from "../../definitions/Export";
 import type { TLNote } from "../../definitions/TerraLogger";
 
-// import Templates from "./templates.json";
-
 import afmgcss from "../../assets/afmg.css?raw";
 
 const Templates = [
 	{
 		Name: "Default",
 		Files: {
-			City: "./templates/default/city.md?raw",
-			Country: "./templates/default/country.md?raw",
-			Culture: "./templates/default/culture.md?raw",
-			MapInfo: "./templates/default/map.md?raw",
-			Note: "./templates/default/note.md?raw",
-			Religion: "./templates/default/religion.md?raw",
+			City: "/templates/default/city.md?raw",
+			Country: "/templates/default/country.md?raw",
+			Culture: "/templates/default/culture.md?raw",
+			MapInfo: "/templates/default/map.md?raw",
+			Note: "/templates/default/note.md?raw",
+			Religion: "/templates/default/religion.md?raw",
 		},
 	},
 	{
 		Name: "Bag of Tips Inspired",
 		Files: {
-			City: "./templates/boti/city.md?raw",
-			Country: "./templates/boti/country.md?raw",
-			Culture: "./templates/boti/culture.md?raw",
-			MapInfo: "./templates/boti/map.md?raw",
-			Note: "./templates/boti/note.md?raw",
-			Religion: "./templates/boti/religion.md?raw",
+			City: "/templates/boti/city.md?raw",
+			Country: "/templates/boti/country.md?raw",
+			Culture: "/templates/boti/culture.md?raw",
+			MapInfo: "/templates/boti/map.md?raw",
+			Note: "/templates/boti/note.md?raw",
+			Religion: "/templates/boti/religion.md?raw",
 		},
 	},
 ];
