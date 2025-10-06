@@ -85,7 +85,7 @@ async function resolveTemplateFilesFromJson(
 		try {
 			// @vite-ignore because p is dynamic; works only if the path is still importable
 			const mod = await import(/* @vite-ignore */ p);
-			// biome-ignore lint/suspicious/noExplicitAny:
+			// biome-ignore lint/suspicious/noExplicitAny: because
 			const content = (mod as any)?.default ?? (mod as any);
 			if (typeof content === "string") {
 				out[k] = content;
@@ -472,16 +472,15 @@ export function renderMarkdownFiles(
 			} else if (singular === "Note") {
 				const name = withExt(base, opt.extension);
 
-				// choose the correct template string based on note type
-				const tplForNote = resolveNoteTemplate(item as TLNote, templates);
-
-				const content = Mustache.render(tplForNote, {
-					...global,
-					...(item as any),
-					Note: item,
-				});
-
 				if ((options?.templateName ?? "") === "Bag of Tips Inspired") {
+					// choose the correct template string based on note type
+					const tplForNote = resolveNoteTemplate(item as TLNote, templates);
+
+					const content = Mustache.render(tplForNote, {
+						...global,
+						...(item as any),
+						Note: item,
+					});
 					const folder = botiNoteFolder(item as TLNote);
 					files.push({ path: `${folder}${name}`, name, content });
 				} else {
