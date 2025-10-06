@@ -1,4 +1,0 @@
-# {{name}}
-
-## Note Details
-{{legend}}
