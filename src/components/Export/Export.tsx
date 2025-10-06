@@ -68,15 +68,15 @@ function remapPathsForBOTI(files: FileSpec[]): FileSpec[] {
 
 		// Move core collections into BOTI folders
 		if (p.startsWith("cities/"))
-			p = p.replace(/^cities\//, `Campaign/06. Cities/`);
+			p = p.replace(/^cities\//, `World/06. Cities/`);
 		else if (p.startsWith("countries/"))
-			p = p.replace(/^countries\//, `Campaign/04. Countries/`);
+			p = p.replace(/^countries\//, `World/04. Countries/`);
 		else if (p.startsWith("notes/"))
-			p = p.replace(/^notes\//, `Campaign/16. Notes/`);
+			p = p.replace(/^notes\//, `World/16. Notes/`);
 		else if (p.startsWith("cultures/"))
-			p = p.replace(/^cultures\//, `Campaign/12. Groups/Cultures`);
+			p = p.replace(/^cultures\//, `World/12. Groups/Cultures`);
 		else if (p.startsWith("religions/"))
-			p = p.replace(/^religions\//, `Campaign/12. Groups/Religions`);
+			p = p.replace(/^religions\//, `World/12. Groups/Religions`);
 
 		return { ...f, path: p };
 	});
@@ -85,7 +85,7 @@ function remapPathsForBOTI(files: FileSpec[]): FileSpec[] {
 function botiNoteFolder(note: TLNote): string {
 	const id = String(note?.id || "").toLowerCase();
 	const root = id.match(/^[a-zA-Z]+/)?.[0] || "";
-	const base = `Campaign/16. Notes`;
+	const base = `World/16. Notes`;
 
 	if (["reg", "regiment", "mil", "military"].includes(root))
 		return `${base}/Military/`;
@@ -689,7 +689,7 @@ export function MarkdownExportPanel(props: {
 					</AlertTitle>
 					<strong>
 						This Template has a large initial file size, Core assets zipped are
-						47.8MB.
+						22.7MB.
 					</strong>
 					<p>
 						This template will:

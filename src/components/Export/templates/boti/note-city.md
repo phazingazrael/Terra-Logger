@@ -1,5 +1,5 @@
 ---
-BANNER: "[[tatiana-zhukova-wVRrpDI6qB0-unsplash.jpg]]"
+BANNER: "[[City-Banner.jpg|150]]"
 NoteIcon: Note
 Type: "City"
 Name: "{{name}}"

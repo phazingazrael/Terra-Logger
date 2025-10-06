@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[World Map.svg]]"
 NoteIcon: Map
 Width:  "{{info.width}}"
 Height: "{{info.height}}"

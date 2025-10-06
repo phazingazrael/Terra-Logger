@@ -1,5 +1,5 @@
 ---
-BANNER: "[[tatiana-zhukova-wVRrpDI6qB0-unsplash.jpg]]"
+BANNER: "[[City-Banner.jpg|150]]"
 Name: {{name}}
 Aliases: {{name}}
 Capital: {{#capital}}Yes{{/capital}}{{^capital}}No{{/capital}}

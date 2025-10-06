@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[POI-Banner.jpg]]"
 NoteIcon: "Note"
 Type: "Point of Interest"
 Name: "{{name}}"

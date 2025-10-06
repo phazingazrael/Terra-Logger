@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[Culture-Banner.jpg|150]]"
 Name: {{name}}
 Aliases: {{name}}
 NoteIcon: Culture

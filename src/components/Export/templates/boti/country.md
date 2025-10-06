@@ -1,5 +1,6 @@
 ---
-BANNER: "[[lex-noordhoff-j5nZW_bUZaQ-unsplash.jpg|-100]]"
+BANNER: "[[Country-Banner.png|145]]"
+Name:
 Aliases:
 GovtType: "{{political.form}}"
 Leaders:

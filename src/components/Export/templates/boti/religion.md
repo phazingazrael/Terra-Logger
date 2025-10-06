@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[Religion-Banner.jpg|-100]]"
 Aliases: "{{name}}"
 Name: "{{name}}"
 Deities: "{{deity}}" # links/list of gods, spirits, entities

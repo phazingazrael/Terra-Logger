@@ -1,5 +1,5 @@
 ---
-BANNER: "[[lex-noordhoff-j5nZW_bUZaQ-unsplash.jpg|-100]]"
+BANNER: "[[Country-Banner.png|-100]]"
 NoteIcon: Note
 Type: "Country"
 Name: "{{name}}"

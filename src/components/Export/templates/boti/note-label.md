@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[Lore-Banner.jpg]]"
 NoteIcon: Note
 Type: "Label"
 Name: "{{name}}"

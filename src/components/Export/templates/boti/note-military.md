@@ -1,5 +1,5 @@
 ---
-BANNER:
+BANNER: "[[Military-Banner.jpg]]"
 NoteIcon: Note
 Type: "Military"
 Name: "{{name}}"
