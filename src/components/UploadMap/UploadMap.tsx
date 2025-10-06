@@ -1,5 +1,5 @@
 // biome-ignore assist/source/organizeImports: no effect, visual only
-import { Alert, AlertTitle, Divider, Stack } from "@mui/material";
+import { Alert, AlertTitle, Divider, Stack, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -27,6 +27,14 @@ const ToastAncient = (mapVersion: number) =>
 	toast.error(
 		`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`,
 	);
+
+function withBase(pathLike: string) {
+  const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
+  const rel  = String(pathLike).replace(/^\/+/, "");
+  return `${base}/${rel}`;
+}
+
+const DEMO_MAP_PATH = "demo/demo.map";
 
 function UploadMap() {
 	const { setActive } = useDB();
@@ -280,6 +288,37 @@ function UploadMap() {
 		}
 	};
 
+  const loadDemoMap = async () => {
+  try {
+    setLoading(true);
+    // fetch the demo .map from public/
+    const res = await fetch(withBase(DEMO_MAP_PATH), { cache: "no-cache" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${DEMO_MAP_PATH}`);
+    const ab = await res.arrayBuffer();
+
+    // reuse your existing parsing + handling flow
+    const [mapFile, mapVersion, versionString] = parseLoadedResult(ab);
+    const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
+      processLoadedData(mapFile, mapVersion.toString());
+
+    handleLoadedData(
+      isUpdated,
+      isNewer,
+      isInvalid,
+      isAncient,
+      isOutdated,
+      mapVersion,
+      mapFile,
+      versionString,
+    );
+  } catch (err: any) {
+    console.error(err);
+    toast.error(`Failed to load demo map: ${err?.message ?? String(err)}`);
+    setLoading(false);
+  }
+};
+
+
 	return (
 		<div className="uploadForm">
 			<div>
@@ -308,6 +347,17 @@ function UploadMap() {
 											accept=".map"
 											onChange={readMAP}
 										/>
+
+                    <div style={{ marginTop: 8 }}>
+                      <Button
+                        variant="outlined"
+                        onClick={loadDemoMap}
+                        disabled={isLoading}
+                        title={`Loads ${DEMO_MAP_PATH} from public/`}
+                      >
+                        Load Demo Map
+                      </Button>
+                    </div>
 									</Alert>
 									<Alert severity="info">
 										<AlertTitle>Notice</AlertTitle>
