@@ -54,7 +54,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^3.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
-    "pupeteer": "^0.0.1",
     "typescript": "^5.7.3",
     "vite": "^6.0.11"
   }
