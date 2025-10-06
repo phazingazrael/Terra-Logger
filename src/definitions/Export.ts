@@ -48,15 +48,16 @@ export type DataSets = {
  *       - {{.name}}
  *     {{/Cities}}
  */
-export type TemplateMap = {
+type TemplateMapBase = {
   MapInfo: string;
-  Name: string;
-  City?: string;
-  Country?: string;
-  Culture?: string;
-  Note?: string;
-  Religion?: string;
+  City: string;
+  Country: string;
+  Culture: string;
+  Note: string;
+  Religion: string;
 };
+export type TemplateMap = TemplateMapBase & Record<string, string>;
+export type PartialTemplates = Partial<TemplateMap>;
 
 /**
  * PartialTemplates is a type that represents a partial TemplateMap object.
@@ -67,7 +68,6 @@ export type TemplateMap = {
  * markdown files for cities and countries, you can pass an object with only
  * the "City" and "Country" properties.
  */
-export type PartialTemplates = Partial<TemplateMap>;
 
 /**
  * FileSpec represents a single file that we want to generate.

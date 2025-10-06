@@ -2,23 +2,28 @@
   {
     "Name": "Default",
     "Files": {
-      "City": "./templates/default/city.md?raw",
-      "Country": "./templates/default/country.md?raw",
-      "Culture": "./templates/default/culture.md?raw",
-      "MapInfo": "./templates/default/map.md?raw",
-      "Note": "./templates/default/note.md?raw",
-      "Religion": "./templates/default/religion.md?raw"
+      "City": "./templates/default/city.md",
+      "Country": "./templates/default/country.md",
+      "Culture": "./templates/default/culture.md",
+      "MapInfo": "./templates/default/map.md",
+      "Note": "./templates/default/note.md",
+      "Religion": "./templates/default/religion.md"
     }
   },
   {
     "Name": "Bag of Tips Inspired",
     "Files": {
-      "City": "./templates/boti/city.md?raw",
-      "Country": "./templates/boti/country.md?raw",
-      "Culture": "./templates/boti/culture.md?raw",
-      "MapInfo": "./templates/boti/map.md?raw",
-      "Note": "./templates/boti/note.md?raw",
-      "Religion": "./templates/boti/religion.md?raw"
+      "City": "./templates/boti/city.md",
+      "Country": "./templates/boti/country.md",
+      "Culture": "./templates/boti/culture.md",
+      "MapInfo": "./templates/boti/map.md",
+      "Note": "./templates/boti/note.md",
+      "Note-Country": "./templates/boti/note-country.md",
+      "Note-City": "./templates/boti/note-city.md",
+      "Note-POI": "./templates/boti/note-poi.md",
+      "Note-Label": "./templates/boti/note-label.md",
+      "Note-Military": "./templates/boti/note-military.md",
+      "Religion": "./templates/boti/religion.md"
     }
   }
 ]

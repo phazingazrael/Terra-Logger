@@ -26,61 +26,77 @@ import type { TLNote } from "../../definitions/TerraLogger";
 
 import afmgcss from "../../assets/afmg.css?raw";
 
-const Templates = [
-	{
-		Name: "Default",
-		Files: {
-			City: "/templates/default/city.md?raw",
-			Country: "/templates/default/country.md?raw",
-			Culture: "/templates/default/culture.md?raw",
-			MapInfo: "/templates/default/map.md?raw",
-			Note: "/templates/default/note.md?raw",
-			Religion: "/templates/default/religion.md?raw",
-		},
-	},
-	{
-		Name: "Bag of Tips Inspired",
-		Files: {
-			City: "/templates/boti/city.md?raw",
-			Country: "/templates/boti/country.md?raw",
-			Culture: "/templates/boti/culture.md?raw",
-			MapInfo: "/templates/boti/map.md?raw",
-			Note: "/templates/boti/note.md?raw",
-			Religion: "/templates/boti/religion.md?raw",
-		},
-	},
-];
+import Templates from "./templates.json";
+
+// Eagerly bundle every markdown under this component's templates folder.
+// Adjust the glob roots if your templates live elsewhere as well.
+const RAW_TEMPLATES: Record<string, string> = import.meta.glob(
+	[
+		"./templates/**/*.{md,markdown,txt}",
+		"/src/**/templates/**/*.{md,markdown,txt}", // safety net if you import via absolute project path
+	],
+	{ as: "raw", eager: true },
+);
+
+function resolveRawFromGlob(requestPath: string): string | undefined {
+	// normalize, strip ?raw and leading slashes
+	const clean = String(requestPath).replace(/\?.*$/, "").replace(/\\/g, "/");
+
+	// Try direct, relative, and "endsWith" matches so both "/templates/…" and "./templates/…" work.
+	const candidates = new Set<string>();
+
+	// a) as provided
+	candidates.add(clean);
+	// b) ensure it starts with "./" for the local glob
+	candidates.add(clean.startsWith("/") ? `.${clean}` : clean);
+	// c) just the tail after "/templates/"
+	const tail = clean.split("/templates/")[1];
+	if (tail) {
+		candidates.add(`./templates/${tail}`);
+		candidates.add(`/src/components/Export/templates/${tail}`);
+	}
+
+	// Exact match first
+	for (const k of candidates) {
+		if (RAW_TEMPLATES[k]) return RAW_TEMPLATES[k];
+	}
+	// Fallback: suffix match (useful if folder layout shifts)
+	const suffix = (tail ?? clean).replace(/^\.?\//, "");
+	const hit = Object.keys(RAW_TEMPLATES).find((k) => k.endsWith(suffix));
+	return hit ? RAW_TEMPLATES[hit] : undefined;
+}
 
 async function resolveTemplateFilesFromJson(
-	files: PartialTemplates, // from Templates[tplIndex].Files
-	baseUrl: string = import.meta.url, // resolve relative paths against this file
+	files: PartialTemplates,
 ): Promise<PartialTemplates> {
 	const out: PartialTemplates = {};
 	for (const k of Object.keys(files) as (keyof TemplateMap)[]) {
 		const p = files[k];
 		if (!p) continue;
 
-		// 1) Try dynamic import (?raw returns string in Vite/modern bundlers)
+		// 1) Resolve at build-time from RAW_TEMPLATES (preferred: no network)
+		const raw = resolveRawFromGlob(p);
+		if (typeof raw === "string") {
+			out[k] = raw;
+			continue;
+		}
+
+		// 2) Optional: LAST-RESORT dynamic import for dev oddities
 		try {
-			// @vite-ignore allows non-static path
+			// @vite-ignore because p is dynamic; works only if the path is still importable
 			const mod = await import(/* @vite-ignore */ p);
-			// biome-ignore lint/suspicious/noExplicitAny: accepts any markdown raw string.
+			// biome-ignore lint/suspicious/noExplicitAny:
 			const content = (mod as any)?.default ?? (mod as any);
 			if (typeof content === "string") {
 				out[k] = content;
 				continue;
 			}
 		} catch {
-			// fall through to fetch
+			// 3) No fetch fallback — we explicitly avoid runtime HTTP in production
+			throw new Error(
+				`Template not bundled: ${String(p)} — ensure it matches RAW_TEMPLATES glob.`,
+			);
 		}
-
-		// 2) Fallback to fetch via an asset URL resolved against this module
-		//    Works in dev and build; bundler rewrites to hashed asset.
-		const url = new URL(p, baseUrl).toString();
-		const res = await fetch(url);
-		if (!res.ok)
-			throw new Error(`Failed to fetch template for ${k}: ${res.status}`);
-		out[k] = await res.text();
 	}
 	return out;
 }
@@ -277,36 +293,57 @@ function ctx(data: DataSets) {
 	return context;
 }
 
-export function fillMissingTemplates(partial: PartialTemplates): TemplateMap {
-	// biome-ignore lint/suspicious/noExplicitAny: This is required because the type of the variable full is not known until the function returns.
-	const full: any = {};
+function pickNoteTemplateKey(note: TLNote): string {
+	const id = String(note?.id || "").toLowerCase();
+	const root = id.match(/^[a-zA-Z]+/)?.[0] || "";
 
-	(Object.keys(defaults) as (keyof TemplateMap)[]).forEach((k) => {
-		// If the partial object has the key, use the value of that key. If
-		// not, use the default template for that key.
-		full[k] = partial[k] ?? defaults[k];
-	});
+	if (["burg", "city"].includes(root)) return "Note-City";
+	if (["country", "state", "statelabel"].includes(root)) return "Note-Country";
+	if (["label"].includes(root)) return "Note-Label";
+	if (["reg", "regiment", "mil", "military"].includes(root))
+		return "Note-Military";
+	if (["poi", "marker", "pin"].includes(root)) return "Note-POI";
 
-	// Return the full object, which is a full implementation of the
-	// TemplateMap interface.
-	return full as TemplateMap;
+	// optional: light tag-based fallback
+	const tags = Array.isArray((note as any).tags) ? (note as any).tags : [];
+	const has = (s: string) =>
+		tags.some((t: any) =>
+			String(t?.Type ?? t?.Name ?? "")
+				.toLowerCase()
+				.includes(s),
+		);
+	if (has("city")) return "Note-City";
+	if (has("country") || has("state")) return "Note-Country";
+	if (has("label")) return "Note-Label";
+	if (has("milit")) return "Note-Military";
+	if (has("poi") || has("marker")) return "Note-POI";
+
+	return "Note"; // fallback
 }
 
-const defaults: TemplateMap = {
-	Name: "# {{Name.name}}\n", // unused
-	// The default template for the key "MapInfo".
-	MapInfo: "# {{MapInfo.info.name}}\n",
-	// The default template for the key "City".
-	City: "# {{City.name}}\n",
-	// The default template for the key "Country".
-	Country: "# {{Country.name}}\n",
-	// The default template for the key "Culture".
-	Culture: "# {{Culture.name}}\n",
-	// The default template for the key "Note".
-	Note: "# {{Note.name}}\n{{Note.legend}}",
-	// The default template for the key "Religion".
-	Religion: "# {{Religion.name}}\n",
-};
+function resolveNoteTemplate(note: TLNote, templates: TemplateMap): string {
+	const key = pickNoteTemplateKey(note);
+	return templates[key] ?? templates.Note;
+}
+
+export function fillMissingTemplates(partial: PartialTemplates): TemplateMap {
+	const defaults: TemplateMap = {
+		Name: "# {{Name.name}}\n", // unused
+		// The default template for the key "MapInfo".
+		MapInfo: "# {{MapInfo.info.name}}\n",
+		// The default template for the key "City".
+		City: "# {{City.name}}\n",
+		// The default template for the key "Country".
+		Country: "# {{Country.name}}\n",
+		// The default template for the key "Culture".
+		Culture: "# {{Culture.name}}\n",
+		// The default template for the key "Note".
+		Note: "# {{Note.name}}\n{{Note.legend}}",
+		// The default template for the key "Religion".
+		Religion: "# {{Religion.name}}\n",
+	};
+	return { ...defaults, ...(partial as Record<string, string>) } as TemplateMap;
+}
 
 function toFullSvg(svg: string): string {
 	const raw = (svg ?? "").trim();
@@ -434,6 +471,15 @@ export function renderMarkdownFiles(
 				}
 			} else if (singular === "Note") {
 				const name = withExt(base, opt.extension);
+
+				// choose the correct template string based on note type
+				const tplForNote = resolveNoteTemplate(item as TLNote, templates);
+
+				const content = Mustache.render(tplForNote, {
+					...global,
+					...(item as any),
+					Note: item,
+				});
 
 				if ((options?.templateName ?? "") === "Bag of Tips Inspired") {
 					const folder = botiNoteFolder(item as TLNote);
