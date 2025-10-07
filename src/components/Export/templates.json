@@ -17,7 +17,6 @@
       "Country": "./templates/boti/country.md",
       "Culture": "./templates/boti/culture.md",
       "MapInfo": "./templates/boti/map.md",
-      "Note": "./templates/boti/note.md",
       "Note-Country": "./templates/boti/note-country.md",
       "Note-City": "./templates/boti/note-city.md",
       "Note-POI": "./templates/boti/note-poi.md",
