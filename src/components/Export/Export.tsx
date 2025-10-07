@@ -30,74 +30,40 @@ import Templates from "./templates.json";
 
 // Eagerly bundle every markdown under this component's templates folder.
 // Adjust the glob roots if your templates live elsewhere as well.
-// Eagerly bundle markdown templates at build time
-const RAW_TEMPLATES = import.meta.glob(
+const RAW_TEMPLATES: Record<string, string> = import.meta.glob(
 	[
-		// relative to this module
 		"./templates/**/*.{md,markdown,txt}",
-		// absolute (when you import from anywhere under src)
-		"/src/**/*/templates/**/*.{md,markdown,txt}",
+		"/src/**/templates/**/*.{md,markdown,txt}", // safety net if you import via absolute project path
 	],
 	{ as: "raw", eager: true },
-) as Record<string, string>;
-
-// Build a multi-key index so JSON paths like "./templates/boti/note.md" resolve
-const TPL_BY_KEY: Record<string, string> = {};
-for (const [absPathRaw, text] of Object.entries(RAW_TEMPLATES)) {
-	const abs = absPathRaw.replace(/\\/g, "/");
-
-	// 1) absolute key
-	TPL_BY_KEY[abs] = text;
-
-	// 2) if path contains "/templates/", index by the tail in several flavors
-	const parts = abs.split("/templates/");
-	if (parts.length === 2) {
-		const tail = parts[1]; // e.g. "boti/note.md"
-		TPL_BY_KEY[`./templates/${tail}`] = text;
-		TPL_BY_KEY[`templates/${tail}`] = text;
-		// Convenience absolute commonly used in this project:
-		TPL_BY_KEY[`/src/components/Export/templates/${tail}`] = text;
-	}
-
-	// 3) also index the path relative to this module if it already starts with "./"
-	if (abs.startsWith("./")) TPL_BY_KEY[abs] = text;
-}
+);
 
 function resolveRawFromGlob(requestPath: string): string | undefined {
-	const clean = String(requestPath)
-		.replace(/\?.*$/, "") // strip ?raw, ?import&raw, etc.
-		.replace(/\\/g, "/")
-		.replace(/^\.\/?$/, ""); // normalize "./"
+	// normalize, strip ?raw and leading slashes
+	const clean = String(requestPath).replace(/\?.*$/, "").replace(/\\/g, "/");
 
-	// Try as-is, then with/without leading "./"
-	const candidates = [
-		clean,
-		clean.startsWith("./") ? clean.slice(2) : `./${clean}`,
-	];
+	// Try direct, relative, and "endsWith" matches so both "/templates/…" and "./templates/…" work.
+	const candidates = new Set<string>();
 
-	for (const key of candidates) {
-		if (TPL_BY_KEY[key]) return TPL_BY_KEY[key];
-	}
-
-	// Last-ditch: if the path contains "/templates/", try tail variants
+	// a) as provided
+	candidates.add(clean);
+	// b) ensure it starts with "./" for the local glob
+	candidates.add(clean.startsWith("/") ? `.${clean}` : clean);
+	// c) just the tail after "/templates/"
 	const tail = clean.split("/templates/")[1];
 	if (tail) {
-		const more = [
-			`./templates/${tail}`,
-			`templates/${tail}`,
-			`/src/components/Export/templates/${tail}`,
-		];
-		for (const key of more) {
-			if (TPL_BY_KEY[key]) return TPL_BY_KEY[key];
-		}
+		candidates.add(`./templates/${tail}`);
+		candidates.add(`/src/components/Export/templates/${tail}`);
 	}
 
-	if (import.meta.env.DEV) {
-		console.warn(
-			`[templates] not bundled: ${requestPath}\nTried keys like: ${candidates.join(", ")}`,
-		);
+	// Exact match first
+	for (const k of candidates) {
+		if (RAW_TEMPLATES[k]) return RAW_TEMPLATES[k];
 	}
-	return undefined;
+	// Fallback: suffix match (useful if folder layout shifts)
+	const suffix = (tail ?? clean).replace(/^\.?\//, "");
+	const hit = Object.keys(RAW_TEMPLATES).find((k) => k.endsWith(suffix));
+	return hit ? RAW_TEMPLATES[hit] : undefined;
 }
 
 async function resolveTemplateFilesFromJson(
@@ -108,28 +74,29 @@ async function resolveTemplateFilesFromJson(
 		const p = files[k];
 		if (!p) continue;
 
+		// 1) Resolve at build-time from RAW_TEMPLATES (preferred: no network)
 		const raw = resolveRawFromGlob(p);
 		if (typeof raw === "string") {
 			out[k] = raw;
 			continue;
 		}
 
-		// (Optional) dev-only dynamic import fallback
-		if (import.meta.env.DEV) {
-			try {
-				const mod = await import(/* @vite-ignore */ p as string);
-				// @ts-ignore
-				const text = mod?.default ?? mod;
-				if (typeof text === "string") {
-					out[k] = text;
-					continue;
-				}
-			} catch {}
+		// 2) Optional: LAST-RESORT dynamic import for dev oddities
+		try {
+			// @vite-ignore because p is dynamic; works only if the path is still importable
+			const mod = await import(/* @vite-ignore */ p);
+			// biome-ignore lint/suspicious/noExplicitAny: because
+			const content = (mod as any)?.default ?? (mod as any);
+			if (typeof content === "string") {
+				out[k] = content;
+				continue;
+			}
+		} catch {
+			// 3) No fetch fallback — we explicitly avoid runtime HTTP in production
+			throw new Error(
+				`Template not bundled: ${String(p)} — ensure it matches RAW_TEMPLATES glob.`,
+			);
 		}
-
-		throw new Error(
-			`Template not bundled: ${String(p)} — ensure it sits under a "templates/" folder included by the glob.`,
-		);
 	}
 	return out;
 }
@@ -351,7 +318,7 @@ function pickNoteTemplateKey(note: TLNote): string {
 	if (has("milit")) return "Note-Military";
 	if (has("poi") || has("marker")) return "Note-POI";
 
-	return "Note"; // fallback
+	return "Note-Label"; // fallback
 }
 
 function resolveNoteTemplate(note: TLNote, templates: TemplateMap): string {
