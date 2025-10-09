@@ -22,7 +22,7 @@ Theme: {{type}}
 Type: {{type}}
 tags:
 {{#tags}}
-  - {{Name}}
+  - "{{Name}}"
 {{/tags}}
 ---
 

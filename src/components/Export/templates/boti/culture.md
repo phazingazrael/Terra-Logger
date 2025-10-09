@@ -24,7 +24,7 @@ Color: {{color}}
 Type: {{type}}
 tags:
 {{#tags}}
-  - {{Name}}
+  - "{{Name}}"
 {{/tags}}
 Origins:
 {{#origins}}

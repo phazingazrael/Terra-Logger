@@ -13,7 +13,7 @@ Terrain:
 Theme:
 tags:
 {{#tags}}
-  - {{Name}}
+  - "{{Name}}"
 {{/tags}}
 ---
 

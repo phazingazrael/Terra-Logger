@@ -11,8 +11,9 @@ Theme:
 UrbanPopulation: "{{members.urban}}"
 RuralPopulation: "{{members.rural}}"
 tags:
+  - "Religion"
 {{#tags}}
-  - {{Name}}
+  - "{{Name}}"
 {{/tags}}
 ---
 
