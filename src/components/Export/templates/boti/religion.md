@@ -2,11 +2,11 @@
 BANNER: "[[Religion-Banner.jpg|-100]]"
 Aliases: "{{name}}"
 Name: "{{name}}"
-Deities: "{{deity}}" # links/list of gods, spirits, entities
-Domains: # spheres of influence (war, harvest, death)
-Headquarters: # central seat, holy city
+Deities: "{{deity}}"
+Domains:
+Headquarters:
 NoteIcon: Religion
-Symbols: # holy symbols, colors, animals
+Symbols:
 Theme:
 UrbanPopulation: "{{members.urban}}"
 RuralPopulation: "{{members.rural}}"
@@ -19,7 +19,7 @@ tags:
 > ###### Info
 >  |
 > ---|---|
-> **Holy City / HQ** | `=link(this.Headquarters)` |
+> **Holy City / HQ** | `=this.Headquarters` |
 > **Symbols** | `=this.Symbols` |
 > **Deities** | `=this.Deities` |
 > **Domains** | `=this.Domains` |

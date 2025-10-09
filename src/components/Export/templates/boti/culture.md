@@ -50,7 +50,7 @@ Origins:
 > ###### Belief & Governance
 >  |
 > ---|---|
-> **Religions** | `=link(this.Religions)` |
+> **Religions** | `=this.Religions` |
 > **Government** | `=this.Government` |
 > **Technology Level** | `=this.TechnologyLevel` |
 > **Notable Figures** | `=this.NotableFigures` |
@@ -58,42 +58,40 @@ Origins:
 # **`=this.Name`**
 
 > [!overview]- Overview
-> General description of this culture, its traits, and identity.
+General description of this culture, its traits, and identity.
 
 > [!culture]- Traditions & Customs
-> Festivals, social norms, etiquette, rites of passage.
+Festivals, social norms, etiquette, rites of passage.
 
 > [!story]- Arts & Expression
-> Music, dance, theatre, visual arts, literature, architecture.
+Music, dance, theatre, visual arts, literature, architecture.
 
 > [!misc]- Daily Life
-> Dress, cuisine, values, everyday practices, taboos.
+Dress, cuisine, values, everyday practices, taboos.
 
 > [!History]- History & Origins
-> Myths & legends; key events; eras & dynasties.
+Myths & legends; key events; eras & dynasties.
 
 > [!demographics]- Demographics
-> Population trends, composition, languages, diaspora.
+Population trends, composition, languages, diaspora.
 
 > [!Religion]- Belief Systems
-> Pantheons, rituals, sacred sites, factions/cults.
+Pantheons, rituals, sacred sites, factions/cults.
 
 > [!government]- Governance & Law
-> Power structures, rulers, laws/justice, corruption.
+Power structures, rulers, laws/justice, corruption.
 
 > [!Regions]- External Relations
-> Neighbors, spread, alliances, rivalries, legacy.
+Neighbors, spread, alliances, rivalries, legacy.
 
 > [!Notes]- Notes
-> Catch-all details, to-dos, references.
-
----
+Catch-all details, to-dos, references.
 
 > [!Rumors]- Rumors
-> Whispers, gossip, popular tales.
+Whispers, gossip, popular tales.
 
 > [!Secrets]- Secrets
-> Hidden truths, forbidden practices, concealed history.
+Hidden truths, forbidden practices, concealed history.
 
 > [!lore]- Lore
-> Oral histories, philosophies, enduring legends.
+Oral histories, philosophies, enduring legends.

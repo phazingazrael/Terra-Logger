@@ -44,53 +44,131 @@ tags:
 > ###### Description
 > {{description}}
 
-# {{name}}
+# **`=this.Name`**
 > [!overview]- Overview
->  |
-> ---|---|
-> **Region/Continent/Planet:** | [Region Name] |
-> **Established/Founded by:** | [Date / Founder / Mythological Event] |
-> **Population:** | [Population] |
-> **Area:** | [Area in sq km or planetary unit] |
-> **Time Zone/Chrono-Cycle:** | [Time Zone / Galactic Standard Time] |
-> **Demonym:** | [Demonym] |
-> **Alignment (RPG-Based):** | [Lawful, Chaotic, Neutral, etc.] |
-> **Primary Inhabitants/Races:** | [Humans, Elves, Dwarves, Androids, etc.] |
+> {{description}}
 
 > [!districts]- Areas
-> [[🌄 Area Database|🌄 Add New Area]]
-> ```dataview
-table join(Aliases, ", ") AS Aliases, join(Terrain, ", ") AS "Terrain"
-WHERE Country = {{name}} AND contains(NoteIcon, "Area")
-SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/05. Areas")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Name
+>       - Type
+>       - Category
+>       - Climate
+>       - ConnectedAreas
+>       - Control
+>       - Encounters
+>       - Hazards
+>       - Landmarks
+>       - ParentRegion
+>       - Resources
+>       - Settlements
+>       - Terrain
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
-> [!settlements]- Cities
-> [[🌁 City Database|📝Add New City]]
-> ```dataview
-table join(Aliases, ", ") AS Aliases, Type, Defences
-WHERE econtains(Country, this.file.name) WHERE contains(NoteIcon, "City")
+> [!cities]- Cities
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/06. Cities")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Name
+>       - Pronounced
+>       - Type
+>       - Country
+>       - Features
+>       - GovtType
+>       - Leaders
+>       - Rulers
+>       - Population
+>       - Theme
+>       - tags
+>       - Imports
+>       - Exports
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!landmarks]- Landmarks
-> [[🏰Landmark Database | 📝Add New Landmark]]
-> ```dataview
-table join(Aliases, ", ") AS Aliases, join(Type, ", ") AS "Type(s)", join(link(AffiliatedGroup), ", ") AS "Group(s)"
-WHERE econtains(Country, this.file.name) AND contains(NoteIcon, "Landmark")
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/08. Landmarks")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Name
+>       - Pronounced
+>       - Country
+>       - Type
+>       - Owners
+>       - Staff
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!groups]- Groups
-> [[🔰 Group Database| 🔰 Add New Group]]
-> ```dataview
-table join(Aliases, ", ") AS Aliases, join(Type, ", ") AS Type
-WHERE econtains(Location, this.file.name) AND contains(NoteIcon, "Group")
-SORT file.name ASC
-
-> [!settlements]- Cities
->> [!grid]
->> {{#cities}}
->>   [[{{name}}]]
->> {{/cities}}
->> {{^cities}}
->> No cities recorded.
->> {{/cities}}
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/12. Groups")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Pronounced
+>       - Name
+>       - Type
+>       - Location
+>       - HQ
+>       - AssociatedReligion
+>       - Alignment
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 >[!history]- History
 > Provide a historical overview, including legendary origins, significant battles, magical events, or technological advancements.
@@ -157,21 +235,13 @@ SORT file.name ASC
 
 >[!npcs]- Politics & Relationships
 >> [!notes]- Military Units
->>{{#political.military}}
->>   - {{name}} (ID: {{id}})
->>     Icon: {{icon}}, Total: {{a}}
->>     Composition: Cavalry {{u.cavalry}}, Archers {{u.archers}}, Infantry {{u.infantry}}
->> {{/political.military}}
+>>
 >
 >> [!notes]- Diplomatic Relations
->> {{#political.diplomacy}}
->>   - {{name}}: {{status}}
->> {{/political.diplomacy}}
+>>
 >
 >> [!notes]- Neighbors
->> {{#political.neighbors}}
->>   - [[{{name}}]] (ID: {{id}})
->> {{/political.neighbors}}
+>>
 
 > [!demographics]- Demographics & Society
 >> [!notes]- Population Growth & Migration

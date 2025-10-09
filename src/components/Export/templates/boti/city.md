@@ -38,7 +38,7 @@ tags:
 > **Capital** | `=this.Capital` |
 > **Population** | `=this.Population` |
 > **Theme** | `=this.Theme` |
-> **Country** | `=link(this.Country)` |
+> **Country** | `this.Country` |
 > **Terrain** | `=this.Terrain` |
 > **Features** | `=join(this.Features,", ")` |
 > **Map Link** | [City Map]({{mapLink}}) |
@@ -49,7 +49,7 @@ tags:
 > **Leaders** | `=this.Leaders` |
 > **Govt Type** | `=this.GovtType` ({{country.govName}}) |
 > **Defenses** | `=this.Defences` |
-> **Religions** | `=link(this.Religions)` |
+> **Religions** | `=this.Religions` |
 > ###### Commerce
 >  |
 > ---|---|
@@ -59,51 +59,226 @@ tags:
 > {{description}}
 
 # **`=this.Name`**
-> [!recite]- Introduction
+> [!overview]- Overview
 > {{description}}
 
 > [!districts]- Districts
-> [[🪧 District Database|🪧Add New District]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(type, ", ") AS Types
-> WHERE Settlement = this.Name AND contains(NoteIcon, "District")
-> SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/07. Districts")
+> views:
+>   - type: table
+>     name: Table
+>     filters:
+>       and:
+>         - City == this.Name
+>     order:
+>       - file.name
+>       - Name
+>       - City
+>       - Type
+>       - Category
+>       - Culture
+>       - Demographics
+>       - Economy
+>       - Government
+>       - Landmarks
+>       - Groups
+>       - POIs
+>       - Population
+>       - Shops
+>       - Safety
+>       - tags
+>     limit: 50
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!shops]- Shops
-> [[💲 Shop & Service Database|📝Add New Shop/Service]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(type, ", ") AS Types
-> WHERE Location = this.Name AND contains(NoteIcon, "Shop")
-> SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/10. Shops & Services")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     filters:
+>       and:
+>         - Location == this.name
+>     order:
+>       - file.name
+>       - Name
+>       - AffiliatedGroup
+>       - Type
+>       - Location
+>       - Owners
+>       - Staff
+>       - Pronounced
+>       - tags
+>     limit: 50
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!pois]- Points of Interest
-> [[❓ POI Database|📝Add New Point of Interest]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(type, ", ") AS Types
-> WHERE Location = this.Name AND contains(NoteIcon, "POI")
-> SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/09. Points of Interest")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Name
+>       - Category
+>       - Type
+>       - Features
+>       - Owner
+>       - Established
+>       - Groups
+>       - ParentArea
+>       - Secrets
+>       - Services
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!groups]- Groups
-> [[🔰 Group Database| 🔰 Add New Group]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(type, ", ") AS Types
-> WHERE econtains(Location, this.Name) AND contains(NoteIcon, "Group")
-> SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/12. Groups")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Pronounced
+>       - Name
+>       - Type
+>       - Location
+>       - HQ
+>       - AssociatedReligion
+>       - Alignment
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 > [!characters]- Characters
-> [[👨‍👩‍👧‍👦 NPC Database| 📝Add New NPC]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(occupation, ", ") AS "Occupations", join(link(associatedgroup), ", ") AS "Groups"
-> WHERE Location = this.Name AND contains(NoteIcon, "Character") AND !contains(Condition, "Dead")
-> SORT file.name ASC
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/00. Parties/1. Characters")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     order:
+>       - file.name
+>       - Name
+>       - Gender
+>       - Level
+>       - Class
+>       - Subclass
+>       - Background
+>       - Alignment
+>       - Deity
+>       - Size
+>       - STR
+>       - DEX
+>       - CON
+>       - INT
+>       - WIS
+>       - CHA
+>       - AC
+>       - HP
+>       - Initiative
+>       - Perception
+>       - Speed
+>       - Speeds
+>       - Ancestry
+>       - Heritage
+>       - Condition
+>       - Occupation
+>       - Aliases
+>       - AssociatedGroup
+>       - AssociatedReligion
+>       - Pronouns
+>       - PlayedBy
+>       - Party
+>       - Location
+>       - tags
+>     sort: []
+>     limit: 50
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+>       - Class
+>       - Subclass
+>       - Level
+> ```
 
 > [!npcs]- NPC's
-> [[💲 Shop & Service Database|📝Add New Shop/Service]]
-> ```dataview
-> table join(aliases, ", ") AS Aliases, join(type, ", ") AS Types
-> WHERE Location = this.Name AND contains(NoteIcon, "Shop")
-> SORT file.name ASC
-
+> ```base
+> filters:
+>   and:
+>     - file.inFolder("World/13. NPCs")
+>     - and:
+>         - file.hasProperty("Name")
+> views:
+>   - type: table
+>     name: Table
+>     limit: 50
+>     order:
+>       - file.name
+>       - Name
+>       - Pronounced
+>       - Pronouns
+>       - Occupation
+>       - Location
+>       - Gender
+>       - Condition
+>       - Alignment
+>       - Ancestry
+>       - OwnedLocations
+>       - AssociatedGroup
+>       - AssociatedReligion
+>       - Heritage
+>       - Sexuality
+>       - tags
+>   - type: cards
+>     name: Cards
+>     order:
+>       - file.name
+>       - Name
+> ```
 
 >[!history]- History
 > Provide a historical overview, including legendary origins, significant battles, magical events, or technological advancements.
@@ -157,7 +332,6 @@ tags:
 >
 >> [!notes]- Current Ruler(s)
 >> King, High Priestess, AI Overlord, Elder Council, etc.
->> `=this.Rulers`
 >
 >> [!notes]- Noble Houses & Factions
 >> Major power groups, noble families, rival factions.

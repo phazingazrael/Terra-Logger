@@ -23,7 +23,7 @@ Winds:
 ---
 
 > [!infobox]
-> # `=this.file.name`
+> # `=this.Name`
 > **Pronounced:**  "`=this.Pronounced`"
 > ![[PlaceholderImage.png]]
 > ###### Info
@@ -38,7 +38,7 @@ Winds:
 > **Planet/Plane** | `=this.PlanetPlane` |
 
 
-# **`=this.file.name`**
+# **`=this.Name`**
 
 > [!overview]- Overview
 > Purpose of this map (world, continent, region), what it depicts, and how to read it.
@@ -73,8 +73,6 @@ Winds:
 
 > [!Notes]- Notes
 > Scratchpad for reminders, to-dos, and references.
-
----
 
 > [!Rumors]- Rumors
 > Unverified places, hidden routes, or alleged lost cities.
@@ -113,8 +111,6 @@ Winds:
 - **Rescale Labels:** {{settings.rescaleLabels}}
 - **Urban Density:** {{settings.urbanDensity}}
 
----
-
 ## Options
 - **Pin Notes:** {{settings.options.pinNotes}}
 - **Winds (degrees):** {{#settings.options.winds}}{{.}}°, {{/settings.options.winds}}
@@ -125,8 +121,6 @@ Winds:
 - **Year:** {{settings.options.year}}
 - **Era:** {{settings.options.era}}
 - **EraShort**: {{settings.options.eraShort}}
-
----
 
 ## Military Types
 

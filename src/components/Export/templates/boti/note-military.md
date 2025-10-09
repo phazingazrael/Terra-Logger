@@ -12,7 +12,7 @@ tags:
 ---
 
 > [!infobox]
-> # `=this.file.name`
+> # `=this.Name`
 > ###### Info
 >  |
 > ---|---|
@@ -22,7 +22,7 @@ tags:
 > **Status** | `=this.Status` |
 > **Last Seen** | `=this.LastSeen` |
 
-# **`=this.file.name`**
+# **`=this.Name`**
 
 > [!military]- `=this.Name` Details
 > `=this.Content`
