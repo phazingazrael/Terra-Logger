@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/complexity/noImportantStyles: must override some styles */
 .custom-card {
   border-radius: 0.375rem;
   border: 1px solid #e2e8f0;
@@ -151,7 +150,9 @@ div#root.dark .file-input select {
 .custom-loading {
   z-index: 1;
   position: relative;
-  top: 58.5dvh;
+  top: 69dvh;
   background: rgba(0, 0, 0, 0.65);
-  margin-top: -64.5dvh;
+  margin-top: -69dvh;
+  height: 69dvh;
+  border-radius: 0.375rem;
 }
