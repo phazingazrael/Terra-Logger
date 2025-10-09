@@ -113,9 +113,9 @@ function remapPathsForBOTI(files: FileSpec[]): FileSpec[] {
 		else if (p.startsWith("notes/"))
 			p = p.replace(/^notes\//, `World/16. Notes/`);
 		else if (p.startsWith("cultures/"))
-			p = p.replace(/^cultures\//, `World/12. Groups/Cultures`);
+			p = p.replace(/^cultures\//, `World/12. Groups/Cultures/`);
 		else if (p.startsWith("religions/"))
-			p = p.replace(/^religions\//, `World/12. Groups/Religions`);
+			p = p.replace(/^religions\//, `World/12. Groups/Religions/`);
 
 		return { ...f, path: p };
 	});
