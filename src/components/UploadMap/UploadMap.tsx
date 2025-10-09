@@ -29,9 +29,9 @@ const ToastAncient = (mapVersion: number) =>
 	);
 
 function withBase(pathLike: string) {
-  const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
-  const rel  = String(pathLike).replace(/^\/+/, "");
-  return `${base}/${rel}`;
+	const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
+	const rel = String(pathLike).replace(/^\/+/, "");
+	return `${base}/${rel}`;
 }
 
 const DEMO_MAP_PATH = "demo/demo.map";
@@ -149,7 +149,6 @@ function UploadMap() {
 		}
 		return null;
 	}
-
 	async function saveMapData(
 		data: MapInfo,
 		VersionString: string,
@@ -172,6 +171,7 @@ function UploadMap() {
 			SVG,
 			svgMod,
 		} = mapData;
+
 		const mapId = `${mapData.info.name}-${mapData.info.ID}`;
 		const MapInf: MapInf = {
 			id: mapId,
@@ -182,76 +182,46 @@ function UploadMap() {
 			svgMod: svgMod,
 		};
 
-		// assign SVG elements to variables
+		// optional: capture current <svg id="map"> into MapInf.svgMod (unchanged)
 		const mapItem = document.getElementById("map");
-
 		if (mapItem) {
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(mapItem.outerHTML, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-
 			MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
 		}
 
-		// Persist the new map, then make it active via DBProvider
-		await addDataToStore("maps", MapInf);
-		await setActive(mapId);
+		// ⬇️ batch all writes and await them BEFORE setting active / navigating
+		const ops: Promise<unknown>[] = [];
+		ops.push(addDataToStore("maps", MapInf));
 
 		for (const city of cities) {
-			const obj = {
-				mapId: mapId,
-				...city,
-			};
-			addDataToStore("cities", obj);
+			ops.push(addDataToStore("cities", { mapId, ...city }));
 		}
-
 		for (const country of countries) {
-			const obj = {
-				mapId: mapId,
-				...country,
-			};
-			addDataToStore("countries", obj);
+			ops.push(addDataToStore("countries", { mapId, ...country }));
 		}
-
 		for (const culture of cultures) {
-			const obj = {
-				mapId: mapId,
-				...culture,
-			};
-			addDataToStore("cultures", obj);
+			ops.push(addDataToStore("cultures", { mapId, ...culture }));
 		}
-
 		for (const nameBase of nameBases) {
-			const obj = {
-				mapId: mapId,
-				...nameBase,
-			};
-			addDataToStore("nameBases", obj);
+			ops.push(addDataToStore("nameBases", { mapId, ...nameBase }));
 		}
-
 		for (const note of notes) {
-			const obj = {
-				mapId: mapId,
-				...note,
-			};
-			addDataToStore("notes", obj);
+			ops.push(addDataToStore("notes", { mapId, ...note }));
 		}
-
 		for (const npc of npcs) {
-			const obj = {
-				mapId: mapId,
-				...npc,
-			};
-			addDataToStore("npcs", obj);
+			ops.push(addDataToStore("npcs", { mapId, ...npc }));
+		}
+		for (const religion of religions) {
+			ops.push(addDataToStore("religions", { mapId, ...religion }));
 		}
 
-		for (const religion of religions) {
-			const obj = {
-				mapId: mapId,
-				...religion,
-			};
-			addDataToStore("religions", obj);
-		}
+		// Wait for everything to be committed
+		await Promise.all(ops);
+
+		// Now mark active (so routes read a fully-populated DB)
+		await setActive(mapId);
 
 		setLoading(false);
 	}
@@ -288,36 +258,35 @@ function UploadMap() {
 		}
 	};
 
-  const loadDemoMap = async () => {
-  try {
-    setLoading(true);
-    // fetch the demo .map from public/
-    const res = await fetch(withBase(DEMO_MAP_PATH), { cache: "no-cache" });
-    if (!res.ok) throw new Error(`HTTP ${res.status} for ${DEMO_MAP_PATH}`);
-    const ab = await res.arrayBuffer();
+	const loadDemoMap = async () => {
+		try {
+			setLoading(true);
+			// fetch the demo .map from public/
+			const res = await fetch(withBase(DEMO_MAP_PATH), { cache: "no-cache" });
+			if (!res.ok) throw new Error(`HTTP ${res.status} for ${DEMO_MAP_PATH}`);
+			const ab = await res.arrayBuffer();
 
-    // reuse your existing parsing + handling flow
-    const [mapFile, mapVersion, versionString] = parseLoadedResult(ab);
-    const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
-      processLoadedData(mapFile, mapVersion.toString());
+			// reuse your existing parsing + handling flow
+			const [mapFile, mapVersion, versionString] = parseLoadedResult(ab);
+			const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
+				processLoadedData(mapFile, mapVersion.toString());
 
-    handleLoadedData(
-      isUpdated,
-      isNewer,
-      isInvalid,
-      isAncient,
-      isOutdated,
-      mapVersion,
-      mapFile,
-      versionString,
-    );
-  } catch (err: any) {
-    console.error(err);
-    toast.error(`Failed to load demo map: ${err?.message ?? String(err)}`);
-    setLoading(false);
-  }
-};
-
+			handleLoadedData(
+				isUpdated,
+				isNewer,
+				isInvalid,
+				isAncient,
+				isOutdated,
+				mapVersion,
+				mapFile,
+				versionString,
+			);
+		} catch (err: any) {
+			console.error(err);
+			toast.error(`Failed to load demo map: ${err?.message ?? String(err)}`);
+			setLoading(false);
+		}
+	};
 
 	return (
 		<div className="uploadForm">
@@ -348,16 +317,16 @@ function UploadMap() {
 											onChange={readMAP}
 										/>
 
-                    <div style={{ marginTop: 8 }}>
-                      <Button
-                        variant="outlined"
-                        onClick={loadDemoMap}
-                        disabled={isLoading}
-                        title={`Loads ${DEMO_MAP_PATH} from public/`}
-                      >
-                        Load Demo Map
-                      </Button>
-                    </div>
+										<div style={{ marginTop: 8 }}>
+											<Button
+												variant="outlined"
+												onClick={loadDemoMap}
+												disabled={isLoading}
+												title={`Loads ${DEMO_MAP_PATH} from public/`}
+											>
+												Load Demo Map
+											</Button>
+										</div>
 									</Alert>
 									<Alert severity="info">
 										<AlertTitle>Notice</AlertTitle>
