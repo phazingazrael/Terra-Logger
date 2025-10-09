@@ -11,6 +11,9 @@ Theme:
 UrbanPopulation: "{{members.urban}}"
 RuralPopulation: "{{members.rural}}"
 tags:
+{{#tags}}
+  - {{Name}}
+{{/tags}}
 ---
 
 > [!infobox]
