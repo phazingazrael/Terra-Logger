@@ -12,11 +12,11 @@ import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf } from ".
  */
 export type DataSets = {
   MapInfo: MapInf;
-  Cities?: TLCity[];
-  Countries?: TLCountry[];
-  Cultures?: TLCulture[];
-  Notes?: TLNote[];
-  Religions?: TLReligion[];
+  Cities: TLCity[];
+  Countries: TLCountry[];
+  Cultures: TLCulture[];
+  Notes: TLNote[];
+  Religions: TLReligion[];
 };
 
 /**
@@ -57,7 +57,6 @@ type TemplateMapBase = {
   Religion: string;
 };
 export type TemplateMap = TemplateMapBase & Record<string, string>;
-export type PartialTemplates = Partial<TemplateMap>;
 
 /**
  * PartialTemplates is a type that represents a partial TemplateMap object.
@@ -68,6 +67,7 @@ export type PartialTemplates = Partial<TemplateMap>;
  * markdown files for cities and countries, you can pass an object with only
  * the "City" and "Country" properties.
  */
+export type PartialTemplates = Partial<TemplateMap>;
 
 /**
  * FileSpec represents a single file that we want to generate.
@@ -127,4 +127,11 @@ export type RenderOptions = {
   extension?: string; // default: ".md"
   css?: string;
   templateName?: string;
+};
+
+export type ZipEntry = {
+  path: string;
+  name: string;
+  content: string | Uint8Array;
+  zipOptions?: any;
 };
