@@ -208,11 +208,8 @@ const App = (): JSX.Element => {
 	]);
 
 	if (isHandheld) {
-		if (appSettings?.forceMobile === undefined || false) {
+		if (appSettings?.forceMobile !== true) {
 			return <MobileLayout />;
-		}
-		if (appSettings?.forceMobile === true) {
-			return <RouterProvider router={router} fallbackElement={<div />} />;
 		}
 	}
 	return <RouterProvider router={router} fallbackElement={<div />} />;
