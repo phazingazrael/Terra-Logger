@@ -337,13 +337,15 @@ function UploadMap() {
 											<br />
 											The current maximum version supported by this program is V
 											{currentVersion}.
-											<Divider
-												sx={{
-													marginTop: "5px",
-													marginBottom: "5px",
-													borderBottomWidth: "thick",
-												}}
-											/>
+										</p>
+										<Divider
+											sx={{
+												marginTop: "5px",
+												marginBottom: "5px",
+												borderBottomWidth: "thick",
+											}}
+										/>
+										<p>
 											<strong>
 												Please note: This is a one-way process, any changes made
 												to exported files will not sync to your map.
