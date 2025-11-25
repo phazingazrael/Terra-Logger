@@ -33,7 +33,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 	try {
 		assignMapInfo(tempMap, data);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
 	} catch (error) {
 		console.error("Error assigning Map Info", error);
 	}
@@ -48,7 +48,8 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 		);
 
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.cultures = Cultures;
 	} catch (error) {
 		console.error("Error mutating cultures:", error);
@@ -65,7 +66,8 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 			tempMap.SVG,
 		);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.cities = Cities;
 	} catch (error) {
 		console.error("Error mutating cities:", error);
@@ -81,7 +83,8 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 			tempMap.SVG,
 		);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.countries = Countries;
 	} catch (error) {
 		console.error("Error mutating countries:", error);
@@ -91,7 +94,8 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 	try {
 		const NameBases = await mutateNameBases(tempMap);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.nameBases = NameBases;
 	} catch (error) {
 		console.error("Error mutating name bases:", error);
@@ -101,7 +105,8 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 	try {
 		const Notes = await mutateNotes(data, tempMap);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.notes = Notes;
 	} catch (error) {
 		console.error("Error mutating notes:", error);
@@ -117,14 +122,14 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 			urbanization,
 		);
 		// set timeout for 3 seconds
-		setTimeout(() => {}, 3000);
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		tempMap.religions = Religions;
 	} catch (error) {
 		console.error("Error mutating religions:", error);
 	}
 
 	//associate cities with countries
-	// biome-ignore lint/complexity/noForEach: <explanation>
 	(tempMap.cities as unknown as TLCity[]).forEach((city) => {
 		if (city.country) {
 			const tempCountry = tempMap.countries.find(
