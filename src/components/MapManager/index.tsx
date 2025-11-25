@@ -64,12 +64,13 @@ const MapManager: React.FC = () => {
 
 		// If the active map was deleted, pick a new one if available
 		if (selectedMaps.includes(activeMapId ?? "")) {
-			const remaining = mapsList.filter(
-				(m: MapInf) => !selectedMaps.includes(m.mapId),
-			);
-			if (remaining.length > 0) {
-				await setActive(remaining[0].mapId);
-			}
+			// const remaining = mapsList.filter(
+			// 	(m: MapInf) => !selectedMaps.includes(m.mapId),
+			// );
+			// if (remaining.length > 0) {
+			// 	await setActive(remaining[0].mapId);
+			// }
+			await setActive("");
 		}
 
 		const mapElement = document.getElementById("map");
