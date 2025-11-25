@@ -15,8 +15,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "licenses": "generate-license-file --config ./license-config.json --input package.json --output ./out/licenses.txt --overwrite",
-    "changelog": "auto-changelog --commit-limit false --sort-commits date-desc --prepend -p",
-    "format": "prettier --config .prettierrc . --write"
+    "changelog": "auto-changelog --commit-limit false --sort-commits date-desc --prepend -p"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -52,8 +51,6 @@
     "@types/react-window": "^1.8.8",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "prettier": "^3.4.2",
-    "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "^5.7.3",
     "vite": "^6.0.11"
   }
