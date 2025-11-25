@@ -52,7 +52,7 @@ const App = (): JSX.Element => {
 	useEffect(() => {
 		if (!activeMap) return;
 
-		if (activeMap.SVG !== "" || activeMap.SVG !== undefined) {
+		if (activeMap.SVG && activeMap.SVG !== "") {
 			handleSvgReplace({
 				svg: activeMap.SVG,
 				height: activeMap.info.height,
@@ -87,7 +87,7 @@ const App = (): JSX.Element => {
 		window.addEventListener("resize", handleResize);
 		handleResize();
 		return () => window.removeEventListener("resize", handleResize);
-	}, [activeMap?.info.width, activeMap?.info.height]);
+	}, [activeMap?.SVG, activeMap?.info.width, activeMap?.info.height]);
 
 	// avoid layout flash while classifying device or loading settings
 	if (device === "unknown" || !settingsLoaded) return <BookLoader />;
