@@ -124,30 +124,30 @@ dist
 .vscode-test
 
 # yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
 .pnp.*
+.yarn/build-state.yml
+.yarn/cache
+.yarn/install-state.gz
+.yarn/unplugged
 
 # Editor directories and files
 # .vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 .better-commits.json
+.DS_Store
+.idea
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+*.sw?
 
 
 # Misc
-dist-ssr
 *.local
-yarn.lock
+/misc
 /temp
 /TestMaps
 additional-content.txt
 biome.json
+dist-ssr
+yarn.lock
