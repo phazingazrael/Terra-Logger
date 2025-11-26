@@ -9,7 +9,7 @@
 
 **Version 1.1.0**
 
-- [ ] Additional Exports (Cultures, Notes, more?)
+- [x] Additional Exports (Cultures, Notes, more?)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Customize page sections; Title, Subtitle, Segments, etc.
   - [ ] "Default".
