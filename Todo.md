@@ -12,6 +12,9 @@
 - [ ] Additional Exports (Cultures, Notes, more?)
 - [ ] Ability to choose between multiple Markdown Templates.
 - [ ] Customize page sections; Title, Subtitle, Segments, etc.
+  - [ ] "Default".
+  - [ ] "Minimal".
+  - [ ] "Recommended".
 - [ ] Ability to modify data prior to export.
 - [ ] Customize what data is exported.
 - [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
