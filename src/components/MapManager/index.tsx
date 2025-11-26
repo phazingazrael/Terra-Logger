@@ -13,7 +13,7 @@ import shadows from "@mui/material/styles/shadows";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common.ts";
 
-import type { MapInf } from "../../definitions/TerraLogger.ts";
+// import type { MapInf } from "../../definitions/TerraLogger.ts";
 
 const modalStyle = {
 	position: "absolute",
