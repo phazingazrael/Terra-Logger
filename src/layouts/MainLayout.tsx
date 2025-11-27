@@ -7,7 +7,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDB } from "../db/DataContext";
 import { ToastContainer } from "react-toastify";
@@ -104,9 +104,21 @@ function MainLayout() {
 		(async () => {
 			const s = await getAppSettings();
 			const maybeTheme = s?.userSettings?.theme;
-			if (maybeTheme === "dark" || maybeTheme === "light") setThemeName(maybeTheme);
+			if (maybeTheme === "dark" || maybeTheme === "light")
+				setThemeName(maybeTheme);
 		})();
 	}, []);
+
+	// Centralized "reload maps list" helper, shared via Outlet context
+	const reloadMapsList = useCallback(async () => {
+		const mapsData = await getFullStore("maps");
+		setMapsList(mapsData);
+	}, []);
+
+	// Load maps list once on mount
+	useEffect(() => {
+		void reloadMapsList();
+	}, [reloadMapsList]);
 
 	// Live-update theme when Settings broadcasts a change
 	useEffect(() => {
@@ -143,28 +155,6 @@ function MainLayout() {
 		 * This ensures that the theme is updated correctly when the user changes their preference.
 		 */
 	}, [themeName]);
-
-	/**
-	 * Function to fetch the list of maps from the database and set it to the `mapsList` state.
-	 * The function is called when the component mounts.
-	 */
-
-	useEffect(() => {
-		const fetchMapsList = async () => {
-			/**
-			 * Fetch the list of maps from the database.
-			 * The `getFullStore` function returns a promise that resolves with an array of all data from the "maps" store.
-			 */
-			const mapsData = await getFullStore("maps");
-			setMapsList(mapsData);
-		};
-
-		const intervalId = setInterval(fetchMapsList, 2000); // poll the database every 1 second
-
-		return () => {
-			clearInterval(intervalId);
-		};
-	}, []);
 
 	useEffect(() => {
 		if (
@@ -214,7 +204,9 @@ function MainLayout() {
 						<ContentMain className="Content">
 							<NavTrail />
 							<div className="contentBody">
-								<Outlet context={{ Theme, mapsList }} />
+								<Outlet
+									context={{ Theme, mapsList, setThemeName, reloadMapsList }}
+								/>
 							</div>
 						</ContentMain>
 					</Grid>

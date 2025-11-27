@@ -15,7 +15,7 @@ import type { AppInfo } from "../../definitions/AppInfo";
 function Settings(): JSX.Element {
 	const [app, setApp] = useState<AppInfo | null>(null);
 
-	const { mapsList }: Context = useOutletContext();
+	const { mapsList, setThemeName }: Context = useOutletContext();
 
 	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
 
@@ -33,13 +33,13 @@ function Settings(): JSX.Element {
 			const next = {
 				...prev,
 				userSettings: { ...prev.userSettings, theme: newTheme },
-			};
+			} as AppInfo;
 			// persist using the same object we just committed to state (no stale reads)
 			void setTheme(newTheme);
-			// notify the app so MainLayout can swap themes immediately
-			window.dispatchEvent(
-				new CustomEvent("theme-change", { detail: { theme: newTheme } }),
-			);
+
+			// tell the layout to swap themes immediately (no global events)
+			setThemeName(newTheme);
+
 			return next;
 		});
 	};

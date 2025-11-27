@@ -10,6 +10,10 @@ import type { MapInf } from "./TerraLogger";
 interface Context {
   Theme: Theme;
   mapsList: MapInf[];
+  /** Ask the layout to update the current theme (light/dark) immediately. */
+  setThemeName: (theme: "light" | "dark") => void;
+  /** Ask the layout to reload the maps list from IndexedDB. */
+  reloadMapsList: () => Promise<void>;
 }
 type Tag = {
   _id: string;

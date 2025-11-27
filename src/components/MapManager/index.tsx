@@ -28,7 +28,7 @@ const modalStyle = {
 
 const MapManager: React.FC = () => {
 	const { activeMapId, setActive } = useDB();
-	const { mapsList }: Context = useOutletContext();
+	const { mapsList, reloadMapsList }: Context = useOutletContext();
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
 
 	const [open, setOpen] = useState(false);
@@ -62,14 +62,11 @@ const MapManager: React.FC = () => {
 
 		await Promise.all(allPromises);
 
-		// If the active map was deleted, pick a new one if available
+		// ensure the sidebar list reflects deletions immediately
+		await reloadMapsList();
+
+		// if the active map was deleted, clear it
 		if (selectedMaps.includes(activeMapId ?? "")) {
-			// const remaining = mapsList.filter(
-			// 	(m: MapInf) => !selectedMaps.includes(m.mapId),
-			// );
-			// if (remaining.length > 0) {
-			// 	await setActive(remaining[0].mapId);
-			// }
 			await setActive("");
 		}
 
