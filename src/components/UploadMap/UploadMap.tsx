@@ -12,8 +12,11 @@ import { useDB } from "../../db/DataContext";
 import { addDataToStore } from "../../db/interactions.tsx";
 import { getAppSettings } from "../../db/appSettings";
 
+import { useOutletContext } from "react-router-dom";
+
 import type { MapInf } from "../../definitions/TerraLogger.ts";
 import type { AppInfo } from "../../definitions/AppInfo.ts";
+import type { Context } from "../../definitions/Common.ts";
 
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -41,6 +44,8 @@ function UploadMap() {
 	const { setActive } = useDB();
 	const [app, setApp] = useState<AppInfo | null>(null);
 	const [isLoading, setLoading] = useState(false);
+
+	const { reloadMapsList } = useOutletContext<Context>();
 
 	const OLDEST_SUPPORTED_VERSION = "1.105.15";
 	const afmgMin = "1.105.15";
@@ -219,6 +224,9 @@ function UploadMap() {
 
 		// Wait for everything to be committed
 		await Promise.all(ops);
+
+		// Refresh sidebar maps list immediately (replaces old polling)
+		await reloadMapsList();
 
 		// Now mark active (so routes read a fully-populated DB)
 		await setActive(mapId);
