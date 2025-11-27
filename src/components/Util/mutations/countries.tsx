@@ -2,13 +2,13 @@ import { v7 as uuidv7 } from "uuid";
 
 import { createEmptyCountry } from "../mkEmpty/tlCountry";
 
-import getCOA from "../generators/coa/render.tsx";
+import getCOA from "../generators/coa/render";
 
 import type {
 	TLMapInfo,
 	TLCountry,
 	TLDiplomacy,
-} from "../../../definitions/TerraLogger.ts";
+} from "../../../definitions/TerraLogger";
 
 export const mutateCountries = async (
 	data: MapInfo,

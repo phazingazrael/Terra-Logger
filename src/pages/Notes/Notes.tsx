@@ -13,7 +13,7 @@ import { BookLoader } from "../../components/Util";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 
-const NoteCard = lazy(() => import("../../components/Cards/note.tsx"));
+const NoteCard = lazy(() => import("../../components/Cards/note"));
 
 import "./Notes.css";
 

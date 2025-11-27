@@ -24,16 +24,16 @@ import {
 	useDeferredValue,
 } from "react";
 import { useDB } from "../../db/DataContext";
-import { getAllTags } from "../../components/Tags/Tags.tsx";
+import { getAllTags } from "../../components/Tags/Tags";
 
 import "./citiesPage.css";
 
-import BookLoader from "../../components/Util/bookLoader.tsx";
+import BookLoader from "../../components/Util/bookLoader";
 
 import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
-import type { Tag } from "../../definitions/Common.ts";
+import type { Tag } from "../../definitions/Common";
 
-const CityCard = lazy(() => import("../../components/Cards/city.tsx"));
+const CityCard = lazy(() => import("../../components/Cards/city"));
 
 type CountryListItem = {
 	name: string;

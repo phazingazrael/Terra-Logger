@@ -4,16 +4,16 @@ import { useDB } from "../../db/DataContext";
 import {
 	deleteDataFromStore,
 	deleteDataFromStoreByMapId,
-} from "../../db/interactions.tsx";
+} from "../../db/interactions";
 
 import "./index.css";
-import { MapsCard } from "../Cards/index.tsx";
-import UploadMap from "../UploadMap/UploadMap.tsx";
+import { MapsCard } from "../Cards/index";
+import UploadMap from "../UploadMap/UploadMap";
 import shadows from "@mui/material/styles/shadows";
 import { useOutletContext } from "react-router-dom";
-import type { Context } from "../../definitions/Common.ts";
+import type { Context } from "../../definitions/Common";
 
-// import type { MapInf } from "../../definitions/TerraLogger.ts";
+// import type { MapInf } from "../../definitions/TerraLogger";
 
 const modalStyle = {
 	position: "absolute",

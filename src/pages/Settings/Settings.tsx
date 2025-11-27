@@ -5,8 +5,8 @@ import { IconContext } from "react-icons";
 
 import "./Settings.css";
 
-import MapManager from "../../components/MapManager/index.tsx";
-import UploadMap from "../../components/UploadMap/UploadMap.tsx";
+import MapManager from "../../components/MapManager/index";
+import UploadMap from "../../components/UploadMap/UploadMap";
 import { useOutletContext } from "react-router-dom";
 
 import { getAppSettings, setTheme } from "../../db/appSettings";

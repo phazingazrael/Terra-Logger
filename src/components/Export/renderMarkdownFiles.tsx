@@ -11,8 +11,8 @@ import type {
 	TemplateMap,
 } from "../../definitions/Export";
 import type { TLNote } from "../../definitions/TerraLogger";
-import { DEFAULT_RENDER_OPTIONS } from "./Constants.tsx";
-import { botiNoteFolder } from "./BotiUtils.tsx";
+import { DEFAULT_RENDER_OPTIONS } from "./Constants";
+import { botiNoteFolder } from "./BotiUtils";
 import { resolveNoteTemplate } from "./templateUtils";
 
 // === 🔤 Filename + Slug Helpers ===

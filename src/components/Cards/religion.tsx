@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import {
 	Button,
 	Card,
@@ -47,7 +48,7 @@ function ReligionCard(props: Readonly<TLReligion>) {
 					boxShadow: 2,
 				}}
 			>
-				{getFormIcon(religion.form)}
+				{createElement(getFormIcon(religion.form))}
 			</Avatar>
 
 			<CardContent sx={{ flexGrow: 1, pt: 3 }}>
@@ -108,7 +109,7 @@ function ReligionCard(props: Readonly<TLReligion>) {
 									<span
 										style={{ color: Theme.palette.common.white, marginTop: 7 }}
 									>
-										{getFormIcon(religion.form)}
+										{createElement(getFormIcon(religion.form))}
 									</span>
 								</Box>
 							}

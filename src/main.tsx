@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { DBProvider } from "./db/DataContext";
-import App from "./App.tsx";
+import App from "./App";
 import "./index.css";
 
 const root = document.getElementById("root");

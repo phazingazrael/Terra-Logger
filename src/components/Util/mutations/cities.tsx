@@ -2,7 +2,7 @@ import { minmax } from "../../Util";
 
 import { v7 as uuidv7 } from "uuid";
 
-import getCOA from "../generators/coa/render.tsx";
+import getCOA from "../generators/coa/render";
 
 import type { TLMapInfo, TLCity } from "../../../definitions/TerraLogger";
 

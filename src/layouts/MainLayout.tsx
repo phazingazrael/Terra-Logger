@@ -16,13 +16,13 @@ import { MainNav, NavTrail } from "../components";
 
 import { ContentMain } from "../components/Styled";
 
-import { getFullStore } from "../db/interactions.tsx";
+import { getFullStore } from "../db/interactions";
 import { getAppSettings } from "../db/appSettings";
 
 import type { MapInf } from "../definitions/TerraLogger";
 
 import KuashanScript from "../assets/fonts/KaushanScript-Regular.ttf";
-import { ProdAnalytics } from "../analytics.tsx";
+import { ProdAnalytics } from "../analytics";
 
 const light = createTheme({
 	palette: {

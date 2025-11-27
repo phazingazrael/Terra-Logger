@@ -3,20 +3,20 @@ import { Alert, AlertTitle, Divider, Stack, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import mutateData from "./Mutate.tsx";
-import { parseLoadedData, parseLoadedResult } from "./Parse.tsx";
-import BookLoader from "../Util/bookLoader.tsx";
+import mutateData from "./Mutate";
+import { parseLoadedData, parseLoadedResult } from "./Parse";
+import BookLoader from "../Util/bookLoader";
 
 import { useDB } from "../../db/DataContext";
 
-import { addDataToStore } from "../../db/interactions.tsx";
+import { addDataToStore } from "../../db/interactions";
 import { getAppSettings } from "../../db/appSettings";
 
 import { useOutletContext } from "react-router-dom";
 
-import type { MapInf } from "../../definitions/TerraLogger.ts";
-import type { AppInfo } from "../../definitions/AppInfo.ts";
-import type { Context } from "../../definitions/Common.ts";
+import type { MapInf } from "../../definitions/TerraLogger";
+import type { AppInfo } from "../../definitions/AppInfo";
+import type { Context } from "../../definitions/Common";
 
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";

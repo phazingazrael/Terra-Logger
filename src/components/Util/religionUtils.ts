@@ -30,6 +30,24 @@ const formColors = {
 	Heresy: "#c62828",
 };
 
+// Map forms to icons and colors
+const formIcons = {
+	Shamanism: AutoAwesomeIcon,
+	Animism: PetsIcon,
+	Polytheism: PublicIcon,
+	"Ancestor Worship": GroupsIcon,
+	"Nature Worship": ParkIcon,
+	Totemism: AccountTreeIcon,
+	Monotheism: LooksOneIcon,
+	Dualism: CompareIcon,
+	Pantheism: AllInclusiveIcon,
+	"Non-theism": DoNotDisturbIcon,
+	Cult: GroupWorkIcon,
+	"Dark Cult": NightlightIcon,
+	Sect: GroupIcon,
+	Heresy: WarningIcon,
+};
+
 export function getFormColor(form: string | undefined) {
 	return formColors[form as keyof typeof formColors] || "#9e9e9e";
 }
@@ -47,24 +65,6 @@ export const getTypeColor = (type: string | undefined) => {
 	}
 };
 
-// Map forms to icons and colors
-const formIcons = {
-	Shamanism: <AutoAwesomeIcon />,
-	Animism: <PetsIcon />,
-	Polytheism: <PublicIcon />,
-	"Ancestor Worship": <GroupsIcon />,
-	"Nature Worship": <ParkIcon />,
-	Totemism: <AccountTreeIcon />,
-	Monotheism: <LooksOneIcon />,
-	Dualism: <CompareIcon />,
-	Pantheism: <AllInclusiveIcon />,
-	"Non-theism": <DoNotDisturbIcon />,
-	Cult: <GroupWorkIcon />,
-	"Dark Cult": <NightlightIcon />,
-	Sect: <GroupIcon />,
-	Heresy: <WarningIcon />,
-};
-
 export function getFormIcon(form: string) {
-	return formIcons[form as keyof typeof formIcons] || <PublicIcon />;
+	return formIcons[form as keyof typeof formIcons] || PublicIcon;
 }
