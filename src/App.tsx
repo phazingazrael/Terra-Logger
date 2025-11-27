@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useDB } from "./db/DataContext";
 import { useDeviceType } from "./hooks/useDeviceType";
-import { getDataFromStore } from "./db/interactions";
-import Package from "../package.json";
+import { getAppSettings } from "./db/appSettings";
 
 import MobileLayout from "./layouts/MobileLayout";
 
@@ -25,12 +24,8 @@ const App = (): JSX.Element => {
 		let cancelled = false;
 		(async () => {
 			try {
-				const id = `TL_${Package.version}`;
-				const settings = (await getDataFromStore(
-					"appSettings",
-					id,
-				)) as AppInfo | null;
-				if (!cancelled) setAppSettings(settings ?? null);
+				const settings = await getAppSettings();
+				if (!cancelled) setAppSettings(settings);
 			} catch (e) {
 				console.error("Failed to load appSettings:", e);
 				if (!cancelled) setAppSettings(null);

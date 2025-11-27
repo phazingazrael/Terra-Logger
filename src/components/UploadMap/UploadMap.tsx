@@ -9,7 +9,8 @@ import BookLoader from "../Util/bookLoader.tsx";
 
 import { useDB } from "../../db/DataContext";
 
-import { addDataToStore, getFullStore } from "../../db/interactions.tsx";
+import { addDataToStore } from "../../db/interactions.tsx";
+import { getAppSettings } from "../../db/appSettings";
 
 import type { MapInf } from "../../definitions/TerraLogger.ts";
 import type { AppInfo } from "../../definitions/AppInfo.ts";
@@ -50,9 +51,8 @@ function UploadMap() {
 	// Load current app settings (for version info)
 	useEffect(() => {
 		(async () => {
-			const rows = await getFullStore("appSettings");
-			const latest = rows?.[rows.length - 1] as AppInfo | undefined;
-			if (latest) setApp(latest);
+			const s = await getAppSettings();
+			setApp(s);
 		})();
 	}, []);
 

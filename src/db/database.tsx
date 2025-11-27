@@ -1,6 +1,5 @@
 // src/db/database.tsx
 import { openDB, type IDBPDatabase } from "idb";
-import Package from "../../package.json";
 
 export const stores = [
 	"cities",
@@ -17,35 +16,6 @@ export type MapScopedStore = (typeof stores)[number];
 
 // biome-ignore lint/suspicious/noExplicitAny: IDB generic for multiple stores
 let dbPromise: Promise<IDBPDatabase<any>> | null = null;
-
-const defaultAppSettings = () => ({
-	id: `TL_${Package.version}`,
-	application: {
-		name: Package.name,
-		version: Package.version,
-		afmgVer: "1.105.15",
-		supportedLanguages: ["en"],
-		defaultLanguage: "en",
-		onboarding: true,
-		description: Package.descriptionFull ?? "",
-	},
-	userSettings: {
-		theme: "light",
-		language: "en",
-		showWelcomeMessage: true,
-		fontSize: "medium",
-		exportOption: "",
-		screen: {
-			innerWidth: window.innerWidth,
-			innerHeight: window.innerHeight,
-			outerWidth: window.outerWidth,
-			outerHeight: window.outerHeight,
-			devicePixelRatio: window.devicePixelRatio,
-		},
-		// important: default present so later writes only flip the flag
-		forceMobile: false,
-	},
-});
 
 export const initDatabase = async () => {
 	if (!dbPromise) {
@@ -87,15 +57,6 @@ export const initDatabase = async () => {
 					}
 				},
 			});
-
-			// Ensure a default appSettings row exists (common Android issue: missing row -> updates noop)
-			const settingsId = `TL_${Package.version}`;
-			const tx = db.transaction("appSettings", "readwrite");
-			const existing = await tx.store.get(settingsId);
-			if (!existing) {
-				await tx.store.put(defaultAppSettings());
-			}
-			await tx.done;
 
 			// (Optional) Ask for persistent storage to reduce eviction on mobile
 			// void navigator.storage?.persist?.();

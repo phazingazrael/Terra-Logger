@@ -1,16 +1,15 @@
 import { Container, Divider, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getFullStore } from "../../db/interactions.tsx";
 import type { AppInfo } from "../../definitions/AppInfo";
+import { getAppSettings } from "../../db/appSettings";
 
 const HomePage = () => {
 	const [app, setApp] = useState<AppInfo | null>(null);
 
 	useEffect(() => {
 		(async () => {
-			const rows = await getFullStore("appSettings");
-			const latest = rows?.[rows.length - 1];
-			setApp((latest ?? null) as AppInfo | null);
+			const s = await getAppSettings();
+			setApp(s);
 		})();
 	}, []);
 

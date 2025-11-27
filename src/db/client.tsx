@@ -1,5 +1,6 @@
 // src/db/client.ts
 import { initDatabase } from "./database";
+import { getAppSettings, updateAppSettings } from "./appSettings";
 import {
 	addDataToStore,
 	updateDataInStore,
@@ -9,9 +10,7 @@ import {
 
 import type { AppInfo } from "../definitions/AppInfo";
 
-import Package from "../../package.json";
 import type { TLMapInfo } from "../definitions/TerraLogger";
-const SETTINGS_ID = `TL_${Package.version}` as const;
 
 /** Store names that have a "mapIdIndex" */
 export type MapScopedStore =
@@ -35,26 +34,6 @@ const ALL_STORES: MapScopedStore[] = [
 	"tags",
 ];
 
-// ---------- appSettings helpers (no schema changes) ----------
-
-async function getAppSettings(): Promise<AppInfo> {
-	const db = await initDatabase();
-	const settings = (await db.get("appSettings", SETTINGS_ID)) as
-		| AppInfo
-		| undefined;
-	if (!settings) {
-		throw new Error(
-			`appSettings '${SETTINGS_ID}' not found. Seed it before using activeMap helpers.`,
-		);
-	}
-	return settings;
-}
-
-async function putAppSettings(next: AppInfo): Promise<void> {
-	const db = await initDatabase();
-	await db.put("appSettings", next); // keyPath: 'id'
-}
-
 export async function getActiveMapId(): Promise<string> {
 	const s = await getAppSettings();
 	if (s.activeMapId === null) {
@@ -64,11 +43,11 @@ export async function getActiveMapId(): Promise<string> {
 }
 
 export async function setActiveMapId(mapId: string): Promise<void> {
-	const s = await getAppSettings();
-	if (s.activeMapId === mapId) return; // no-op
-	await putAppSettings({ ...s, activeMapId: mapId });
+	await updateAppSettings((prev) => {
+		if (prev.activeMapId === mapId) return prev;
+		return { ...prev, activeMapId: mapId };
+	});
 }
-
 // ---------- map-scoped reads using your existing index ----------
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

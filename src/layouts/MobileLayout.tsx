@@ -6,8 +6,7 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { getDataFromStore, updateDataInStore } from "../db/interactions";
-import Package from "../../package.json";
+import { getAppSettings, setForceMobile } from "../db/appSettings";
 import type { AppInfo } from "../definitions/AppInfo";
 
 import "./MobileLayout.css";
@@ -16,35 +15,25 @@ const MobileLayout = () => {
 	const [confirm, setConfirm] = useState(false);
 	const [saving, setSaving] = useState(false);
 	const [appSettings, setAppSettings] = useState<AppInfo | null>(null);
-	const settingsId = `TL_${Package.version}`;
 
 	// Load current app settings so we can persist the new flag without losing anything
 	useEffect(() => {
-		let mounted = true;
 		(async () => {
 			try {
-				const existing = (await getDataFromStore(
-					"appSettings",
-					settingsId,
-				)) as AppInfo | null;
-				if (mounted) setAppSettings(existing ?? null);
+				const existing = await getAppSettings();
+				setAppSettings(existing);
 			} catch (err) {
 				console.error("Failed to load appSettings:", err);
 			}
 		})();
-		return () => {
-			mounted = false;
-		};
-	}, [settingsId]);
+	}, []);
 
 	const enableForceMobile = async () => {
 		if (!appSettings) return; // shouldn't happen
 		setSaving(true);
 		try {
-			await updateDataInStore("appSettings", settingsId, {
-				...appSettings,
-				forceMobile: true,
-			});
+			await setForceMobile(true);
+			setAppSettings((prev) => (prev ? { ...prev, forceMobile: true } : prev));
 		} catch (err) {
 			console.error("Failed to update appSettings.forceMobile:", err);
 		} finally {

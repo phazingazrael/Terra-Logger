@@ -4,13 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 
 import "./Settings.css";
-import Package from "../../../package.json";
 
 import MapManager from "../../components/MapManager/index.tsx";
 import UploadMap from "../../components/UploadMap/UploadMap.tsx";
 import { useOutletContext } from "react-router-dom";
 
-import { getFullStore, updateDataInStore } from "../../db/interactions.tsx";
+import { getAppSettings, setTheme } from "../../db/appSettings";
 import type { AppInfo } from "../../definitions/AppInfo";
 
 function Settings(): JSX.Element {
@@ -23,9 +22,8 @@ function Settings(): JSX.Element {
 	// Load current app settings from IndexedDB
 	useEffect(() => {
 		(async () => {
-			const rows = await getFullStore("appSettings");
-			const latest = rows?.[rows.length - 1] as AppInfo | undefined;
-			if (latest) setApp(latest);
+			const s = await getAppSettings();
+			setApp(s);
 		})();
 	}, []);
 
@@ -37,7 +35,7 @@ function Settings(): JSX.Element {
 				userSettings: { ...prev.userSettings, theme: newTheme },
 			};
 			// persist using the same object we just committed to state (no stale reads)
-			void updateDataInStore("appSettings", `TL_${Package.version}`, next);
+			void setTheme(newTheme);
 			// notify the app so MainLayout can swap themes immediately
 			window.dispatchEvent(
 				new CustomEvent("theme-change", { detail: { theme: newTheme } }),

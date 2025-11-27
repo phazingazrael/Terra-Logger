@@ -17,6 +17,7 @@ import { MainNav, NavTrail } from "../components";
 import { ContentMain } from "../components/Styled";
 
 import { getFullStore } from "../db/interactions.tsx";
+import { getAppSettings } from "../db/appSettings";
 
 import type { MapInf } from "../definitions/TerraLogger";
 
@@ -101,10 +102,9 @@ function MainLayout() {
 	// Load theme from appSettings once on mount
 	useEffect(() => {
 		(async () => {
-			const settings = await getFullStore("appSettings");
-			const latest = settings?.[settings.length - 1];
-			const next = latest?.userSettings?.theme ?? "light";
-			setThemeName(next);
+			const s = await getAppSettings();
+			const maybeTheme = s?.userSettings?.theme;
+			if (maybeTheme === "dark" || maybeTheme === "light") setThemeName(maybeTheme);
 		})();
 	}, []);
 
