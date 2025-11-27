@@ -8,8 +8,6 @@ import {
 	queryDataFromStore,
 } from "./interactions";
 
-import type { AppInfo } from "../definitions/AppInfo";
-
 import type { TLMapInfo } from "../definitions/TerraLogger";
 
 /** Store names that have a "mapIdIndex" */
