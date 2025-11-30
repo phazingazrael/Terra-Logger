@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-	Button,
-	Checkbox,
-	FormControlLabel,
-	Stack,
-	Typography,
-} from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { getAppSettings, setForceMobile } from "../db/appSettings";
 import type { AppInfo } from "../definitions/AppInfo";
 
