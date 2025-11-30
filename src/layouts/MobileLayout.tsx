@@ -48,9 +48,11 @@ const MobileLayout = () => {
 		<div className="MobileLayout">
 			<section className="section">
 				<Typography variant="h2" align="center" gutterBottom>
-					Hello! Thank you for visiting Terra-Logger!
+					Hello!
 				</Typography>
-
+				<Typography variant="h6" align="center" gutterBottom>
+					Thank you for visiting Terra-Logger
+				</Typography>
 				<div>
 					<p>
 						Unfortunately Terra-Logger does not support mobile devices, please
@@ -66,22 +68,24 @@ const MobileLayout = () => {
 					<p>
 						While I do not wish to fully discourage you from visiting the site
 						on a mobile device, I cannot guarantee that it will work as intended
-						for your device. If you wish to continue on—go with the saying “Here
-						there be dragons”—you may do so by acknowledging below.
+						for your device. If you wish to continue on you may do so by
+						acknowledging below.
 					</p>
 				</div>
 
 				<Stack spacing={2} alignItems="center" sx={{ mt: 2 }}>
-					<FormControlLabel
-						control={
-							<Checkbox
-								checked={confirm}
-								onChange={(_, checked) => setConfirm(checked)}
-								sx={{ "&::before": { content: '"Acknowledge mobile risks"' } }}
-							/>
-						}
-						label="I understand the risks and want to continue on mobile."
+					<input
+						type="checkbox"
+						checked={confirm}
+						className="CheckBox"
+						id="mobile-acknowledge"
+						// onChange={(_, checked) => setConfirm(checked)}
+						onChange={(e) => setConfirm(e.target.checked)}
+						// sx={{ "&::before": { content: '"Acknowledge Mobile Risks"' } }}
 					/>
+					<label htmlFor="mobile-acknowledge">
+						I understand the risks and want to continue on mobile.
+					</label>
 
 					{confirm ? (
 						<Button

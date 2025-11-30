@@ -1,7 +1,57 @@
-.section {
-  background-color: rgba(255, 255, 255, 0.7);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+.MobileLayout .section {
+  margin: 12px;
+  background-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.65);
   border-radius: 8px;
   padding: 12px;
-  margin-bottom: 24px;
+}
+
+.MobileLayout .section h6 {
+  margin-top: -8px;
+  margin-left: -4%;
+  margin-right: -4%;
+}
+
+.MobileLayout .section p {
+  text-align: center;
+  font-size: large;
+}
+
+.MobileLayout input[type="checkbox"] {
+  display: none;
+}
+
+.MobileLayout input[type="checkbox"] + label {
+  position: relative;
+  padding-left: 35px;
+}
+
+.MobileLayout input[type="checkbox"] + label:last-child {
+  margin-bottom: 0;
+}
+
+.MobileLayout input[type="checkbox"] + label:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #8309ac;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.6;
+  -webkit-transition: all 0.12s, border-color 0.08s;
+  transition: all 0.12s, border-color 0.08s;
+}
+
+.MobileLayout input[type="checkbox"]:checked + label:before {
+  width: 10px;
+  top: -5px;
+  left: 5px;
+  border-radius: 0;
+  opacity: 1;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
