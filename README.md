@@ -48,7 +48,8 @@ We have exciting plans for future versions of Terra-Logger:
 ### Version 1.1.0
 
 - [x] Additional Exports (Cultures, Notes, more?)
-- [ ] Ability to choose between multiple Markdown Templates.
+- [x] Ability to choose between multiple Markdown Templates.
+  - Currently only basic Markdown and the Bag of Tips Inspired Vault.
 - [ ] Customize page sections; Title, Subtitle, Segments, etc.
   - [ ] "Default".
   - [ ] "Minimal".
@@ -60,6 +61,7 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.2.0
 
+- [ ] Implement [Chris Whong's](https://github.com/chriswhong) [Mapbox Gl Version](https://github.com/chriswhong/mapbox-fantasy-map-generator) of AFMG?
 - [ ] Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
 
 ## Contributing
