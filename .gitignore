@@ -131,7 +131,7 @@ dist
 .yarn/unplugged
 
 # Editor directories and files
-# .vscode/*
+.vscode/*
 .better-commits.json
 .DS_Store
 .idea
@@ -152,4 +152,3 @@ biome.json
 dist-ssr
 yarn.lock
 package-lock.json
-.vscode/settings.json
