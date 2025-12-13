@@ -1,6 +1,6 @@
 {
   "type": "View",
-  "sourceType": "city",
+  "sourceType": "country",
   "props": {
     "className": "content-grid",
     "title": "Content Grid"
@@ -10,7 +10,7 @@
       "type": "Section",
       "props": {
         "title": "Features",
-        "className": "section features"
+        "className": "section citiesList"
       },
       "children": [
         {
@@ -23,7 +23,7 @@
             {
               "type": "Text",
               "props": {
-                "text": "Features"
+                "text": "Cities"
               }
             },
             {
@@ -40,7 +40,7 @@
           "props": {
             "listtype": "Chips",
             "className": "tag-list",
-            "listname": "features"
+            "listname": "cities"
           }
         }
       ]
@@ -48,7 +48,8 @@
     {
       "type": "Section",
       "props": {
-        "className": "section tags"
+        "title": "Military",
+        "className": "section military"
       },
       "children": [
         {
@@ -61,7 +62,7 @@
             {
               "type": "Text",
               "props": {
-                "text": "Tags"
+                "text": "Military"
               }
             },
             {
@@ -74,11 +75,9 @@
           ]
         },
         {
-          "type": "DataList",
+          "type": "List",
           "props": {
-            "listtype": "Chips",
-            "className": "tag-list",
-            "listname": "tags"
+            "listtype": "Military"
           }
         }
       ]
@@ -86,7 +85,7 @@
     {
       "type": "Section",
       "props": {
-        "className": "section map-link"
+        "className": "section political-info"
       },
       "children": [
         {
@@ -99,194 +98,104 @@
             {
               "type": "Text",
               "props": {
-                "text": "Map"
-              }
-            },
-            {
-              "type": "Icon",
-              "props": {
-                "name": "GiSparkles",
-                "style": "DynamicSparkle"
+                "text": "Political Information"
               }
             }
           ]
         },
         {
-          "type": "Linkage",
+          "type": "List",
           "props": {
-            "target": "_blank",
-            "rel": "noopener noreferrer",
-            "text": "🗺️ View City Map",
-            "linkname": "cityMap"
+            "listtype": "Detail",
+            "className": "info",
+            "listname": "PoliticalInfoDetail"
+          },
+          "children": [
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Government Type:"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Capital:"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Current Ruler(s):",
+                "value": "[King, High Priestess, AI Overlord, Elder Council, etc.]"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Noble Houses & Factions:",
+                "value": "[Major power groups, noble families, rival factions.]"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Laws & Justice System:",
+                "value": "[Trial by combat? Magic-enforced law? A dystopian police state?]"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Corruption Level:",
+                "value": "[Low, moderate, high, controlled by crime syndicates.]"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "className": "section economy"
+      },
+      "children": [
+        {
+          "type": "Typography",
+          "props": {
+            "color": "text.secondary",
+            "component": "h2"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "Economy"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SubList",
+          "props": {
+            "listtype": "Detail",
+            "className": "sub-lists",
+            "listname": "economy-ex-imports"
           }
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
-        "className": "section history"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "History"
-              }
-            }
-          ]
         },
         {
           "type": "List",
           "props": {
             "listtype": "Detail",
             "className": "info",
-            "listname": "HistoryDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Notable Founding Myths/Legends:",
-                "value": "[Ancient tales about how the city was formed or its divine/magical origins.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Major Wars & Conflicts:",
-                "value": "[Significant wars, galactic conflicts, magical wars, or civil uprisings.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Epochs & Eras:",
-                "value": "[Different historical periods, dynasties, or interstellar ages.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Notable Leaders & Rulers:",
-                "value": "[Kings, Emperors, Warlords, AI Governors, etc.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
-        "className": "section geography-environment"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Geography & Environment"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "GeographyEnvironmentDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Location:",
-                "value": "[Describe location within the world, dimension, or space sector.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Climate & Atmosphere:",
-                "value": "[Earth-like, toxic, magical storms, artificial climate, etc.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Topography & Terrain:",
-                "value": "[Floating islands, underground caverns, space stations, etc.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Planar/Dimensional Traits:",
-                "value": "[Is it tied to another plane? Does time move differently here?]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Unique Natural Features:",
-                "value": "[Magical ley lines, sentient forests, shifting deserts, etc.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
-        "className": "section economy-trade"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Economy & Trade"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "EconomyTradeDetail"
+            "listname": "EconomyDetail"
           },
           "children": [
             {
@@ -303,6 +212,77 @@
                 "itemtype": "Detail",
                 "label": "Currency & Trade:",
                 "value": "[Gold coins, credits, mana crystals, barter system, etc.]"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Notable Guilds & Corporations:",
+                "value": "[Merchant houses, cybernetic megacorps, thieves’ guilds, etc.]"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Detail",
+                "label": "Black Market & Illicit Trade:",
+                "value": "[Contraband, smugglers, underground syndicates.]"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "className": "section diplomacy"
+      },
+      "children": [
+        {
+          "type": "Typography",
+          "props": {
+            "color": "text.secondary",
+            "component": "h2"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "Diplomacy"
+              }
+            },
+            {
+              "type": "Icon",
+              "props": {
+                "name": "GiSparkles",
+                "style": "DynamicSparkle"
+              }
+            }
+          ]
+        },
+        {
+          "type": "List",
+          "props": {
+            "listtype": "Unordered",
+            "className": "diplomacy-relations",
+            "listname": "DiplomacyList",
+            "listheading": "Friendly"
+          },
+          "children": [
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Unordered",
+                "text": "Principality of Victrixia"
+              }
+            },
+            {
+              "type": "ListItem",
+              "props": {
+                "itemtype": "Unordered",
+                "text": "Milfordean League"
               }
             },
             {
@@ -336,7 +316,7 @@
     {
       "type": "Section",
       "props": {
-        "className": "section government-power"
+        "className": "section history"
       },
       "children": [
         {
@@ -349,7 +329,7 @@
             {
               "type": "Text",
               "props": {
-                "text": "Government & Power Structure"
+                "text": "History"
               }
             }
           ]
@@ -366,40 +346,32 @@
               "type": "ListItem",
               "props": {
                 "itemtype": "Detail",
-                "label": "Government Type:",
-                "value": "[Monarchy, Theocracy, AI-Controlled, Mage Council, etc.]"
+                "label": "Notable Founding Myths/Legends:",
+                "value": "[Ancient tales about how the city was formed or its divine/magical origins.]"
               }
             },
             {
               "type": "ListItem",
               "props": {
                 "itemtype": "Detail",
-                "label": "Current Ruler(s):",
-                "value": "[King, High Priestess, AI Overlord, Elder Council, etc.]"
+                "label": "Major Wars & Conflicts:",
+                "value": "[Significant wars, galactic conflicts, magical wars, or civil uprisings.]"
               }
             },
             {
               "type": "ListItem",
               "props": {
                 "itemtype": "Detail",
-                "label": "Noble Houses & Factions:",
-                "value": "[Major power groups, noble families, rival factions.]"
+                "label": "Epochs & Eras:",
+                "value": "[Different historical periods, dynasties, or interstellar ages.]"
               }
             },
             {
               "type": "ListItem",
               "props": {
                 "itemtype": "Detail",
-                "label": "Laws & Justice System:",
-                "value": "[Trial by combat? Magic-enforced law? A dystopian police state?]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Corruption Level:",
-                "value": "[Low, moderate, high, controlled by crime syndicates.]"
+                "label": "Notable Leaders & Rulers:",
+                "value": "[Kings, Emperors, Warlords, AI Governors, etc.]"
               }
             }
           ]
@@ -473,79 +445,6 @@
                 "itemtype": "Detail",
                 "label": "Caste/Class System:",
                 "value": "[Strict hierarchy, meritocracy, anarchist communes, slave societies.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
-        "className": "section military-defense"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Military & Defense"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "MilitaryDefenseDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "City Guard & Enforcers:",
-                "value": "[Knights, robotic enforcers, spectral guardians, etc.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Standing Army/Navy:",
-                "value": "[Size and structure of land, sea, air, or space forces.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Walls & Defenses:",
-                "value": "[Titanium barriers, magical shields, psychic wards.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Notable Weapons & Technology:",
-                "value": "[Arcane cannons, plasma rifles, necromantic constructs.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Mercenaries & Private Forces:",
-                "value": "[Who offers protection outside of government control?]"
               }
             }
           ]
@@ -685,71 +584,6 @@
     {
       "type": "Section",
       "props": {
-        "className": "section crime-underworld"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Crime & Underworld"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "CrimeUnderworldDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Thieves' Guilds & Crime Syndicates:",
-                "value": "[Who controls the underground economy?]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Black Markets & Smuggling Rings:",
-                "value": "[Illegal tech, cursed artifacts, ancient relics.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Assassins & Mercenaries:",
-                "value": "[Infamous killers, rogue mages, bounty hunters.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Notable Criminals & Outlaws:",
-                "value": "[Legendary thieves, escaped war criminals, anarchist hackers.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
         "className": "section religion-mythology"
       },
       "children": [
@@ -815,112 +649,6 @@
     {
       "type": "Section",
       "props": {
-        "className": "section notable-locations"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Notable Locations & Landmarks"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "NotableLocationsDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "The Great Palace/Throne Room:",
-                "value": "[Seat of power, filled with ancient relics.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "The Arcane University/Tech Lab:",
-                "value": "[Center of magical/scientific advancement.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "The Underbelly/Sewers/Shadow City:",
-                "value": "[Underground city full of secrets.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "The Astral Tower/Observatory:",
-                "value": "[Study of other planes, stars, and cosmic entities.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
-        "className": "section sister-cities"
-      },
-      "children": [
-        {
-          "type": "Typography",
-          "props": {
-            "color": "text.secondary",
-            "component": "h2"
-          },
-          "children": [
-            {
-              "type": "Text",
-              "props": {
-                "text": "Sister Cities & Interstellar Relations"
-              }
-            }
-          ]
-        },
-        {
-          "type": "List",
-          "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "SisterCitiesDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Sister Cities & Diplomatic Ties:",
-                "value": "[List of allied cities, rival cities, or otherworldly diplomatic ties.]"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Section",
-      "props": {
         "className": "section notable-figures"
       },
       "children": [
@@ -962,7 +690,8 @@
     {
       "type": "Section",
       "props": {
-        "className": "section adventurers-mercenaries"
+        "title": "Tags",
+        "className": "section tags"
       },
       "children": [
         {
@@ -975,44 +704,25 @@
             {
               "type": "Text",
               "props": {
-                "text": "Adventurers & Mercenary Work"
+                "text": "Tags"
+              }
+            },
+            {
+              "type": "Icon",
+              "props": {
+                "name": "GiSparkles",
+                "style": "DynamicSparkle"
               }
             }
           ]
         },
         {
-          "type": "List",
+          "type": "DataList",
           "props": {
-            "listtype": "Detail",
-            "className": "info",
-            "listname": "AdventurersMercenariesDetail"
-          },
-          "children": [
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Common Quests & Jobs:",
-                "value": "[Hunting monsters, retrieving artifacts, political assassinations.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Bounty Board:",
-                "value": "[List of wanted criminals, beasts, or other bounties.]"
-              }
-            },
-            {
-              "type": "ListItem",
-              "props": {
-                "itemtype": "Detail",
-                "label": "Guilds & Organizations for Adventurers:",
-                "value": "[Who offers work and resources?]"
-              }
-            }
-          ]
+            "listtype": "Chips",
+            "className": "tag-list",
+            "listname": "tags"
+          }
         }
       ]
     },

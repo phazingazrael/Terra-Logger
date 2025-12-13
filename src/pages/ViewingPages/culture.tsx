@@ -61,7 +61,7 @@ function CultureView() {
 	const theme = useTheme();
 
 	return (
-		<Container className="Culture">
+		<Container className="ViewPage Culture">
 			<div className="contentSubBody">
 				<div className="flex-container">
 					<div className="wiki">

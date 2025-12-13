@@ -7,24 +7,13 @@ import {
 } from "../../db/interactions";
 
 import "./index.css";
+import { ModalStyle } from "../../styles";
 import { MapsCard } from "../Cards/index";
 import UploadMap from "../UploadMap/UploadMap";
-import shadows from "@mui/material/styles/shadows";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common";
 
 // import type { MapInf } from "../../definitions/TerraLogger";
-
-const modalStyle = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: shadows[24],
-	p: 4,
-};
 
 const MapManager: React.FC = () => {
 	const { activeMapId, setActive } = useDB();
@@ -119,7 +108,7 @@ const MapManager: React.FC = () => {
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description"
 			>
-				<Box sx={modalStyle} className="UploadMap-modal">
+				<Box sx={ModalStyle} className="UploadMap-modal">
 					<UploadMap />
 				</Box>
 			</Modal>

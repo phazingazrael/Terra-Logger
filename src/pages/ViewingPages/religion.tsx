@@ -53,7 +53,7 @@ function ReligionView() {
 	const theme = useTheme();
 
 	return (
-		<Container className="Religion">
+		<Container className="ViewPage Religion">
 			<div className="contentSubBody">
 				<div className="flex-container">
 					<div className="wiki">

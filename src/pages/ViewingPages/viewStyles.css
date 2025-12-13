@@ -1,3 +1,9 @@
+/** biome-ignore-all lint/style/noDescendingSpecificity: ignore */
+.ViewPage {
+  padding-left: 0dvw;
+  padding-right: 0dvw;
+}
+
 /* Overall Styling */
 .wiki {
   max-width: 1200px;
@@ -58,13 +64,10 @@
   padding: 10px;
 }
 
-.capital-badge {
-  border-radius: 10px;
-  font-weight: bold !important;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+.capital-badge svg {
+  position: relative;
+  top: 0.6rem;
+  margin-left: 0.2rem;
 }
 
 .content {
@@ -90,13 +93,13 @@
 }
 
 .description,
-.military {
+.military,
+.citiesList {
   grid-column: 1 / -1;
 }
 
-.economy,
-.citiesList {
-  grid-column: 1 / 3;
+.economy {
+  grid-column: span 2;
 }
 
 .wiki h2 {
@@ -187,13 +190,13 @@ ul {
   margin-bottom: 0px !important;
 }
 
-.military-tabs {
+.tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
 }
 
-.military-tabs button {
+.tabs button {
   padding: 8px 16px;
   background-color: #f0f0f0;
   border: 1px solid #ddd;
@@ -203,11 +206,11 @@ ul {
   transition: all 0.2s ease;
 }
 
-.military-tabs button:hover {
+.tabs button:hover {
   background-color: #e8e8e8;
 }
 
-.military-tabs button.active {
+.tabs button.active {
   background-color: #007bff;
   color: white;
   border-color: #0056b3;
@@ -248,7 +251,7 @@ ul {
   margin-top: 10px;
 }
 
-.economy-lists {
+.sub-lists {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;

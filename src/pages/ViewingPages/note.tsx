@@ -23,7 +23,7 @@ function NoteView() {
 	}, [_id]);
 
 	return (
-		<Container className="Notes">
+		<Container className="ViewPage Notes">
 			<div className="contentSubBody">
 				<Paper color="text.secondary">
 					<div className="wiki">
