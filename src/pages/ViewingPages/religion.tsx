@@ -9,6 +9,7 @@ import {
 	Card,
 	useTheme,
 	LinearProgress,
+	Paper,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -121,9 +122,9 @@ function ReligionView() {
 								</Box>
 							</div>
 						</div>
-						<div className="header">
+						<div>
 							<Grid container spacing={3}>
-								<Grid>
+								<Grid size={6}>
 									<Box sx={{ mb: 2, textAlign: "center" }}>
 										<section>
 											<PersonIcon
@@ -148,7 +149,7 @@ function ReligionView() {
 										</section>
 									</Box>
 								</Grid>
-								<Grid>
+								<Grid size={6}>
 									<Box sx={{ mb: 2, textAlign: "center" }}>
 										<section>
 											<PlaceIcon
@@ -177,123 +178,146 @@ function ReligionView() {
 						</div>
 
 						<main className="content">
-							<section className="description">
-								<Typography
-									variant="h5"
-									gutterBottom
-									sx={{ fontWeight: "bold", mb: 3 }}
-								>
-									Membership
-								</Typography>
-
-								<Box sx={{ mb: 3 }}>
-									<Box
-										sx={{
-											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "center",
-											mb: 1,
-										}}
-									>
-										<Box sx={{ display: "flex", alignItems: "center" }}>
-											<GroupsIcon
-												sx={{ mr: 1, color: theme.palette.text.secondary }}
-											/>
-											<Typography variant="h6">Total Members</Typography>
-										</Box>
+							<section className="description section">
+								<Paper>
+									<section className="section">
 										<Typography
-											variant="h4"
-											sx={{
-												fontWeight: "bold",
-												color: theme.palette.primary.main,
-											}}
+											variant="h5"
+											gutterBottom
+											sx={{ fontWeight: "bold", mb: 3 }}
 										>
-											{totalMembers.toLocaleString("en-US")}
+											Membership
 										</Typography>
-									</Box>
-								</Box>
 
+										<Box sx={{ mb: 3 }}>
+											<Box
+												sx={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													mb: 1,
+												}}
+											>
+												<Box sx={{ display: "flex", alignItems: "center" }}>
+													<GroupsIcon
+														sx={{ mr: 1, color: theme.palette.text.secondary }}
+													/>
+													<Typography variant="h6">Total Members</Typography>
+												</Box>
+												<Typography
+													variant="h4"
+													sx={{
+														fontWeight: "bold",
+														color: theme.palette.primary.main,
+													}}
+												>
+													{totalMembers.toLocaleString("en-US")}
+												</Typography>
+											</Box>
+										</Box>
+									</section>
+								</Paper>
 								<Grid container spacing={3}>
 									<Grid size={{ xs: 12, sm: 6 }}>
-										<Box sx={{ mb: 2 }}>
-											<Box
-												sx={{
-													display: "flex",
-													justifyContent: "space-between",
-													alignItems: "center",
-													mb: 1,
-												}}
-											>
-												<Box sx={{ display: "flex", alignItems: "center" }}>
-													<AgricultureIcon sx={{ mr: 1, color: "#4caf50" }} />
-													<Typography variant="subtitle1">Rural</Typography>
+										<Paper>
+											<section className="section">
+												<Box sx={{ mb: 2 }}>
+													<Box
+														sx={{
+															display: "flex",
+															justifyContent: "space-between",
+															alignItems: "center",
+															mb: 1,
+														}}
+													>
+														<Box sx={{ display: "flex", alignItems: "center" }}>
+															<AgricultureIcon
+																sx={{ mr: 1, color: "#4caf50" }}
+															/>
+															<Typography variant="subtitle1">Rural</Typography>
+														</Box>
+														<Typography
+															variant="h6"
+															sx={{ fontWeight: "bold" }}
+														>
+															{religion?.members.rural.toLocaleString("en-US")}
+														</Typography>
+													</Box>
+													<LinearProgress
+														variant="determinate"
+														value={ruralPercentage}
+														sx={{
+															height: 8,
+															borderRadius: 4,
+															bgcolor: theme.palette.grey[200],
+															"& .MuiLinearProgress-bar": {
+																bgcolor: "#4caf50",
+																borderRadius: 4,
+															},
+														}}
+													/>
+													<Typography
+														variant="body2"
+														color="text.secondary"
+														sx={{ mt: 0.5 }}
+													>
+														{ruralPercentage !== 0
+															? ruralPercentage.toFixed(1)
+															: 0}
+														% of total
+													</Typography>
 												</Box>
-												<Typography variant="h6" sx={{ fontWeight: "bold" }}>
-													{religion?.members.rural.toLocaleString("en-US")}
-												</Typography>
-											</Box>
-											<LinearProgress
-												variant="determinate"
-												value={ruralPercentage}
-												sx={{
-													height: 8,
-													borderRadius: 4,
-													bgcolor: theme.palette.grey[200],
-													"& .MuiLinearProgress-bar": {
-														bgcolor: "#4caf50",
-														borderRadius: 4,
-													},
-												}}
-											/>
-											<Typography
-												variant="body2"
-												color="text.secondary"
-												sx={{ mt: 0.5 }}
-											>
-												{ruralPercentage !== 0 ? ruralPercentage.toFixed(1) : 0}
-												% of total
-											</Typography>
-										</Box>
+											</section>
+										</Paper>
 									</Grid>
 									<Grid size={{ xs: 12, sm: 6 }}>
-										<Box sx={{ mb: 2 }}>
-											<Box
-												sx={{
-													display: "flex",
-													justifyContent: "space-between",
-													alignItems: "center",
-													mb: 1,
-												}}
-											>
-												<Box sx={{ display: "flex", alignItems: "center" }}>
-													<LocationCityIcon sx={{ mr: 1, color: "#2196f3" }} />
-													<Typography variant="subtitle1">Urban</Typography>
+										<Paper>
+											<section className="section">
+												<Box sx={{ mb: 2 }}>
+													<Box
+														sx={{
+															display: "flex",
+															justifyContent: "space-between",
+															alignItems: "center",
+															mb: 1,
+														}}
+													>
+														<Box sx={{ display: "flex", alignItems: "center" }}>
+															<LocationCityIcon
+																sx={{ mr: 1, color: "#2196f3" }}
+															/>
+															<Typography variant="subtitle1">Urban</Typography>
+														</Box>
+														<Typography
+															variant="h6"
+															sx={{ fontWeight: "bold" }}
+														>
+															{religion?.members.urban.toLocaleString("en-US")}
+														</Typography>
+													</Box>
+													<LinearProgress
+														variant="determinate"
+														value={urbanPercentage || 0}
+														sx={{
+															height: 8,
+															borderRadius: 4,
+															bgcolor: theme.palette.grey[200],
+															"& .MuiLinearProgress-bar": {
+																bgcolor: "#2196f3",
+																borderRadius: 4,
+															},
+														}}
+													/>
+													<Typography
+														variant="body2"
+														color="text.secondary"
+														sx={{ mt: 0.5 }}
+													>
+														{urbanPercentage.toFixed(1)}% of total
+													</Typography>
 												</Box>
-												<Typography variant="h6" sx={{ fontWeight: "bold" }}>
-													{religion?.members.urban.toLocaleString("en-US")}
-												</Typography>
-											</Box>
-											<LinearProgress
-												variant="determinate"
-												value={urbanPercentage || 0}
-												sx={{
-													height: 8,
-													borderRadius: 4,
-													bgcolor: theme.palette.grey[200],
-													"& .MuiLinearProgress-bar": {
-														bgcolor: "#2196f3",
-														borderRadius: 4,
-													},
-												}}
-											/>
-											<Typography
-												variant="body2"
-												color="text.secondary"
-												sx={{ mt: 0.5 }}
-											>
-												{urbanPercentage.toFixed(1)}% of total
-											</Typography>
-										</Box>
+											</section>
+										</Paper>
 									</Grid>
 								</Grid>
 							</section>
@@ -308,7 +332,7 @@ function ReligionView() {
 								</Typography>
 								<Grid container spacing={2}>
 									{religion?.tags.map((tag) => (
-										<Grid size={{ xs: 12 }} key={tag._id}>
+										<Grid size={{ xs: 6 }} key={tag._id}>
 											<Card
 												sx={{
 													p: 2,
