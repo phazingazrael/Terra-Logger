@@ -7,6 +7,7 @@ import {
 	useTheme,
 	Grid2 as Grid,
 	Paper,
+	Popover,
 } from "@mui/material";
 
 import { IconContext } from "react-icons";
@@ -30,6 +31,8 @@ import { DynamicSparkle, SemiDynamicSparkle } from "../../styles";
 import JsonUI from "../../components/jsonui/jsonui";
 import countryContent from "../../components/jsonui/countrycontent.json";
 
+import { getPoliticalDescriptor } from "../../components/Util/countryUtils";
+
 const toInt = (s?: string | number) => {
 	if (typeof s === "number") return Math.trunc(s);
 	if (!s) return 0;
@@ -48,6 +51,18 @@ function CountryView() {
 		() => countries.find((c) => c._id === countryId?._id),
 		[countries, countryId?._id],
 	);
+
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handlePopoverClose = () => {
+		setAnchorEl(null);
+	};
+
+	const open = Boolean(anchorEl);
 
 	const [ruralPercentage, setRuralPercentage] = useState(0);
 	const [urbanPercentage, setUrbanPercentage] = useState(0);
@@ -139,7 +154,44 @@ function CountryView() {
 												Type: {country?.type}{" "}
 												<GiSparkles style={DynamicSparkle} />
 											</Typography>
+											<Typography
+												aria-owns={open ? "GovPopover" : undefined}
+												aria-haspopup="true"
+												onMouseEnter={handlePopoverOpen}
+												onMouseLeave={handlePopoverClose}
+												color="text.secondary"
+												component="h3"
+											>
+												{country?.political.form}
+												{" - "}
+												{country?.political.formName}{" "}
+												<GiSparkles style={DynamicSparkle} />
+											</Typography>
+											<Popover
+												id="GovPopover"
+												sx={{ pointerEvents: "none" }}
+												open={open}
+												anchorEl={anchorEl}
+												anchorOrigin={{
+													vertical: "bottom",
+													horizontal: "left",
+												}}
+												onClose={handlePopoverClose}
+												disableRestoreFocus
+											>
+												<div
+													className="GovPop"
+													// biome-ignore lint/security/noDangerouslySetInnerHtml: domPurify in effect.
+													dangerouslySetInnerHTML={{
+														__html:
+															getPoliticalDescriptor(
+																country?.political.formName,
+															) ?? "",
+													}}
+												/>
+											</Popover>
 										</Grid>
+
 										<Grid size={{ xs: 8, sm: 8, md: 8, lg: 8, xl: 8 }}>
 											<Grid container className="popGrid">
 												<Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
