@@ -152,3 +152,4 @@ biome.json
 dist-ssr
 yarn.lock
 package-lock.json
+.vscode/settings.json
