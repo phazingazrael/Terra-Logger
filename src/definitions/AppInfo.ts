@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // visual effects only for eslint-disable //
 
+export type dataDisplay = "default" | "minimal" | "recommended" | (string & {});
+
 // Application Information Interface
 export interface AppInfo {
   id: string;
@@ -15,6 +17,7 @@ export interface AppInfo {
     description: string;
   };
   userSettings: {
+    dataDisplay: dataDisplay;
     theme: string;
     language: string;
     showWelcomeMessage: boolean;

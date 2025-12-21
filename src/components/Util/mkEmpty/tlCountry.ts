@@ -22,6 +22,11 @@ export const createEmptyCountry = (): TLCountry => ({
   },
   coaSVG: "",
   color: "",
+  content: {
+    children: [],
+    type: "View",
+    sourceType: "country",
+  },
   culture: {
     _id: "",
     id: "",

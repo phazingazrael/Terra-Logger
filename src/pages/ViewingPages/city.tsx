@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 
 import { GiSparkles } from "react-icons/gi";
 
-import cityContent from "../../components/jsonui/citycontent.json";
 import JsonUI from "../../components/jsonui/jsonui";
 
 import type { TLCity, TLNote } from "../../definitions/TerraLogger";
@@ -118,8 +117,11 @@ function CityView() {
 									/>
 								</Paper>
 
-								<JsonUI type={cityContent.type} props={cityContent.props}>
-									{cityContent.children}
+								<JsonUI
+									type={city?.content?.type ?? ""}
+									props={city?.content?.props}
+								>
+									{city?.content?.children}
 								</JsonUI>
 							</main>
 						</div>

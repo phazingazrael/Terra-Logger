@@ -43,6 +43,10 @@
             "listname": "cities"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -80,6 +84,10 @@
             "listtype": "Military"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -159,6 +167,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -232,6 +244,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -311,6 +327,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -376,6 +396,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -449,6 +473,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -514,6 +542,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -579,6 +611,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -644,6 +680,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -685,6 +725,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -724,6 +768,10 @@
             "listname": "tags"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -762,6 +810,10 @@
             "listname": "AdditionalInfo"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     }
   ]

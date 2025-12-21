@@ -75,6 +75,33 @@ function Settings(): JSX.Element {
 									<option value="dark">Dark</option>
 								</select>
 							</div>
+							<div>
+								<label htmlFor="themeSelect">
+									Data Set Display Level (City & Country)
+								</label>
+								<select
+									id="themeSelect"
+									className="select"
+									value={app?.userSettings?.dataDisplay ?? "default"}
+									onChange={(e) =>
+										setApp((prev) => {
+											if (!prev) return prev;
+											const next = {
+												...prev,
+												userSettings: {
+													...prev.userSettings,
+													dataDisplay: e.target.value,
+												},
+											} as AppInfo;
+											return next;
+										})
+									}
+								>
+									<option value="default">Default</option>
+									<option value="minimal">Minimal</option>
+									<option value="recommended">Recommended</option>
+								</select>
+							</div>
 						</div>
 
 						<div className="section">

@@ -43,6 +43,10 @@
             "listname": "features"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -81,6 +85,10 @@
             "listname": "tags"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -120,6 +128,10 @@
             "linkname": "cityMap"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -185,6 +197,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -258,6 +274,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -331,6 +351,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -404,6 +428,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -477,6 +505,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -550,6 +582,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -615,6 +651,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -680,6 +720,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -745,6 +789,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -810,6 +858,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -875,6 +927,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -916,6 +972,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -957,6 +1017,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -1014,6 +1078,10 @@
             }
           ]
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     },
     {
@@ -1052,6 +1120,10 @@
             "listname": "AdditionalInfo"
           }
         }
+      ],
+      "set": [
+        "default",
+        "recommended"
       ]
     }
   ]

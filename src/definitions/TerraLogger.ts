@@ -168,6 +168,7 @@ export type TLCity = {
     shield: string;
   };
   coaSVG: string;
+  content?: TLContentView;
   country: {
     _id: string;
     govForm: string;
@@ -214,6 +215,7 @@ export type TLCountry = {
   };
   coaSVG: string;
   color: string;
+  content?: TLContentView;
   culture: {
     _id: string;
     id: string;
@@ -383,4 +385,39 @@ export interface SettingsOpts {
     type: string;
     separate: number;
   }[];
+}
+
+// -----------------------------------------------------------------------------
+// Content JSON UI typing (countrycontent.json / citycontent.json)
+// -----------------------------------------------------------------------------
+//
+// These JSON files define a declarative UI tree (View -> Sections -> ...).
+// Keep the types permissive via index signatures so new props can be added
+// without forcing a definitions-file update.
+
+
+export interface TLContentView {
+  type: "View";
+  props?: {
+    className?: string;
+    title?: string;
+  };
+  children?: TLContentSection[];
+  sourceType?: string;
+}
+
+export interface TLContentSection {
+  type: "Section";
+  props?: {
+    className?: string;
+    title?: string;
+  };
+  children?: TLContentChild[];
+  set?: string[];
+}
+
+export interface TLContentChild {
+  type: string;
+  props?: Record<string, unknown>;
+  children?: TLContentChild[];
 }

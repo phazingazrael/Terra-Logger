@@ -18,6 +18,7 @@ export function createDefaultAppSettings(): AppInfo {
       description: (Package as any).descriptionFull ?? Package.description ?? "",
     },
     userSettings: {
+      dataDisplay: "default",
       theme: "light",
       language: "en",
       showWelcomeMessage: true,

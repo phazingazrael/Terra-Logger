@@ -29,7 +29,6 @@ import DOMPurify from "dompurify";
 import "./viewStyles.css";
 import { DynamicSparkle, SemiDynamicSparkle } from "../../styles";
 import JsonUI from "../../components/jsonui/jsonui";
-import countryContent from "../../components/jsonui/countrycontent.json";
 
 import { getPoliticalDescriptor } from "../../components/Util/countryUtils";
 
@@ -372,8 +371,11 @@ function CountryView() {
 									/>
 								</Paper>
 
-								<JsonUI type={countryContent.type} props={countryContent.props}>
-									{countryContent.children}
+								<JsonUI
+									type={country?.content?.type ?? ""}
+									props={country?.content?.props}
+								>
+									{country?.content?.children}
 								</JsonUI>
 							</main>
 						</div>
