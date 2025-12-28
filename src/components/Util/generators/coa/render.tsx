@@ -592,6 +592,11 @@ const getCOA = async (id: string, coa: TLCoA) => {
 		}
 
 		if (charges) {
+			for (const charge of charges) {
+				if (charge.charge === "eagleTwoHeards") {
+					charge.charge = "eagleTwoHeads";
+				}
+			}
 			for (const charge of charges.filter((o) => !o.divided)) {
 				svg += templateCharge(charge, charge.t as string);
 			}
