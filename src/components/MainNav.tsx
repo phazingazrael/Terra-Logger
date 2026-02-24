@@ -125,7 +125,12 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 					<div className="subMenu">
 						<NavLink
 							to="/countries"
-							className={({ isActive }) => (isActive ? "active" : "")}
+							className={({ isActive }) => {
+                const path = location.pathname;
+                return isActive || path.startsWith("/view_country")
+                  ? "active"
+                  : "";
+              }}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -139,7 +144,12 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						</NavLink>
 						<NavLink
 							to="/cities"
-							className={({ isActive }) => (isActive ? "active" : "")}
+							className={({ isActive }) => {
+                const path = location.pathname;
+                return isActive || path.startsWith("/view_city")
+                  ? "active"
+                  : "";
+              }}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -153,7 +163,12 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						</NavLink>
 						<NavLink
 							to="/religions"
-							className={({ isActive }) => (isActive ? "active" : "")}
+							className={({ isActive }) => {
+                const path = location.pathname;
+                return isActive || path.startsWith("/view_religion")
+                  ? "active"
+                  : "";
+              }}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -167,7 +182,12 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						</NavLink>
 						<NavLink
 							to="/cultures"
-							className={({ isActive }) => (isActive ? "active" : "")}
+							className={({ isActive }) => {
+                const path = location.pathname;
+                return isActive || path.startsWith("/view_culture")
+                  ? "active"
+                  : "";
+              }}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -181,7 +201,12 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 						</NavLink>
 						<NavLink
 							to="/notes"
-							className={({ isActive }) => (isActive ? "active" : "")}
+							className={({ isActive }) => {
+                const path = location.pathname;
+                return isActive || path.startsWith("/view_note")
+                  ? "active"
+                  : "";
+              }}
 						>
 							<MenuItem>
 								<ListItemIcon>
