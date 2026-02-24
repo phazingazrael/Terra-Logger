@@ -12,7 +12,7 @@ import {
 	ListItemText,
 	MenuItem,
 	MenuList,
-} from "@mui/material/";
+} from "@mui/material";
 import { IconContext } from "react-icons";
 import { ImDiamonds } from "react-icons/im";
 import {

@@ -1,4 +1,4 @@
-import { Button, Grid2 as Grid, Modal, Box } from "@mui/material";
+import { Button, Grid, Modal, Box } from "@mui/material";
 import { useState } from "react";
 import { useDB } from "../../db/DataContext";
 import {

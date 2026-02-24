@@ -4,7 +4,7 @@ import {
 	Container,
 	Typography,
 	Box,
-	Grid2 as Grid,
+	Grid,
 	Chip,
 	Card,
 	useTheme,

@@ -3,7 +3,7 @@ import {
 	AccordionDetails,
 	AccordionSummary,
 	Container,
-	Grid2 as Grid,
+	Grid,
 	Typography,
 } from "@mui/material";
 import { useEffect, useMemo, Suspense, lazy } from "react";

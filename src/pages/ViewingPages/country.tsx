@@ -5,7 +5,7 @@ import {
 	LinearProgress,
 	Box,
 	useTheme,
-	Grid2 as Grid,
+	Grid,
 	Paper,
 	Popover,
 } from "@mui/material";

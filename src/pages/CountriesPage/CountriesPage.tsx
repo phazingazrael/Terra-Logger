@@ -1,4 +1,4 @@
-import { Container, Grid2 as Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { useDB } from "../../db/DataContext";
 

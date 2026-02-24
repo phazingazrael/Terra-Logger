@@ -1,5 +1,3 @@
-import shadows from "@mui/material/styles/shadows";
-
 export const CapitalBadge = {
 	display: "inline-flex",
 	alignItems: "center",
@@ -55,7 +53,7 @@ export const ModalStyle = {
 	transform: "translate(-50%, -50%)",
 	bgcolor: "background.paper",
 	border: "2px solid #000",
-	boxShadow: shadows[24],
+	boxShadow: "#333333c9",
 	p: 4,
 };
 

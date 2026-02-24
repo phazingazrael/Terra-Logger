@@ -8,7 +8,7 @@ import {
 	Container,
 	FormControl,
 	FormControlLabel,
-	Grid2 as Grid,
+	Grid,
 	InputLabel,
 	MenuItem,
 	OutlinedInput,

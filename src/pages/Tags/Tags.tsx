@@ -5,7 +5,7 @@ import {
 	AccordionSummary,
 	Container,
 	Box,
-	Grid2 as Grid,
+	Grid,
 	Typography,
 	Chip,
 	List,

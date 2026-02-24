@@ -1,7 +1,7 @@
 import {
 	AppBar,
 	Container,
-	Grid2 as Grid,
+	Grid,
 	ThemeProvider,
 	Toolbar,
 	Typography,
@@ -103,9 +103,9 @@ function MainLayout() {
 	useEffect(() => {
 		(async () => {
 			const s = await getAppSettings();
-			const maybeTheme = s?.userSettings?.theme;
-			if (maybeTheme === "dark" || maybeTheme === "light")
-				setThemeName(maybeTheme);
+			const appTheme = s?.userSettings?.theme;
+			if (appTheme === "dark" || appTheme === "light")
+				setThemeName(appTheme);
 		})();
 	}, []);
 
