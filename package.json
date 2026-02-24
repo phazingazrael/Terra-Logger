@@ -16,36 +16,33 @@
     "preview": "vite preview",
     "changelog": "auto-changelog --commit-limit false --sort-commits date-desc --prepend -p"
   },
-  "overrides": {
-    "react-is": "^18.3.1"
-  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.0.0",
     "@mui/material": "^7.0.0",
-    "@vercel/analytics": "^1.4.1",
+    "@vercel/analytics": "^1.6.1",
     "delaunator": "^5.0.1",
-    "dompurify": "^3.2.6",
-    "idb": "^8.0.1",
+    "dompurify": "^3.3.1",
+    "idb": "^8.0.3",
     "jszip": "^3.10.1",
     "lorem-ipsum": "^2.0.8",
     "mustache": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-editext": "^7.0.0",
-    "react-icons": "^5.4.0",
+    "react-editext": "^7.1.0",
+    "react-icons": "^5.5.0",
     "react-is": "18.3.1",
     "react-router-dom": "^6.30.0",
-    "react-toastify": "^11.0.3",
-    "react-virtualized-auto-sizer": "^1.0.26",
-    "react-window": "^1.8.10",
-    "uuid": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "react-virtualized-auto-sizer": "^2.0.3",
+    "react-window": "^2.2.7",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.0.1",
+    "@testing-library/react": "^16.3.2",
     "@types/delaunator": "^5.0.3",
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.10.7",
@@ -53,9 +50,9 @@
     "@types/react-dom": "^18.3.1",
     "@types/react-window": "^1.8.8",
     "@types/uuid": "^10.0.0",
-    "@uiw/react-json-view": "^2.0.0-alpha.39",
-    "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "^5.7.3",
-    "vite": "^6.0.11"
+    "@uiw/react-json-view": "^2.0.0-alpha.41",
+    "@vitejs/plugin-react": "^5.1.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }
