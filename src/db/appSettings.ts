@@ -5,6 +5,10 @@ import { initDatabase } from "./database";
 
 export const APP_SETTINGS_ID = "TL_APP_SETTINGS" as const;
 
+/**
+ * Creates the default app settings object.
+ * @returns {AppInfo} The default app settings object.
+ */
 export function createDefaultAppSettings(): AppInfo {
   return {
     id: APP_SETTINGS_ID,
@@ -37,6 +41,12 @@ export function createDefaultAppSettings(): AppInfo {
   };
 }
 
+/**
+ * Normalizes the given app settings object by merging it with the default app settings object.
+ * It ensures all required fields exist and their types are correct.
+ * @param raw The app settings object to normalize.
+ * @returns {AppInfo} The normalized app settings object.
+ */
 export function normalizeAppSettings(raw: unknown): AppInfo {
   const base = createDefaultAppSettings();
   const src = (raw ?? {}) as any;
@@ -55,13 +65,7 @@ export function normalizeAppSettings(raw: unknown): AppInfo {
   if (merged.activeMapId === undefined) merged.activeMapId = null;
   if (typeof merged.forceMobile !== "boolean") merged.forceMobile = false;
 
-  // legacy migration: some older rows used userSettings.forceMobile
-  if (
-    typeof src?.userSettings?.forceMobile === "boolean" &&
-    typeof src?.forceMobile !== "boolean"
-  ) {
-    merged.forceMobile = src.userSettings.forceMobile;
-  }
+
 
   return merged;
 }
@@ -96,6 +100,12 @@ export async function getAppSettings(): Promise<AppInfo> {
 
 type Updater = Partial<AppInfo> | ((prev: AppInfo) => AppInfo);
 
+/**
+ * Updates the application settings.
+ * It reads the current settings, applies the update, normalizes the result and persists it back.
+ * @param updater A function that takes the current settings and returns the updated settings, or a partial object to merge.
+ * @returns The updated app settings object.
+ */
 export async function updateAppSettings(updater: Updater): Promise<AppInfo> {
   const db = await initDatabase();
   const prev = await getAppSettings();
@@ -122,6 +132,12 @@ export async function updateAppSettings(updater: Updater): Promise<AppInfo> {
 }
 
 // Convenience helpers (optional but keeps call sites clean)
+
+/**
+ * Sets the theme of the application.
+ * @param theme The theme to set. Should be either "light" or "dark".
+ * @returns A promise that resolves to the updated app settings object.
+ */
 export function setTheme(theme: "light" | "dark") {
   return updateAppSettings((prev) => ({
     ...prev,
@@ -129,6 +145,11 @@ export function setTheme(theme: "light" | "dark") {
   }));
 }
 
+/**
+ * Sets whether the application should be forced to display in mobile layout.
+ * @param forceMobile If true, the application will be forced to display in mobile layout.
+ * @returns A promise that resolves to the updated app settings object.
+ */
 export function setForceMobile(forceMobile: boolean) {
   return updateAppSettings((prev) => ({ ...prev, forceMobile }));
 }
