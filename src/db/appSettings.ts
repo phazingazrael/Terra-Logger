@@ -13,13 +13,13 @@ export function createDefaultAppSettings(): AppInfo {
   return {
     id: APP_SETTINGS_ID,
     application: {
-      name: Package.name,
-      version: Package.version,
+      name: (Package as { name?: string }).name ?? "Terra-Logger",
+      version: (Package as { version?: string }).version ?? "0.0.0",
       afmgVer: "1.105.15",
       supportedLanguages: ["en"],
       defaultLanguage: "en",
       onboarding: true,
-      description: (Package as any).descriptionFull ?? Package.description ?? "",
+      description: (Package as { descriptionFull?: string }).descriptionFull ?? Package.description ?? "",
     },
     userSettings: {
       dataDisplay: "default",
@@ -49,7 +49,7 @@ export function createDefaultAppSettings(): AppInfo {
  */
 export function normalizeAppSettings(raw: unknown): AppInfo {
   const base = createDefaultAppSettings();
-  const src = (raw ?? {}) as any;
+  const src = (raw ?? {}) as AppInfo;
 
   const merged: AppInfo = {
     ...base,
@@ -118,11 +118,11 @@ export async function updateAppSettings(updater: Updater): Promise<AppInfo> {
         ...(updater as Partial<AppInfo>),
         application: {
           ...prev.application,
-          ...((updater as any).application ?? {}),
+          ...((updater as Partial<AppInfo>).application ?? {}),
         },
         userSettings: {
           ...prev.userSettings,
-          ...((updater as any).userSettings ?? {}),
+          ...((updater as Partial<AppInfo>).userSettings ?? {}),
         },
       };
 
