@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useDB } from "./db/DataContext";
 import { useDeviceType } from "./hooks/useDeviceType";

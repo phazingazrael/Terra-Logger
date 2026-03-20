@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type JSX } from "react";
 import { useDB } from "../db/DataContext";
 
 import { NavLink } from "react-router-dom";

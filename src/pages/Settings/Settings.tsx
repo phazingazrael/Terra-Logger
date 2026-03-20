@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 import type { Context } from "../../definitions/Common";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type JSX } from "react";
 import { IconContext } from "react-icons";
 
 import "./Settings.css";
