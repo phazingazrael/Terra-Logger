@@ -199,6 +199,7 @@ const App = (): JSX.Element => {
 						})),
 				},
 			],
+			HydrateFallback: () => <div>Loading...</div>,
 		},
 	]);
 
@@ -207,7 +208,7 @@ const App = (): JSX.Element => {
 			return <MobileLayout />;
 		}
 	}
-	return <RouterProvider router={router} fallbackElement={<div />} />;
+	return <RouterProvider router={router} />;
 };
 
 export default App;
