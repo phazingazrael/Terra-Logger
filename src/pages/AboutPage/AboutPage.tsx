@@ -77,7 +77,9 @@ const AboutPage = () => {
 						</a>
 					</p>
 					<p>
-						<Typography variant="h6">A little bit about me</Typography>
+						<strong style={{ fontSize: "1.3rem", fontWeight: "400" }}>
+							A little bit about me
+						</strong>
 						<br />I picked up Web Development a long, long time ago, Probably
 						around 23 years ago.
 						<br />I was in Middle School / Junior High School at the time and
@@ -92,24 +94,24 @@ const AboutPage = () => {
 						Media Production company assisting in building and maintaining their
 						website among other responsibilities.
 					</p>
-					<p>
-						<Typography variant="h6">My Hobbies</Typography>I have a Lot of
-						hobbies, And most of them are pretty nerdy!
+					<strong style={{ fontSize: "1.3rem", fontWeight: "400" }}>
+						My Hobbies
+					</strong>
+					<br />I have a Lot of hobbies, And most of them are pretty nerdy!
+					<ul>
+						<li>Programming / Web Development</li>
+						<li>Table Top RPG's</li>
+						<li>Video Games</li>
 						<ul>
-							<li>Programming / Web Development</li>
-							<li>Table Top RPG's</li>
-							<li>Video Games</li>
-							<ul>
-								<li>Minecraft</li>
-								<li>Pokemon</li>
-								<li>Oxygen Not Included</li>
-								<li>Satisfactory</li>
-							</ul>
-							<li>Reading / Audiobooks</li>
-							<li>Longboarding, albeit more "street surfing"</li>
-							<li>So much more than I can list here</li>
+							<li>Minecraft</li>
+							<li>Pokemon</li>
+							<li>Oxygen Not Included</li>
+							<li>Satisfactory</li>
 						</ul>
-					</p>
+						<li>Reading / Audiobooks</li>
+						<li>Longboarding, albeit more "street surfing"</li>
+						<li>So much more than I can list here</li>
+					</ul>
 				</section>
 				<section className="section credits">
 					<Typography variant="h5">Credits and Acknowledgments</Typography>
