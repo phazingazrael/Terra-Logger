@@ -42,6 +42,11 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	const mapName = activeMap?.info.name ?? "";
 	const mapLoaded = !!activeMap;
 
+	const handleNavClick = () => {
+		const el = document.querySelector(".Content");
+		if (el) el.scrollTo({ top: 0, behavior: "auto" });
+	};
+
 	const handleAccordionChange = (isExpanded: boolean) => {
 		setExpanded(isExpanded);
 	};
@@ -108,6 +113,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 				</MenuItem>
 				<Divider />
 				<NavLink
+					onClick={handleNavClick}
 					to="/"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>
@@ -124,13 +130,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 				{mapLoaded ? (
 					<div className="subMenu">
 						<NavLink
+							onClick={handleNavClick}
 							to="/countries"
 							className={({ isActive }) => {
-                const path = location.pathname;
-                return isActive || path.startsWith("/view_country")
-                  ? "active"
-                  : "";
-              }}
+								const path = location.pathname;
+								return isActive || path.startsWith("/view_country")
+									? "active"
+									: "";
+							}}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -143,13 +150,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							</MenuItem>
 						</NavLink>
 						<NavLink
+							onClick={handleNavClick}
 							to="/cities"
 							className={({ isActive }) => {
-                const path = location.pathname;
-                return isActive || path.startsWith("/view_city")
-                  ? "active"
-                  : "";
-              }}
+								const path = location.pathname;
+								return isActive || path.startsWith("/view_city")
+									? "active"
+									: "";
+							}}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -162,13 +170,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							</MenuItem>
 						</NavLink>
 						<NavLink
+							onClick={handleNavClick}
 							to="/religions"
 							className={({ isActive }) => {
-                const path = location.pathname;
-                return isActive || path.startsWith("/view_religion")
-                  ? "active"
-                  : "";
-              }}
+								const path = location.pathname;
+								return isActive || path.startsWith("/view_religion")
+									? "active"
+									: "";
+							}}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -181,13 +190,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							</MenuItem>
 						</NavLink>
 						<NavLink
+							onClick={handleNavClick}
 							to="/cultures"
 							className={({ isActive }) => {
-                const path = location.pathname;
-                return isActive || path.startsWith("/view_culture")
-                  ? "active"
-                  : "";
-              }}
+								const path = location.pathname;
+								return isActive || path.startsWith("/view_culture")
+									? "active"
+									: "";
+							}}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -200,13 +210,14 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 							</MenuItem>
 						</NavLink>
 						<NavLink
+							onClick={handleNavClick}
 							to="/notes"
 							className={({ isActive }) => {
-                const path = location.pathname;
-                return isActive || path.startsWith("/view_note")
-                  ? "active"
-                  : "";
-              }}
+								const path = location.pathname;
+								return isActive || path.startsWith("/view_note")
+									? "active"
+									: "";
+							}}
 						>
 							<MenuItem>
 								<ListItemIcon>
@@ -218,7 +229,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 								</ListItemIcon>
 							</MenuItem>
 						</NavLink>
-						{/* <NavLink
+						{/* <NavLink onClick={handleNavClick}
 							to="/tags"
 							className={({ isActive }) => (isActive ? "active" : "")}
 						>
@@ -238,6 +249,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 				)}
 
 				<NavLink
+					onClick={handleNavClick}
 					to="/settings"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>
@@ -253,6 +265,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 				</NavLink>
 				{mapLoaded ? (
 					<NavLink
+						onClick={handleNavClick}
 						to="/export"
 						className={({ isActive }) => (isActive ? "active" : "")}
 					>
@@ -270,6 +283,7 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 					""
 				)}
 				<NavLink
+					onClick={handleNavClick}
 					to="/about"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>

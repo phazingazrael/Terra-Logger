@@ -22,6 +22,11 @@ function NoteView() {
 		});
 	}, [_id]);
 
+	useEffect(() => {
+		const el = document.querySelector(".Content");
+		if (el) el.scrollTo({ top: 0, behavior: "auto" });
+	}, []);
+
 	return (
 		<Container className="ViewPage Notes">
 			<div className="contentSubBody">

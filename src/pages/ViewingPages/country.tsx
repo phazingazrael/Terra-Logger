@@ -113,6 +113,11 @@ function CountryView() {
 					)
 				: `${country?.name} is a country.`;
 
+	useEffect(() => {
+		const el = document.querySelector(".Content");
+		if (el) el.scrollTo({ top: 0, behavior: "auto" });
+	}, []);
+
 	return (
 		<Container className="ViewPage">
 			<IconContext.Provider value={IconStyles}>

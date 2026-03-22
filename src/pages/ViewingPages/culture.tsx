@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
 	Container,
@@ -59,6 +59,11 @@ function CultureView() {
 	}, [culture, totalPopulation]);
 
 	const theme = useTheme();
+
+	useEffect(() => {
+		const el = document.querySelector(".Content");
+		if (el) el.scrollTo({ top: 0, behavior: "auto" });
+	}, []);
 
 	return (
 		<Container className="ViewPage Culture">

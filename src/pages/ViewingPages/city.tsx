@@ -3,7 +3,7 @@ import DOMPurify from "dompurify";
 import { Container, Paper, Typography } from "@mui/material";
 import { IconContext } from "react-icons";
 import { useDB } from "../../db/DataContext";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { GiSparkles } from "react-icons/gi";
@@ -41,6 +41,12 @@ function CityView() {
 				: `${city?.name} is a city.`;
 
 	const IconStyles = useMemo(() => ({}), []);
+
+	useEffect(() => {
+		const el = document.querySelector(".Content");
+		if (el) el.scrollTo({ top: 0, behavior: "auto" });
+	}, []);
+
 	return (
 		<Container className="ViewPage" color="text.secondary">
 			<IconContext.Provider value={IconStyles}>
