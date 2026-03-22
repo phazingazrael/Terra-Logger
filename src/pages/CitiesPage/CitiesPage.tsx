@@ -1,5 +1,4 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: ID's Are Unique */
-// biome-ignore assist/source/organizeImports: no effect, visual only
 import {
 	AppBar,
 	Button,
@@ -18,8 +17,8 @@ import {
 import {
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
-	Suspense,
 	lazy,
 	useDeferredValue,
 } from "react";
@@ -34,6 +33,9 @@ import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
 import type { Tag } from "../../definitions/Common";
 
 const CityCard = lazy(() => import("../../components/Cards/city"));
+const CityCardSkeleton = lazy(
+	() => import("../../components/Cards/citySkeleton"),
+);
 
 type CountryListItem = {
 	name: string;
@@ -42,17 +44,17 @@ type CountryListItem = {
 	color: string;
 };
 
-// O(1) lookups for excluded tag ids
+// lookups for excluded tag ids
 const EXCLUDED_TAG_IDS = new Set<string>([
-	"0192be16-c07d-74dd-946d-07ba53af9bf0",
-	"0192be16-c07d-74f5-99b0-a740feb48fa8",
-	"0192be16-c07d-75f5-8a3a-71493c6551c4",
-	"0192be16-c07d-744f-8488-5243c3811a7e",
-	"0192be16-c07d-75f3-aef5-43d0a0d27233",
-	"0192be16-c07d-7a1e-94fc-485f70488182",
-	"0192be16-c07d-7e2c-88a4-f1c2fde568bc",
-	"0192be16-c07d-7b5e-abf6-d13114d5327b",
-	"0192be16-c07d-7739-8b58-d67e3913403a",
+	"0192be16-c07d-74dd-946d-07ba53af9bf0", // City
+	"0192be16-c07d-74f5-99b0-a740feb48fa8", // Thorp
+	"0192be16-c07d-75f5-8a3a-71493c6551c4", // Hamlet
+	"0192be16-c07d-744f-8488-5243c3811a7e", // Village
+	"0192be16-c07d-75f3-aef5-43d0a0d27233", // Small Town
+	"0192be16-c07d-7a1e-94fc-485f70488182", // Large Town
+	"0192be16-c07d-7e2c-88a4-f1c2fde568bc", // Small City
+	"0192be16-c07d-7b5e-abf6-d13114d5327b", // Large City
+	"0192be16-c07d-7739-8b58-d67e3913403a", // Metropolis
 ]);
 
 function CitiesPage() {
@@ -70,6 +72,18 @@ function CitiesPage() {
 				}))
 				.sort((a, b) => (a.name > b.name ? 1 : -1)),
 		[countries],
+	);
+
+	const contentElRef = useRef<HTMLElement | null>(null);
+
+	// Pagination
+	const [visibleCount, setVisibleCount] = useState(25);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	const SKELETON_COUNT = 25;
+
+	const skeletonItems = useMemo(
+		() => Array.from({ length: SKELETON_COUNT }),
+		[],
 	);
 
 	// Filtering
@@ -192,6 +206,61 @@ function CitiesPage() {
 		setOnlyCapitals(false);
 		setSelectedGovForm("");
 	};
+
+	useEffect(() => {
+		setVisibleCount(50);
+	}, []);
+
+	const visibleCities = useMemo(
+		() => filteredCities.slice(0, visibleCount),
+		[filteredCities, visibleCount],
+	);
+
+	const loadMore = () => {
+		if (isLoadingMore) return;
+
+		setIsLoadingMore(true);
+
+		// simulate async (or use real delay if needed)
+		setTimeout(() => {
+			setVisibleCount((prev) => prev + 50);
+			setIsLoadingMore(false);
+		}, 100); // small delay so skeletons are visible
+	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: adding it causes "changes on render" warning
+	useEffect(() => {
+		// Try ID first (you already use it), fallback to class
+		contentElRef.current = document.querySelector(".Content");
+		const el = contentElRef.current;
+		if (!el) return;
+
+		let ticking = false;
+		loadMore();
+
+		const handleScroll = () => {
+			if (ticking) return;
+			ticking = true;
+
+			requestAnimationFrame(() => {
+				const scrollTop = el.scrollTop;
+				const visibleHeight = el.clientHeight;
+				const totalHeight = el.scrollHeight;
+
+				if (scrollTop + visibleHeight >= totalHeight - 300) {
+					loadMore();
+				}
+
+				ticking = false;
+			});
+		};
+
+		el.addEventListener("scroll", handleScroll);
+
+		return () => {
+			el.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
 
 	return (
 		<Container>
@@ -326,13 +395,22 @@ function CitiesPage() {
 					</div>
 				) : (
 					<Grid container spacing={2}>
-						<Suspense fallback={<BookLoader />}>
-							{filteredCities.map((city) => (
-								<Grid size={3} key={city._id + city.name} id={city._id}>
-									<CityCard {...city} />
+						{visibleCities.map((city) => (
+							<Grid size={3} key={city._id}>
+								<CityCard {...city} />
+							</Grid>
+						))}
+
+						{/* Skeletons while loading */}
+						{isLoadingMore &&
+							skeletonItems.map(() => (
+								<Grid
+									size={3}
+									key={`skeleton-${Math.random().toString(36).substring(2)}`}
+								>
+									<CityCardSkeleton />
 								</Grid>
 							))}
-						</Suspense>
 					</Grid>
 				)}
 			</div>
