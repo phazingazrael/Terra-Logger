@@ -1,5 +1,5 @@
 // Modified from the following page.
-// https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/io/load.js
+// https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/io/load.js
 
 import NameBases from "./json/NameBases.json";
 import svgDefs from "./json/svgDefs.json";
@@ -48,12 +48,11 @@ export const parseLoadedData = (data: string[]) => {
 	let Countries: Country[];
 	let Cities: City[];
 	let Religions: Religion[];
-	// biome-ignore lint/style/useConst: <explanation>
 	let nameBases: NameBase[];
 
 	let biomes: string[];
 
-	// biome-ignore lint/style/useConst: <explanation>
+	// biome-ignore lint/style/useConst: Pack will possibly be modified in future updates.
 	let Pack = {
 		burgs: [], // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
 		cells: {
@@ -381,7 +380,6 @@ export const parseLoadedData = (data: string[]) => {
 		// - defs-compass-rose
 		// - gridPatterns
 		// - defs-hatching
-
 		ensureDefsHasBatch(svgElement as unknown as SVGSVGElement, svgDefs);
 
 		// Replace <image> hrefs inside <pattern id="oceanic"> with provided base64 payloads
@@ -422,7 +420,7 @@ export const parseLoadedData = (data: string[]) => {
 				barBackOpacity: settings[8],
 				barPosX: settings[10],
 				barPosY: settings[11],
-				populationRate: Number.parseInt(settings[12]),
+				populationRate: Number.parseInt(settings[12], 10),
 				urbanization: settings[13],
 				mapSize: settings[14],
 				latitude0: settings[15],

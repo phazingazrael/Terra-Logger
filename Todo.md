@@ -12,11 +12,13 @@
 - [x] Additional Exports (Cultures, Notes, more?)
 - [x] Ability to choose between multiple Markdown Templates.
   - Currently only basic Markdown and the Bag of Tips Inspired Vault.
-- [ ] Customize page sections; Title, Subtitle, Segments, etc.
-  - [ ] "Default".
-  - [ ] "Minimal".
-  - [ ] "Recommended".
+- [ ] Fix City Map link generation
 - [ ] Ability to modify data prior to export.
+  - [ ] Continue JSONUI View implementation, such as editing.
+    - [ ] Customize page sections; Title, Subtitle, Segments, etc.
+      - [ ] "Default".
+      - [ ] "Minimal".
+      - [ ] "Recommended".
 - [ ] Customize what data is exported.
 - [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
 - [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.

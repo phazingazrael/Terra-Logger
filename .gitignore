@@ -131,7 +131,7 @@ dist
 .yarn/unplugged
 
 # Editor directories and files
-.vscode/*
+.vscode/
 .better-commits.json
 .DS_Store
 .idea

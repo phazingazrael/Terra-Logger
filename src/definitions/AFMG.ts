@@ -42,7 +42,7 @@ type City = {
   y: number; // y axis coordinate, rounded to two decimals
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#states
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#states
 type Country = {
   alert: number; // state war alert, see military forces page
   area: number; // state area in pixels
@@ -110,7 +110,7 @@ type Country = {
   urban: number; // urban (burg) population of state cells. In population points
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#cultures
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#cultures
 type Culture = {
   area: number; // culture area in pixels
   base: number; // nameBase id, name base is used for names generation
@@ -142,14 +142,14 @@ type MilitaryType = {
   separate: number;
 };
 
-//https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#markers
+//https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#markers
 type Note = {
   id: string;
   legend: string;
   name: string;
 };
 
-// // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#provinces
+// // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#provinces
 type Province = {
   i: number; // province id, always equal to the array index
   area: number; // province area in pixels
@@ -184,7 +184,7 @@ type Province = {
   urban: number; // urban (burg) population of state province. In population points
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#religions
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#religions
 type Religion = {
   area: number; // religion area in pixels
   cells: number; // number of cells within the religion
@@ -207,7 +207,7 @@ type Religion = {
   urban: number; // urban (burg) population of state religion. In population points
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#rivers
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#rivers
 type Rivers = {
   i: number; // river id
   name: string; // river name
@@ -224,7 +224,7 @@ type Rivers = {
   sourceWidth: number; // additional width added to river source on rendering. Used to make lake outlets start with some width depending on flux. Can be also used to manually create channels
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#markers
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#markers
 type Markers = {
   cell: number; // cell id, used to prevent multiple markers generation in the same cell
   dx: number; // icon x shift percent. Optional, default is 50 (50%, center)
@@ -243,7 +243,7 @@ type Markers = {
   y: number; // marker y coordinate
 };
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#name-bases
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#name-bases
 type NameBase = {
   b: string; // long string containing comma-separated list of names
   d: string; // letters that are allowed to be duplicated in generated names
@@ -257,7 +257,7 @@ type NameBase = {
 };
 
 // Inferred combination of data into 1 object following the data model below
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
 interface MapInfo {
   cities: City[];
   countries: Country[];
@@ -316,7 +316,7 @@ interface MapInfo {
 }
 
 // "Pack" data model
-// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model
+// https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
 
 interface CellData {
   // number[] - cells area in pixels. Uint16Array

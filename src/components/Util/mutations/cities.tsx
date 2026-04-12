@@ -110,7 +110,7 @@ export const mutateCities = async (
 			}
 
 			// size & sizeRaw from editors.js from Azgaar.
-			// https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/ui/editors.js#L306C1-L307C51
+			// https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/ui/editors.js#L306C1-L307C51
 			const sizeRaw =
 				2.13 * ((city.population * populationRate) / urbanDensity) ** 0.385;
 			const size = minmax(Math.ceil(sizeRaw), 6, 100);
@@ -327,7 +327,7 @@ export const mutateCities = async (
 				{
 					type: "Section",
 					props: {
-						className: "section features",
+						className: "section citiesList",
 					},
 					children: [
 						{

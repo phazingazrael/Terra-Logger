@@ -1,5 +1,5 @@
 // Modified from the following page.
-// https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/coa-generator.js
+// https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/coa-generator.js
 
 import type { TLCoA } from "../../../../definitions/TerraLogger";
 

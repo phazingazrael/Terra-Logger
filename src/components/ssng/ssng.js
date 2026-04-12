@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/style/useConst: Let's are used due to this being a generator instead of const's */
+
 /*
  **********************************************
  *    A systems agnostic RPG NPC Generator.   *
@@ -14,69 +16,69 @@
 //*  EXTRACTED TO INDIVIDUAL FILES  *
 //***********************************
 
-import DBFemale from './names/dragonborn.f.json';
-import DBSurname from './names/dragonborn.last.json';
-import DBMale from './names/dragonborn.m.json';
-import DBNickname from './names/dragonborn.nick.json';
-import DwFemale from './names/dwarf.f.json';
-import DwSurname from './names/dwarf.last.json';
-import DwMale from './names/dwarf.m.json';
-import ElfFemale from './names/elf.f.json';
-import ElfSurname from './names/elf.last.json';
-import ElfMale from './names/elf.m.json';
-import GnomeFemale from './names/gnome.f.json';
-import GnomeSurname from './names/gnome.last.json';
-import GnomeMale from './names/gnome.m.json';
-import Goblin from './names/goblin.json';
-import GoliathFemale from './names/goliath.f.json';
-import GoliathSurname from './names/goliath.last.json';
-import GoliathMale from './names/goliath.m.json';
-import GoliathNick from './names/goliath.nick.json';
-import HalfelfFemale from './names/halfelf.f.json';
-import HalfelfSurname from './names/halfelf.last.json';
-import HalfelfMale from './names/halfelf.m.json';
-import HalflingNick1 from './names/halfling.1.json';
-import HalflingNick2 from './names/halfling.2.json';
-import HalflingFemale from './names/halfling.f.json';
-import HalflingSurname from './names/halfling.last.json';
-import HalflingMale from './names/halfling.m.json';
-import HumanFemale from './names/human.f.json';
-import HumanSurname from './names/human.last.json';
-import HumanMale from './names/human.m.json';
-import LizardFemale from './names/lizard.f.json';
-import LizardSurname from './names/lizard.last.json';
-import LizardMale from './names/lizard.m.json';
-import Orc from './names/orc.json';
-import OrcSurname from './names/orc.last.json';
-import TiefFemale from './names/tief.f.json';
-import TiefSurname from './names/tief.last.json';
-import TiefMale from './names/tief.m.json';
-import TiefNickname from './names/tief.nick.json';
+import DBFemale from "./names/dragonborn.f.json";
+import DBSurname from "./names/dragonborn.last.json";
+import DBMale from "./names/dragonborn.m.json";
+import DBNickname from "./names/dragonborn.nick.json";
+import DwFemale from "./names/dwarf.f.json";
+import DwSurname from "./names/dwarf.last.json";
+import DwMale from "./names/dwarf.m.json";
+import ElfFemale from "./names/elf.f.json";
+import ElfSurname from "./names/elf.last.json";
+import ElfMale from "./names/elf.m.json";
+import GnomeFemale from "./names/gnome.f.json";
+import GnomeSurname from "./names/gnome.last.json";
+import GnomeMale from "./names/gnome.m.json";
+import Goblin from "./names/goblin.json";
+import GoliathFemale from "./names/goliath.f.json";
+import GoliathSurname from "./names/goliath.last.json";
+import GoliathMale from "./names/goliath.m.json";
+import GoliathNick from "./names/goliath.nick.json";
+import HalfelfFemale from "./names/halfelf.f.json";
+import HalfelfSurname from "./names/halfelf.last.json";
+import HalfelfMale from "./names/halfelf.m.json";
+import HalflingNick1 from "./names/halfling.1.json";
+import HalflingNick2 from "./names/halfling.2.json";
+import HalflingFemale from "./names/halfling.f.json";
+import HalflingSurname from "./names/halfling.last.json";
+import HalflingMale from "./names/halfling.m.json";
+import HumanFemale from "./names/human.f.json";
+import HumanSurname from "./names/human.last.json";
+import HumanMale from "./names/human.m.json";
+import LizardFemale from "./names/lizard.f.json";
+import LizardSurname from "./names/lizard.last.json";
+import LizardMale from "./names/lizard.m.json";
+import Orc from "./names/orc.json";
+import OrcSurname from "./names/orc.last.json";
+import TiefFemale from "./names/tief.f.json";
+import TiefSurname from "./names/tief.last.json";
+import TiefMale from "./names/tief.m.json";
+import TiefNickname from "./names/tief.nick.json";
 
 //***********************************
 //*      CHARACTERISTICS LISTS      *
 //*  EXTRACTED TO INDIVIDUAL FILES  *
 //***********************************
-import Activities from './details/activities.json';
-import Build from './details/build.json';
-import Complexion from './details/complexion.json';
-import Demeanor from './details/demeanor.json';
-import Descriptors1 from './details/descriptors1.json';
-import Descriptors2 from './details/descriptors2.json';
-import Descriptors3 from './details/descriptors3.json';
-import Dragonborn from './details/dragonborn.json';
-import EyeColor from './details/eye.color.1.json';
-import EyeColor2 from './details/eye.color.2.json';
-import EyeColor3 from './details/eye.color.3.json';
-import EyeShape from './details/eye.shape.json';
-import HairColor from './details/hair.color.json';
-import FacialHair from './details/hair.face.json';
-import HairStyle from './details/hair.style.json';
-import Height from './details/height.json';
-import Lizard from './details/lizard.json';
-import OrcGob from './details/orcGob.json';
-import SkinTone from './details/skin.json';
-import Tiefling from './details/tiefling.json';
+import Activities from "./details/activities.json";
+import Build from "./details/build.json";
+import Complexion from "./details/complexion.json";
+import Demeanor from "./details/demeanor.json";
+import Descriptors1 from "./details/descriptors1.json";
+import Descriptors2 from "./details/descriptors2.json";
+import Descriptors3 from "./details/descriptors3.json";
+import Dragonborn from "./details/dragonborn.json";
+import EyeColor from "./details/eye.color.1.json";
+import EyeColor2 from "./details/eye.color.2.json";
+import EyeColor3 from "./details/eye.color.3.json";
+import EyeShape from "./details/eye.shape.json";
+import HairColor from "./details/hair.color.json";
+import FacialHair from "./details/hair.face.json";
+import HairStyle from "./details/hair.style.json";
+import Height from "./details/height.json";
+import Lizard from "./details/lizard.json";
+import OrcGob from "./details/orcGob.json";
+import SkinTone from "./details/skin.json";
+import Tiefling from "./details/tiefling.json";
 
 //***********************************
 //*       PROFFESSIONS LISTS        *
@@ -202,10 +204,10 @@ async function rollCharacter(characterDetails, Profession) {
   let randHeight = Math.floor(Math.random() * 100) + 1;
   let txtFirstName = FName[randFl(FName.length, 0)];
   let txtLastName = LName[randFl(LName.length, 0)];
-  let txtNick1 = '';
-  let txtNick2 = '';
-  let txtNickname = '';
-  let txtClan = '';
+  let txtNick1 = "";
+  let txtNick2 = "";
+  let txtNickname = "";
+  let txtClan = "";
   let txtBuild = build[randFl(build.length, 0)];
   let txtTone = skinTone[randFl(skinTone.length, 0)];
   let txtComp = complexion[randFl(complexion.length, 0)];
@@ -213,24 +215,24 @@ async function rollCharacter(characterDetails, Profession) {
   let txtHairColor = hairColor[randFl(hairColor.length, 0)];
   let txtEyeShape = eyeShape[randFl(eyeShape.length, 0)];
   let txtDemeanor = demeanor[randFl(demeanor.length, 0)];
-  let txtProfession = '';
-  let txtProfDesc = '';
+  let txtProfession = "";
+  let txtProfDesc = "";
   let txtActivities = activities[randFl(activities.length, 0)];
-  let txtDescriptors = '';
-  let txtHeight = '';
-  let txtFacialHair = '';
-  let txtEyeColor = '';
+  let txtDescriptors = "";
+  let txtHeight = "";
+  let txtFacialHair = "";
+  let txtEyeColor = "";
 
   // Generate Name based off Race
 
-  //Height
+  // Height
   if (randHeight.total < 20 || randHeight.total > 80) {
     txtHeight = height[randFl(height.length, 0)];
   } else {
-    txtHeight = 'Average Height';
+    txtHeight = "Average Height";
   }
 
-  //Descriptors Rarity
+  // Descriptors Rarity
   if (randDesc.total >= 90) {
     txtDescriptors = descriptors3[randFl(descriptors3.length, 0)];
   } else if (randDesc <= 65) {
@@ -239,23 +241,24 @@ async function rollCharacter(characterDetails, Profession) {
     txtDescriptors = descriptors2[randFl(descriptors2.length, 0)];
   }
 
-  //Facial Hair Handling
-  if (gender == 'Female' && race == 'Dwarf') {
+  // Facial Hair Handling
+  if (gender === "Female" && race === "Dwarf") {
     txtFacialHair = facialHair[randFl(facialHair.length, 0)];
-  } else if (gender == 'Male') {
+  } else if (gender === "Male") {
     txtFacialHair = facialHair[randFl(facialHair.length, 0)];
   } else {
-    txtFacialHair = 'None';
+    txtFacialHair = "None";
   }
 
-  if (race == 'Dragonborn' || race == 'Goblin' || race == 'Lizardfolk' || race == 'Elf')
-    (txtFacialHair = 'None'),
+  if (race === "Dragonborn" || race === "Goblin" || race === "Lizardfolk" || race === "Elf")
+    // biome-ignore lint/complexity/noCommaOperator: temp
+    (txtFacialHair = "None"),
       txtDescriptors
-        .replace('Very hairy', 'Exceptionally average')
-        .replace('One hell of a mustache', 'Exceptionally average');
-  if (race == 'Dwarf') txtFacialHair = txtFacialHair.replace('Clean-Shaven', 'Long, Braided Beard');
+        .replace("Very hairy", "Exceptionally average")
+        .replace("One hell of a mustache", "Exceptionally average");
+  if (race === "Dwarf") txtFacialHair = txtFacialHair.replace("Clean-Shaven", "Long, Braided Beard");
 
-  //Eye Color Rarity
+  // Eye Color Rarity
   if (randEye.total >= 90) {
     txtEyeColor = eyeColor3[randFl(eyeColor3.length, 0)];
   } else if (randEye.total <= 65) {
@@ -264,16 +267,16 @@ async function rollCharacter(characterDetails, Profession) {
     txtEyeColor = eyeColor2[randFl(eyeColor2.length, 0)];
   }
 
-  //Tone
-  if (race == 'Goblin' || race == 'Half-Orc') {
+  // Tone
+  if (race === "Goblin" || race === "Half-Orc") {
     txtTone = orcGob[randFl(orcGob.length, 0)];
-  } else if (race == 'Dragonborn') {
+  } else if (race === "Dragonborn") {
     txtTone = dragonborn[randFl(dragonborn.length, 0)];
-    txtComp = 'Scaled';
-  } else if (race == 'Lizardfolk') {
+    txtComp = "Scaled";
+  } else if (race === "Lizardfolk") {
     txtTone = lizard[randFl(lizard.length, 0)];
-    txtComp = 'Scaled';
-  } else if (race == 'Tiefling') {
+    txtComp = "Scaled";
+  } else if (race === "Tiefling") {
     const randTief = Math.floor(Math.random() * 6) + 1;
     if (randTief.total > 4) {
       txtTone = tiefling[randFl(tiefling.length, 0)];
@@ -282,54 +285,54 @@ async function rollCharacter(characterDetails, Profession) {
     }
   }
 
-  //Nickname Handling
-  if (race == 'Halfling') {
+  // Nickname Handling
+  if (race === "Halfling") {
     txtNick1 = NName[randFl(NName.length, 0)];
     txtNick2 = NName2[randFl(NName2.length, 0)];
     txtNickname = NNType + txtNick1 + txtNick2;
-  } else if (race == 'Dragonborn') {
+  } else if (race === "Dragonborn") {
     txtNick1 = NName[randFl(NName.length, 0)];
     txtNickname = NNType + txtNick1;
     txtClan =
-      '*Dragonborn display their clan name first. The "Child Name" is a nickname earned as a child.';
-  } else if (race == 'Tiefling') {
+      "*Dragonborn display their clan name first. The 'Child Name' is a nickname earned as a child.";
+  } else if (race === "Tiefling") {
     txtNick1 = NName[randFl(NName.length, 0)];
     txtNickname = NNType + txtNick1;
-  } else if (race == 'Goliath') {
+  } else if (race === "Goliath") {
     txtNick1 = NName[randFl(NName.length, 0)];
     txtNickname = NNType + txtNick1;
-    txtClan = '*Goliath display their Clan name last.';
+    txtClan = "*Goliath display their Clan name last.";
   } else {
     // txtNickname = "";
     // txtClan = "";
   }
 
-  //If Bald/Shaved we want to add "eyebrow" before the hair color
-  if (txtHairStyle == 'Bald' || txtHairStyle == 'Shaved') {
-    if (gender == 'Female') {
-      txtHairStyle = 'Shoulder-Length';
-      txtFacialHair = 'None';
+  // If Bald/Shaved we want to add "eyebrow" before the hair color
+  if (txtHairStyle === "Bald" || txtHairStyle === "Shaved") {
+    if (gender === "Female") {
+      txtHairStyle = "Shoulder-Length";
+      txtFacialHair = "None";
     } else {
-      txtHairColor += ' Eyebrow ';
+      txtHairColor += " Eyebrow ";
     }
   }
 
-  //Hair Handling
-  if (race == 'Dragonborn' || race == 'Lizardfolk') {
-    txtHairStyle = 'None';
-    txtHairColor = 'None';
+  // Hair Handling
+  if (race === "Dragonborn" || race === "Lizardfolk") {
+    txtHairStyle = "None";
+    txtHairColor = "None";
   }
 
-  //Profession Handling
+  // Profession Handling
   let prof2 = professions[randFl(professions.length, 0)];
   switch (Profession) {
     case 'Apprentice':
-      txtProfession = prof2 + ' (Apprentice)';
-      txtProfDesc = getProfessionDescription(Profession) + ' ' + getProfessionDescription(prof2);
+      txtProfession = `${prof2} (Apprentice)`;
+      txtProfDesc = `${getProfessionDescription(Profession)} ${getProfessionDescription(prof2)}`;
       break;
     case 'Journeyman':
-      txtProfession = prof2 + ' (Journeyman)';
-      txtProfDesc = getProfessionDescription(Profession) + ' ' + getProfessionDescription(prof2);
+      txtProfession = `${prof2} (Journeyman)`;
+      txtProfDesc = `${getProfessionDescription(Profession)} ${getProfessionDescription(prof2)}`;
       break;
     default:
       txtProfession = professions[randFl(professions.length, 0)];
@@ -337,7 +340,7 @@ async function rollCharacter(characterDetails, Profession) {
   }
 
   let npc = {
-    fullName: txtFirstName + ' ' + txtLastName,
+    fullName: `${txtFirstName} ${txtLastName}`,
     nickName: txtNickname,
     race: race,
     gender: gender,
@@ -345,7 +348,7 @@ async function rollCharacter(characterDetails, Profession) {
       title: txtProfession,
       description: txtProfDesc,
     },
-    build: txtHeight + ' and ' + txtBuild,
+    build: `${txtHeight} and ${txtBuild}`,
     skin: {
       tone: txtTone,
       comp: txtComp,
@@ -365,7 +368,7 @@ async function rollCharacter(characterDetails, Profession) {
     clan: txtClan,
   };
 
-  console.log('Generated NPC:', npc);
+  console.log("Generated NPC:", npc);
   return npc;
 }
 
@@ -379,12 +382,12 @@ async function rollCharacter(characterDetails, Profession) {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollHuman = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
   switch (gender) {
     case 'Male':
       return rollCharacter(
@@ -414,8 +417,8 @@ export const rollHuman = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollHuman('Male', profession)
-        : rollHuman('Female', profession);
+        ? rollHuman("Male", profession)
+        : rollHuman("Female", profession);
   }
 };
 
@@ -429,12 +432,12 @@ export const rollHuman = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollDragonborn = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -465,8 +468,8 @@ export const rollDragonborn = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollDragonborn('Male', profession)
-        : rollDragonborn('Female', profession);
+        ? rollDragonborn("Male", profession)
+        : rollDragonborn("Female", profession);
   }
 };
 
@@ -480,12 +483,12 @@ export const rollDragonborn = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollDwarf = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -516,8 +519,8 @@ export const rollDwarf = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollDwarf('Male', profession)
-        : rollDwarf('Female', profession);
+        ? rollDwarf("Male", profession)
+        : rollDwarf("Female", profession);
   }
 };
 
@@ -531,12 +534,12 @@ export const rollDwarf = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollElf = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -567,8 +570,8 @@ export const rollElf = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollElf('Male', profession)
-        : rollElf('Female', profession);
+        ? rollElf("Male", profession)
+        : rollElf("Female", profession);
   }
 };
 
@@ -582,12 +585,12 @@ export const rollElf = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollGnome = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -618,8 +621,8 @@ export const rollGnome = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollGnome('Male', profession)
-        : rollGnome('Female', profession);
+        ? rollGnome("Male", profession)
+        : rollGnome("Female", profession);
   }
 };
 
@@ -633,12 +636,12 @@ export const rollGnome = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollGoblin = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -669,8 +672,8 @@ export const rollGoblin = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollGoblin('Male', profession)
-        : rollGoblin('Female', profession);
+        ? rollGoblin("Male", profession)
+        : rollGoblin("Female", profession);
   }
 };
 
@@ -684,12 +687,12 @@ export const rollGoblin = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollGoliath = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -720,8 +723,8 @@ export const rollGoliath = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollGoliath('Male', profession)
-        : rollGoliath('Female', profession);
+        ? rollGoliath("Male", profession)
+        : rollGoliath("Female", profession);
   }
 };
 
@@ -735,12 +738,12 @@ export const rollGoliath = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollHalfling = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -771,8 +774,8 @@ export const rollHalfling = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollHalfling('Male', profession)
-        : rollHalfling('Female', profession);
+        ? rollHalfling("Male", profession)
+        : rollHalfling("Female", profession);
   }
 };
 
@@ -786,12 +789,12 @@ export const rollHalfling = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollHalfElf = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -822,12 +825,12 @@ export const rollHalfElf = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollHalfElf('Male', profession)
-        : rollHalfElf('Female', profession);
+        ? rollHalfElf("Male", profession)
+        : rollHalfElf("Female", profession);
   }
 };
 
-//Lizardfolk uncommon
+// Lizardfolk uncommon
 /**
  * Rolls a Lizardfolk NPC with a given gender and profession.
  *
@@ -838,12 +841,12 @@ export const rollHalfElf = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollLizard = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -874,12 +877,12 @@ export const rollLizard = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollLizard('Male', profession)
-        : rollLizard('Female', profession);
+        ? rollLizard("Male", profession)
+        : rollLizard("Female", profession);
   }
 };
 
-//Orc uncommon
+// Orc uncommon
 /**
  * Rolls a half-orc NPC with a given gender and profession.
  *
@@ -890,12 +893,12 @@ export const rollLizard = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const d = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -926,12 +929,12 @@ export const d = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollOrc('Male', profession)
-        : rollOrc('Female', profession);
+        ? rollOrc("Male", profession)
+        : rollOrc("Female", profession);
   }
 };
 
-//Tiefling uncommon
+// Tiefling uncommon
 /**
  * Rolls a Tiefling NPC with a given gender and profession.
  *
@@ -942,12 +945,12 @@ export const d = (gender, profession) => {
  *
  * If `profession` is an empty string, a random profession will be chosen.
  *
- * @param {string} gender - Gender of the NPC to roll. One of 'Male', 'Female', or any other string to randomly choose a gender.
+ * @param {string} gender - Gender of the NPC to roll. One of 'Male", "Female', or any other string to randomly choose a gender.
  * @param {string} profession - Profession of the NPC to roll. If empty, a random profession will be chosen.
  * @returns {object} An object containing the rolled NPC's information.
  */
 export const rollTiefling = (gender, profession) => {
-  if (profession === '') profession = professions[randFl(professions.length, 0)];
+  if (profession === "") profession = professions[randFl(professions.length, 0)];
 
   switch (gender) {
     case 'Male':
@@ -978,8 +981,8 @@ export const rollTiefling = (gender, profession) => {
       );
     default:
       Math.floor(Math.random() * 2) === 0
-        ? rollTiefling('Male', profession)
-        : rollTiefling('Female', profession);
+        ? rollTiefling("Male", profession)
+        : rollTiefling("Female", profession);
   }
 };
 
@@ -1212,7 +1215,7 @@ export const rollRandomNPC = (profession) => {
   ];
 
   let rNPC = Math.floor(Math.random() * rollOpts.length);
-  if (profession === '') {
+  if (profession === "") {
     console.log(JSON.stringify(professions));
     profession = professions[randFl(professions.length, 0)];
   }

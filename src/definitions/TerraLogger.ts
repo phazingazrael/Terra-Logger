@@ -397,6 +397,10 @@ export interface SettingsOpts {
 
 
 export interface TLContentView {
+  /**
+   * Optional stable id added by the Page Studio editor.
+   * Older content may not have ids yet, which is why the field stays optional.
+   */
   type: "View";
   props?: {
     className?: string;
@@ -407,6 +411,10 @@ export interface TLContentView {
 }
 
 export interface TLContentSection {
+  /**
+   * Optional stable id added by the Page Studio editor so a section can be
+   * selected, reordered, replaced, and persisted without relying on indexes.
+   */
   type: "Section";
   props?: {
     className?: string;
@@ -417,6 +425,9 @@ export interface TLContentSection {
 }
 
 export interface TLContentChild {
+  /**
+   * Optional stable id added at runtime by the Page Studio editor.
+   */
   type: string;
   props?: Record<string, unknown>;
   children?: TLContentChild[];

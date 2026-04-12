@@ -1,7 +1,7 @@
 // Modified from the following page.
-// https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/modules/coa-renderer.js
+// https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/coa-renderer.js
 
-// all Charges from https://github.com/Azgaar/Fantasy-Map-Generator/blob/master/charges
+// all Charges from https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/charges
 // Simple svg shapes and charges are made by Azgaar and available under CC0.
 // a lot of the complex charge renders are from WappenWiki and available for non-commercial use only.
 const PATH = "./coaGen/charges/";
