@@ -1,4 +1,3 @@
-// components/Export/templateUtils.ts
 /**
  * Template utilities for Export module:
  * - Load template text via Vite's import.meta.glob()
@@ -10,14 +9,27 @@
 import type { PartialTemplates, TemplateMap } from "../../definitions/Export";
 import type { TLNote } from "../../definitions/TerraLogger";
 
-// Eagerly bundle every markdown under this component's templates folder.
-// Adjust the glob roots if your templates live elsewhere as well.
-const RAW_TEMPLATES: Record<string, string> = import.meta.glob(
+/**
+ * Bundle markdown/text templates as raw strings.
+ *
+ * Vite 8 raw glob imports should use:
+ * - query: "?raw"
+ * - import: "default"
+ * - eager: true
+ *
+ * That ensures the matched markdown files are treated as raw text assets rather
+ * than parsed as JavaScript modules during build.
+ */
+const RAW_TEMPLATES = import.meta.glob<string>(
 	[
 		"./templates/**/*.{md,markdown,txt}",
-		"/src/**/templates/**/*.{md,markdown,txt}", // safety net if you import via absolute project path
+		"/src/components/Export/templates/**/*.{md,markdown,txt}",
 	],
-	{ as: "raw", eager: true },
+	{
+		query: "?raw",
+		import: "default",
+		eager: true,
+	},
 );
 
 /**
@@ -42,51 +54,66 @@ export function resolveRawFromGlob(requestPath: string): string | undefined {
 		candidates.add(`/src/components/Export/templates/${tail}`);
 	}
 
-	// Exact match first
-	for (const k of candidates) {
-		if (RAW_TEMPLATES[k]) return RAW_TEMPLATES[k];
+  // Exact match first
+	for (const key of candidates) {
+		if (RAW_TEMPLATES[key]) {
+			return RAW_TEMPLATES[key];
+		}
 	}
-	// Fallback: suffix match (useful if folder layout shifts)
+  // Fallback: suffix match (useful if folder layout shifts)
+
 	const suffix = (tail ?? clean).replace(/^\.?\//, "");
-	const hit = Object.keys(RAW_TEMPLATES).find((k) => k.endsWith(suffix));
+	const hit = Object.keys(RAW_TEMPLATES).find((key) => key.endsWith(suffix));
 	return hit ? RAW_TEMPLATES[hit] : undefined;
 }
 
 /**
  * Load and resolve all templates from JSON (usually templates.json)
- * Returns a map of name → template contents
+ * Returns a map of name -> template contents
  */
 export async function resolveTemplateFilesFromJson(
 	files: PartialTemplates,
 ): Promise<PartialTemplates> {
 	const out: PartialTemplates = {};
-	for (const k of Object.keys(files) as (keyof TemplateMap)[]) {
-		const p = files[k];
-		if (!p) continue;
 
-		// 1) Resolve at build-time from RAW_TEMPLATES (preferred: no network)
-		const raw = resolveRawFromGlob(p);
+	for (const key of Object.keys(files) as (keyof TemplateMap)[]) {
+		const path = files[key];
+		if (!path) {
+			continue;
+		}
+    // 1) Resolve at build-time from RAW_TEMPLATES (preferred: no network)
+
+		const raw = resolveRawFromGlob(path);
 		if (typeof raw === "string") {
-			out[k] = raw;
+			out[key] = raw;
 			continue;
 		}
 
-		// 2) Optional: LAST-RESORT dynamic import for dev oddities
+    // 2) Optional
+		/**
+		 * Last-resort dynamic raw import.
+		 *
+		 * Important:
+		 * we append ?raw here too, otherwise a markdown file may be parsed as a
+		 * source module instead of returned as text.
+		 */
 		try {
-			// @vite-ignore because p is dynamic; works only if the path is still importable
-			const mod = await import(/* @vite-ignore */ p);
-			// biome-ignore lint/suspicious/noExplicitAny: because
-			const content = (mod as any)?.default ?? (mod as any);
+			const rawPath = path.includes("?") ? `${path}&raw` : `${path}?raw`;
+			const mod = await import(/* @vite-ignore */ rawPath);
+			const content = (mod as { default?: unknown }).default;
+
 			if (typeof content === "string") {
-				out[k] = content;
+				out[key] = content;
+				continue;
 			}
 		} catch {
 			// 3) No fetch fallback — we explicitly avoid runtime HTTP in production
 			throw new Error(
-				`Template not bundled: ${String(p)} — ensure it matches RAW_TEMPLATES glob.`,
+				`Template not bundled: ${String(path)} — ensure it matches RAW_TEMPLATES glob.`,
 			);
 		}
 	}
+
 	return out;
 }
 
@@ -109,6 +136,7 @@ export function fillMissingTemplates(partial: PartialTemplates): TemplateMap {
 		// The default template for the key "Religion".
 		Religion: "# {{Religion.name}}\n",
 	};
+
 	return { ...defaults, ...(partial as Record<string, string>) } as TemplateMap;
 }
 
@@ -126,21 +154,29 @@ export function pickNoteTemplateKey(note: TLNote): string {
 		return "Note-Military";
 	if (["poi", "marker", "pin"].includes(root)) return "Note-POI";
 
-	// optional: light tag-based fallback
-	const tags = Array.isArray((note as any).tags) ? (note as any).tags : [];
-	const has = (s: string) =>
-		tags.some((t: any) =>
-			String(t?.Type ?? t?.Name ?? "")
+  // optional: light tag-based fallback
+	const tags = Array.isArray((note as { tags?: unknown }).tags)
+		? ((note as { tags?: unknown[] }).tags ?? [])
+		: [];
+
+	const has = (text: string) =>
+		tags.some((tag) =>
+			String(
+				(tag as { Type?: string; Name?: string })?.Type ??
+					(tag as { Type?: string; Name?: string })?.Name ??
+					"",
+			)
 				.toLowerCase()
-				.includes(s),
+				.includes(text),
 		);
+
 	if (has("city")) return "Note-City";
 	if (has("country") || has("state")) return "Note-Country";
 	if (has("label")) return "Note-Label";
 	if (has("milit")) return "Note-Military";
 	if (has("poi") || has("marker")) return "Note-POI";
 
-	return "Note-Label"; // fallback
+	return "Note-Label";
 }
 
 /**

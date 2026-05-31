@@ -6,12 +6,5 @@ export default defineConfig({
   plugins: [react()],
   build: {
     manifest: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          mui: ["@mui/material", "@emotion/react", "@emotion/styled"],
-        },
-      },
-    },
   },
 });
