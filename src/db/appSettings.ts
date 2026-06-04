@@ -5,6 +5,22 @@ import { initDatabase } from "./database";
 
 export const APP_SETTINGS_ID = "TL_APP_SETTINGS" as const;
 
+function getCodeAppVersion(): string {
+  return sanitizeVersionString(
+    (Package as { version?: string }).version ?? "0.0.0",
+  ) || "0.0.0";
+}
+
+
+function sanitizeVersionString(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.trim().replace(/_Beta/gi, "");
+}
+
+
 /**
  * Creates the default app settings object.
  * @returns {AppInfo} The default app settings object.
@@ -14,12 +30,15 @@ export function createDefaultAppSettings(): AppInfo {
     id: APP_SETTINGS_ID,
     application: {
       name: (Package as { name?: string }).name ?? "Terra-Logger",
-      version: (Package as { version?: string }).version ?? "0.0.0",
+      version: getCodeAppVersion(),
       afmgVer: "1.105.15",
       supportedLanguages: ["en"],
       defaultLanguage: "en",
       onboarding: true,
-      description: (Package as { descriptionFull?: string }).descriptionFull ?? Package.description ?? "",
+      description:
+        (Package as { descriptionFull?: string }).descriptionFull ??
+        Package.description ??
+        "",
     },
     userSettings: {
       dataDisplay: "default",
@@ -70,14 +89,14 @@ export function normalizeAppSettings(raw: unknown): AppInfo {
   return merged;
 }
 
-/**
- * Single entrypoint for reading settings.
- * - Reads canonical row
- * - Falls back to existing rows (legacy/versioned ids) once
- * - Normalizes + persists back under canonical id
- */
+
 export async function getAppSettings(): Promise<AppInfo> {
   const db = await initDatabase();
+
+  if (!db.objectStoreNames.contains("appSettings")) {
+    const fallback = createDefaultAppSettings();
+    return fallback;
+  }
 
   // Prefer canonical record
   const byId = (await db.get("appSettings", APP_SETTINGS_ID)) as unknown;
@@ -130,8 +149,6 @@ export async function updateAppSettings(updater: Updater): Promise<AppInfo> {
   await db.put("appSettings", normalized);
   return normalized;
 }
-
-// Convenience helpers (optional but keeps call sites clean)
 
 /**
  * Sets the theme of the application.

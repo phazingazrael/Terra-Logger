@@ -82,50 +82,12 @@ import Tiefling from './details/tiefling.json';
 //*       PROFFESSIONS LISTS        *
 //*  EXTRACTED TO INDIVIDUAL FILES  *
 //***********************************\
-import GovProfessions from './details/govProfessions.json';
-import ProfessionDescriptions from './details/professionDescriptions.json';
-import Professions from './details/professions.json';
+// import GovProfessions from "./details/govProfessions.json";
+import ProfessionDescriptions from "./details/professionDescriptions.json";
+import Professions from "./details/professions.json";
 
 //***********************************
 //*      NAMES LISTS                  *
-//*  - Dragonborn_Female: List of dragonborn female first names
-//*  - Dragonborn_Male: List of dragonborn male first names
-//*  - Dragonborn_Nickname: List of dragonborn nicknames
-//*  - Dragonborn_Surname: List of dragonborn surnames
-//*  - Dwarf_Female: List of dwarf female first names
-//*  - Dwarf_Male: List of dwarf male first names
-//*  - Dwarf_Surname: List of dwarf surnames
-//*  - Elf_Female: List of elf female first names
-//*  - Elf_Male: List of elf male first names
-//*  - Elf_Surname: List of elf surnames
-//*  - Gnome_Female: List of gnome female first names
-//*  - Gnome_Male: List of gnome male first names
-//*  - Gnome_Surname: List of gnome surnames
-//*  - GoblinNames: List of goblin names
-//*  - Goliath_Female: List of goliath female first names
-//*  - Goliath_Male: List of goliath male first names
-//*  - Goliath_Nickname: List of goliath nicknames
-//*  - Goliath_Surname: List of goliath surnames
-//*  - HalfElf_Female: List of half-elf female first names
-//*  - HalfElf_Male: List of half-elf male first names
-//*  - HalfElf_Surname: List of half-elf surnames
-//*  - Halfling_Female: List of halfling female first names
-//*  - Halfling_Male: List of halfling male first names
-//*  - Halfling_Nickname1: List of halfling nicknames
-//*  - Halfling_Nickname2: List of halfling nicknames
-//*  - Halfling_Surname: List of halfling surnames
-//*  - Human_Female: List of human female first names
-//*  - Human_Male: List of human male first names
-//*  - Human_Surname: List of human surnames
-//*  - Lizard_Female: List of lizardfolk female first names
-//*  - Lizard_Male: List of lizardfolk male first names
-//*  - Lizard_Surname: List of lizardfolk surnames
-//*  - Orc_Surname: List of orc surnames
-//*  - OrcNames: List of orc names
-//*  - Tiefling_Female: List of tiefling female first names
-//*  - Tiefling_Male: List of tiefling male first names
-//*  - Tiefling_Nickname: List of tiefling nicknames
-//*  - Tiefling_Surname: List of tiefling surnames
 //***********************************
 const Dragonborn_Female = DBFemale;
 const Dragonborn_Male = DBMale;
@@ -168,26 +130,6 @@ const Tiefling_Surname = TiefSurname;
 
 //***********************************
 //*  CHARACTERISTICS LISTS          *
-//*  - activities: List of activity words
-//*  - build: List of build words
-//*  - complexion: List of words that describe a character's complexion
-//*  - demeanor: List of demeanor words
-//*  - descriptors1: List of descriptor words
-//*  - descriptors2: List of descriptor words
-//*  - descriptors3: List of descriptor words
-//*  - dragonborn: List of dragonborn characteristics
-//*  - eyeColor: List of eye color words
-//*  - eyeColor2: List of eye color words
-//*  - eyeColor3: List of eye color words
-//*  - eyeShape: List of eye shape words
-//*  - facialHair: List of facial hair words
-//*  - hairColor: List of hair color words
-//*  - hairStyle: List of hair style words
-//*  - height: List of height words
-//*  - lizard: List of lizardfolk characteristics
-//*  - orcGob: List of orc and goblin characteristics
-//*  - skinTone: List of skin tones
-//*  - tiefling: List of tiefling characteristics
 //***********************************
 
 const activities = Activities;
@@ -213,13 +155,11 @@ const tiefling = Tiefling;
 
 //***********************************
 //*  PROFESSIONS LISTS              *
-//*  - professions: List of profession words
-//*  - professionDescriptions: List of profession descriptions
-//*  - govProfessions: List of government professions
 //***********************************
 const professions = Professions;
 const professionDescriptions = ProfessionDescriptions;
-const govProfessions = GovProfessions;
+// to be used later
+// const govProfessions = GovProfessions;
 
 /**
  * Generates a random floating point number between y (inclusive) and x (exclusive).
@@ -419,7 +359,7 @@ async function rollCharacter(characterDetails, Profession) {
       color: txtHairColor,
       facial: txtFacialHair,
     },
-    descriiptors: txtDescriptors,
+    descriptors: txtDescriptors,
     demeanor: txtDemeanor,
     activities: txtActivities,
     clan: txtClan,
