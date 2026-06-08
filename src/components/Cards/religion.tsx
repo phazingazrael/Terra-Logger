@@ -134,7 +134,18 @@ function ReligionCard(props: Readonly<TLReligion>) {
 
 				{religion.members && (
 					<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-						<strong>Believers:</strong>{" "}
+						<strong>
+							{religion.name === "No religion" ||
+							religion.name === "No Religion" ||
+							religion.name === "None" ||
+							religion.name === "Atheist" ||
+							religion.name === "Atheism" ||
+							religion.name === "Agnostic" ||
+							religion.name === "Agnosticism"
+								? "Population"
+								: "Believers"}
+							:
+						</strong>{" "}
 						{(religion.members.rural + religion.members.urban).toLocaleString(
 							"en-US",
 						)}

@@ -51,6 +51,27 @@ function ReligionView() {
 		return (religion.members.urban / totalMembers) * 100;
 	}, [religion, totalMembers]);
 
+	const title =
+		religion?.name === "No religion" ||
+		religion?.name === "No Religion" ||
+		religion?.name === "None" ||
+		religion?.name === "Atheist" ||
+		religion?.name === "Atheism" ||
+		religion?.name === "Agnostic" ||
+		religion?.name === "Agnosticism"
+			? "Population"
+			: "Membership";
+
+	const title2 =
+		religion?.name === "No religion" ||
+		religion?.name === "No Religion" ||
+		religion?.name === "None" ||
+		religion?.name === "Atheist" ||
+		religion?.name === "Atheism" ||
+		religion?.name === "Agnostic" ||
+		religion?.name === "Agnosticism"
+			? "Population"
+			: "Members";
 	const theme = useTheme();
 
 	useEffect(() => {
@@ -191,7 +212,7 @@ function ReligionView() {
 											gutterBottom
 											sx={{ fontWeight: "bold", mb: 3 }}
 										>
-											Membership
+											{title}
 										</Typography>
 
 										<Box sx={{ mb: 3 }}>
@@ -207,7 +228,9 @@ function ReligionView() {
 													<GroupsIcon
 														sx={{ mr: 1, color: theme.palette.text.secondary }}
 													/>
-													<Typography variant="h6">Total Members</Typography>
+													<Typography variant="h6">
+														Total{` ${title2}`}
+													</Typography>
 												</Box>
 												<Typography
 													variant="h4"
