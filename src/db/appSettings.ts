@@ -41,7 +41,6 @@ export function createDefaultAppSettings(): AppInfo {
         "",
     },
     userSettings: {
-      dataDisplay: "default",
       theme: "light",
       language: "en",
       showWelcomeMessage: true,

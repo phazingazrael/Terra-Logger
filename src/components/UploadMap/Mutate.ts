@@ -12,11 +12,7 @@ import {
 
 import type {
   TLMapInfo,
-  TLCity,
-  TLCulture,
 } from "../../definitions/TerraLogger";
-
-import { getAppSettings } from "../../db/appSettings";
 
 const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
   // add map info that doesn't need mutating.
@@ -27,9 +23,6 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 
 const mutateData = async (data: MapInfo, Pack: Pack) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
-  const app = await getAppSettings();
-  const settings = app.userSettings;
-  const DataDisplay = settings.dataDisplay;
 
   // Mutate Map Data to Terra-Logger Format //
   const tempMap: TLMapInfo = createTerraLoggerMap();
@@ -68,8 +61,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
       populationRate,
       urbanization,
       urbanDensity,
-      tempMap.SVG,
-      DataDisplay
+      tempMap.SVG
     );
     // set timeout for 3 seconds
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -87,7 +79,6 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
       populationRate,
       urbanization,
       tempMap.SVG,
-      DataDisplay
     );
     // set timeout for 3 seconds
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -137,7 +128,7 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
   }
 
   //associate cities with countries
-  (tempMap.cities as unknown as TLCity[]).forEach((city) => {
+  (tempMap.cities).forEach((city) => {
     if (city.country) {
       const tempCountry = tempMap.countries.find(
         (c) => c.id === city.country.id,
@@ -167,10 +158,10 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
     }
   });
 
-  // assigned Cities to Countries
+  // assign Cities to Countries
 
   // mutate cultures
-  for (const culture of tempMap.cultures as unknown as TLCulture[]) {
+  for (const culture of tempMap.cultures) {
     const cultureCountries = tempMap.countries.filter(
       (country) => country.culture.id === (culture.id as unknown as string),
     );
@@ -179,10 +170,10 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
 
     for (const country of cultureCountries) {
       const urbValue = Number.parseInt(
-        country.population.urban.replace(/,/g, ""),
+        country.population.urban.replace(/,/g, ""), 10
       );
       const rurValue = Number.parseInt(
-        country.population.rural.replace(/,/g, ""),
+        country.population.rural.replace(/,/g, ""), 10
       );
 
       urbPop += urbValue;

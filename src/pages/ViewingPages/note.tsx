@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Container, Typography, Paper } from "@mui/material";
 
 import { useParams } from "react-router-dom";
-import { getDataFromStore } from "../../db/interactions";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
 
-import DOMPurify from "dompurify";
+import { type AtlasContent, AtlasRenderer } from "../../components/atlas";
+import { useDB } from "../../db/DataContext";
 
 function NoteView() {
 	const { _id } = useParams<{ _id: string }>();
-	const [note, setNote] = useState<TLNote>();
+	// const [note, setNote] = useState<TLNote>();
 
-	useEffect(() => {
-		if (!_id) return;
-
-		getDataFromStore("notes", _id).then((data) => {
-			setNote(data as TLNote);
-		});
-	}, [_id]);
+	const { useActive } = useDB();
+	const notes = useActive<TLNote>("notes");
+	const note = useMemo(() => notes.find((r) => r._id === _id), [notes, _id]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");
@@ -42,16 +38,15 @@ function NoteView() {
 								<Typography color="text.secondary" component="h2">
 									Note Details
 								</Typography>
-								<Typography
-									color="text.secondary"
-									component="pre"
-									className="noteBody"
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: html is sanitized
-									dangerouslySetInnerHTML={
-										{
-											__html: DOMPurify.sanitize(note?.legend || ""),
-										} as { __html: string }
-									}
+								<AtlasRenderer
+									content={note?.content as AtlasContent}
+									context={{
+										sourceType: "note",
+										entity: note as TLNote,
+										related: {
+											notes,
+										},
+									}}
 								/>
 							</div>
 						</main>

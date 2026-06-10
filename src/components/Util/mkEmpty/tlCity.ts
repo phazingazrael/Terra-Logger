@@ -22,9 +22,21 @@ export const createEmptyCity = (): TLCity => ({
   },
   coaSVG: "",
   content: {
-    children: [],
-    type: "View",
-    sourceType: "city",
+    schema: "atlas/content/v1",
+    kind: "AtlasContent",
+    version: 1,
+    id: "",
+    source: {
+      type: "city",
+      entityId: "",
+    },
+    meta: {
+      title: "",
+    },
+    layout: {
+      preset: "content-grid",
+    },
+    sections: [],
   },
   country: {
     _id: "",

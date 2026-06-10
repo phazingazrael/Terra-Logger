@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/style/noDescendingSpecificity: ignore */
+/** biome-ignore-all lint/complexity/noImportantStyles: overrides for MUI styles sometimes require force important */
+
 .ViewPage {
   padding-left: 0dvw;
   padding-right: 0dvw;
@@ -35,11 +37,6 @@
   flex-shrink: 0;
 }
 
-.image svg {
-  width: 100%;
-  height: 100%;
-}
-
 .info {
   display: flex;
   flex-direction: column;
@@ -68,7 +65,8 @@
 
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
   gap: 30px;
 }
 
@@ -79,7 +77,8 @@
 
 .description,
 .military,
-.citiesList {
+.citiesList,
+.featuresList {
   grid-column: 1 / -1;
 }
 
@@ -291,13 +290,14 @@ ul {
 /* City Page */
 
 .map-link a {
-  display: inline-block;
   background-color: #007bff;
   color: white;
   padding: 10px 15px;
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
+  float: right;
+  margin-bottom: 1vh;
 }
 
 .map-link a:hover {
@@ -337,6 +337,151 @@ ul {
 
 /* Religion Page */
 .Religion .section {
-  padding: 5px;
+  /* padding: 5px; */
   margin: 0.5rem;
+}
+
+.Religion .meta {
+  margin-top: 3.5dvh;
+}
+
+/*
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+*/
+
+/* Atlas Style Fixes */
+
+/* "Clear Section" padding & margin */
+.atlas-section.clear.population,
+.atlas-section.clear.tags,
+.atlas-section.clear.header,
+.atlas-section.clear.membership {
+  margin: 0;
+  padding: 0;
+}
+
+/* Section margin */
+.atlas-section.section {
+  margin: 0rem;
+}
+
+/* City Page */
+
+/* Section Widths */
+.ViewPage.City .atlas-section.header section {
+  width: 100%;
+}
+
+.ViewPage.City .atlas-section.header,
+.ViewPage.City .atlas-section.tags {
+  grid-column: 1 / -1;
+}
+
+/* Hide Headers */
+.ViewPage.City .atlas-section.header .atlas-section__header {
+  display: none;
+}
+
+/* Country Page */
+
+/* Section Widths */
+.ViewPage.Country .atlas-section.header section {
+  width: 100%;
+}
+
+.ViewPage.Country .atlas-section.header,
+.ViewPage.Country .atlas-section.tags {
+  grid-column: 1 / -1;
+}
+
+/* Hide Headers */
+.ViewPage.Country .atlas-section.header .atlas-section__header {
+  display: none;
+}
+
+/* Culture Page */
+
+/* Section Widths */
+.ViewPage.Culture .atlas-section.header,
+.ViewPage.Culture .atlas-section.population,
+.ViewPage.Culture .atlas-section.tags {
+  grid-column: 1 / -1;
+}
+
+/* header content */
+.ViewPage.Culture .atlas-section.header {
+  margin-bottom: 0px;
+}
+.ViewPage.Culture .atlas-section.header section {
+  width: 100%;
+}
+
+/* population content width */
+.culturePopPaper {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Hide Headers */
+.ViewPage.Culture .atlas-section.header .atlas-section__header,
+.ViewPage.Culture .atlas-section.population .atlas-section__header,
+.ViewPage.Culture .atlas-section.tags .atlas-section__header {
+  display: none;
+}
+
+/* Religion Page */
+
+/* Section Widths */
+.ViewPage.Religion .atlas-section.header section {
+  width: 100%;
+}
+
+.ViewPage.Religion .atlas-section.header,
+.ViewPage.Religion .atlas-section.membership,
+.ViewPage.Religion .atlas-section.tags {
+  grid-column: 1 / -1;
+}
+
+/* Hide Headers */
+.ViewPage.Religion .atlas-section.header .atlas-section__header,
+.ViewPage.Religion .atlas-section.membership .atlas-section__header,
+.ViewPage.Religion .atlas-section.tags .atlas-section__header {
+  display: none;
+}
+
+.tags-grid {
+  align-items: stretch;
+}
+
+.tags-grid-item {
+  display: flex;
+}
+
+/* Notes Page */
+
+/* Section Widths */
+.ViewPage.Notes .atlas-section.note-legend {
+  padding: 0rem;
+}
+
+.ViewPage.Notes .atlas-section.note-legend,
+.ViewPage.Notes .atlas-section.editor-notes {
+  margin-bottom: 5dvh;
+}
+
+/* Hide Headers */
+.ViewPage.Notes .atlas-section.note-legend .atlas-section__header,
+.ViewPage.Notes .atlas-section.tags .atlas-section__header {
+  display: none;
+}
+
+/* Editor Notes */
+.ViewPage.Notes .atlas-section.editor-notes {
+  background-color: rgb(224 255 91 / 50%);
 }

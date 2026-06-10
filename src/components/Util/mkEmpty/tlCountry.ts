@@ -23,9 +23,21 @@ export const createEmptyCountry = (): TLCountry => ({
   coaSVG: "",
   color: "",
   content: {
-    children: [],
-    type: "View",
-    sourceType: "country",
+    schema: "atlas/content/v1",
+    kind: "AtlasContent",
+    version: 1,
+    id: "",
+    source: {
+      type: "country",
+      entityId: "",
+    },
+    meta: {
+      title: "",
+    },
+    layout: {
+      preset: "content-grid",
+    },
+    sections: []
   },
   culture: {
     _id: "",

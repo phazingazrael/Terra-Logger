@@ -4,6 +4,7 @@
 
 // TL_Map Interfaces
 import type { Tag } from "./Common";
+import type { AtlasContent } from "./Atlas";
 
 export type TLOrdinary = {
   ordinary?: string;
@@ -15,7 +16,7 @@ export type TLOrdinary = {
 };
 
 export type TLCharge = {
-  charge?: string | undefined;
+  charge?: string;
   t?: string;
   t2?: string;
   t3?: string;
@@ -47,6 +48,8 @@ export type TLCulture = {
   base: number;
   code: string;
   color: string;
+  content?: AtlasContent;
+  description: string;
   expansionism: number;
   id: number;
   mapId?: string;
@@ -103,11 +106,13 @@ export type TLMilitary = {
   icon: string;
 };
 export type TLNote = {
+  _id: string;
+  content?: AtlasContent;
   id: string;
   legend: string;
   mapId?: string;
   name: string;
-  _id: string;
+  tags: Tag[];
   type: string;
 };
 
@@ -119,6 +124,7 @@ export type TLReligion = {
     name: string;
   };
   code: string;
+  content?: AtlasContent;
   culture: {
     _id: string;
     id: string;
@@ -168,7 +174,7 @@ export type TLCity = {
     shield: string;
   };
   coaSVG: string;
-  content?: TLContentView;
+  content?: AtlasContent;
   country: {
     _id: string;
     govForm: string;
@@ -215,7 +221,7 @@ export type TLCountry = {
   };
   coaSVG: string;
   color: string;
-  content?: TLContentView;
+  content?: AtlasContent;
   culture: {
     _id: string;
     id: string;
