@@ -154,3 +154,12 @@ yarn.lock
 package-lock.json
 src/components/pageStudio.zip
 src/components/pageStudio_pre-split.zip
+src/components/atlas/docs
+src/components/atlas/README.md
+src/components/atlas/ATLAS_SYSTEM_DOCUMENTATION.md
+src/components/atlas/IMPLEMENTATION_PLAN.md
+src/components/atlas/README_doc.md
+knip.json
+/reports
+/scripts
+/.vscode
