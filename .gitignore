@@ -163,3 +163,4 @@ knip.json
 /reports
 /scripts
 /.vscode
+tsconfig.unused.json
