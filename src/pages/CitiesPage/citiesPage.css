@@ -36,14 +36,9 @@
 }
 
 .selected {
-  background-color: #6b7280 !important;
-  color: #ffffff !important;
-  border-color: #ffffff !important;
-}
-
-.contentBody header {
-  margin-bottom: 2dvh !important;
-  padding-top: 10px;
+  background-color: #6b7280;
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 .country-chips {

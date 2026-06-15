@@ -1,10 +1,10 @@
 import { Container, Grid } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 import { useDB } from "../../db/DataContext";
 
-import { CultureCard } from "../../components/Cards";
-
 import type { TLCulture } from "../../definitions/TerraLogger";
+
+const CultureCard = lazy(() => import("../../components/Cards/culture"));
 
 function CulturesPage() {
 	const { useActive, activeMapId } = useDB();

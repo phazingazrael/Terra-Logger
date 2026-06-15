@@ -1,5 +1,5 @@
 import { Button, Grid, Modal, Box } from "@mui/material";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useDB } from "../../db/DataContext";
 import {
 	deleteDataFromStore,
@@ -8,12 +8,11 @@ import {
 
 import "./index.css";
 import { ModalStyle } from "../../styles";
-import { MapsCard } from "../Cards/index";
 import UploadMap from "../UploadMap/UploadMap";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common";
 
-// import type { MapInf } from "../../definitions/TerraLogger";
+const MapsCard = lazy(() => import("../../components/Cards/maps"));
 
 const MapManager: React.FC = () => {
 	const { activeMapId, setActive } = useDB();

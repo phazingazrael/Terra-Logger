@@ -1,4 +1,5 @@
 /* Main App styling */
+/** biome-ignore-all lint/complexity/noImportantStyles: used for overrides */
 .App {
   height: 97dvh;
   padding: 1rem 1rem 0rem 1rem;
@@ -6,7 +7,7 @@
 }
 
 /* Header Styling */
-header {
+.MuiAppBar-root {
   margin-bottom: 5vh;
   min-height: 8.72vh;
   padding-left: 3em;
@@ -54,7 +55,7 @@ header {
   width: 100%;
 }
 
-.Navigation .MuiAccordionDetails-root {
+.Navigation .MuiAccordionSummary-content .MuiAccordionDetails-root {
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -89,10 +90,6 @@ header {
   width: 100%;
 }
 
-.contentSubBody {
-  padding: 0.6em;
-}
-
 /*-- MUI Override --*/
 .MuiPaper-root {
   text-align: left !important;
@@ -110,36 +107,6 @@ header {
 /*-- MUI Override --*/
 
 /* Loading display Styling */
-.loadingScreen {
-  width: 100%;
-  height: 99%;
-  display: flex;
-}
-
-.loadingBox {
-  width: 50dvw;
-  margin: auto;
-  padding: 2dvh;
-  box-shadow: 0 0 100px 100px #ffffff;
-  border-radius: 1em;
-  background: rgba(255, 255, 255, 1);
-}
-
-.loadingBox p {
-  font-size: 2em;
-  margin-bottom: 0;
-}
-
-.loadingBox progress {
-  width: 100%;
-  height: 5dvh;
-}
-
-.loadingBox progress::-webkit-progress-bar {
-  background-color: #ff0009 !important;
-  border-radius: 2px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-}
 
 .BookLoader {
   min-height: 41dvh;
@@ -153,12 +120,6 @@ header {
   width: 100px;
   overflow: hidden;
   color: #8309ac;
-}
-
-/* Svg background display changes */
-/*-- only shows if map is smaller than screen size --*/
-.svgScaled {
-  transform: scaleY(1.11);
 }
 
 /* Page Specific styling that doesn't deserve it's own file yet */

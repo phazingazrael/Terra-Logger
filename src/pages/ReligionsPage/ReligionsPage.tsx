@@ -1,10 +1,10 @@
 import { Container, Grid } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 import { useDB } from "../../db/DataContext";
 
-import { ReligionCard } from "../../components/Cards";
-
 import type { TLReligion } from "../../definitions/TerraLogger";
+
+const ReligionCard = lazy(() => import("../../components/Cards/religion"));
 
 function ReligionsPage() {
 	const { useActive, activeMapId } = useDB();

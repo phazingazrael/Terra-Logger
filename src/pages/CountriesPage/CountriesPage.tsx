@@ -1,10 +1,10 @@
 import { Container, Grid } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { lazy, useEffect, useMemo } from "react";
 import { useDB } from "../../db/DataContext";
 
-import { CountryCard } from "../../components/Cards";
-
 import type { TLCountry } from "../../definitions/TerraLogger";
+
+const CountryCard = lazy(() => import("../../components/Cards/country"));
 
 function CountriesPage() {
 	const { useActive, activeMapId } = useDB();
