@@ -140,17 +140,6 @@ ul {
   flex-direction: column;
 }
 
-/* Individual detail row */
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  /* Allow wrapping on very small screens */
-  gap: 0.5rem;
-  /* Space between label and value when wrapped */
-}
-
 /* Label styling */
 .detail-label {
   color: darkblue;
@@ -173,11 +162,6 @@ ul {
 
 .citiesList .tag-list {
   gap: 0px !important;
-}
-
-.population-list {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
 }
 
 .tabs {
@@ -267,12 +251,6 @@ ul {
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
-  .detail-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
-
   .detail-value {
     text-align: left;
     width: 100%;
@@ -343,6 +321,13 @@ ul {
 
 .Religion .meta {
   margin-top: 3.5dvh;
+}
+
+@media (min-width: 600px) {
+  [class*="-MuiContainer-root"] {
+    padding-left: 0dvw !important;
+    padding-right: 0dvw !important;
+  }
 }
 
 /*

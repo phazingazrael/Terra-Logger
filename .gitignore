@@ -147,13 +147,10 @@ dist
 /misc
 /temp
 /TestMaps
-additional-content.txt
 biome.json
 dist-ssr
 yarn.lock
 package-lock.json
-src/components/pageStudio.zip
-src/components/pageStudio_pre-split.zip
 src/components/atlas/docs
 src/components/atlas/README.md
 src/components/atlas/ATLAS_SYSTEM_DOCUMENTATION.md
