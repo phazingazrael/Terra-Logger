@@ -27,6 +27,14 @@ const HomePage = () => {
 						{app ? app.application.afmgVer : "0.0.0"} of Azgaar&#39;s Fantasy
 						Map Generator and newer!
 					</Typography>
+					<Typography variant="body2" component="div">
+						<b>
+							NOTE: Terra-Logger will still work with the Economy Update
+							(V1.124.3) of Azgaar&#39;s Fantasy Map Generator but none of the
+							new features will be available for view or use within
+							Terra-Logger.
+						</b>
+					</Typography>
 				</div>
 				<Divider sx={{ margin: "0.75rem" }} />
 				<div className="contentSubBody">
