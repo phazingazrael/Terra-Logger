@@ -4,7 +4,10 @@ import type {
 	AtlasRenderContext,
 } from "../../../../definitions/Atlas";
 import { Capital, TagStyles } from "../../../../styles";
-import { readPlainTextFromRichTextValue } from "../../core/richText";
+import {
+	readPlainTextFromRichTextValue,
+	richTextJsonToHtml,
+} from "../../core/richText";
 import { formatValue, getEntityValue } from "../pluginUtils";
 import {
 	Box,
@@ -215,7 +218,20 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				return <p>{(block.props.emptyText ?? "No text listed.") as string}</p>;
 			}
 
-			return <p>{text}</p>;
+			const sanitized = DOMPurify.sanitize(richTextJsonToHtml(value), {
+				USE_PROFILES: {
+					html: true,
+				},
+				ADD_ATTR: ["target", "rel"],
+			});
+
+			return (
+				<div
+					className="atlas-rich-text"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized Atlas rich text HTML
+					dangerouslySetInnerHTML={{ __html: sanitized }}
+				/>
+			);
 		},
 	},
 	description: {
@@ -271,7 +287,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			}
 			return (
 				<div className="atlas-details-list">
-					{rows.map((row) => {
+					{rows.map((row, index) => {
 						const detail = row as {
 							label?: unknown;
 							value?: unknown;
@@ -290,7 +306,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 						return (
 							<div
-								key={`${String(JSON.stringify(detail.label))}`}
+								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+								key={`detail-${index}-${stableRenderKey(detail.label, "row")}`}
 								className="detail-container"
 							>
 								<Typography component="span" className="detail-label">
@@ -311,8 +328,11 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			const chips = Array.isArray(block.props.chips) ? block.props.chips : [];
 			return (
 				<div>
-					{chips.map((chip) => (
-						<span key={chip}>{String(chip)}</span>
+					{chips.map((chip, index) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+						<span key={`chip-${index}-${stableRenderKey(chip, "chip")}`}>
+							{String(chip)}
+						</span>
 					))}
 				</div>
 			);
@@ -351,13 +371,16 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					);
 				}
 
-				// temp workaround for missing cities bug from jsonui change.
-				const items = Array.isArray(Cities) && Cities.length ? Cities : cities;
+				const cityItems = sortCountryCitiesForRenderer(
+					Array.isArray(Cities) && Cities.length ? Cities : cities,
+				);
+
 				return (
 					<div className="tag-list">
-						{items.map((item) => (
+						{cityItems.map((item, index) => (
 							<span
-								key={item.name}
+								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+								key={`entity-chip-${index}-${stableRenderKey(item, "item")}`}
 								className="tag"
 								style={
 									item.capital === true
@@ -376,19 +399,23 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				return <p>{(block.props.emptyText ?? "No items listed.") as string}</p>;
 			return (
 				<div className="tag-list">
-					{items.map((item) => (
-						<span
-							key={item}
-							className="tag"
-							style={
-								item.capital === true ? { ...TagStyles, ...Capital } : TagStyles
-							}
-						>
-							{block.binding?.entityPath === "tags" && `🏷️ `}
-							{item.capital ? `🏛️ ` : ""}
-							{formatValue(item)}
-						</span>
-					))}
+					{items.map((item, index) => {
+						const record = isRecord(item) ? item : {};
+						const isCapital = record.capital === true;
+
+						return (
+							<span
+								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+								key={`entity-chip-${index}-${stableRenderKey(item, "item")}`}
+								className="tag"
+								style={isCapital ? { ...TagStyles, ...Capital } : TagStyles}
+							>
+								{block.binding?.entityPath === "tags" && `🏷️ `}
+								{isCapital ? `🏛️ ` : ""}
+								{formatValue(item)}
+							</span>
+						);
+					})}
 				</div>
 			);
 		},
@@ -409,9 +436,10 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 			return (
 				<div className="atlas-split-list sub-lists">
-					{groups.map((group) => (
+					{groups.map((group, groupIndex) => (
 						<section
-							key={`${group.name}`}
+							// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+							key={`split-group-${groupIndex}-${stableRenderKey(group.name, "group")}`}
 							className="atlas-split-list-group sub-list"
 						>
 							<Typography component="span" className="detail-label">
@@ -420,8 +448,13 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 							{group.children.length > 0 ? (
 								<ul className="atlas-split-list-items">
-									{group.children.map((child) => (
-										<li key={child as string}>{formatValue(child)}</li>
+									{group.children.map((child, childIndex) => (
+										<li
+											// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+											key={`split-child-${groupIndex}-${childIndex}-${stableRenderKey(child, "child")}`}
+										>
+											{formatValue(child)}
+										</li>
 									))}
 								</ul>
 							) : (
@@ -453,8 +486,13 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						Tags
 					</Typography>
 					<Grid className="tags-grid" container spacing={2}>
-						{Tags?.map((tag: Tag) => (
-							<Grid className="tags-grid-item" size={gridSize} key={tag._id}>
+						{Tags?.map((tag: Tag, index) => (
+							<Grid
+								className="tags-grid-item"
+								size={gridSize}
+								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
+								key={`tag-${index}-${stableRenderKey(tag, "tag")}`}
+							>
 								<Card
 									sx={{
 										p: 2,
@@ -521,13 +559,6 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				}
 			}
 
-			// unimplemented, country population handled by country header
-			// if (context?.sourceType === "country") {
-			// 	const country = context.entity as TLCountry;
-			// 	UrbanPopulation = country.population.urban;
-			// 	RuralPopulation = country.population.rural;
-			// }
-
 			const totalPopulation = useMemo(() => {
 				const urbNum = Number.parseInt(
 					UrbanPopulation?.replace(/,/g, "") ?? "0",
@@ -558,8 +589,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 			return (
 				<div className="atlas-details-list">
-					<Paper className="culturePopPaper">
-						<Box sx={{ mb: 3 }}>
+					<Paper className="culturePopPaper culturePopTotal">
+						<Box>
 							<Typography
 								variant="h5"
 								gutterBottom
@@ -596,13 +627,12 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					<Grid container spacing={3}>
 						<Grid size={{ xs: 12, sm: 6 }}>
 							<Paper className="culturePopPaper">
-								<Box sx={{ mb: 2 }}>
+								<Box>
 									<Box
 										sx={{
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "center",
-											mb: 1,
 										}}
 									>
 										<Box sx={{ display: "flex", alignItems: "center" }}>
@@ -638,13 +668,12 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						</Grid>
 						<Grid size={{ xs: 12, sm: 6 }}>
 							<Paper className="culturePopPaper">
-								<Box sx={{ mb: 2 }}>
+								<Box>
 									<Box
 										sx={{
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "center",
-											mb: 1,
 										}}
 									>
 										<Box sx={{ display: "flex", alignItems: "center" }}>
@@ -684,3 +713,76 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		},
 	},
 };
+
+function stableRenderKey(value: unknown, fallback: string): string {
+	if (
+		typeof value === "string" ||
+		typeof value === "number" ||
+		typeof value === "boolean"
+	) {
+		return String(value);
+	}
+
+	if (!value) {
+		return fallback;
+	}
+
+	if (Array.isArray(value)) {
+		return `${fallback}-${value
+			.map((item, index) => stableRenderKey(item, String(index)))
+			.join("-")}`;
+	}
+
+	if (typeof value === "object") {
+		const record = value as Record<string, unknown>;
+
+		const candidates = [
+			record._id,
+			record.id,
+			record.uuid,
+			record.key,
+			record.name,
+			record.label,
+			record.title,
+			record.code,
+		];
+
+		for (const candidate of candidates) {
+			const key = stableRenderKey(candidate, "");
+
+			if (key && key !== "[object Object]") {
+				return key;
+			}
+		}
+
+		try {
+			return `${fallback}-${JSON.stringify(record)}`;
+		} catch {
+			return fallback;
+		}
+	}
+
+	return fallback;
+}
+
+function sortCountryCitiesForRenderer(cities: TLCity[]): TLCity[] {
+	return [...cities].sort((a, b) => {
+		const aIsCapital = a.capital === true;
+		const bIsCapital = b.capital === true;
+
+		if (aIsCapital !== bIsCapital) {
+			return aIsCapital ? -1 : 1;
+		}
+
+		return getCitySortName(a).localeCompare(getCitySortName(b), undefined, {
+			sensitivity: "base",
+			numeric: true,
+		});
+	});
+}
+
+function getCitySortName(city: TLCity): string {
+	const record = city as Record<string, unknown>;
+
+	return String(record.name ?? record.nameFull ?? record.fullName ?? "");
+}

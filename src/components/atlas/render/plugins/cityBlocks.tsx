@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
 import { CapitalBadge } from "../../../../styles";
 import { SvgImage } from "../../../Util/svgImage";
@@ -48,7 +48,7 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				capital?: boolean;
 			};
 			return (
-				<div className="header">
+				<div className="header content-grid">
 					<div className="image">
 						<SvgImage
 							className="image"
@@ -61,7 +61,7 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 							{city?.name}
 						</Typography>
 						<div className="meta">
-							<div>
+							<Stack direction="column" spacing={1} sx={{ width: "100%" }}>
 								<Typography color="text.secondary" component="h3">
 									Country: {city?.country?.name}
 								</Typography>
@@ -81,7 +81,7 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 										🏛️ Capital
 									</Typography>
 								)}
-							</div>
+							</Stack>
 						</div>
 					</div>
 				</div>

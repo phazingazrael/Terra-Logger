@@ -6,6 +6,7 @@ import type {
   TLNote,
   TLReligion,
 } from "./TerraLogger";
+import type { Tag } from "./Common";
 
 export const ATLAS_CONTENT_SCHEMA = "atlas/content/v1" as const;
 export const ATLAS_CONTENT_VERSION = 1 as const;
@@ -28,6 +29,7 @@ export type AtlasRelatedEntities = Partial<{
   cultures: TLCulture[];
   religions: TLReligion[];
   notes: TLNote[];
+  tags: Tag[];
 }>;
 
 export type AtlasLayoutPreset = "content-grid" | "stack" | "sidebar";
@@ -111,6 +113,57 @@ export type AtlasRenderContext<TSource extends AtlasSourceType = AtlasSourceType
   sourceType: TSource;
   entity: AtlasEntityBySource[TSource];
   related?: AtlasRelatedEntities;
+};
+
+export type AtlasEntityFieldChange = {
+  path: string;
+  value: unknown;
+};
+
+export type AtlasRelatedUpdate =
+  | {
+    action: "add";
+    store: "tags";
+    value: Tag & {
+      mapId?: string;
+    };
+  }
+  | {
+    action: "update";
+    store: "tags";
+    key: string;
+    value: Tag & {
+      mapId?: string;
+    };
+  }
+  | {
+    action: "update";
+    store: "notes";
+    key: string;
+    value: TLNote;
+  }
+  | {
+    action: "update";
+    store: "cities";
+    key: string;
+    value: TLCity;
+  };
+
+export type AtlasRelatedUpdateHandler = (update: AtlasRelatedUpdate) => void;
+
+export type AtlasEditorContext<
+  TSource extends AtlasSourceType = AtlasSourceType,
+> = AtlasRenderContext<TSource> & {
+  onEntityFieldChange: (change: AtlasEntityFieldChange) => void;
+  onRelatedUpdate: AtlasRelatedUpdateHandler;
+};
+
+export type AtlasPageEditorSavePayload<
+  TSource extends AtlasSourceType = AtlasSourceType,
+> = {
+  content: AtlasContent;
+  entity: AtlasEntityBySource[TSource];
+  relatedUpdates?: AtlasRelatedUpdate[];
 };
 
 export type AtlasBlockPlugin = {

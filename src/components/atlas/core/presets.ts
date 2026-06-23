@@ -178,9 +178,7 @@ export function headingBlock(text: string, level = 2): AtlasBlock {
   };
 }
 
-export function descriptionBlock(
-  label = "Description",
-): AtlasBlock {
+export function descriptionBlock(label = "Description"): AtlasBlock {
   return {
     id: createAtlasId("block"),
     kind: "block",
@@ -191,10 +189,10 @@ export function descriptionBlock(
       resolver: "generic.description",
     },
     editor: {
-      editable: false,
+      editable: true,
       removable: true,
       reorderable: true,
-      editorType: "entity",
+      editorType: "description",
     },
     props: {
       label,
@@ -357,7 +355,7 @@ export function computedBlock(type: string, label: string, resolver: string, pro
     binding: { resolver },
     editor: {
       editable: false,
-      removable: true,
+      removable: false,
       reorderable: true,
       editorType: "entity",
     },

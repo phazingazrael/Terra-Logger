@@ -1,326 +1,257 @@
 /** biome-ignore-all lint/style/noDescendingSpecificity: ignore */
 /** biome-ignore-all lint/complexity/noImportantStyles: overrides for MUI styles sometimes require force important */
 
-.ViewPage {
-  padding-left: 0dvw;
-  padding-right: 0dvw;
-}
-
 /* Overall Styling */
-.wiki {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.legend {
-  width: 100%;
-}
-
-.legend details {
-  border: 2px solid rgb(221 221 221 / 65%);
-  padding: 0.5rem;
-  border-radius: 10px;
-  background-color: rgb(221 221 221 / 65%);
-}
-
-.header {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.image {
-  width: 200px;
-  height: 200px;
-  flex-shrink: 0;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.wiki h1 {
-  font-size: 2.5em;
-  margin: 0 0 10px 0;
-}
-
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  font-size: 0.9em;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-  gap: 30px;
-}
-
-.wiki .section {
-  padding: 20px;
-  border-radius: 5px;
-}
-
-.description,
-.military,
-.citiesList,
-.featuresList {
-  grid-column: 1 / -1;
-}
-
-.economy {
-  grid-column: span 2;
-}
-
-.wiki h2 {
-  font-size: 1rem;
-  margin-top: 0;
-  border-bottom: 1px solid #313131;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-ul {
-  padding-left: 20px;
-}
-
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.tag {
-  background-color: #e0e0e0;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.9em;
-  cursor: help;
-}
-
-.additional-info p {
-  margin: 5px 0;
-}
-
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+.ViewPage {
+  padding-left: 0dvw !important;
+  padding-right: 0dvw !important;
+  .wiki.editing {
+    padding: 0px;
   }
+  .wiki {
+    padding: 20px;
 
-  .meta {
-    justify-content: center;
+    .section {
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .image {
+      width: 200px;
+      height: 200px;
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin: 0 0 10px 0;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin-top: 0;
+      border-bottom: 1px solid #313131;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .meta {
+      font-size: 0.9em;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    .description,
+    .military,
+    .citiesList,
+    .featuresList {
+      grid-column: 1 / -1;
+    }
+
+    .economy {
+      grid-column: span 2;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      background-color: #e0e0e0;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      cursor: help;
+    }
+
+    /* Container for all detail rows */
+    .detail-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Label styling */
+    .detail-label {
+      color: darkblue;
+      min-width: 80px;
+      border-bottom: 1px dashed;
+      font-weight: 600 !important;
+      font-size: 0.9rem !important;
+    }
+
+    /* Value styling */
+    .detail-value {
+      font-weight: 400 !important;
+      font-size: 1em !important;
+    }
+
+    .sub-lists {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
+    }
   }
-
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* individual information cards */
-
-/* Container for all detail rows */
-.detail-container {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Label styling */
-.detail-label {
-  color: darkblue;
-  min-width: 80px;
-  border-bottom: 1px dashed;
-  font-weight: 600 !important;
-  font-size: 0.9rem !important;
-}
-
-/* Value styling */
-.detail-value {
-  font-weight: 400 !important;
-  font-size: 1em !important;
-}
-
-.citiesList p {
-  background-color: rgba(219, 219, 219, 0.5);
-  border-radius: 5px;
-}
-
-.citiesList .tag-list {
-  gap: 0px !important;
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.tabs button {
-  padding: 8px 16px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: all 0.2s ease;
-}
-
-.tabs button:hover {
-  background-color: #e8e8e8;
-}
-
-.tabs button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #0056b3;
-}
-
-.military-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9em;
-}
-
-.military-table th,
-.military-table td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.military-table th {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-
-.unit-icon {
-  margin-right: 8px;
-}
-
-.unit-comp {
-  display: inline-block;
-  margin-right: 10px;
-  white-space: nowrap;
-}
-
-.more-units {
-  text-align: center;
-  font-style: italic;
-  color: #666;
-  margin-top: 10px;
-}
-
-.sub-lists {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.diplomacy-relations {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-
-.diplomacy-group h3 {
-  margin-top: 0;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
 }
 
 /* note cards styling */
-.noteBody {
-  overflow: auto;
-  text-wrap: auto;
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .detail-value {
-    text-align: left;
-    width: 100%;
+.ViewPage.Notes {
+  .wiki {
+    .noteBody {
+      overflow: auto;
+      text-wrap: auto;
+    }
   }
 }
-
-@media (max-width: 1280px) {
-  .wiki .section {
-    grid-column: 1 / -1;
-  }
-}
-
-/* individual information cards end */
 
 /* City Page */
+.ViewPage.City {
+  .wiki {
+    .header.content-grid {
+      gap: 10px;
+      grid-template-columns: 200px 0.4fr 1fr;
+    }
 
-.map-link a {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-  float: right;
-  margin-bottom: 1vh;
-}
+    .map-link a {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      float: right;
+      margin-bottom: 1vh;
+    }
 
-.map-link a:hover {
-  background-color: #0056b3;
-}
+    .map-link a:hover {
+      background-color: #0056b3;
+    }
 
-.capital-badge svg {
-  position: relative;
-  top: 0.6rem;
-  margin-left: 0.2rem;
+    .capital-badge {
+      width: max-content;
+    }
+  }
 }
 
 /* Country Page */
-.meta .popGrid .section {
-  padding: 10px;
-}
+.ViewPage.Country {
+  .wiki {
+    .popGrid .section {
+      padding: 10px;
+    }
 
-.GovPop {
-  max-width: 25dvw;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
+    /* Gov Info Popover */
+    .GovPop {
+      max-width: 25dvw;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
 
-.GovPop p {
-  margin-bottom: 0px;
-}
+      p {
+        margin-bottom: 0px;
+      }
 
-.GovPop ul {
-  padding-top: 0px;
-  margin-top: 0px;
-}
+      ul {
+        padding-top: 0px;
+        margin-top: 0px;
+      }
+    }
 
-.content .citiesList p {
-  max-height: 35vh;
-  overflow: auto;
-}
+    /* Gov Content */
+    .citiesList p {
+      max-height: 35vh;
+      overflow: auto;
+      background-color: rgba(219, 219, 219, 0.5);
+      border-radius: 5px;
+    }
 
-/* Religion Page */
-.Religion .section {
-  /* padding: 5px; */
-  margin: 0.5rem;
-}
+    .citiesList .tag-list {
+      gap: 0px !important;
+    }
 
-.Religion .meta {
-  margin-top: 3.5dvh;
+    .diplomacy-relations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .diplomacy-group h3 {
+      margin-top: 0;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* Country Military */
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+
+      button {
+        padding: 8px 16px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+      }
+
+      button.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #0056b3;
+      }
+
+      button:hover {
+        background-color: #e8e8e8;
+      }
+    }
+
+    .military-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+
+      th,
+      td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .unit-icon {
+        margin-right: 8px;
+      }
+
+      .unit-comp {
+        display: inline-block;
+        margin-right: 10px;
+        white-space: nowrap;
+      }
+    }
+
+    .more-units {
+      text-align: center;
+      font-style: italic;
+      color: #666;
+      margin-top: 10px;
+    }
+  }
 }
 
 @media (min-width: 600px) {
@@ -382,6 +313,11 @@ ul {
   grid-column: 1 / -1;
 }
 
+.ViewPage.Country .atlas-section.header .header.content-grid {
+  gap: 10px;
+  grid-template-columns: 200px 0.4fr 1fr;
+}
+
 /* Hide Headers */
 .ViewPage.Country .atlas-section.header .atlas-section__header {
   display: none;
@@ -407,10 +343,10 @@ ul {
 /* population content width */
 .culturePopPaper {
   padding: 0.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 0;
-  margin-right: 0;
+}
+
+.culturePopTotal {
+  margin-bottom: 15px;
 }
 
 /* Hide Headers */
@@ -451,17 +387,14 @@ ul {
 /* Notes Page */
 
 /* Section Widths */
-.ViewPage.Notes .atlas-section.note-legend {
-  padding: 0rem;
-}
-
 .ViewPage.Notes .atlas-section.note-legend,
 .ViewPage.Notes .atlas-section.editor-notes {
   margin-bottom: 5dvh;
 }
 
 /* Hide Headers */
-.ViewPage.Notes .atlas-section.note-legend .atlas-section__header,
+/* .ViewPage.Notes .atlas-section.note-legend .atlas-section__header, */
+.ViewPage.Notes .atlas-section.header .atlas-section__header,
 .ViewPage.Notes .atlas-section.tags .atlas-section__header {
   display: none;
 }

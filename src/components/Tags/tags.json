@@ -7,7 +7,7 @@
         "_id": "0192be16-c07d-7cbf-ab59-c887be122306",
         "Default": true,
         "Description": "The overall description and framework of the world.",
-        "Name": "WorldOverview",
+        "Name": "World Overview",
         "Type": "WorldOverview"
       },
       {
@@ -147,7 +147,7 @@
         "_id": "0192be16-c07d-7b31-9102-9bb2b03fe815",
         "Default": true,
         "Description": "Detailed information and background of individual characters in the world.",
-        "Name": "CharacterProfiles",
+        "Name": "Character Profiles",
         "Type": "Characters"
       },
       {
@@ -224,7 +224,7 @@
         "_id": "0192be16-c07e-70af-8079-f6973ccda4af",
         "Default": true,
         "Description": "The system governing the magical elements within the world.",
-        "Name": "MagicSystem",
+        "Name": "Magic System",
         "Type": "MagicSystem"
       },
       {
@@ -238,7 +238,7 @@
         "_id": "0192be16-c07e-7f12-a137-4aa9ac330e93",
         "Default": true,
         "Description": "Beings with magical abilities or origins within the world.",
-        "Name": "MagicalBeings",
+        "Name": "Magical Beings",
         "Type": "MagicSystem"
       },
       {
@@ -665,7 +665,7 @@
         "_id": "0192be16-c07e-79fb-8796-e75e0c583980",
         "Default": true,
         "Description": "Items or objects with cultural importance within the world.",
-        "Name": "CulturalItems",
+        "Name": "Cultural Items",
         "Type": "CulturalArtifacts"
       },
       {
@@ -763,7 +763,7 @@
         "_id": "0192be16-c07e-7062-a1fb-79325f490668",
         "Default": true,
         "Description": "The creative process of constructing and detailing the fictional world.",
-        "Name": "WorldBuilding",
+        "Name": "World Building",
         "Type": "Miscellaneous"
       },
       {

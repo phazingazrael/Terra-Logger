@@ -1,4 +1,6 @@
 import type { AtlasRenderContext } from "../../../definitions/Atlas";
+import { richTextJsonToHtml } from "../core/richText";
+
 
 export type ResolvedDescription = {
   value: string;
@@ -29,21 +31,21 @@ export function resolveGenericDescription(
   const entity = context.entity as DescribableEntity;
   const sourceType = context.sourceType;
 
-  const directDescription = getDirectEntityDescription(entity);
-
-  if (directDescription.value) {
-    return {
-      ...directDescription,
-      source: "entity",
-    };
-  }
-
   const noteDescription = getMatchingNoteDescription(context);
 
   if (noteDescription.value) {
     return {
       ...noteDescription,
       source: "note",
+    };
+  }
+
+  const directDescription = getDirectEntityDescription(entity);
+
+  if (directDescription.value) {
+    return {
+      ...directDescription,
+      source: "entity",
     };
   }
 
@@ -155,8 +157,8 @@ function normalizeDescriptionValue(
 
   if (looksLikeRichTextJson(trimmed)) {
     return {
-      value: readPlainTextFromRichTextJsonString(trimmed),
-      format: "text",
+      value: richTextJsonToHtml(trimmed),
+      format: "html",
     };
   }
 
@@ -214,27 +216,4 @@ function looksLikeRichTextJson(value: string): boolean {
     value.includes('"type"') &&
     value.includes('"doc"')
   );
-}
-
-function readPlainTextFromRichTextJsonString(value: string): string {
-  try {
-    const parsed = JSON.parse(value) as {
-      content?: Array<{
-        content?: Array<{
-          text?: string;
-        }>;
-      }>;
-    };
-
-    return (
-      parsed.content
-        ?.flatMap((node) =>
-          node.content?.map((child) => child.text ?? "") ?? [],
-        )
-        .join("\n")
-        .trim() ?? ""
-    );
-  } catch {
-    return value;
-  }
 }

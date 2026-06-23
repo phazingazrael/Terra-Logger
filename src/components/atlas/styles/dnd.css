@@ -1,0 +1,55 @@
+.atlas-dnd-sortable {
+  min-width: 0;
+  position: relative;
+}
+
+.atlas-dnd-sortable--dragging {
+  opacity: 0.45;
+}
+
+.atlas-dnd-sortable--over::before {
+  content: "";
+  display: block;
+  height: 0.35rem;
+  margin: 0.25rem 0;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.atlas-dnd-handle {
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.atlas-dnd-handle:active {
+  cursor: grabbing;
+}
+
+.atlas-dnd-handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.atlas-section-list__select {
+  flex: 1 1 auto;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atlas-block-editor-card {
+  min-width: 0;
+}
+
+.atlas-block-editor-card__toolbar strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

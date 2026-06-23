@@ -4,6 +4,7 @@ import {
 	LinearProgress,
 	Paper,
 	Popover,
+	Stack,
 	Table,
 	TableBody,
 	TableCell,
@@ -298,7 +299,7 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			}, [country]);
 
 			return (
-				<div className="header">
+				<div className="header content-grid">
 					<div className="image">
 						<SvgImage
 							className="image"
@@ -308,8 +309,8 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					</div>
 					<div className="info">
 						<Typography variant="h1">{country?.name}</Typography>
-						<Grid container className="meta">
-							<Grid size={{ xs: 3, sm: 3, md: 3, lg: 3, xl: 3 }}>
+						<div className="meta">
+							<Stack direction="column" spacing={1} sx={{ width: "100%" }}>
 								<Typography color="text.secondary" component="h3">
 									{country?.nameFull}
 								</Typography>
@@ -350,168 +351,157 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 										}}
 									/>
 								</Popover>
-							</Grid>
-
-							<Grid size={{ xs: 8, sm: 8, md: 8, lg: 8, xl: 8 }}>
-								<Grid container className="popGrid">
-									<Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-										<Paper color="text.secondary" className="section">
-											<Box>
+							</Stack>
+						</div>
+					</div>
+					<div className="population">
+						<div className="popGrid">
+							<Paper color="text.secondary" className="section">
+								<Box>
+									<Box
+										sx={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+											mb: 1,
+										}}
+									>
+										<Box sx={{ display: "flex", alignItems: "center" }}>
+											<Typography color="text.secondary" variant="subtitle1">
+												Population:
+											</Typography>
+										</Box>
+										<Typography
+											variant="h6"
+											color="text.secondary"
+											sx={{ fontWeight: "bold" }}
+										>
+											{country?.population.total}
+										</Typography>
+									</Box>
+								</Box>
+							</Paper>
+							<Grid container spacing={4} sx={{ mt: 2 }}>
+								<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+									<Paper color="text.secondary" className="section">
+										<Box>
+											<Box
+												sx={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													mb: 1,
+												}}
+											>
 												<Box
 													sx={{
 														display: "flex",
-														justifyContent: "space-between",
 														alignItems: "center",
-														mb: 1,
 													}}
 												>
-													<Box sx={{ display: "flex", alignItems: "center" }}>
-														<Typography
-															color="text.secondary"
-															variant="subtitle1"
-														>
-															Population:
-														</Typography>
-													</Box>
+													<AgricultureIcon sx={{ mr: 1, color: "#4caf50" }} />
 													<Typography
-														variant="h6"
 														color="text.secondary"
-														sx={{ fontWeight: "bold" }}
+														variant="subtitle1"
 													>
-														{country?.population.total}
+														Rural Population:{" "}
 													</Typography>
 												</Box>
 											</Box>
-										</Paper>
-										<Grid container spacing={4} sx={{ mt: 2 }}>
-											<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-												<Paper color="text.secondary" className="section">
-													<Box>
-														<Box
-															sx={{
-																display: "flex",
-																justifyContent: "space-between",
-																alignItems: "center",
-																mb: 1,
-															}}
-														>
-															<Box
-																sx={{
-																	display: "flex",
-																	alignItems: "center",
-																}}
-															>
-																<AgricultureIcon
-																	sx={{ mr: 1, color: "#4caf50" }}
-																/>
-																<Typography
-																	color="text.secondary"
-																	variant="subtitle1"
-																>
-																	Rural Population:{" "}
-																</Typography>
-															</Box>
-														</Box>
 
-														<Typography
-															variant="h6"
-															color="text.secondary"
-															sx={{ fontWeight: "bold" }}
-														>
-															{country?.population.rural}
-														</Typography>
+											<Typography
+												variant="h6"
+												color="text.secondary"
+												sx={{ fontWeight: "bold" }}
+											>
+												{country?.population.rural}
+											</Typography>
 
-														<LinearProgress
-															variant="determinate"
-															value={ruralPercentage}
-															sx={{
-																height: 8,
-																borderRadius: 4,
-																bgcolor: theme.palette.grey[200],
-																"& .MuiLinearProgress-bar": {
-																	bgcolor: "#4caf50",
-																	borderRadius: 4,
-																},
-															}}
-														/>
-														<Typography
-															variant="body2"
-															color="text.secondary"
-															sx={{ mt: 0.5 }}
-														>
-															{!Number.isNaN(ruralPercentage) &&
-															ruralPercentage !== 0
-																? ruralPercentage.toFixed(1)
-																: 0}
-															% of total
-														</Typography>
-													</Box>
-												</Paper>
-											</Grid>
-											<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-												<Paper color="text.secondary" className="section">
-													<Box>
-														<Box
-															sx={{
-																display: "flex",
-																justifyContent: "space-between",
-																alignItems: "center",
-																mb: 1,
-															}}
-														>
-															<Box
-																sx={{
-																	display: "flex",
-																	alignItems: "center",
-																}}
-															>
-																<LocationCityIcon
-																	sx={{ mr: 1, color: "#2196f3" }}
-																/>
-																<Typography
-																	variant="subtitle1"
-																	color="text.secondary"
-																	style={{ width: "100%" }}
-																>
-																	Urban Population:{" "}
-																</Typography>
-															</Box>
-														</Box>
-														<Typography
-															variant="h6"
-															color="text.secondary"
-															sx={{ fontWeight: "bold" }}
-														>
-															{country?.population.urban}
-														</Typography>
-														<LinearProgress
-															variant="determinate"
-															value={urbanPercentage || 0}
-															sx={{
-																height: 8,
-																borderRadius: 4,
-																bgcolor: theme.palette.grey[200],
-																"& .MuiLinearProgress-bar": {
-																	bgcolor: "#2196f3",
-																	borderRadius: 4,
-																},
-															}}
-														/>
-														<Typography
-															variant="body2"
-															color="text.secondary"
-															sx={{ mt: 0.5 }}
-														>
-															{urbanPercentage.toFixed(1)}% of total
-														</Typography>
-													</Box>
-												</Paper>
-											</Grid>
-										</Grid>
-									</Grid>
+											<LinearProgress
+												variant="determinate"
+												value={ruralPercentage}
+												sx={{
+													height: 8,
+													borderRadius: 4,
+													bgcolor: theme.palette.grey[200],
+													"& .MuiLinearProgress-bar": {
+														bgcolor: "#4caf50",
+														borderRadius: 4,
+													},
+												}}
+											/>
+											<Typography
+												variant="body2"
+												color="text.secondary"
+												sx={{ mt: 0.5 }}
+											>
+												{!Number.isNaN(ruralPercentage) && ruralPercentage !== 0
+													? ruralPercentage.toFixed(1)
+													: 0}
+												% of total
+											</Typography>
+										</Box>
+									</Paper>
+								</Grid>
+								<Grid size={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+									<Paper color="text.secondary" className="section">
+										<Box>
+											<Box
+												sx={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													mb: 1,
+												}}
+											>
+												<Box
+													sx={{
+														display: "flex",
+														alignItems: "center",
+													}}
+												>
+													<LocationCityIcon sx={{ mr: 1, color: "#2196f3" }} />
+													<Typography
+														variant="subtitle1"
+														color="text.secondary"
+														style={{ width: "100%" }}
+													>
+														Urban Population:{" "}
+													</Typography>
+												</Box>
+											</Box>
+											<Typography
+												variant="h6"
+												color="text.secondary"
+												sx={{ fontWeight: "bold" }}
+											>
+												{country?.population.urban}
+											</Typography>
+											<LinearProgress
+												variant="determinate"
+												value={urbanPercentage || 0}
+												sx={{
+													height: 8,
+													borderRadius: 4,
+													bgcolor: theme.palette.grey[200],
+													"& .MuiLinearProgress-bar": {
+														bgcolor: "#2196f3",
+														borderRadius: 4,
+													},
+												}}
+											/>
+											<Typography
+												variant="body2"
+												color="text.secondary"
+												sx={{ mt: 0.5 }}
+											>
+												{urbanPercentage.toFixed(1)}% of total
+											</Typography>
+										</Box>
+									</Paper>
 								</Grid>
 							</Grid>
-						</Grid>
+						</div>
 					</div>
 				</div>
 			);

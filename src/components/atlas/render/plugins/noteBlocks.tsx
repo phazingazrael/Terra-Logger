@@ -1,6 +1,7 @@
 import DOMPurify from "dompurify";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
 import { Typography } from "@mui/material";
+import type { TLNote } from "../../../../definitions/TerraLogger";
 
 export const noteBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	noteLegend: {
@@ -18,6 +19,21 @@ export const noteBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						__html: DOMPurify.sanitize(note?.legend || ""),
 					}}
 				/>
+			);
+		},
+	},
+	noteHeader: {
+		type: "noteHeader",
+		label: "Note Header",
+		Render: ({ context }) => {
+			const note = context.entity as TLNote;
+
+			return (
+				<div className="header">
+					<div className="info">
+						<Typography variant="h1">{note?.name}</Typography>
+					</div>
+				</div>
 			);
 		},
 	},
