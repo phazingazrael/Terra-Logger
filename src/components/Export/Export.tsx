@@ -252,7 +252,7 @@ export function MarkdownExportPanel(props: {
 					}
 				>
 					{(Templates as Array<{ Name: string }>).map((t, idx) => (
-						<MenuItem key={`${t.Name}-${idx}`} value={idx}>
+						<MenuItem key={`${t.Name}`} value={idx}>
 							{t.Name ?? `Template ${idx + 1}`}
 						</MenuItem>
 					))}
@@ -435,5 +435,3 @@ export function MarkdownExportPanel(props: {
 		</div>
 	);
 }
-
-export default MarkdownExportPanel;

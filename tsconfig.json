@@ -26,6 +26,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     /* Other */
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src"

@@ -1,5 +1,3 @@
-// src/definitions/AFMG.ts
-
 // Interfaces for AFMG imported Data
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#burgs
 type City = {
