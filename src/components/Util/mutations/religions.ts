@@ -259,6 +259,7 @@ export const mutateReligions = async (
 
     // assign religion origin(s)
     console.log("religion.origins", religion.origins);
+    // console.log("origins.length", religion.origins.length);
     if (
       religion.origins &&
       religion.origins !== null &&
@@ -266,18 +267,23 @@ export const mutateReligions = async (
     ) {
       if (religion.origins.length > 0) {
         for (const origin of religion.origins) {
-          if (origin !== 0) {
-            const Origin = data.religions.find(
-              (religion) => religion.i === origin,
-            );
-            if (Origin) {
-              // console.log("Origin", Origin);
-              Origins.push(Origin.name);
-            }
+          const Origin = data.religions.find(
+            (religion) => religion.i === origin,
+          );
+          if (Origin) {
+            Origins.push(Origin.name);
           }
         }
-        console.log(Origins);
+      } else {
+        Origins.push('No Origin');
       }
+      console.log(Origins);
+      newReligion.origins = Origins;
+    } else {
+      Origins.push('No Origin');
+      console.log("religion.origins is null or undefined, assigning 'No Origin'");
+      console.log(Origins);
+      newReligion.origins = Origins;
     }
 
     // assign religion center (city or country of origin)
