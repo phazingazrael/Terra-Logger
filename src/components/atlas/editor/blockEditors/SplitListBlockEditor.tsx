@@ -91,8 +91,10 @@ export function SplitListBlockEditor({
 			<div className="atlas-split-list-editor__wrapper">
 				{groups.map((group, groupIndex) => (
 					<SplitListGroupEditor
-						// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-						key={`split-group-${groupIndex}-${getGroupDisplayName(group, groupIndex)}`}
+						key={getSplitGroupEditorKey(
+							group as Record<string, unknown>,
+							groupIndex,
+						)}
 						block={block}
 						context={context}
 						group={group}
@@ -421,4 +423,25 @@ function formatItemValue(value: unknown): string {
 	}
 
 	return String(value);
+}
+
+function getSplitGroupEditorKey(
+	group: Record<string, unknown>,
+	groupIndex: number,
+): string {
+	return (
+		readStableKeyPart(group.id) ||
+		readStableKeyPart(group.key) ||
+		readStableKeyPart(group.entityPath) ||
+		readStableKeyPart(group.path) ||
+		readStableKeyPart(group.valuePath) ||
+		`split-group-${groupIndex}`
+	);
+}
+
+function readStableKeyPart(value: unknown): string {
+	if (typeof value === "string" && value.trim()) return value.trim();
+	if (typeof value === "number" && Number.isFinite(value)) return String(value);
+
+	return "";
 }

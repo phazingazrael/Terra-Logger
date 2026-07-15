@@ -403,3 +403,42 @@
 .ViewPage.Notes .atlas-section.editor-notes {
   background-color: rgb(224 255 91 / 50%);
 }
+
+/* atlas editor */
+.atlas-page-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.atlas-editor-panel__header {
+  margin-bottom: 2dvh;
+  padding-top: 10px;
+}
+
+.atlas-editor-preview .atlas-section__blocks .meta {
+  display: block;
+}
+
+.ViewPage.Country .atlas-editor-preview .atlas-section.header .header.content-grid .info {
+  grid-column: 2 / -1;
+}
+
+.ViewPage.Country .atlas-editor-preview .atlas-section.header .header.content-grid .population {
+  grid-column: 1 / -1;
+}
+
+.atlas-entity-block-editor__fields {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.atlas-entity-field input {
+  width: auto !important;
+}
+
+.atlas-block.atlas-block--richText {
+  margin-top: 5px !important;
+}
