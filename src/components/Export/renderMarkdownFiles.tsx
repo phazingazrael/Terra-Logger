@@ -15,6 +15,10 @@ import { DEFAULT_RENDER_OPTIONS } from "./Constants";
 import { botiNoteFolder } from "./BotiUtils";
 import { resolveNoteTemplate } from "./templateUtils";
 
+import { buildExportDocument } from "./builder/buildExportDocument";
+import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
+import type { ExportSourceType } from "./builder/exportTypes";
+
 // === 🔤 Filename + Slug Helpers ===
 
 const slug = (s: unknown, fb: string) =>
@@ -100,6 +104,27 @@ function ctx(data: DataSets) {
 	return context;
 }
 
+function getSourceTypeFromSingular(
+	singular: keyof TemplateMap,
+): ExportSourceType | null {
+	switch (singular) {
+		case "MapInfo":
+			return "map";
+		case "City":
+			return "city";
+		case "Country":
+			return "country";
+		case "Culture":
+			return "culture";
+		case "Religion":
+			return "religion";
+		case "Note":
+			return "note";
+		default:
+			return null;
+	}
+}
+
 export function renderMarkdownFiles(
 	data: DataSets,
 	templates: TemplateMap,
@@ -114,6 +139,34 @@ export function renderMarkdownFiles(
 
 	const global = ctx(data);
 
+	const renderBuilderContent = (
+		sourceType: ExportSourceType,
+		item: Record<string, unknown>,
+	): string => {
+		const template = getMarkdownDocumentTemplate(opt.templateName);
+
+		return buildExportDocument({
+			template,
+			context: {
+				data,
+				templateId: template.id,
+				sourceType,
+				entity: item,
+			},
+		});
+	};
+
+	const shouldUseBuilder = (
+		sourceType: ExportSourceType,
+		templateName: string,
+	): boolean => {
+		if (templateName !== "Default") return false;
+
+		return ["note", "culture", "religion", "city", "country", "map"].includes(
+			sourceType,
+		);
+	};
+
 	if (exports?.includes("Map")) {
 		const Parser = new DOMParser();
 
@@ -125,7 +178,9 @@ export function renderMarkdownFiles(
 			newStyle.setAttribute("type", "text/css");
 			newStyle.innerHTML = opt.css;
 			mapSvgDoc.querySelector("svg")?.insertBefore(newStyle, firstElement);
+
 			const newSvg = mapSvgDoc.querySelector("svg")?.outerHTML ?? "";
+
 			files.push({
 				path: "World Map.svg",
 				name: "World Map.svg",
@@ -133,11 +188,15 @@ export function renderMarkdownFiles(
 			});
 		}
 
-		const mapMd = Mustache.render(templates.MapInfo, {
-			...global,
-			...data.MapInfo,
-			MapInfo: data.MapInfo,
-		});
+		const mapEntity = data.MapInfo as unknown as Record<string, unknown>;
+
+		const mapMd = shouldUseBuilder("map", opt.templateName)
+			? renderBuilderContent("map", mapEntity)
+			: Mustache.render(templates.MapInfo, {
+					...global,
+					...data.MapInfo,
+					MapInfo: data.MapInfo,
+				});
 
 		files.push({
 			path: `${data.MapInfo.info.name} ${opt.mapInfoFilename}`,
@@ -146,7 +205,20 @@ export function renderMarkdownFiles(
 		});
 	}
 
+	const citiesByCountryId = new Map<string, unknown[]>();
+
+	for (const city of data.Cities ?? []) {
+		const countryId = String(city.country?.id ?? "");
+
+		if (!countryId) continue;
+
+		const cities = citiesByCountryId.get(countryId) ?? [];
+		cities.push(city);
+		citiesByCountryId.set(countryId, cities);
+	}
+
 	type Coll = keyof Omit<DataSets, "MapInfo">;
+
 	const add = (
 		_coll: Coll,
 		singular: keyof TemplateMap,
@@ -161,11 +233,25 @@ export function renderMarkdownFiles(
 		arr.forEach((item, i) => {
 			const base = filenameFrom(item, fields, `${dir}-${i + 1}`);
 			const name = withExt(base, opt.extension);
-			const content = Mustache.render(tpl, {
-				...global,
-				...item,
-				[singular]: item,
-			});
+			const sourceType = getSourceTypeFromSingular(singular);
+
+			const exportItem =
+				singular === "Country"
+					? {
+							...item,
+							cities:
+								citiesByCountryId.get(String(item.id)) ?? item.cities ?? [],
+						}
+					: item;
+
+			const content =
+				sourceType && shouldUseBuilder(sourceType, opt.templateName)
+					? renderBuilderContent(sourceType, exportItem)
+					: Mustache.render(tpl, {
+							...global,
+							...exportItem,
+							[singular]: exportItem,
+						});
 
 			const rawSvg =
 				singular === "City" || singular === "Country" ? item.coaSVG : undefined;
@@ -177,23 +263,28 @@ export function renderMarkdownFiles(
 					content,
 				});
 				if (rawSvg) {
-					const svgDoc = toFullSvg(String(rawSvg)); // uses helper from earlier
-					files.push({
-						path: `${prefix}${item.country.name}/${base}.svg`,
-						name: `${base}.svg`,
-						content: svgDoc,
-					});
+					const svgDoc = normalizeSvgForExport(rawSvg);
+
+					if (svgDoc) {
+						files.push({
+							path: `${prefix}${item.country.name}/${base}.svg`,
+							name: `${base}.svg`,
+							content: svgDoc,
+						});
+					}
 				}
 			} else if (singular === "Country") {
-				item.cities = data.Cities?.filter((c) => c.country.id === item.id);
 				files.push({ path: `${prefix}${name}`, name, content });
 				if (rawSvg) {
-					const svgDoc = toFullSvg(String(rawSvg)); // uses helper from earlier
-					files.push({
-						path: `${prefix}${base}.svg`,
-						name: `${base}.svg`,
-						content: svgDoc,
-					});
+					const svgDoc = normalizeSvgForExport(rawSvg);
+
+					if (svgDoc) {
+						files.push({
+							path: `${prefix}${item.country.name}/${base}.svg`,
+							name: `${base}.svg`,
+							content: svgDoc,
+						});
+					}
 				}
 			} else if (singular === "Note") {
 				const name = withExt(base, opt.extension);
@@ -227,6 +318,8 @@ export function renderMarkdownFiles(
 	};
 
 	if (exports?.includes("Cities")) {
+		console.time("[export] Cities");
+
 		add(
 			"Cities",
 			"City",
@@ -235,6 +328,8 @@ export function renderMarkdownFiles(
 			templates.City ?? "",
 			opt.filenameFields.Cities ?? [],
 		);
+
+		console.timeEnd("[export] Cities");
 	}
 
 	if (exports?.includes("Countries")) {
@@ -282,4 +377,15 @@ export function renderMarkdownFiles(
 	}
 
 	return files;
+}
+function normalizeSvgForExport(rawSvg: unknown): string {
+	const svg = String(rawSvg ?? "").trim();
+
+	if (!svg) return "";
+
+	if (/^<svg[\s>]/i.test(svg)) {
+		return svg;
+	}
+
+	return toFullSvg(svg);
 }

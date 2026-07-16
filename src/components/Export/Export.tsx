@@ -15,7 +15,9 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import Templates from "./templates.json";
+
+import LegacyTemplates from "./templates.json";
+import { getMarkdownDocumentTemplates } from "./builder/templateRegistry";
 
 import { BOTI_BASE_ZIP } from "./Constants";
 import { remapPathsForBOTI, makeZipName } from "./BotiUtils";
@@ -71,7 +73,6 @@ export function MarkdownExportPanel(props: {
 	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaultexports, setDefaultexports] =
 		useState<Array<string>>(defaultExports);
-	const [tplIndex, setTplIndex] = useState<number>(0);
 	const [status, setStatus] = useState<string>("Idle");
 	const [percent, setPercent] = useState<number>(0);
 	const [logs, setLogs] = useState<string[]>([]);
@@ -84,6 +85,33 @@ export function MarkdownExportPanel(props: {
 	const lastPctRef = useRef(0);
 	const lastFileRef = useRef<string | undefined>(undefined);
 	const termRef = useRef<HTMLDivElement | null>(null);
+
+	const markdownTemplates = getMarkdownDocumentTemplates();
+
+	const defaultTemplateId = markdownTemplates[0]?.id ?? "default";
+
+	const [tplId, setTplId] = useState<string>(defaultTemplateId);
+
+	const legacyTemplateConfigs = LegacyTemplates as LegacyTemplateConfig[];
+
+	const selectedMarkdownTemplate =
+		markdownTemplates.find((template) => template.id === tplId) ??
+		markdownTemplates[0];
+
+	const tplName = selectedMarkdownTemplate?.label ?? "Default";
+
+	const tplCfg =
+		legacyTemplateConfigs.find((template) => template.Name === tplName) ??
+		legacyTemplateConfigs[0] ??
+		null;
+
+	const isBOTI = selectedMarkdownTemplate?.id === "boti";
+	const finalZipName = makeZipName(zipName, tplName, data.MapInfo.info.name);
+
+	type LegacyTemplateConfig = {
+		Name: string;
+		Files: PartialTemplates;
+	};
 
 	const handleSelectAllDefaults = () => {
 		setSelectAllDefaults(!selectAllDefaults);
@@ -107,21 +135,13 @@ export function MarkdownExportPanel(props: {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: we want to reset this when tplIndex changes
 	useEffect(() => {
 		setHideBotiWarning(false);
-	}, [tplIndex]);
+	}, [tplId]);
 
 	const log = (type: string, line: string) =>
 		setLogs((l) => [
 			...l,
 			`[${new Date().toISOString().slice(0, 19).replace("T", " ")}] [{${type}}] ${line}`,
 		]);
-
-	// Derive current template name BEFORE clicking Export (for warning box + final name preview)
-	const tplCfg =
-		(Templates as Array<{ Name: string; Files: PartialTemplates }>)[tplIndex] ??
-		null;
-	const tplName = tplCfg?.Name ?? "Default";
-	const isBOTI = tplName === "Bag of Tips Inspired";
-	const finalZipName = makeZipName(zipName, tplName, data.MapInfo.info.name);
 
 	// Main export
 	const run = async () => {
@@ -237,7 +257,7 @@ export function MarkdownExportPanel(props: {
 		URL.revokeObjectURL(url);
 	};
 
-	console.log("defaultexports", defaultexports);
+	// console.log("defaultexports", defaultexports);
 
 	return (
 		<div className={className ?? "p-2 border rounded"}>
@@ -246,14 +266,14 @@ export function MarkdownExportPanel(props: {
 				<Select
 					labelId="tpl-label"
 					label="Template"
-					value={String(tplIndex)}
-					onChange={(e: SelectChangeEvent<string>) =>
-						setTplIndex(Number(e.target.value))
+					value={tplId}
+					onChange={(event: SelectChangeEvent<string>) =>
+						setTplId(event.target.value)
 					}
 				>
-					{(Templates as Array<{ Name: string }>).map((t, idx) => (
-						<MenuItem key={`${t.Name}`} value={idx}>
-							{t.Name ?? `Template ${idx + 1}`}
+					{markdownTemplates.map((template) => (
+						<MenuItem key={template.id} value={template.id}>
+							{template.label}
 						</MenuItem>
 					))}
 				</Select>
