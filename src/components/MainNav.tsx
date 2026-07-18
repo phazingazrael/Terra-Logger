@@ -12,17 +12,17 @@ import {
 	ListItemText,
 	MenuItem,
 	MenuList,
+	useTheme,
 } from "@mui/material";
-import { IconContext } from "react-icons";
-import { ImDiamonds } from "react-icons/im";
-import {
-	TiCog,
-	TiDocumentText,
-	TiGlobe,
-	TiHome,
-	TiExportOutline,
-	TiStarOutline,
-} from "react-icons/ti";
+
+import { HouseLineIcon } from "@phosphor-icons/react/dist/ssr/HouseLine";
+import { GlobeStandIcon } from "@phosphor-icons/react/dist/ssr/GlobeStand";
+import { FadersIcon } from "@phosphor-icons/react/dist/ssr/Faders";
+import { ExportIcon } from "@phosphor-icons/react/dist/ssr/Export";
+import { SealQuestionIcon } from "@phosphor-icons/react/dist/ssr/SealQuestion";
+import { NotebookIcon } from "@phosphor-icons/react/dist/ssr/Notebook";
+import { DiamondsFourIcon } from "@phosphor-icons/react/dist/ssr/DiamondsFour";
+import { GlobeHemisphereWestIcon } from "@phosphor-icons/react/dist/ssr/GlobeHemisphereWest";
 
 import { handleSvgReplace } from "./Util/handleSvgReplace";
 
@@ -30,8 +30,9 @@ import type { MapInf } from "../definitions/TerraLogger";
 
 const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 	const { activeMapId, setActive } = useDB();
-	const iconStyles = useMemo(() => ({ size: "1.75rem" }), []);
 	const [expanded, setExpanded] = useState(false); // State to manage accordion expansion
+
+	const theme = useTheme();
 
 	const mapList = mapsList.mapsList;
 
@@ -68,168 +69,222 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 
 	return (
 		<MenuList>
-			<IconContext.Provider value={iconStyles}>
-				<MenuItem className="mapSelect">
-					{mapList.length > 0 ? (
-						<Accordion
-							disableGutters
-							expanded={expanded}
-							onChange={(event, isExpanded) => {
-								handleAccordionChange(isExpanded);
-								console.info(event);
-							}}
-						>
-							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-								<ListItemIcon>
-									<TiGlobe />
-								</ListItemIcon>
-								<ListItemText>
-									{mapLoaded ? mapName : "Select Map"}
-								</ListItemText>
-							</AccordionSummary>
-							<AccordionDetails>
-								<MenuList>
-									{mapList.map((m: MapInf) => (
-										<MenuItem
-											key={m.info.ID}
-											onClick={() => handleMenuItemClick(m)}
-										>
-											{m.info.name}
-										</MenuItem>
-									))}
-								</MenuList>
-							</AccordionDetails>
-						</Accordion>
-					) : (
-						<>
+			<MenuItem className="mapSelect">
+				{mapList.length > 0 ? (
+					<Accordion
+						disableGutters
+						expanded={expanded}
+						onChange={(event, isExpanded) => {
+							handleAccordionChange(isExpanded);
+							console.info(event);
+						}}
+					>
+						<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 							<ListItemIcon>
-								<TiGlobe />
+								<GlobeStandIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
 							</ListItemIcon>
-							<ListItemText>
-								{mapLoaded ? mapName : "No Map Loaded"}
-							</ListItemText>
-						</>
-					)}
-				</MenuItem>
-				<Divider />
-				<NavLink
-					onClick={handleNavClick}
-					to="/"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					<MenuItem>
+							<ListItemText>{mapLoaded ? mapName : "Select Map"}</ListItemText>
+						</AccordionSummary>
+						<AccordionDetails>
+							<MenuList>
+								{mapList.map((m: MapInf) => (
+									<MenuItem
+										key={m.info.ID}
+										onClick={() => handleMenuItemClick(m)}
+									>
+										<ListItemIcon>
+											<GlobeHemisphereWestIcon
+												size={24}
+												color={theme.palette.primary.main}
+												weight="duotone"
+											/>
+										</ListItemIcon>
+										<ListItemText>{m.info.name}</ListItemText>
+									</MenuItem>
+								))}
+							</MenuList>
+						</AccordionDetails>
+					</Accordion>
+				) : (
+					<>
 						<ListItemIcon>
-							<TiHome />
+							<GlobeStandIcon
+								size={28}
+								color={theme.palette.primary.main}
+								weight="duotone"
+							/>
 						</ListItemIcon>
-						<ListItemText>Home</ListItemText>
-						<ListItemIcon className="inactive">
-							<ImDiamonds />
-						</ListItemIcon>
-					</MenuItem>
-				</NavLink>
-				{mapLoaded ? (
-					<div className="subMenu">
-						<NavLink
-							onClick={handleNavClick}
-							to="/countries"
-							className={({ isActive }) => {
-								const path = location.pathname;
-								return isActive || path.startsWith("/view_country")
-									? "active"
-									: "";
-							}}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiDocumentText />
-								</ListItemIcon>
-								<ListItemText>Countries</ListItemText>
-								<ListItemIcon className="inactive">
-									<ImDiamonds />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink>
-						<NavLink
-							onClick={handleNavClick}
-							to="/cities"
-							className={({ isActive }) => {
-								const path = location.pathname;
-								return isActive || path.startsWith("/view_city")
-									? "active"
-									: "";
-							}}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiDocumentText />
-								</ListItemIcon>
-								<ListItemText>Cities</ListItemText>
-								<ListItemIcon className="inactive">
-									<ImDiamonds />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink>
-						<NavLink
-							onClick={handleNavClick}
-							to="/religions"
-							className={({ isActive }) => {
-								const path = location.pathname;
-								return isActive || path.startsWith("/view_religion")
-									? "active"
-									: "";
-							}}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiDocumentText />
-								</ListItemIcon>
-								<ListItemText>Religions</ListItemText>
-								<ListItemIcon className="inactive">
-									<ImDiamonds />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink>
-						<NavLink
-							onClick={handleNavClick}
-							to="/cultures"
-							className={({ isActive }) => {
-								const path = location.pathname;
-								return isActive || path.startsWith("/view_culture")
-									? "active"
-									: "";
-							}}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiDocumentText />
-								</ListItemIcon>
-								<ListItemText>Cultures</ListItemText>
-								<ListItemIcon className="inactive">
-									<ImDiamonds />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink>
-						<NavLink
-							onClick={handleNavClick}
-							to="/notes"
-							className={({ isActive }) => {
-								const path = location.pathname;
-								return isActive || path.startsWith("/view_note")
-									? "active"
-									: "";
-							}}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiDocumentText />
-								</ListItemIcon>
-								<ListItemText>Notes</ListItemText>
-								<ListItemIcon className="inactive">
-									<ImDiamonds />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink>
-						{/* <NavLink onClick={handleNavClick}
+						<ListItemText>{mapLoaded ? mapName : "No Map Loaded"}</ListItemText>
+					</>
+				)}
+			</MenuItem>
+			<Divider />
+			<NavLink
+				onClick={handleNavClick}
+				to="/"
+				className={({ isActive }) => (isActive ? "active" : "")}
+			>
+				<MenuItem>
+					<ListItemIcon>
+						<HouseLineIcon
+							color={theme.palette.primary.main}
+							size={28}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+					<ListItemText>Home</ListItemText>
+					<ListItemIcon className="inactive">
+						<DiamondsFourIcon
+							size={28}
+							color={theme.palette.primary.main}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+				</MenuItem>
+			</NavLink>
+			{mapLoaded ? (
+				<div className="subMenu">
+					<NavLink
+						onClick={handleNavClick}
+						to="/countries"
+						className={({ isActive }) => {
+							const path = location.pathname;
+							return isActive || path.startsWith("/view_country")
+								? "active"
+								: "";
+						}}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<NotebookIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+							<ListItemText>Countries</ListItemText>
+							<ListItemIcon className="inactive">
+								<DiamondsFourIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+					<NavLink
+						onClick={handleNavClick}
+						to="/cities"
+						className={({ isActive }) => {
+							const path = location.pathname;
+							return isActive || path.startsWith("/view_city") ? "active" : "";
+						}}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<NotebookIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+							<ListItemText>Cities</ListItemText>
+							<ListItemIcon className="inactive">
+								<DiamondsFourIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+					<NavLink
+						onClick={handleNavClick}
+						to="/religions"
+						className={({ isActive }) => {
+							const path = location.pathname;
+							return isActive || path.startsWith("/view_religion")
+								? "active"
+								: "";
+						}}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<NotebookIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+							<ListItemText>Religions</ListItemText>
+							<ListItemIcon className="inactive">
+								<DiamondsFourIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+					<NavLink
+						onClick={handleNavClick}
+						to="/cultures"
+						className={({ isActive }) => {
+							const path = location.pathname;
+							return isActive || path.startsWith("/view_culture")
+								? "active"
+								: "";
+						}}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<NotebookIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+							<ListItemText>Cultures</ListItemText>
+							<ListItemIcon className="inactive">
+								<DiamondsFourIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+					<NavLink
+						onClick={handleNavClick}
+						to="/notes"
+						className={({ isActive }) => {
+							const path = location.pathname;
+							return isActive || path.startsWith("/view_note") ? "active" : "";
+						}}
+					>
+						<MenuItem>
+							<ListItemIcon>
+								<NotebookIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+							<ListItemText>Notes</ListItemText>
+							<ListItemIcon className="inactive">
+								<DiamondsFourIcon
+									size={28}
+									color={theme.palette.primary.main}
+									weight="duotone"
+								/>
+							</ListItemIcon>
+						</MenuItem>
+					</NavLink>
+					{/* <NavLink onClick={handleNavClick}
 							to="/tags"
 							className={({ isActive }) => (isActive ? "active" : "")}
 						>
@@ -239,65 +294,88 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 								</ListItemIcon>
 								<ListItemText>Tags</ListItemText>
 								<ListItemIcon className="inactive">
-									<ImDiamonds />
+									<DiamondsFourIcon size={28} color={theme.palette.primary.main} weight="duotone" />
 								</ListItemIcon>
 							</MenuItem>
 						</NavLink> */}
-					</div>
-				) : (
-					""
-				)}
+				</div>
+			) : (
+				""
+			)}
 
+			<NavLink
+				onClick={handleNavClick}
+				to="/settings"
+				className={({ isActive }) => (isActive ? "active" : "")}
+			>
+				<MenuItem>
+					<ListItemIcon>
+						<FadersIcon
+							size={28}
+							color={theme.palette.primary.main}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+					<ListItemText>Settings</ListItemText>
+					<ListItemIcon className="inactive">
+						<DiamondsFourIcon
+							size={28}
+							color={theme.palette.primary.main}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+				</MenuItem>
+			</NavLink>
+			{mapLoaded ? (
 				<NavLink
 					onClick={handleNavClick}
-					to="/settings"
+					to="/export"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>
 					<MenuItem>
 						<ListItemIcon>
-							<TiCog />
+							<ExportIcon
+								size={28}
+								color={theme.palette.primary.main}
+								weight="duotone"
+							/>
 						</ListItemIcon>
-						<ListItemText>Settings</ListItemText>
+						<ListItemText>Export Map</ListItemText>
 						<ListItemIcon className="inactive">
-							<ImDiamonds />
+							<DiamondsFourIcon
+								size={28}
+								color={theme.palette.primary.main}
+								weight="duotone"
+							/>
 						</ListItemIcon>
 					</MenuItem>
 				</NavLink>
-				{mapLoaded ? (
-					<NavLink
-						onClick={handleNavClick}
-						to="/export"
-						className={({ isActive }) => (isActive ? "active" : "")}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<TiExportOutline />
-							</ListItemIcon>
-							<ListItemText>Export Map</ListItemText>
-							<ListItemIcon className="inactive">
-								<ImDiamonds />
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-				) : (
-					""
-				)}
-				<NavLink
-					onClick={handleNavClick}
-					to="/about"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					<MenuItem>
-						<ListItemIcon>
-							<TiStarOutline />
-						</ListItemIcon>
-						<ListItemText>About</ListItemText>
-						<ListItemIcon className="inactive">
-							<ImDiamonds />
-						</ListItemIcon>
-					</MenuItem>
-				</NavLink>
-			</IconContext.Provider>
+			) : (
+				""
+			)}
+			<NavLink
+				onClick={handleNavClick}
+				to="/about"
+				className={({ isActive }) => (isActive ? "active" : "")}
+			>
+				<MenuItem>
+					<ListItemIcon>
+						<SealQuestionIcon
+							size={28}
+							color={theme.palette.primary.main}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+					<ListItemText>About</ListItemText>
+					<ListItemIcon className="inactive">
+						<DiamondsFourIcon
+							size={28}
+							color={theme.palette.primary.main}
+							weight="duotone"
+						/>
+					</ListItemIcon>
+				</MenuItem>
+			</NavLink>
 		</MenuList>
 	);
 };

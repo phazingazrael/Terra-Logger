@@ -1,7 +1,6 @@
 import { Container } from "@mui/material";
 import type { Context } from "../../definitions/Common";
-import { useEffect, useMemo, useState, type JSX } from "react";
-import { IconContext } from "react-icons";
+import { useEffect, useState, type JSX } from "react";
 
 import "./Settings.css";
 
@@ -16,8 +15,6 @@ function Settings(): JSX.Element {
 	const [app, setApp] = useState<AppInfo | null>(null);
 
 	const { mapsList, setThemeName }: Context = useOutletContext();
-
-	const IconStyles = useMemo(() => ({ size: "1.5rem" }), []);
 
 	// Load current app settings from IndexedDB
 	useEffect(() => {
@@ -46,53 +43,47 @@ function Settings(): JSX.Element {
 
 	return (
 		<Container className="Settings">
-			<IconContext.Provider value={IconStyles}>
-				<form>
-					<div className="contentSubBody">
-						<div className="section">
-							{mapsList.length > 0 ? (
-								<span id="MapsList">
-									<MapManager />
-								</span>
-							) : (
-								<UploadMap />
-							)}
-						</div>
+			<div className="contentSubBody">
+				<div className="section">
+					{mapsList.length > 0 ? (
+						<span id="MapsList">
+							<MapManager />
+						</span>
+					) : (
+						<UploadMap />
+					)}
+				</div>
 
-						<div className="section">
-							<h4>General & Appearance Settings</h4>
-							<div>
-								<label htmlFor="themeSelect">Theme</label>
-								<select
-									id="themeSelect"
-									className="select"
-									value={app?.userSettings?.theme ?? "light"}
-									onChange={(e) =>
-										updateTheme(e.target.value as "light" | "dark")
-									}
-								>
-									<option value="light">Light</option>
-									<option value="dark">Dark</option>
-								</select>
-							</div>
-						</div>
-
-						<div className="section">
-							<h4>Display Settings</h4>
-							<div className="sectionAlt">
-								<label htmlFor="screenSize" style={{ marginRight: "10px" }}>
-									Screen Size
-								</label>
-								<span id="screenSize">
-									{app
-										? `${app.userSettings.screen.outerWidth} x ${app.userSettings.screen.outerHeight}`
-										: "—"}
-								</span>
-							</div>
-						</div>
+				<div className="section">
+					<h4>General & Appearance Settings</h4>
+					<div>
+						<label htmlFor="themeSelect">Theme</label>
+						<select
+							id="themeSelect"
+							className="select"
+							value={app?.userSettings?.theme ?? "light"}
+							onChange={(e) => updateTheme(e.target.value as "light" | "dark")}
+						>
+							<option value="light">Light</option>
+							<option value="dark">Dark</option>
+						</select>
 					</div>
-				</form>
-			</IconContext.Provider>
+				</div>
+
+				<div className="section">
+					<h4>Display Settings</h4>
+					<div className="sectionAlt">
+						<label htmlFor="screenSize" style={{ marginRight: "10px" }}>
+							Screen Size
+						</label>
+						<span id="screenSize">
+							{app
+								? `${app.userSettings.screen.outerWidth} x ${app.userSettings.screen.outerHeight}`
+								: "—"}
+						</span>
+					</div>
+				</div>
+			</div>
 		</Container>
 	);
 }

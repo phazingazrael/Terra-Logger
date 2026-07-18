@@ -104,8 +104,7 @@ function MainLayout() {
 		(async () => {
 			const s = await getAppSettings();
 			const appTheme = s?.userSettings?.theme;
-			if (appTheme === "dark" || appTheme === "light")
-				setThemeName(appTheme);
+			if (appTheme === "dark" || appTheme === "light") setThemeName(appTheme);
 		})();
 	}, []);
 

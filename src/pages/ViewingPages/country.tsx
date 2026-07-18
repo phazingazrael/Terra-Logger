@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Container } from "@mui/material";
 
-import { IconContext } from "react-icons";
 import { useParams } from "react-router-dom";
 import { useDB } from "../../db/DataContext";
 
@@ -46,8 +45,6 @@ function CountryView() {
 			diplomacyGroups[relation.status].push(relation);
 		}
 	}
-
-	const IconStyles = useMemo(() => ({}), []);
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
 
@@ -145,67 +142,65 @@ function CountryView() {
 
 	return (
 		<Container className="ViewPage Country" color="text.secondary">
-			<IconContext.Provider value={IconStyles}>
-				<div className="contentSubBody">
-					<div className="flex-container">
-						<div className={`wiki ${isEditingAtlas ? "editing" : ""}`}>
-							<main className="content">
-								{isEditingAtlas ? (
-									""
-								) : (
-									<div className="atlas-page-actions">
-										{atlasSaveError ? (
-											<p className="atlas-save-error">{atlasSaveError}</p>
-										) : null}
+			<div className="contentSubBody">
+				<div className="flex-container">
+					<div className={`wiki ${isEditingAtlas ? "editing" : ""}`}>
+						<main className="content">
+							{isEditingAtlas ? (
+								""
+							) : (
+								<div className="atlas-page-actions">
+									{atlasSaveError ? (
+										<p className="atlas-save-error">{atlasSaveError}</p>
+									) : null}
+									<Button
+										type="button"
+										onClick={() => setIsEditingAtlas((current) => !current)}
+									>
+										{isSavingAtlas
+											? "Saving..."
+											: isEditingAtlas
+												? ""
+												: "Edit Page"}
+									</Button>
+
+									{localCountryContent ? (
 										<Button
 											type="button"
-											onClick={() => setIsEditingAtlas((current) => !current)}
+											onClick={() => {
+												setLocalCountryContent(null);
+												setIsEditingAtlas(false);
+											}}
 										>
-											{isSavingAtlas
-												? "Saving..."
-												: isEditingAtlas
-													? ""
-													: "Edit Page"}
+											Reset Local Changes
 										</Button>
+									) : null}
+								</div>
+							)}
 
-										{localCountryContent ? (
-											<Button
-												type="button"
-												onClick={() => {
-													setLocalCountryContent(null);
-													setIsEditingAtlas(false);
-												}}
-											>
-												Reset Local Changes
-											</Button>
-										) : null}
-									</div>
-								)}
-
-								{countryContent && atlasContext ? (
-									isEditingAtlas ? (
-										<PageEditor
-											key={country?._id}
-											content={countryContent}
-											adapter={countryAdapter}
-											context={atlasContext}
-											onSave={handleSaveCountryAtlasContent}
-											onClose={() => setIsEditingAtlas(false)}
-										/>
-									) : (
-										<AtlasRenderer
-											content={countryContent}
-											context={atlasContext}
-										/>
-									)
+							{countryContent && atlasContext ? (
+								isEditingAtlas ? (
+									<PageEditor
+										key={country?._id}
+										content={countryContent}
+										adapter={countryAdapter}
+										context={atlasContext}
+										onSave={handleSaveCountryAtlasContent}
+										onClose={() => setIsEditingAtlas(false)}
+									/>
 								) : (
-									<p>Country content is not available.</p>
-								)}
-							</main>
-						</div>
+									<AtlasRenderer
+										content={countryContent}
+										context={atlasContext}
+									/>
+								)
+							) : (
+								<p>Country content is not available.</p>
+							)}
+						</main>
 					</div>
 				</div>
-			</IconContext.Provider>
+			</div>
 		</Container>
 	);
 }

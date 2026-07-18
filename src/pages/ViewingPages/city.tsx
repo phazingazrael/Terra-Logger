@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Button, Container } from "@mui/material";
-import { IconContext } from "react-icons";
 import { useDB } from "../../db/DataContext";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -34,8 +33,6 @@ function CityView() {
 		() => cities.find((c) => c._id === cityId?._id),
 		[cities, cityId?._id],
 	);
-
-	const IconStyles = useMemo(() => ({}), []);
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
 
@@ -140,67 +137,62 @@ function CityView() {
 
 	return (
 		<Container className="ViewPage City">
-			<IconContext.Provider value={IconStyles}>
-				<div className="contentSubBody">
-					<div className="flex-container">
-						<div className={`wiki ${isEditingAtlas ? "editing" : ""}`}>
-							<main className="content">
-								{isEditingAtlas ? (
-									""
-								) : (
-									<div className="atlas-page-actions">
-										{atlasSaveError ? (
-											<p className="atlas-save-error">{atlasSaveError}</p>
-										) : null}
+			<div className="contentSubBody">
+				<div className="flex-container">
+					<div className={`wiki ${isEditingAtlas ? "editing" : ""}`}>
+						<main className="content">
+							{isEditingAtlas ? (
+								""
+							) : (
+								<div className="atlas-page-actions">
+									{atlasSaveError ? (
+										<p className="atlas-save-error">{atlasSaveError}</p>
+									) : null}
+									<Button
+										type="button"
+										onClick={() => setIsEditingAtlas((current) => !current)}
+									>
+										{isSavingAtlas
+											? "Saving..."
+											: isEditingAtlas
+												? ""
+												: "Edit Page"}
+									</Button>
+
+									{localCityContent ? (
 										<Button
 											type="button"
-											onClick={() => setIsEditingAtlas((current) => !current)}
+											onClick={() => {
+												setLocalCityContent(null);
+												setIsEditingAtlas(false);
+											}}
 										>
-											{isSavingAtlas
-												? "Saving..."
-												: isEditingAtlas
-													? ""
-													: "Edit Page"}
+											Reset Local Changes
 										</Button>
+									) : null}
+								</div>
+							)}
 
-										{localCityContent ? (
-											<Button
-												type="button"
-												onClick={() => {
-													setLocalCityContent(null);
-													setIsEditingAtlas(false);
-												}}
-											>
-												Reset Local Changes
-											</Button>
-										) : null}
-									</div>
-								)}
-
-								{cityContent && atlasContext ? (
-									isEditingAtlas ? (
-										<PageEditor
-											key={city?._id}
-											content={cityContent}
-											adapter={cityAdapter}
-											context={atlasContext}
-											onSave={handleSaveCityAtlasContent}
-											onClose={() => setIsEditingAtlas(false)}
-										/>
-									) : (
-										<AtlasRenderer
-											content={cityContent}
-											context={atlasContext}
-										/>
-									)
+							{cityContent && atlasContext ? (
+								isEditingAtlas ? (
+									<PageEditor
+										key={city?._id}
+										content={cityContent}
+										adapter={cityAdapter}
+										context={atlasContext}
+										onSave={handleSaveCityAtlasContent}
+										onClose={() => setIsEditingAtlas(false)}
+									/>
 								) : (
-									<p>City content is not available.</p>
-								)}
-							</main>
-						</div>
+									<AtlasRenderer content={cityContent} context={atlasContext} />
+								)
+							) : (
+								<p>City content is not available.</p>
+							)}
+						</main>
 					</div>
 				</div>
-			</IconContext.Provider>
+			</div>
 		</Container>
 	);
 }
