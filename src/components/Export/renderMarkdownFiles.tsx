@@ -18,7 +18,9 @@ import { buildExportDocument } from "./builder/buildExportDocument";
 import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
 import type { ExportSourceType } from "./builder/exportTypes";
 
-// === 🔤 Filename + Slug Helpers ===
+import { injectSvgStyle, normalizeSvgForExport } from "./svgExportUtils";
+
+// === Filename + Slug Helpers ===
 
 const slug = (s: unknown, fb: string) =>
 	(String(s ?? "").trim() || fb)
@@ -61,39 +63,6 @@ const withExt = (base: string, ext: string) => {
 	// extension to the base string and return the result
 	return `${base}${ext}`;
 };
-
-function toFullSvg(svg: string): string {
-	const raw = (svg ?? "").trim();
-	if (!raw) return "";
-
-	// Wrap fragments
-	const hasRoot = /<svg[\s>]/i.test(raw);
-	const base = hasRoot ? raw : `<svg>${raw}</svg>`;
-
-	// Parse and normalize
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(base, "image/svg+xml");
-	const root = doc.documentElement;
-
-	// If parsing failed or root isn't <svg>, just return original
-	if (!root || root.nodeName.toLowerCase() !== "svg") return raw;
-
-	// Ensure namespaces
-	if (!root.getAttribute("xmlns")) {
-		root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-	}
-	const usesXlink =
-		/\bxlink:/i.test(base) || !!doc.querySelector("[xlink\\:href]");
-	if (usesXlink && !root.getAttribute("xmlns:xlink")) {
-		root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-	}
-
-	let out = new XMLSerializer().serializeToString(doc);
-	if (!/^\s*<\?xml/i.test(out)) {
-		out = `<?xml version="1.0" encoding="UTF-8"?>\n${out}`;
-	}
-	return out;
-}
 
 function ctx(data: DataSets) {
 	// shallow-copy the DataSets object to create a context object
@@ -160,35 +129,19 @@ export function renderMarkdownFiles(
 		templateName: string,
 	): boolean => {
 		const template = getMarkdownDocumentTemplate(templateName);
-		const migratedSourceTypes: ExportSourceType[] = [
-			"note",
-			"culture",
-			"religion",
-			"city",
-			"country",
-			"map",
-		];
 
 		return (
 			(template.id === "default" || template.id === "boti") &&
-			migratedSourceTypes.includes(sourceType)
+			["note", "culture", "religion", "city", "country", "map"].includes(
+				sourceType,
+			)
 		);
 	};
 
 	if (exports?.includes("Map")) {
-		const Parser = new DOMParser();
+		const newSvg = injectSvgStyle(data.MapInfo.SVG, opt.css);
 
-		const mapSvgDoc = Parser.parseFromString(data.MapInfo.SVG, "image/svg+xml");
-		const firstElement = mapSvgDoc.querySelector("svg")?.firstElementChild;
-
-		if (firstElement) {
-			const newStyle = document.createElement("style");
-			newStyle.setAttribute("type", "text/css");
-			newStyle.innerHTML = opt.css;
-			mapSvgDoc.querySelector("svg")?.insertBefore(newStyle, firstElement);
-
-			const newSvg = mapSvgDoc.querySelector("svg")?.outerHTML ?? "";
-
+		if (newSvg) {
 			files.push({
 				path: "World Map.svg",
 				name: "World Map.svg",
@@ -256,13 +209,14 @@ export function renderMarkdownFiles(
 				sourceType && shouldUseBuilder(sourceType, opt.templateName),
 			);
 
-			const content = usesBuilder && sourceType
-				? renderBuilderContent(sourceType, exportItem)
-				: Mustache.render(tpl, {
-						...global,
-						...exportItem,
-						[singular]: exportItem,
-					});
+			const content =
+				usesBuilder && sourceType
+					? renderBuilderContent(sourceType, exportItem)
+					: Mustache.render(tpl, {
+							...global,
+							...exportItem,
+							[singular]: exportItem,
+						});
 
 			const rawSvg =
 				singular === "City" || singular === "Country" ? item.coaSVG : undefined;
@@ -298,22 +252,30 @@ export function renderMarkdownFiles(
 					}
 				}
 			} else if (singular === "Note") {
-				const isBotiTemplate =
-					getMarkdownDocumentTemplate(opt.templateName).id === "boti";
+				const name = withExt(base, opt.extension);
 
-				if (isBotiTemplate) {
+				if (opt.templateName === "Bag of Tips Inspired") {
 					const folder = botiNoteFolder(item as TLNote);
-					files.push({ path: `${folder}${name}`, name, content });
+
+					files.push({
+						path: `${folder}${name}`,
+						name,
+						content,
+					});
 				} else {
-					// original non-BOTI note folder behavior
-					const idParts = String(item.id ?? "").split(/(\d+)/);
+					const idParts = (item.id as string).split(/(\d+)/);
 					const subDir =
 						idParts[0] === "burg"
 							? "city"
 							: idParts[0] === "state" || idParts[0] === "stateLabel"
 								? "country"
 								: idParts[0];
-					files.push({ path: `${prefix}${subDir}/${name}`, name, content });
+
+					files.push({
+						path: `${prefix}${subDir}/${name}`,
+						name,
+						content,
+					});
 				}
 			} else {
 				files.push({ path: `${prefix}${name}`, name, content });
@@ -381,15 +343,4 @@ export function renderMarkdownFiles(
 	}
 
 	return files;
-}
-function normalizeSvgForExport(rawSvg: unknown): string {
-	const svg = String(rawSvg ?? "").trim();
-
-	if (!svg) return "";
-
-	if (/^<svg[\s>]/i.test(svg)) {
-		return svg;
-	}
-
-	return toFullSvg(svg);
 }

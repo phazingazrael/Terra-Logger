@@ -20,13 +20,13 @@ import LegacyTemplates from "./templates.json";
 import { getMarkdownDocumentTemplates } from "./builder/templateRegistry";
 
 import { BOTI_BASE_ZIP } from "./Constants";
-import { remapPathsForBOTI, makeZipName } from "./BotiUtils";
+import { makeZipName } from "./BotiUtils";
+import { downloadBlob } from "./zipUtils";
+import { runExportArchiveWorker } from "./workers/exportArchiveClient";
 import {
 	resolveTemplateFilesFromJson,
 	fillMissingTemplates,
 } from "./templateUtils";
-import { mergeZipWithBase, zipFiles } from "./zipUtils";
-import { renderMarkdownFiles } from "./renderMarkdownFiles";
 
 import type {
 	DataSets,
@@ -181,57 +181,44 @@ export function MarkdownExportPanel(props: {
 			});
 			log("INFO", `✔ templates ready (${tplCfg?.Name ?? "Defaults"})`);
 
-			setStatus("Rendering markdown files…");
-			let files = renderMarkdownFiles(
+			setStatus("Starting export worker…");
+
+			const result = await runExportArchiveWorker({
 				data,
-				tpls,
-				{
+				templates: tpls,
+				renderOptions: {
 					templateName: tplName,
 				},
-				defaultexports,
-			);
+				selectedExports: defaultexports,
+				isBOTI,
+				finalZipName,
+				botiBaseZipPath: BOTI_BASE_ZIP,
 
-			if (isBOTI) {
-				files = remapPathsForBOTI(files);
-			}
+				onProgress: ({ message, percent, currentFile }) => {
+					setStatus(percent != null ? `${message} ${percent}%` : message);
 
-			const entries: ZipEntry[] = files.map((f) => ({ ...f }));
-
-			log("INFO", `✔ rendered ${files.length} files`);
-
-			setStatus("Zipping…");
-			const nameForZip = finalZipName;
-
-			let blob: Blob | null = null;
-			if (isBOTI) {
-				blob = await mergeZipWithBase(
-					BOTI_BASE_ZIP,
-					entries,
-					nameForZip,
-					(p, file) => {
-						setPercent(p);
-						setStatus(`Zipping… ${p}%`);
-						if (file && file !== lastFileRef.current) {
-							lastFileRef.current = file;
-							log("FILE", `… writing ${file}`);
-						}
-					},
-				);
-			} else {
-				blob = await zipFiles(files, nameForZip, (p, file) => {
-					setPercent(p);
-					setStatus(`Zipping… ${p}%`);
-					if (file && file !== lastFileRef.current) {
-						lastFileRef.current = file;
-						log("FILE", `… writing ${file}`);
+					if (percent != null) {
+						setPercent(percent);
 					}
-				});
-			}
+
+					if (currentFile && currentFile !== lastFileRef.current) {
+						lastFileRef.current = currentFile;
+						log("FILE", `… writing ${currentFile}`);
+					}
+				},
+			});
+
+			log("INFO", `✔ rendered ${result.fileCount} files`);
+
+			downloadBlob(result.blob, result.finalZipName);
 
 			log(
 				"INFO",
-				`✔ zip generated (${(blob.size / (1024 * 1024)).toFixed(2)} MB), download triggered`,
+				`✔ zip generated (${(result.blob.size / (1024 * 1024)).toFixed(
+					2,
+				)} MB), download triggered`,
 			);
+
 			setStatus("Done. Download started.");
 			setZipDownloaded(true);
 			exported.current = true;

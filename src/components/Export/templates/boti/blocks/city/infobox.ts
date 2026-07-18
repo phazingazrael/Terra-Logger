@@ -23,7 +23,7 @@ const template = [
   "> **Rulers** | `=this.Rulers` |",
   "> **Leaders** | `=this.Leaders` |",
   "> **Govt Type** | `=this.GovtType` ({{country.govName}}) |",
-  "> **Defenses** | `=this.Defences` |",
+  "> **Defenses** | `=this.Defenses` |",
   "> **Religions** | `=this.Religions` |",
   "> ###### Commerce",
   ">  |",
