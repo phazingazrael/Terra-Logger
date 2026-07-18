@@ -13,7 +13,6 @@ import type {
 import type { TLNote } from "../../definitions/TerraLogger";
 import { DEFAULT_RENDER_OPTIONS } from "./Constants";
 import { botiNoteFolder } from "./BotiUtils";
-import { resolveNoteTemplate } from "./templateUtils";
 
 import { buildExportDocument } from "./builder/buildExportDocument";
 import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
@@ -160,10 +159,19 @@ export function renderMarkdownFiles(
 		sourceType: ExportSourceType,
 		templateName: string,
 	): boolean => {
-		if (templateName !== "Default") return false;
+		const template = getMarkdownDocumentTemplate(templateName);
+		const migratedSourceTypes: ExportSourceType[] = [
+			"note",
+			"culture",
+			"religion",
+			"city",
+			"country",
+			"map",
+		];
 
-		return ["note", "culture", "religion", "city", "country", "map"].includes(
-			sourceType,
+		return (
+			(template.id === "default" || template.id === "boti") &&
+			migratedSourceTypes.includes(sourceType)
 		);
 	};
 
@@ -244,14 +252,17 @@ export function renderMarkdownFiles(
 						}
 					: item;
 
-			const content =
-				sourceType && shouldUseBuilder(sourceType, opt.templateName)
-					? renderBuilderContent(sourceType, exportItem)
-					: Mustache.render(tpl, {
-							...global,
-							...exportItem,
-							[singular]: exportItem,
-						});
+			const usesBuilder = Boolean(
+				sourceType && shouldUseBuilder(sourceType, opt.templateName),
+			);
+
+			const content = usesBuilder && sourceType
+				? renderBuilderContent(sourceType, exportItem)
+				: Mustache.render(tpl, {
+						...global,
+						...exportItem,
+						[singular]: exportItem,
+					});
 
 			const rawSvg =
 				singular === "City" || singular === "Country" ? item.coaSVG : undefined;
@@ -280,29 +291,22 @@ export function renderMarkdownFiles(
 
 					if (svgDoc) {
 						files.push({
-							path: `${prefix}${item.country.name}/${base}.svg`,
+							path: `${prefix}${base}.svg`,
 							name: `${base}.svg`,
 							content: svgDoc,
 						});
 					}
 				}
 			} else if (singular === "Note") {
-				const name = withExt(base, opt.extension);
+				const isBotiTemplate =
+					getMarkdownDocumentTemplate(opt.templateName).id === "boti";
 
-				if ((options?.templateName ?? "") === "Bag of Tips Inspired") {
-					// choose the correct template string based on note type
-					const tplForNote = resolveNoteTemplate(item as TLNote, templates);
-
-					const content = Mustache.render(tplForNote, {
-						...global,
-						...(item as any),
-						Note: item,
-					});
+				if (isBotiTemplate) {
 					const folder = botiNoteFolder(item as TLNote);
 					files.push({ path: `${folder}${name}`, name, content });
 				} else {
-					// original (non-BOTI) behavior
-					const idParts = (item.id as string).split(/(\d+)/);
+					// original non-BOTI note folder behavior
+					const idParts = String(item.id ?? "").split(/(\d+)/);
 					const subDir =
 						idParts[0] === "burg"
 							? "city"

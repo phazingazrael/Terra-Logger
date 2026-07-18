@@ -1,0 +1,42 @@
+import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+
+const template = [
+	"---",
+	"BANNER: \"[[Culture-Banner.jpg|150]]\"",
+	"Name: {{name}}",
+	"Aliases: {{name}}",
+	"NoteIcon: Culture",
+	"Pronounced: {{name}}",
+	"Region:",
+	"Language:",
+	"EthnicGroups:",
+	"UrbanPopulation: {{urbanPop}}",
+	"RuralPopulation: {{ruralPop}}",
+	"Traditions:",
+	"Values:",
+	"Dress:",
+	"Cuisine:",
+	"Arts:",
+	"Architecture:",
+	"Religions:",
+	"Government:",
+	"TechnologyLevel:",
+	"NotableFigures:",
+	"Theme:",
+	"Color: {{color}}",
+	"Type: {{type}}",
+	"tags:",
+	"{{#tags}}",
+	"  - \"{{Name}}\"",
+	"{{/tags}}",
+	"Origins:",
+	"{{#origins}}",
+	"  - {{.}}",
+	"{{/origins}}",
+	"---",
+].join("\n");
+
+export const botiCultureFrontmatterBlock = createMustacheMarkdownBlock({
+	id: "boti.culture.frontmatter",
+	template,
+});

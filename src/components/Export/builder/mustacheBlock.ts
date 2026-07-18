@@ -103,6 +103,11 @@ function createTemplateOverrides(
         warCampaigns: resolveCountryWarCampaigns(context),
       };
 
+    case "map":
+      return {
+        settings: resolveMapSettings(context),
+      };
+
     default:
       return {};
   }
@@ -440,6 +445,28 @@ function readString(
   if (typeof value === "number" && Number.isFinite(value)) return String(value);
 
   return "";
+}
+
+function resolveMapSettings(context: ExportContext): Record<string, unknown> {
+  const settings = isRecord(context.entity.settings)
+    ? context.entity.settings
+    : {};
+
+  const options = isRecord(settings.options) ? settings.options : {};
+  const winds = Array.isArray(options.winds) ? options.winds : [];
+
+  return {
+    ...settings,
+    options: {
+      ...options,
+      "winds[0]": winds[0] ?? "",
+      "winds[1]": winds[1] ?? "",
+      "winds[2]": winds[2] ?? "",
+      "winds[3]": winds[3] ?? "",
+      "winds[4]": winds[4] ?? "",
+      "winds[5]": winds[5] ?? "",
+    },
+  };
 }
 
 function getSingularContextKey(sourceType: ExportContext["sourceType"]): string {

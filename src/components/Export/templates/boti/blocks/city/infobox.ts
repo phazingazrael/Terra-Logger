@@ -1,0 +1,41 @@
+import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+
+const template = [
+  "> [!infobox]",
+  "> # City of `=this.Name`",
+  "> **Pronounced:**  \"`=this.Pronounced`\"",
+  "> ![[{{name}}.svg]]",
+  "> ###### Info",
+  ">  |",
+  "> ---|---|",
+  "> **Alias** | `=this.Aliases` |",
+  "> **Type** | `=this.Type` |",
+  "> **Capital** | `=this.Capital` |",
+  "> **Population** | `=this.Population` |",
+  "> **Theme** | `=this.Theme` |",
+  "> **Country** | `=this.Country` |",
+  "> **Terrain** | `=this.Terrain` |",
+  "> **Features** | `=join(this.Features,\", \")` |",
+  "> **Map Link** | [City Map]({{mapLink}}) |",
+  "> ###### Politics",
+  ">  |",
+  "> ---|---|",
+  "> **Rulers** | `=this.Rulers` |",
+  "> **Leaders** | `=this.Leaders` |",
+  "> **Govt Type** | `=this.GovtType` ({{country.govName}}) |",
+  "> **Defenses** | `=this.Defences` |",
+  "> **Religions** | `=this.Religions` |",
+  "> ###### Commerce",
+  ">  |",
+  "> ---|---|",
+  "> **Imports** | `=this.Imports` |",
+  "> **Exports** | `=this.Exports` |",
+  "> ###### Description",
+  "> {{description}}",
+  "",
+].join("\n");
+
+export const botiCityInfoboxBlock = createMustacheMarkdownBlock({
+  id: "boti.city.infobox",
+  template,
+});
