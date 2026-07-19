@@ -10,9 +10,18 @@ import {
   mutateNotes,
 } from "../Util/mutations";
 
-import type {
-  TLMapInfo,
-} from "../../definitions/TerraLogger";
+import type { TLMapInfo } from "../../definitions/TerraLogger";
+
+export type MutateProgress = {
+  section: string;
+  item?: string;
+  completed: number;
+  total: number;
+  percent: number;
+  message: string;
+};
+
+export type MutateProgressHandler = (progress: MutateProgress) => void;
 
 const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
   // add map info that doesn't need mutating.
@@ -21,23 +30,61 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
   tempMap.SVG = data.SVG;
 };
 
-const mutateData = async (data: MapInfo, Pack: Pack) => {
+const mutateData = async (
+  data: MapInfo,
+  Pack: Pack,
+  onProgress?: MutateProgressHandler,
+) => {
   const { populationRate, urbanization, urbanDensity } = data.settings;
 
-  // Mutate Map Data to Terra-Logger Format //
   const tempMap: TLMapInfo = createTerraLoggerMap();
 
-  // begin mutating data //
+  const mutationSteps = [
+    "Map Info",
+    "Cultures",
+    "Cities",
+    "Countries",
+    "Name Bases",
+    "Notes",
+    "Religions",
+    "Relationships",
+    "Culture Population",
+    "SVG",
+  ];
+
+  let completedMutationSteps = 0;
+
+  const reportMutationProgress = (section: string, item?: string) => {
+    completedMutationSteps += 1;
+
+    const percent = Math.min(
+      60,
+      30 + Math.round((completedMutationSteps / mutationSteps.length) * 30),
+    );
+
+    onProgress?.({
+      section,
+      item,
+      completed: completedMutationSteps,
+      total: mutationSteps.length,
+      percent,
+      message: item
+        ? `Importing ${section} - ${item}`
+        : `Importing ${section}...`,
+    });
+  };
+
+  // Mutate Map Data to Terra-Logger Format //
+
   try {
+    reportMutationProgress("Map Info", data.info?.name);
     assignMapInfo(tempMap, data);
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
   } catch (error) {
     console.error("Error assigning Map Info", error);
   }
 
-  // mutate cultures
   try {
+    reportMutationProgress("Cultures");
     const Cultures = await mutateCultures(
       data,
       tempMap,
@@ -45,34 +92,29 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
       urbanization,
     );
 
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
     tempMap.cultures = Cultures;
   } catch (error) {
     console.error("Error mutating cultures:", error);
   }
 
-  // mutate cities
   try {
+    reportMutationProgress("Cities");
     const Cities = await mutateCities(
       data,
       tempMap,
       populationRate,
       urbanization,
       urbanDensity,
-      tempMap.SVG
+      tempMap.SVG,
     );
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     tempMap.cities = Cities;
   } catch (error) {
     console.error("Error mutating cities:", error);
   }
 
-  // mutate countries
   try {
+    reportMutationProgress("Countries");
     const Countries = await mutateCountries(
       data,
       tempMap,
@@ -80,38 +122,32 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
       urbanization,
       tempMap.SVG,
     );
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     tempMap.countries = Countries;
   } catch (error) {
     console.error("Error mutating countries:", error);
   }
 
-  // mutate name bases
   try {
+    reportMutationProgress("Name Bases");
     const NameBases = await mutateNameBases(tempMap);
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     tempMap.nameBases = NameBases;
   } catch (error) {
     console.error("Error mutating name bases:", error);
   }
 
-  // mutate notes
   try {
+    reportMutationProgress("Notes");
     const Notes = await mutateNotes(data, tempMap);
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     tempMap.notes = Notes;
   } catch (error) {
     console.error("Error mutating notes:", error);
   }
 
-  // mutate religions - needs touching up.
   try {
+    reportMutationProgress("Religions");
     const Religions = await mutateReligions(
       data,
       tempMap,
@@ -119,20 +155,21 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
       populationRate,
       urbanization,
     );
-    // set timeout for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     tempMap.religions = Religions;
   } catch (error) {
     console.error("Error mutating religions:", error);
   }
 
-  //associate cities with countries
-  (tempMap.cities).forEach((city) => {
+  reportMutationProgress("Relationships");
+
+  // associate cities with countries and cultures
+  tempMap.cities.forEach((city) => {
     if (city.country) {
       const tempCountry = tempMap.countries.find(
         (c) => c.id === city.country.id,
       );
+
       if (tempCountry) {
         city.country = {
           _id: tempCountry._id,
@@ -144,10 +181,12 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
         };
       }
     }
+
     if (city.culture) {
       const tempCulture = tempMap.cultures.find(
         (c) => (c.id as unknown as string) === city.culture.id,
       );
+
       if (tempCulture) {
         city.culture = {
           id: tempCulture.id as unknown as string,
@@ -158,30 +197,35 @@ const mutateData = async (data: MapInfo, Pack: Pack) => {
     }
   });
 
-  // assign Cities to Countries
+  reportMutationProgress("Culture Population");
 
-  // mutate cultures
   for (const culture of tempMap.cultures) {
     const cultureCountries = tempMap.countries.filter(
       (country) => country.culture.id === (culture.id as unknown as string),
     );
+
     let urbPop = 0;
     let rurPop = 0;
 
     for (const country of cultureCountries) {
       const urbValue = Number.parseInt(
-        country.population.urban.replace(/,/g, ""), 10
+        country.population.urban.replace(/,/g, ""),
+        10,
       );
       const rurValue = Number.parseInt(
-        country.population.rural.replace(/,/g, ""), 10
+        country.population.rural.replace(/,/g, ""),
+        10,
       );
 
       urbPop += urbValue;
       rurPop += rurValue;
     }
+
     culture.urbanPop = urbPop.toLocaleString("en-US");
     culture.ruralPop = rurPop.toLocaleString("en-US");
   }
+
+  reportMutationProgress("SVG");
 
   handleSvgReplace({
     svg: data.SVG,

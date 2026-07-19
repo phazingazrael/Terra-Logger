@@ -9,11 +9,11 @@ import { initDatabase } from "./database";
  */
 // biome-ignore lint/suspicious/noExplicitAny: This is fine
 export async function addDataToStore(storeName: string, data: any) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readwrite");
-	const store = tx.objectStore(storeName);
-	store.add(data);
-	await tx.done;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readwrite");
+  const store = tx.objectStore(storeName);
+  store.add(data);
+  await tx.done;
 }
 
 /**
@@ -26,11 +26,11 @@ export async function addDataToStore(storeName: string, data: any) {
 
 // biome-ignore lint/suspicious/noExplicitAny: This is fine
 export async function getDataFromStore(storeName: string, key: any) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readonly");
-	const store = tx.objectStore(storeName);
-	const data = await store.get(key);
-	return data;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readonly");
+  const store = tx.objectStore(storeName);
+  const data = await store.get(key);
+  return data;
 }
 
 /**
@@ -42,17 +42,17 @@ export async function getDataFromStore(storeName: string, key: any) {
  * @returns {Promise<any>} - A promise that resolves with the data from the store, or null if the data does not exist.
  */
 export async function getDataFromStoreIndex(
-	storeName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: This is fine
-	key: any,
-	index: string,
+  storeName: string,
+  // biome-ignore lint/suspicious/noExplicitAny: This is fine
+  key: any,
+  index: string,
 ) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readonly");
-	const store = tx.objectStore(storeName);
-	const idx = store.index(index);
-	const data = await idx.get(key);
-	return data;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readonly");
+  const store = tx.objectStore(storeName);
+  const idx = store.index(index);
+  const data = await idx.get(key);
+  return data;
 }
 
 /**
@@ -62,11 +62,11 @@ export async function getDataFromStoreIndex(
  * @returns {Promise<any[]>} - A promise that resolves with an array of all data from the store.
  */
 export async function getFullStore(storeName: string) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readonly");
-	const store = tx.objectStore(storeName);
-	const data = await store.getAll();
-	return data;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readonly");
+  const store = tx.objectStore(storeName);
+  const data = await store.getAll();
+  return data;
 }
 
 /**
@@ -79,17 +79,17 @@ export async function getFullStore(storeName: string) {
  */
 
 export async function updateDataInStore(
-	storeName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: This is fine
-	key: any,
-	// biome-ignore lint/suspicious/noExplicitAny: This is fine
-	updatedData: any,
+  storeName: string,
+  // biome-ignore lint/suspicious/noExplicitAny: This is fine
+  key: any,
+  // biome-ignore lint/suspicious/noExplicitAny: This is fine
+  updatedData: any,
 ) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readwrite");
-	const store = tx.objectStore(storeName);
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readwrite");
+  const store = tx.objectStore(storeName);
 
-  if (store.keyPath){
+  if (store.keyPath) {
     // Store is configured to use in-line keys, use put instead of add
     store.put(updatedData)
   } else {
@@ -97,7 +97,7 @@ export async function updateDataInStore(
     store.add(updatedData, key);
   }
 
-	await tx.done;
+  await tx.done;
 }
 
 /**
@@ -109,11 +109,11 @@ export async function updateDataInStore(
  */
 // biome-ignore lint/suspicious/noExplicitAny: This is fine
 export async function deleteDataFromStore(storeName: string, key: any) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readwrite");
-	const store = tx.objectStore(storeName);
-	store.delete(key);
-	await tx.done;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readwrite");
+  const store = tx.objectStore(storeName);
+  store.delete(key);
+  await tx.done;
 }
 
 /**
@@ -125,16 +125,16 @@ export async function deleteDataFromStore(storeName: string, key: any) {
  * @returns {Promise<any[]>} - A promise that resolves with an array of data from the store that matches the query.
  */
 export async function queryDataFromStore(
-	storeName: string,
-	indexName: string,
-	query: IDBValidKey | IDBKeyRange,
+  storeName: string,
+  indexName: string,
+  query: IDBValidKey | IDBKeyRange,
 ) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readonly");
-	const store = tx.objectStore(storeName);
-	const index = store.index(indexName);
-	const result = await index.getAll(query);
-	return result;
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readonly");
+  const store = tx.objectStore(storeName);
+  const index = store.index(indexName);
+  const result = await index.getAll(query);
+  return result;
 }
 
 /**
@@ -146,22 +146,46 @@ export async function queryDataFromStore(
  * @returns {Promise<void>} - A promise that resolves when the data has been deleted from the store.
  */
 export async function deleteDataFromStoreByMapId(
-	storeName: string,
-	indexName: string,
-	key: string,
+  storeName: string,
+  indexName: string,
+  key: string,
 ) {
-	const db = await initDatabase();
-	const tx = db.transaction(storeName, "readwrite");
-	const store = tx.objectStore(storeName);
-	const index = store.index(indexName);
+  const db = await initDatabase();
+  const tx = db.transaction(storeName, "readwrite");
+  const store = tx.objectStore(storeName);
+  const index = store.index(indexName);
 
-	// Get all objects with the specified mapId
-	const objectsToDelete = await index.getAll(IDBKeyRange.only(key));
+  // Get all objects with the specified mapId
+  const objectsToDelete = await index.getAll(IDBKeyRange.only(key));
 
-	// Delete each object
-	for (const object of objectsToDelete) {
-		store.delete(object._id); // Assuming each object has an 'id' property
-	}
+  // Delete each object
+  for (const object of objectsToDelete) {
+    store.delete(object._id); // Assuming each object has an 'id' property
+  }
 
-	await tx.done;
+  await tx.done;
+}
+
+
+const MAP_SCOPED_STORES = [
+  "cities",
+  "countries",
+  "cultures",
+  "notes",
+  "religions",
+  "nameBases",
+  "npcs",
+] as const;
+
+
+export async function deleteMapScopedData(mapId: string) {
+  for (const storeName of MAP_SCOPED_STORES) {
+    await deleteDataFromStoreByMapId(storeName, "mapIdIndex", mapId);
+  }
+}
+
+
+export async function deleteEntireMapData(mapId: string) {
+  await deleteMapScopedData(mapId);
+  await deleteDataFromStore("maps", mapId);
 }

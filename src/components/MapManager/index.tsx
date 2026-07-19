@@ -1,14 +1,11 @@
-import { Button, Grid, Modal, Box } from "@mui/material";
+import { Button, Grid, Modal, Box, Stack } from "@mui/material";
 import { lazy, useState } from "react";
 import { useDB } from "../../db/DataContext";
-import {
-	deleteDataFromStore,
-	deleteDataFromStoreByMapId,
-} from "../../db/interactions";
+import { deleteEntireMapData } from "../../db/interactions";
 
 import "./index.css";
 import { ModalStyle } from "../../styles";
-import UploadMap from "../UploadMap/UploadMap";
+import UploadMap, { type MapImportMode } from "../UploadMap/UploadMap";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common";
 
@@ -18,10 +15,31 @@ const MapManager: React.FC = () => {
 	const { activeMapId, setActive } = useDB();
 	const { mapsList, reloadMapsList }: Context = useOutletContext();
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
+	const [uploadMode, setUploadMode] = useState<MapImportMode>({
+		kind: "create",
+	});
 
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+
+	const openCreateUpload = () => {
+		setUploadMode({ kind: "create" });
+		handleOpen();
+	};
+
+	const openUpdateUpload = () => {
+		if (selectedMaps.length !== 1) {
+			return;
+		}
+
+		setUploadMode({
+			kind: "update",
+			expectedMapId: selectedMaps[0],
+		});
+
+		handleOpen();
+	};
 
 	const handleMapSelect = (mapId: string) => {
 		if (selectedMaps.includes(mapId)) {
@@ -35,25 +53,11 @@ const MapManager: React.FC = () => {
 		event: React.MouseEvent<HTMLButtonElement>,
 	) => {
 		event.preventDefault();
-		const allPromises = selectedMaps.map(async (mapId) => {
-			// TODO: implement NPCs
 
-			await deleteDataFromStoreByMapId("cities", "mapIdIndex", mapId);
-			await deleteDataFromStoreByMapId("countries", "mapIdIndex", mapId);
-			await deleteDataFromStoreByMapId("cultures", "mapIdIndex", mapId);
-			await deleteDataFromStoreByMapId("notes", "mapIdIndex", mapId);
-			await deleteDataFromStoreByMapId("religions", "mapIdIndex", mapId);
-			await deleteDataFromStoreByMapId("nameBases", "mapIdIndex", mapId);
+		await Promise.all(selectedMaps.map((mapId) => deleteEntireMapData(mapId)));
 
-			await deleteDataFromStore("maps", mapId);
-		});
-
-		await Promise.all(allPromises);
-
-		// ensure the sidebar list reflects deletions immediately
 		await reloadMapsList();
 
-		// if the active map was deleted, clear it
 		if (selectedMaps.includes(activeMapId ?? "")) {
 			await setActive("");
 		}
@@ -78,29 +82,32 @@ const MapManager: React.FC = () => {
 				))}
 			</Grid>
 			<br />
-			{selectedMaps.length > 0 ? (
-				<Button
-					variant="contained"
-					color="error"
-					onClick={handleDeleteMaps}
-					disabled={selectedMaps.length === 0}
-				>
-					Delete Selected Maps
+			<Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+				{selectedMaps.length > 0 ? (
+					<>
+						<Button
+							variant="contained"
+							color="error"
+							onClick={handleDeleteMaps}
+							disabled={selectedMaps.length === 0}
+						>
+							Delete Selected Maps
+						</Button>
+
+						<Button
+							variant="contained"
+							color="warning"
+							onClick={openUpdateUpload}
+							disabled={selectedMaps.length !== 1}
+						>
+							Update Selected Map
+						</Button>
+					</>
+				) : null}
+				<Button variant="contained" onClick={openCreateUpload}>
+					Upload New Map
 				</Button>
-			) : (
-				""
-			)}
-			<Button
-				variant="contained"
-				onClick={() => {
-					handleOpen();
-					setTimeout(() => {
-						handleClose();
-					}, 10000);
-				}}
-			>
-				Upload New Map
-			</Button>
+			</Stack>
 			<Modal
 				open={open}
 				onClose={handleClose}
@@ -108,7 +115,15 @@ const MapManager: React.FC = () => {
 				aria-describedby="modal-modal-description"
 			>
 				<Box sx={ModalStyle} className="UploadMap-modal">
-					<UploadMap />
+					<UploadMap
+						mode={uploadMode}
+						showDemoButton={uploadMode.kind === "create"}
+						onComplete={async () => {
+							await reloadMapsList();
+							setSelectedMaps([]);
+							handleClose();
+						}}
+					/>
 				</Box>
 			</Modal>
 		</div>

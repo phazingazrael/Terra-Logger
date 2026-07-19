@@ -1,16 +1,16 @@
-// biome-ignore assist/source/organizeImports: no effect, visual only
-import { Alert, AlertTitle, Divider, Stack, Button } from "@mui/material";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Alert, AlertTitle, Button, Divider, Stack } from "@mui/material";
+import { useRef, useState } from "react";
+import { toast, type Id } from "react-toastify";
+import { parseLoadedData } from "./Parse";
 
 import mutateData from "./Mutate";
-import { parseLoadedData, parseLoadedResult } from "./Parse";
 import BookLoader from "../Util/bookLoader";
+import { runMapImportWorker } from "./workers/mapImportClient";
+import type { MapImportWorkerResult } from "./workers/mapImportTypes";
 
 import { useDB } from "../../db/DataContext";
 
-import { addDataToStore } from "../../db/interactions";
-import { getAppSettings } from "../../db/appSettings";
+import { addDataToStore, deleteEntireMapData } from "../../db/interactions";
 
 import { useOutletContext } from "react-router-dom";
 
@@ -21,16 +21,20 @@ import type { Context } from "../../definitions/Common";
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
 
-const ToastSuccess = () =>
-	toast.success(
-		"Map Loaded Successfully! \n Please wait for the map to be fully loaded.",
-	);
-const ToastInvalid = () =>
-	toast.error("Invalid map file. Please upload a valid map file.");
-const ToastAncient = (mapVersion: number) =>
-	toast.error(
-		`The map version you are trying to load (${mapVersion}) is too old. \n Please upload a newer map file.`,
-	);
+export type MapImportMode =
+	| { kind: "create" }
+	| { kind: "update"; expectedMapId: string };
+
+type UploadProgress = {
+	section: string;
+	item?: string;
+	completed: number;
+	total: number;
+	percent: number;
+	message: string;
+};
+
+type UploadProgressHandler = (progress: UploadProgress) => void;
 
 function withBase(pathLike: string) {
 	const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
@@ -40,144 +44,300 @@ function withBase(pathLike: string) {
 
 const DEMO_MAP_PATH = "demo/demo.map";
 
-function UploadMap() {
+type UploadMapProps = {
+	mode?: MapImportMode;
+	onComplete?: () => void | Promise<void>;
+	showDemoButton?: boolean;
+};
+
+function UploadMap({
+	mode = { kind: "create" },
+	onComplete,
+	showDemoButton = true,
+}: UploadMapProps) {
 	const { setActive } = useDB();
-	const [app, setApp] = useState<AppInfo | null>(null);
+	const [app] = useState<AppInfo | null>(null);
 	const [isLoading, setLoading] = useState(false);
+	const [, setUploadStatus] = useState("Idle");
+	const [, setUploadPercent] = useState(0);
 
 	const { reloadMapsList } = useOutletContext<Context>();
 
 	const OLDEST_SUPPORTED_VERSION = "1.105.15";
 	const afmgMin = "1.105.15";
-	const currentVersion = Number.parseFloat(
-		app?.application?.afmgVer ?? OLDEST_SUPPORTED_VERSION,
-	);
+	const currentVersion = app?.application?.afmgVer ?? OLDEST_SUPPORTED_VERSION;
 
-	// Load current app settings (for version info)
-	useEffect(() => {
-		(async () => {
-			const s = await getAppSettings();
-			setApp(s);
-		})();
-	}, []);
+	const uploadToastIdRef = useRef<Id | null>(null);
 
-	function isValidVersion(versionString: string) {
-		if (!versionString) return false;
-		const [major, minor, patch] = versionString.split(".");
-		return !Number.isNaN(major) && !Number.isNaN(minor) && !Number.isNaN(patch);
+	function clampToastProgress(percent: number): number {
+		return Math.max(0, Math.min(1, percent / 100));
 	}
 
-	function compareVersions(
-		version1: string,
-		version2: string,
-		options = { major: true, minor: true, patch: true },
-	) {
-		if (!isValidVersion(version1) || !isValidVersion(version2))
-			return { isEqual: false, isNewer: false, isOlder: false };
+	function startUploadToast(message = "Starting map upload..."): Id {
+		const existingId = uploadToastIdRef.current;
 
-		let [major1, minor1, patch1] = version1.split(".").map(Number);
-		let [major2, minor2, patch2] = version2.split(".").map(Number);
+		if (existingId !== null && toast.isActive(existingId)) {
+			toast.dismiss(existingId);
+		}
 
-		if (!options.major) major1 = major2 = 0;
-		if (!options.minor) minor1 = minor2 = 0;
-		if (!options.patch) patch1 = patch2 = 0;
+		const newId = toast.loading(message, {
+			autoClose: false,
+			closeOnClick: false,
+			closeButton: false,
+			draggable: false,
+			progress: 0,
+		});
 
-		const isEqual = major1 === major2 && minor1 === minor2 && patch1 === patch2;
-		const isNewer =
-			major1 > major2 ||
-			(major1 === major2 &&
-				(minor1 > minor2 || (minor1 === minor2 && patch1 > patch2)));
-		const isOlder =
-			major1 < major2 ||
-			(major1 === major2 &&
-				(minor1 < minor2 || (minor1 === minor2 && patch1 < patch2)));
-
-		return { isEqual, isNewer, isOlder };
+		uploadToastIdRef.current = newId;
+		return newId;
 	}
 
-	function processLoadedData(mapFile: string[], mapVersion: string) {
-		const isInvalid =
-			!mapFile || !mapVersion || mapFile?.length < 26 || !mapFile?.[5];
-		const isUpdated = compareVersions(
-			mapVersion,
-			currentVersion.toString(),
-		).isEqual;
-		const isAncient = compareVersions(
-			mapVersion,
-			OLDEST_SUPPORTED_VERSION.toString(),
-		).isOlder;
-		const isNewer = compareVersions(
-			mapVersion,
-			currentVersion.toString(),
-		).isNewer;
-		const isOutdated = compareVersions(
-			mapVersion,
-			currentVersion.toString(),
-		).isOlder;
+	function getOrStartUploadToast(message: string): Id {
+		const existingId = uploadToastIdRef.current;
 
-		return {
-			isUpdated,
-			isNewer,
-			isInvalid,
-			isAncient,
-			isOutdated,
-		};
+		if (existingId !== null && toast.isActive(existingId)) {
+			return existingId;
+		}
+
+		return startUploadToast(message);
 	}
 
-	function handleLoadedData(
-		isUpdated: boolean,
-		isNewer: boolean,
-		isInvalid: boolean,
-		isAncient: boolean,
-		isOutdated: boolean,
-		mapVersion: number,
-		mapFile: string[],
-		versionString: string,
-	) {
-		if (isNewer || isUpdated || isOutdated) {
-			const parsedMap = parseLoadedData(mapFile);
-			saveMapData(
-				parsedMap.parsedMap,
-				JSON.parse(versionString),
-				parsedMap.Pack,
+	function updateUploadToast(message: string, percent?: number) {
+		const toastId = getOrStartUploadToast(message);
+
+		toast.update(toastId, {
+			render: message,
+			type: "info",
+			isLoading: true,
+			autoClose: false,
+			closeOnClick: false,
+			closeButton: false,
+			draggable: false,
+			progress: percent == null ? undefined : clampToastProgress(percent),
+		});
+	}
+
+	function finishUploadToast(message = "Map upload complete.") {
+		const existingId = uploadToastIdRef.current;
+
+		if (existingId === null || !toast.isActive(existingId)) {
+			uploadToastIdRef.current = toast.success(message, {
+				autoClose: 60000,
+			});
+			return;
+		}
+
+		toast.update(existingId, {
+			render: message,
+			type: "success",
+			isLoading: false,
+			autoClose: 60000,
+			closeOnClick: true,
+			closeButton: true,
+			draggable: true,
+			progress: undefined,
+		});
+
+		uploadToastIdRef.current = null;
+	}
+
+	function failUploadToast(message: string) {
+		const existingId = uploadToastIdRef.current;
+
+		if (existingId === null || !toast.isActive(existingId)) {
+			toast.error(message);
+			return;
+		}
+
+		toast.update(existingId, {
+			render: message,
+			type: "error",
+			isLoading: false,
+			autoClose: 15000,
+			closeOnClick: true,
+			closeButton: true,
+			draggable: true,
+			progress: undefined,
+		});
+
+		uploadToastIdRef.current = null;
+	}
+
+	const reportUploadProgress: UploadProgressHandler = (progress) => {
+		updateUploadToast(progress.message, progress.percent);
+	};
+
+	type ImportMapFileOptions = {
+		mode?: MapImportMode;
+		initialMessage?: string;
+	};
+
+	async function importMapFile(file: File, options: ImportMapFileOptions = {}) {
+		const importMode = options.mode ?? mode;
+
+		startUploadToast(options.initialMessage ?? `Reading ${file.name}...`);
+
+		const result = await runMapImportWorker(file, {
+			currentVersion,
+			oldestSupportedVersion: OLDEST_SUPPORTED_VERSION,
+			onProgress: (progress) => {
+				updateUploadToast(
+					progress.message,
+					progress.percent == null
+						? undefined
+						: Math.min(20, Math.round(progress.percent * 0.2)),
+				);
+			},
+		});
+
+		if (
+			importMode.kind === "update" &&
+			result.identity.mapId !== importMode.expectedMapId
+		) {
+			failUploadToast(
+				`Wrong map file selected. Expected ${importMode.expectedMapId}, got ${result.identity.mapId}.`,
 			);
-			// need to redirect to the main page '/'
-			ToastSuccess();
+			return;
 		}
-		if (isInvalid) {
-			ToastInvalid();
-			setLoading(false);
-		}
-		if (isAncient) {
-			ToastAncient(mapVersion);
-			setLoading(false);
-		}
-		return null;
+
+		await handleLoadedWorkerResult(result, importMode);
 	}
+
+	function getUploadItemName(item: unknown, fallback: string): string {
+		if (!item || typeof item !== "object") {
+			return fallback;
+		}
+
+		const record = item as {
+			name?: unknown;
+			title?: unknown;
+			id?: unknown;
+			i?: unknown;
+		};
+
+		return String(
+			record.name ?? record.title ?? record.id ?? record.i ?? fallback,
+		);
+	}
+
+	async function handleLoadedWorkerResult(
+		result: MapImportWorkerResult,
+		importMode: MapImportMode = mode,
+	) {
+		const { mapFile, mapVersion, versionString, validation } = result;
+		const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } = validation;
+
+		if (isInvalid) {
+			failUploadToast("Invalid map file. Please upload a valid map file.");
+			return;
+		}
+
+		if (isAncient) {
+			failUploadToast(
+				`The map version you are trying to load (${mapVersion}) is too old. Please upload a newer map file.`,
+			);
+			return;
+		}
+
+		if (!(isNewer || isUpdated || isOutdated)) {
+			failUploadToast("Map version could not be validated.");
+			return;
+		}
+
+		updateUploadToast("Parsing map data...", 25);
+
+		const parsedMap = parseLoadedData(mapFile);
+
+		await saveMapData(
+			parsedMap.parsedMap,
+			JSON.parse(versionString),
+			parsedMap.Pack,
+			reportUploadProgress,
+			importMode,
+		);
+
+		finishUploadToast(
+			importMode.kind === "update"
+				? "Map update complete. The map is ready."
+				: "Map upload complete. The map is ready.",
+		);
+
+		await onComplete?.();
+	}
+
+	function trimImportedStrings<T>(value: T): T {
+		if (typeof value === "string") {
+			return value.trim() as T;
+		}
+
+		if (Array.isArray(value)) {
+			return value.map((item) => trimImportedStrings(item)) as T;
+		}
+
+		if (value && typeof value === "object") {
+			const entries = Object.entries(value).map(([key, nestedValue]) => [
+				key,
+				trimImportedStrings(nestedValue),
+			]);
+
+			return Object.fromEntries(entries) as T;
+		}
+
+		return value;
+	}
+
 	async function saveMapData(
 		data: MapInfo,
 		VersionString: string,
 		Pack: object,
+		onProgress?: UploadProgressHandler,
+		mode: MapImportMode = { kind: "create" },
 	): Promise<void> {
-		const mapData = await mutateData(
+		setUploadStatus("Converting to Terra-Logger data...");
+		setUploadPercent(30);
+
+		const mutatedMapData = await mutateData(
 			data as unknown as MapInfo,
 			Pack as unknown as Pack,
+			onProgress,
 		);
+
+		const mapData = trimImportedStrings(mutatedMapData);
+
 		const {
-			cities,
-			countries,
-			cultures,
+			cities = [],
+			countries = [],
+			cultures = [],
 			info,
-			nameBases,
-			notes,
-			npcs,
-			religions,
+			nameBases = [],
+			notes = [],
+			npcs = [],
+			religions = [],
 			settings,
 			SVG,
 			svgMod,
 		} = mapData;
 
 		const mapId = `${mapData.info.name}-${mapData.info.ID}`;
+
+		if (mode.kind === "update" && mapId !== mode.expectedMapId) {
+			throw new Error(
+				`Selected map does not match uploaded .map file. Expected ${mode.expectedMapId}, got ${mapId}.`,
+			);
+		}
+
+		if (mode.kind === "update") {
+			onProgress?.({
+				section: "Updating",
+				completed: 0,
+				total: 1,
+				percent: 60,
+				message: "Clearing existing map data...",
+			});
+
+			await deleteEntireMapData(mapId);
+		}
+
 		const MapInf: MapInf = {
 			id: mapId,
 			mapId: mapId,
@@ -187,8 +347,8 @@ function UploadMap() {
 			svgMod: svgMod,
 		};
 
-		// optional: capture current <svg id="map"> into MapInf.svgMod (unchanged)
 		const mapItem = document.getElementById("map");
+
 		if (mapItem) {
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(mapItem.outerHTML, "image/svg+xml");
@@ -196,102 +356,196 @@ function UploadMap() {
 			MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
 		}
 
-		// ⬇️ batch all writes and await them BEFORE setting active / navigating
-		const ops: Promise<unknown>[] = [];
-		ops.push(addDataToStore("maps", MapInf));
+		const totalRecords =
+			1 +
+			cities.length +
+			countries.length +
+			cultures.length +
+			nameBases.length +
+			notes.length +
+			npcs.length +
+			religions.length;
+
+		let completed = 0;
+
+		const makePercent = () => {
+			if (totalRecords <= 0) {
+				return 95;
+			}
+
+			return Math.min(95, 60 + Math.round((completed / totalRecords) * 35));
+		};
+
+		const emitProgress = (section: string, item?: string) => {
+			const message = item
+				? `Uploading ${section} - ${item}`
+				: `Uploading ${section}`;
+
+			onProgress?.({
+				section,
+				item,
+				completed,
+				total: totalRecords,
+				percent: makePercent(),
+				message,
+			});
+		};
+
+		const writeRecord = async (
+			storeName: string,
+			section: string,
+			itemName: string | undefined,
+			value: unknown,
+		) => {
+			emitProgress(section, itemName);
+			await addDataToStore(storeName, value);
+			completed += 1;
+		};
+
+		await writeRecord("maps", "Map Info", info.name, MapInf);
 
 		for (const city of cities) {
-			ops.push(addDataToStore("cities", { mapId, ...city }));
+			await writeRecord("cities", "Cities", getUploadItemName(city, "City"), {
+				mapId,
+				...city,
+			});
 		}
+
 		for (const country of countries) {
-			ops.push(addDataToStore("countries", { mapId, ...country }));
+			await writeRecord(
+				"countries",
+				"Countries",
+				getUploadItemName(country, "Country"),
+				{
+					mapId,
+					...country,
+				},
+			);
 		}
+
 		for (const culture of cultures) {
-			ops.push(addDataToStore("cultures", { mapId, ...culture }));
+			await writeRecord(
+				"cultures",
+				"Cultures",
+				getUploadItemName(culture, "Culture"),
+				{
+					mapId,
+					...culture,
+				},
+			);
 		}
+
 		for (const nameBase of nameBases) {
-			ops.push(addDataToStore("nameBases", { mapId, ...nameBase }));
+			await writeRecord(
+				"nameBases",
+				"Name Bases",
+				getUploadItemName(nameBase, "Name Base"),
+				{
+					mapId,
+					...nameBase,
+				},
+			);
 		}
+
 		for (const note of notes) {
-			ops.push(addDataToStore("notes", { mapId, ...note }));
+			await writeRecord("notes", "Notes", getUploadItemName(note, "Note"), {
+				mapId,
+				...note,
+			});
 		}
+
 		for (const npc of npcs) {
-			ops.push(addDataToStore("npcs", { mapId, ...npc }));
+			await writeRecord("npcs", "NPCs", getUploadItemName(npc, "NPC"), {
+				mapId,
+				...npc,
+			});
 		}
+
 		for (const religion of religions) {
-			ops.push(addDataToStore("religions", { mapId, ...religion }));
+			await writeRecord(
+				"religions",
+				"Religions",
+				getUploadItemName(religion, "Religion"),
+				{
+					mapId,
+					...religion,
+				},
+			);
 		}
 
-		// Wait for everything to be committed
-		await Promise.all(ops);
+		onProgress?.({
+			section: "Finalizing",
+			completed,
+			total: totalRecords,
+			percent: 96,
+			message: "Refreshing maps list...",
+		});
 
-		// Refresh sidebar maps list immediately (replaces old polling)
 		await reloadMapsList();
 
-		// Now mark active (so routes read a fully-populated DB)
+		onProgress?.({
+			section: "Finalizing",
+			completed,
+			total: totalRecords,
+			percent: 98,
+			message: "Setting active map...",
+		});
+
 		await setActive(mapId);
 
-		setLoading(false);
+		onProgress?.({
+			section: "Complete",
+			completed,
+			total: totalRecords,
+			percent: 100,
+			message: "Upload complete.",
+		});
 	}
 
-	const readMAP = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const readMAP = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+
+		if (!file) {
+			return;
+		}
+
 		setLoading(true);
-		if (e.target.files) {
-			const file = e.target.files[0];
-			const fileReader = new FileReader();
 
-			fileReader.onloadend = function onLoadEnd(event) {
-				if (event.target) {
-					const { result } = event.target;
-					if (result instanceof ArrayBuffer) {
-						const [mapFile, mapVersion, versionString] =
-							parseLoadedResult(result);
-						const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
-							processLoadedData(mapFile, mapVersion.toString());
-						handleLoadedData(
-							isUpdated,
-							isNewer,
-							isInvalid,
-							isAncient,
-							isOutdated,
-							mapVersion,
-							mapFile,
-							versionString,
-						);
-					}
-				}
-			};
-
-			fileReader.readAsArrayBuffer(file);
+		try {
+			await importMapFile(file);
+		} catch (err: any) {
+			console.error(err);
+			failUploadToast(`Failed to load map: ${err?.message ?? String(err)}`);
+		} finally {
+			setLoading(false);
+			e.target.value = "";
 		}
 	};
 
 	const loadDemoMap = async () => {
+		setLoading(true);
+		startUploadToast("Fetching demo map...");
+
 		try {
-			setLoading(true);
-			// fetch the demo .map from public/
 			const res = await fetch(withBase(DEMO_MAP_PATH), { cache: "no-cache" });
-			if (!res.ok) throw new Error(`HTTP ${res.status} for ${DEMO_MAP_PATH}`);
+
+			if (!res.ok) {
+				throw new Error(`HTTP ${res.status} for ${DEMO_MAP_PATH}`);
+			}
+
 			const ab = await res.arrayBuffer();
 
-			// reuse your existing parsing + handling flow
-			const [mapFile, mapVersion, versionString] = parseLoadedResult(ab);
-			const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } =
-				processLoadedData(mapFile, mapVersion.toString());
+			const demoFile = new File([ab], "demo.map", {
+				type: "application/octet-stream",
+			});
 
-			handleLoadedData(
-				isUpdated,
-				isNewer,
-				isInvalid,
-				isAncient,
-				isOutdated,
-				mapVersion,
-				mapFile,
-				versionString,
-			);
+			await importMapFile(demoFile);
 		} catch (err: any) {
 			console.error(err);
-			toast.error(`Failed to load demo map: ${err?.message ?? String(err)}`);
+			failUploadToast(
+				`Failed to load demo map: ${err?.message ?? String(err)}`,
+			);
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -325,16 +579,18 @@ function UploadMap() {
 											onChange={readMAP}
 										/>
 
-										<div style={{ marginTop: 8 }}>
-											<Button
-												variant="outlined"
-												onClick={loadDemoMap}
-												disabled={isLoading}
-												title={`Loads ${DEMO_MAP_PATH} from public/`}
-											>
-												Load Demo Map
-											</Button>
-										</div>
+										{showDemoButton ? (
+											<div style={{ marginTop: 8 }}>
+												<Button
+													variant="outlined"
+													onClick={loadDemoMap}
+													disabled={isLoading}
+													title={`Loads ${DEMO_MAP_PATH} from public/`}
+												>
+													Load Demo Map
+												</Button>
+											</div>
+										) : null}
 									</Alert>
 									<Alert severity="info">
 										<AlertTitle>Notice</AlertTitle>
