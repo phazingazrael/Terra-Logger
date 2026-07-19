@@ -20,7 +20,7 @@ import LegacyTemplates from "./templates.json";
 import { getMarkdownDocumentTemplates } from "./builder/templateRegistry";
 
 import { BOTI_BASE_ZIP } from "./Constants";
-import { makeZipName } from "./BotiUtils";
+import { isBotiTemplate, makeZipName } from "./BotiUtils";
 import { downloadBlob } from "./zipUtils";
 import { runExportArchiveWorker } from "./workers/exportArchiveClient";
 import {
@@ -28,11 +28,7 @@ import {
 	fillMissingTemplates,
 } from "./templateUtils";
 
-import type {
-	DataSets,
-	PartialTemplates,
-	ZipEntry,
-} from "../../definitions/Export";
+import type { DataSets, PartialTemplates } from "../../definitions/Export";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
 function LinearProgressWithLabel(props: { value: number }) {
@@ -66,7 +62,7 @@ export function MarkdownExportPanel(props: {
 	zipName?: string;
 	className?: string;
 }) {
-	const { data, templates, zipName = "markdown.zip", className } = props;
+	const { data, templates, zipName = "", className } = props;
 
 	// State
 	const [showExportOptions, setShowExportOptions] = useState(false);
@@ -85,6 +81,7 @@ export function MarkdownExportPanel(props: {
 	const lastPctRef = useRef(0);
 	const lastFileRef = useRef<string | undefined>(undefined);
 	const termRef = useRef<HTMLDivElement | null>(null);
+	const lastZipNameRef = useRef<string>("export.zip");
 
 	const markdownTemplates = getMarkdownDocumentTemplates();
 
@@ -105,8 +102,10 @@ export function MarkdownExportPanel(props: {
 		legacyTemplateConfigs[0] ??
 		null;
 
-	const isBOTI = selectedMarkdownTemplate?.id === "boti";
-	const finalZipName = makeZipName(zipName, tplName, data.MapInfo.info.name);
+	const isBOTI =
+		isBotiTemplate(selectedMarkdownTemplate?.id) ||
+		isBotiTemplate(selectedMarkdownTemplate?.label) ||
+		isBotiTemplate(tplName);
 
 	type LegacyTemplateConfig = {
 		Name: string;
@@ -169,7 +168,6 @@ export function MarkdownExportPanel(props: {
 				"INFO",
 				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}` : ""}`,
 			);
-			log("INFO", `• ZipName="${finalZipName}"`);
 
 			setStatus("Preparing templates…");
 			const loadedFiles = tplCfg?.Files
@@ -191,7 +189,7 @@ export function MarkdownExportPanel(props: {
 				},
 				selectedExports: defaultexports,
 				isBOTI,
-				finalZipName,
+				finalZipName: "pending.zip",
 				botiBaseZipPath: BOTI_BASE_ZIP,
 
 				onProgress: ({ message, percent, currentFile }) => {
@@ -208,9 +206,23 @@ export function MarkdownExportPanel(props: {
 				},
 			});
 
+			const finalZipName = makeZipName(
+				isBOTI ? "" : zipName,
+				isBOTI ? "boti" : tplName,
+				data.MapInfo.info.name,
+				new Date(),
+			);
+
+			lastZipNameRef.current = finalZipName;
+
 			log("INFO", `✔ rendered ${result.fileCount} files`);
 
-			downloadBlob(result.blob, result.finalZipName);
+			log(
+				"INFO",
+				`• Filename debug: id="${selectedMarkdownTemplate?.id}", label="${selectedMarkdownTemplate?.label}", tplName="${tplName}", isBOTI=${String(isBOTI)}, propZipName="${zipName}", finalZipName="${finalZipName}"`,
+			);
+
+			downloadBlob(result.blob, finalZipName);
 
 			log(
 				"INFO",
@@ -237,7 +249,7 @@ export function MarkdownExportPanel(props: {
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = `${finalZipName.replace(".zip", "")} export log.txt`;
+		a.download = `${lastZipNameRef.current.replace(/\.zip$/i, "")} export log.txt`;
 		document.body.appendChild(a);
 		a.click();
 		a.remove();
@@ -387,9 +399,6 @@ export function MarkdownExportPanel(props: {
 									<ul>
 										<li>Look under z_Templates for more info</li>
 									</ul>
-								</li>
-								<li>
-									Download as <strong>{finalZipName}</strong>.
 								</li>
 							</ul>
 						</p>
