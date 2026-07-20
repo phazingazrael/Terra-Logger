@@ -2,14 +2,9 @@ import type { TLCity } from "../../../definitions/TerraLogger";
 
 export const createEmptyCity = (): TLCity => ({
   _id: "",
+  aliases: [],
   capital: false,
   coa: {
-    t1: "",
-    division: {
-      division: "",
-      t: "",
-      line: "",
-    },
     charges: [
       {
         charge: "",
@@ -18,7 +13,13 @@ export const createEmptyCity = (): TLCity => ({
         size: 0,
       },
     ],
+    division: {
+      division: "",
+      t: "",
+      line: "",
+    },
     shield: "",
+    t1: "",
   },
   coaSVG: "",
   content: {
@@ -26,17 +27,17 @@ export const createEmptyCity = (): TLCity => ({
     kind: "AtlasContent",
     version: 1,
     id: "",
-    source: {
-      type: "city",
-      entityId: "",
+    layout: {
+      preset: "content-grid",
     },
     meta: {
       title: "",
     },
-    layout: {
-      preset: "content-grid",
-    },
     sections: [],
+    source: {
+      entityId: "",
+      type: "city",
+    },
   },
   country: {
     _id: "",
@@ -47,18 +48,30 @@ export const createEmptyCity = (): TLCity => ({
     nameFull: "",
   },
   culture: {
-    id: "",
     _id: "",
+    id: "",
     name: "",
+  },
+  defenses: "",
+  description: "",
+  economy: {
+    description: "",
+    imports: [],
+    exports: [],
   },
   features: [],
   id: 0,
+  leaders: [],
   mapLink: "",
   mapSeed: "",
   name: "",
   population: "",
+  pronounced: "",
+  religions: [],
+  rulers: [],
   size: "",
   tags: [],
+  terrain: "",
+  theme: "",
   type: "",
-  description: "",
 });

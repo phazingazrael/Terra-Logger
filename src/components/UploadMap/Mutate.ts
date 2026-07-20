@@ -10,6 +10,8 @@ import {
   mutateNotes,
 } from "../Util/mutations";
 
+import { ensureAtlasContentForEntity } from "../atlas/legacy/enrichAtlasContent";
+
 import type { TLMapInfo } from "../../definitions/TerraLogger";
 
 export type MutateProgress = {
@@ -232,6 +234,26 @@ const mutateData = async (
     height: data.info.height,
     width: data.info.width,
   });
+
+  tempMap.cities = tempMap.cities.map(
+    (city) => ensureAtlasContentForEntity("city", city).entity,
+  );
+
+  tempMap.countries = tempMap.countries.map(
+    (country) => ensureAtlasContentForEntity("country", country).entity,
+  );
+
+  tempMap.cultures = tempMap.cultures.map(
+    (culture) => ensureAtlasContentForEntity("culture", culture).entity,
+  );
+
+  tempMap.religions = tempMap.religions.map(
+    (religion) => ensureAtlasContentForEntity("religion", religion).entity,
+  );
+
+  tempMap.notes = tempMap.notes.map(
+    (note) => ensureAtlasContentForEntity("note", note).entity,
+  );
 
   return tempMap;
 };

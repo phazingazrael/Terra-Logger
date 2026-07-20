@@ -1,8 +1,11 @@
 // src/db/database.tsx
 import { openDB, type IDBPDatabase } from "idb";
-import { migrateAtlasContentToV3 } from "./migrations/atlasContent";
+import {
+  migrateAtlasContentToV3,
+  migrateAtlasContentToV4,
+} from "./migrations/atlasContent";
 
-const TERRA_LOGGER_DB_VERSION = 3;
+const TERRA_LOGGER_DB_VERSION = 4;
 
 export const stores = [
   "cities",
@@ -62,6 +65,10 @@ export const initDatabase = async () => {
 
         if (oldVersion < 3) {
           await migrateAtlasContentToV3(db, tx);
+        }
+
+        if (oldVersion < 4) {
+          await migrateAtlasContentToV4(db, tx);
         }
       },
     });

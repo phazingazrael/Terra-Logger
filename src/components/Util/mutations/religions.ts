@@ -16,7 +16,19 @@ export const mutateReligions = async (
     const Culture = tempMap.cultures.find((c) => c.id === religion.culture);
 
     newReligion._id = uuidv7();
+    newReligion.aliases = [newReligion.name];
     newReligion.code = religion.code;
+    newReligion.deities = newReligion.deity ? [newReligion.deity] : [];
+    newReligion.deity = religion.deity;
+    newReligion.domains = [];
+    newReligion.form = religion.form;
+    newReligion.headquarters = newReligion.center?.name ?? "";
+    newReligion.i = religion.i;
+    newReligion.name = religion.name;
+    newReligion.symbols = [];
+    newReligion.theme = newReligion.type;
+    newReligion.type = religion.type;
+    newReligion.tags = [];
 
     if (Culture) {
       newReligion.culture = {
@@ -25,15 +37,7 @@ export const mutateReligions = async (
       };
     }
 
-    newReligion.deity = religion.deity;
-    newReligion.form = religion.form;
-    newReligion.i = religion.i;
-    newReligion.name = religion.name;
-
     const Origins = [];
-
-    newReligion.tags = [];
-    newReligion.type = religion.type;
 
     // use Pack.cells data to obtain population and other data
     const religionCells: number[] = [];

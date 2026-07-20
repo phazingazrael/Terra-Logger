@@ -75,4 +75,10 @@ export const createEmptyCountry = (): TLCountry => ({
   tags: [],
   type: "",
   warCampaigns: [],
+  aliases: [],
+  pronounced: "",
+  theme: "",
+  planetPlane: "",
+  religions: [],
+  terrain: "",
 });

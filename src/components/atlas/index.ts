@@ -13,3 +13,4 @@ export * from "./editor/entityFields/entityFieldCatalog";
 export * from "./editor/entityFields/referenceSerialization";
 export * from "./editor/entityFields/EntityFieldEditor";
 export * from "./editor/entityFields/saveRelatedUpdates";
+export * from "./legacy/enrichAtlasContent";

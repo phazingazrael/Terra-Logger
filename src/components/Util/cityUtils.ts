@@ -95,18 +95,18 @@ const settlementColors = {
 };
 
 // Combined icons
-const settlementIcons = {
-  ...featureIcons,
-  ...sizeIcons,
-};
+// const settlementIcons = {
+//   ...featureIcons,
+//   ...sizeIcons,
+// };
 
 export function getSettlementColor(type: string | undefined) {
   return settlementColors[type as keyof typeof settlementColors] || "#9e9e9e";
 }
 
-export function getSettlementIcon(type: string | undefined) {
-  return settlementIcons[type as keyof typeof settlementIcons] || SmallTownIcon;
-}
+// export function getSettlementIcon(type: string | undefined) {
+//   return settlementIcons[type as keyof typeof settlementIcons] || SmallTownIcon;
+// }
 
 export function getFeatureIcon(feature: string | undefined) {
   return featureIcons[feature as keyof typeof featureIcons] || CitadelIcon;

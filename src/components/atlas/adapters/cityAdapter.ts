@@ -44,7 +44,7 @@ function createCityContent(entity: TLCity): AtlasContent {
         ]),
         richTextBlock("Add geography and environment details here."),
       ]),
-      sectionPreset("Government & Power", "section government-power", [
+      sectionPreset("Government & Power Structure", "section government-power", [
         detailsListBlock([
           { label: "Government Type", value: "[Monarchy, Theocracy, AI-Controlled, Mage Council, etc.]" },
           { label: "Current Ruler(s)", value: "[King, High Priestess, AI Overlord, Elder Council, etc.]" },
@@ -120,7 +120,7 @@ function createCityContent(entity: TLCity): AtlasContent {
         ]),
         richTextBlock("Add notable locations and landmarks details here."),
       ]),
-      sectionPreset("Sister Cities & other Connections", "section sister-cities", [
+      sectionPreset("Sister Cities & Relations", "section sister-cities", [
         detailsListBlock([
           { label: "Sister Cities & Diplomatic Ties", value: "[List of allied cities, rival cities, or otherworldly diplomatic ties.]" },
           { label: "Rival Cities & Enemies", value: "[Who are the city’s main rivals or enemies?]" },
@@ -141,6 +141,47 @@ function createCityContent(entity: TLCity): AtlasContent {
           { label: "Guilds & Organizations for Adventurers", value: "[Who offers work and resources?]" },
         ]),
         richTextBlock("Add adventurers and mercenary work details here."),
+      ]),
+      sectionPreset("Transportation & Infrastructure", "section transportation-infrastructure", [
+        detailsListBlock([
+          { label: "Public Transit", value: "[Horse-drawn carriages, teleportation circles, maglev trains, hovercraft.]" },
+          { label: "Portals & Dimensional Gates", value: "[Natural rifts, constructed portals, wormholes.]" },
+          { label: "Skyports & Spaceports", value: "[Landing zones for airships, starships, or mecha units.]" },
+          { label: "Roads & Paths", value: "[Ancient cobblestone roads, bioluminescent highways, self-assembling roads.]" },
+        ]),
+        richTextBlock("Add transportation and infrastructure details here."),
+      ]),
+
+      sectionPreset("Sports & Competitive Games", "section sports-games", [
+        detailsListBlock([
+          { label: "Popular Sports", value: "[Dragon racing, zero-gravity combat sports, golem battles.]" },
+          { label: "Underground Fighting Rings", value: "[Gladiatorial combat, beast fights, cyber duels.]" },
+          { label: "Famous Athletes & Champions", value: "[Legendary warriors, gladiators, virtual-realm champions.]" },
+        ]),
+        richTextBlock("Add sports and competitive games details here."),
+      ]),
+
+      sectionPreset("Magic & Technology", "section magic-technology", [
+        detailsListBlock([
+          { label: "Level of Magic/Tech Advancement", value: "[Medieval, arcane-punk, cyberpunk, fully automated AI rule.]" },
+          { label: "Common Spells & Technologies", value: "[Necromancy, sentient AI, cyber-implants, flying ships.]" },
+          { label: "Power Sources", value: "[Solar energy, eldritch energy, soul crystals, antimatter cores.]" },
+          { label: "Lost or Ancient Technology", value: "[Remnants of an old civilization, dark forbidden knowledge.]" },
+          { label: "Current Scientific & Magical Research", value: "[Teleportation experiments, interdimensional research.]" },
+        ]),
+        richTextBlock("Add magic and technology details here."),
+      ]),
+
+      sectionPreset("Plot Hooks", "section plot-hooks", [
+        richTextBlock("Add plot hooks here."),
+      ]),
+
+      sectionPreset("Hidden Details", "section hidden-details", [
+        richTextBlock("Add hidden details here."),
+      ]),
+
+      sectionPreset("General Notes", "section general-notes", [
+        richTextBlock("Add general notes here."),
       ]),
       entitySection("Tags", "section tags", [entityChipListBlock("Tags", "tags")]),
     ],

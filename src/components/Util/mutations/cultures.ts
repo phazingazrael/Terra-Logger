@@ -24,25 +24,40 @@ export const mutateCultures = async (
 
     // add culture data to new culture object
     newCulture._id = uuidv7();
+    newCulture.aliases = [newCulture.name];
+    newCulture.architecture = "";
+    newCulture.arts = "";
     newCulture.base = culture.base;
     newCulture.code = culture.code;
     newCulture.color = culture.color ?? "";
+    newCulture.cuisine = "";
+    newCulture.dress = "";
+    newCulture.ethnicGroups = [];
     newCulture.expansionism = culture.expansionism;
+    newCulture.government = "";
     newCulture.id = culture.i;
+    newCulture.language = "";
     newCulture.name = culture.name;
+    newCulture.notableFigures = [];
     newCulture.origins = culture.origins;
+    newCulture.pronounced = newCulture.name;
+    newCulture.region = "";
+    newCulture.religions = [];
     newCulture.ruralPop = ruralValue;
     newCulture.shield = culture.shield;
+    newCulture.technologyLevel = "";
+    newCulture.theme = newCulture.type;
+    newCulture.traditions = [];
     newCulture.type = culture.type;
+    newCulture.urbanPop = urbanValue;
+    newCulture.values = [];
     newCulture.tags.push({
       _id: "0192be16-c07d-7897-8ee1-0e117f5d2b9a",
       Default: true,
-      Description:
-        "The customs, arts, social institutions, and achievements of the world's inhabitants.",
+      Description: "The customs, arts, social institutions, and achievements of the world's inhabitants.",
       Name: "Culture",
       Type: "WorldOverview",
     });
-    newCulture.urbanPop = urbanValue;
 
     newCulture.content = cultureAdapter.createDefaultContent(newCulture);
 

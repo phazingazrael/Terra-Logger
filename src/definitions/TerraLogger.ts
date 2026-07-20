@@ -45,21 +45,37 @@ export type TLCoA = {
 
 export type TLCulture = {
   _id: string;
+  aliases?: string[];
+  architecture?: string;
+  arts?: string;
   base: number;
   code: string;
   color: string;
   content?: AtlasContent;
+  cuisine?: string;
   description: string;
+  dress?: string;
+  ethnicGroups?: string[];
   expansionism: number;
+  government?: string;
   id: number;
+  language?: string;
   mapId?: string;
   name: string;
+  notableFigures?: string[];
   origins: number[];
+  pronounced?: string;
+  region?: string;
+  religions?: string[];
   ruralPop: string;
   shield: string;
   tags: Tag[];
+  technologyLevel?: string;
+  theme?: string;
+  traditions?: string[];
   type: string;
   urbanPop: string;
+  values?: string[];
 };
 
 export type TLDiplomacy = {
@@ -118,6 +134,7 @@ export type TLNote = {
 
 export type TLReligion = {
   _id: string;
+  aliases?: string[];
   center: {
     i: number;
     _id: string;
@@ -129,9 +146,12 @@ export type TLReligion = {
     _id: string;
     id: string;
   };
+  deities?: string[];
   deity: string;
   description: string;
+  domains?: string[];
   form: string;
+  headquarters?: string;
   i: number;
   members: {
     rural: number;
@@ -139,24 +159,28 @@ export type TLReligion = {
   };
   name: string;
   origins: string[];
+  pronounced?: string;
+  symbols?: string[];
   tags: Tag[];
+  theme?: string;
   type: string;
 };
 
 export type TLNameBase = {
-  name: string;
-  min: string;
-  max: string;
+  _id: string;
+  credit: string;
   d: string;
   m: string;
   mapId?: string;
+  max: string;
+  min: string;
+  name: string;
   names: string[];
-  credit: string;
-  _id: string;
 };
 
 export type TLCity = {
   _id: string;
+  aliases?: string[];
   capital: boolean;
   coa: {
     t1: string;
@@ -168,8 +192,7 @@ export type TLCity = {
     charges: {
       charge: string;
       t: string;
-      p: string;
-      size: number;
+      p: string; size: number;
     }[];
     shield: string;
   };
@@ -184,85 +207,63 @@ export type TLCity = {
     nameFull: string;
   };
   culture: {
-    id: string;
     _id: string;
+    id: string;
     name: string;
+  };
+  defenses?: string;
+  description: string;
+  economy?: {
+    description: string;
+    exports?: string[];
+    imports?: string[];
   };
   features: string[];
   id: number;
+  leaders?: string[];
+  mapId?: string;
   mapLink: string;
   mapSeed: string;
-  mapId?: string;
   name: string;
   population: string;
+  pronounced?: string;
+  religions?: string[];
+  rulers?: string[];
   size: string;
   tags: Tag[];
+  terrain?: string;
+  theme?: string;
   type: string;
-  description: string;
 };
 
 export type TLCountry = {
   _id: string;
+  aliases?: string[];
   cities: TLCity[];
-  coa?: {
-    t1?: string;
-    division?: {
-      division: string;
-      t: string;
-      line: string;
-    };
-    charges?: {
-      charge: string;
-      t: string;
-      p: string;
-      size: number;
-    }[];
-    shield?: string;
-  };
+  coa?: { t1?: string; division?: { division: string; t: string; line: string; }; charges?: { charge: string; t: string; p: string; size: number; }[]; shield?: string; };
   coaSVG: string;
   color: string;
   content?: AtlasContent;
-  culture: {
-    _id: string;
-    id: string;
-  };
+  culture: { _id: string; id: string; };
   description: string;
-  economy: {
-    description: string;
-    exports: string[];
-    imports: string[];
-  };
-  history: {
-    details: string;
-    events: string[];
-  };
+  economy: { description: string; exports: string[]; imports: string[]; };
+  history: { details: string; events: string[]; };
   id: number;
-  location: string;
   languages: string[];
+  location: string;
   mapId?: string;
   name: string;
   nameFull: string;
-  political: {
-    diplomacy: TLDiplomacy[];
-    form: string;
-    formName: string;
-    leaders: string[];
-    military: TLMilitary[];
-    neighbors: TLNeighbor[];
-    ruler: string[];
-  };
-  population: {
-    total: string;
-    rural: string;
-    urban: string;
-  };
+  planetPlane?: string;
+  political: { diplomacy: TLDiplomacy[]; form: string; formName: string; leaders: string[]; military: TLMilitary[]; neighbors: TLNeighbor[]; ruler: string[]; };
+  population: { total: string; rural: string; urban: string; };
+  pronounced?: string;
+  religions?: string[];
   tags: Tag[];
+  terrain?: string;
+  theme?: string;
   type: string;
-  warCampaigns: {
-    title: string;
-    start: number;
-    end: number;
-  }[];
+  warCampaigns: { title: string; start: number; end: number; }[];
 };
 
 export interface TLMapInfo {

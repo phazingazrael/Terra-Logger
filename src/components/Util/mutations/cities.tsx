@@ -25,16 +25,27 @@ export const mutateCities = async (
 
 			// define "newCity" properties
 			newCity._id = uuidv7(); // unique id,
+			newCity.aliases = [newCity.name];
 			newCity.capital = !!city.capital; // if city is capital
 			newCity.coa = city.coa; // set CoA data
 			newCity.country.id = city.state; // set country id,
+			newCity.defenses = "";
+			newCity.description = ""; // no description
+			newCity.economy = { description: "", imports: [], exports: [] };
 			newCity.id = city.i; // set city id
+			newCity.leaders = [];
 			newCity.mapLink = city.link; // set map link
 			newCity.mapSeed = city.MFCG as unknown as string; // set map seed
 			newCity.name = city.name; // set city name
 			newCity.population = Math.round(
 				city.population * Number(populationRate) * Number(urbanization),
 			).toLocaleString("en-US");
+			newCity.pronounced = newCity.name;
+			newCity.religions = [];
+			newCity.rulers = [];
+			newCity.terrain = "";
+			newCity.theme = newCity.type;
+			newCity.type = city.type; // set city type
 			// set default city tags
 			newCity.tags = [
 				{
@@ -46,8 +57,6 @@ export const mutateCities = async (
 					Type: "Locations",
 				},
 			];
-			newCity.type = city.type; // set city type
-			newCity.description = ""; // no description
 
 			const randomNumberInRange = (min: number, max: number): number => {
 				return Math.floor(Math.random() * (max - min + 1)) + min;

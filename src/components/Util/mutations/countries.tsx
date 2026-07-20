@@ -25,14 +25,22 @@ export const mutateCountries = async (
 
 			// add country data to new country object
 			newCountry._id = uuidv7();
-			newCountry.id = country.i;
+			newCountry.aliases = [newCountry.nameFull, newCountry.name].filter(
+				Boolean,
+			);
 			newCountry.coa = country.coa;
 			newCountry.color = country.color;
+			newCountry.id = country.i;
 			newCountry.location = data.info.name;
 			newCountry.name = country.name;
 			newCountry.nameFull = country.fullName;
+			newCountry.planetPlane = "";
 			newCountry.political.form = country.form;
 			newCountry.political.formName = country.formName;
+			newCountry.pronounced = newCountry.name;
+			newCountry.religions = [];
+			newCountry.terrain = "";
+			newCountry.theme = newCountry.type;
 
 			const Culture = tempMap.cultures.find((c) => c.id === country.culture);
 			newCountry.cities = tempMap.cities.filter((city) => {
