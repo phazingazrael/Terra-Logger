@@ -2618,6 +2618,7 @@ declare global {
 }
 
 if (!String.prototype.replaceAll) {
+  // biome-ignore lint/suspicious/noExplicitAny: The object is similar in each calling but has slight variations.
   String.prototype.replaceAll = function (searchValue: string | RegExp, replaceValue: string | ((substring: string, ...args: any[]) => string)) {
     if (typeof replaceValue === "function") {
       return this.replace(searchValue, replaceValue);

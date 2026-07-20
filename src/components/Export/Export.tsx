@@ -234,6 +234,7 @@ export function MarkdownExportPanel(props: {
 			setStatus("Done. Download started.");
 			setZipDownloaded(true);
 			exported.current = true;
+			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (e: any) {
 			const msg = e?.message ?? String(e);
 			log("ERROR", `✖ error: ${msg}`);

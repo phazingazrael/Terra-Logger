@@ -217,7 +217,7 @@ tags:
 >> Contraband, smugglers, underground syndicates.
 
 > [!government]- Government & Power Structure
->> [!notes- Government Type
+>> [!notes]- Government Type
 >> Monarchy, Theocracy, AI-Controlled, Mage Council, etc.
 >
 >> [!notes]- Current Ruler(s)

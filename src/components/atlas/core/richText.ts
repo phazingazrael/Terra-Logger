@@ -78,16 +78,6 @@ export function readPlainTextFromRichTextValue(value: unknown): string {
   return readPlainTextFromDoc(parsed);
 }
 
-export function readPlainTextFromRichTextJson(json: unknown): string {
-  if (typeof json !== "string" || json.trim().length === 0) return "";
-
-  const parsed = parseRichTextJson(json);
-
-  if (!parsed) return "";
-
-  return readPlainTextFromDoc(parsed);
-}
-
 export function richTextJsonToHtml(value: unknown): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     return "<p></p>";

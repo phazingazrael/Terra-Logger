@@ -53,21 +53,6 @@ export function insertArrayItem<T>(array: T[], value: T): T[] {
   return [...array, value];
 }
 
-export function moveArrayItem<T>(
-  array: T[],
-  fromIndex: number,
-  toIndex: number,
-): T[] {
-  const clone = [...array];
-  const [item] = clone.splice(fromIndex, 1);
-
-  if (item === undefined) return array;
-
-  clone.splice(toIndex, 0, item);
-
-  return clone;
-}
-
 export function coerceValueForField(
   rawValue: string,
   schema: AtlasEntityFieldSchema,
@@ -106,7 +91,6 @@ export function createDefaultValueForField(
     case "select":
     case "reference":
     case "readonly":
-    default:
       return "";
   }
 }

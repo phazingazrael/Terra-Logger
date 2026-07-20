@@ -16,44 +16,6 @@ export async function addDataToStore(storeName: string, data: any) {
   await tx.done;
 }
 
-/**
- * Retrieve data from a store.
- *
- * @param {string} storeName - The name of the store to retrieve data from.
- * @param {any} key - The key of the data to retrieve.
- * @returns {Promise<any>} - A promise that resolves with the data from the store, or null if the data does not exist.
- */
-
-// biome-ignore lint/suspicious/noExplicitAny: This is fine
-export async function getDataFromStore(storeName: string, key: any) {
-  const db = await initDatabase();
-  const tx = db.transaction(storeName, "readonly");
-  const store = tx.objectStore(storeName);
-  const data = await store.get(key);
-  return data;
-}
-
-/**
- * Retrieve data from a store using a specified index.
- *
- * @param {string} storeName - The name of the store to retrieve data from.
- * @param {any} key - The key of the data to retrieve.
- * @param {string} index - The name of the index to use for the retrieval.
- * @returns {Promise<any>} - A promise that resolves with the data from the store, or null if the data does not exist.
- */
-export async function getDataFromStoreIndex(
-  storeName: string,
-  // biome-ignore lint/suspicious/noExplicitAny: This is fine
-  key: any,
-  index: string,
-) {
-  const db = await initDatabase();
-  const tx = db.transaction(storeName, "readonly");
-  const store = tx.objectStore(storeName);
-  const idx = store.index(index);
-  const data = await idx.get(key);
-  return data;
-}
 
 /**
  * Retrieve all data from a store.

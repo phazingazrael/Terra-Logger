@@ -25,27 +25,6 @@ export const Capital = {
 	transition: "all 0.2s ease",
 };
 
-export const DynamicSparkle = {
-	height: "1.5rem",
-	width: "1.5rem",
-	marginTop: "-1.5rem",
-	color: "#1794a1",
-};
-
-export const DynamicSparkleSmall = {
-	height: "1rem",
-	width: "1rem",
-	marginTop: "-1.5rem",
-	color: "#1794a1",
-};
-
-export const SemiDynamicSparkle = {
-	height: "1.5rem",
-	width: "1.5rem",
-	marginTop: "-1.5rem",
-	color: "#17a127",
-};
-
 export const ModalStyle = {
 	position: "absolute",
 	top: "50%",

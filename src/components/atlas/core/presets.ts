@@ -133,34 +133,6 @@ export function richTextBlock(text = "", label = "Rich Text"): AtlasBlock {
   };
 }
 
-export function entityRichTextBlock(
-  label: string,
-  entityPath: string,
-  emptyText = `No ${label.toLowerCase()} listed.`,
-): AtlasBlock {
-  return {
-    id: createAtlasId("block"),
-    kind: "block",
-    type: "richText",
-    label,
-    dataMode: "entity",
-    binding: {
-      entityPath,
-    },
-    editor: {
-      editable: false,
-      removable: true,
-      reorderable: true,
-      editorType: "entity",
-    },
-    props: {
-      label,
-      emptyText,
-      valueFormat: "auto",
-    },
-  };
-}
-
 export function headingBlock(text: string, level = 2): AtlasBlock {
   return {
     id: createAtlasId("block"),
@@ -308,23 +280,6 @@ export function chipListBlock(chips: string[], label = "Chips"): AtlasBlock {
   };
 }
 
-export function entityFieldBlock(label: string, entityPath: string): AtlasBlock {
-  return {
-    id: createAtlasId("block"),
-    kind: "block",
-    type: "entityField",
-    label,
-    dataMode: "entity",
-    binding: { entityPath },
-    editor: {
-      editable: false,
-      removable: true,
-      reorderable: true,
-      editorType: "entity",
-    },
-    props: { label },
-  };
-}
 
 export function entityChipListBlock(label: string, entityPath: string): AtlasBlock {
 

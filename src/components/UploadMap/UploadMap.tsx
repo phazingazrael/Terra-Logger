@@ -513,6 +513,7 @@ function UploadMap({
 
 		try {
 			await importMapFile(file);
+			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (err: any) {
 			console.error(err);
 			failUploadToast(`Failed to load map: ${err?.message ?? String(err)}`);
@@ -540,6 +541,7 @@ function UploadMap({
 			});
 
 			await importMapFile(demoFile);
+			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (err: any) {
 			console.error(err);
 			failUploadToast(

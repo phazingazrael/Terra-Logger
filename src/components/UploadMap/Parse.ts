@@ -13,30 +13,6 @@ import {
 
 import type { SettingsOpts } from "../../definitions/TerraLogger";
 
-export const parseLoadedResult = (
-  result: ArrayBuffer,
-): [mapFile: string[], mapVersion: number, versionString: string] => {
-  const resultAsString = new TextDecoder().decode(result);
-  const isDelimited = resultAsString.substring(0, 10).includes("|");
-  const decoded = isDelimited
-    ? resultAsString
-    : decodeURIComponent(atob(resultAsString));
-
-  const mapFile = repairSvgLineBreakSplit(decoded.split(/\r?\n/));
-  const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
-  let mapVersion = `${versionparts[0]}${versionparts[1]}${versionparts[2]}`;
-  const patchVersion =
-    versionparts[2] > 9 ? versionparts[2] : `0${versionparts[2]}`;
-  const versionString = JSON.stringify(
-    `${versionparts[0]}.${versionparts[1]}.${patchVersion}`,
-  );
-  mapVersion = `${versionparts[0]}${versionparts[1]}${patchVersion}`;
-
-  const MapVersion = mapVersion as unknown as number;
-
-  return [mapFile, MapVersion, versionString];
-};
-
 export const parseLoadedData = (data: string[]) => {
   // Parse Map Parameters //
 
@@ -452,33 +428,6 @@ export const parseLoadedData = (data: string[]) => {
   return { parsedMap, Pack };
 };
 
-function repairSvgLineBreakSplit(parts: string[]): string[] {
-  const svgIndex = 5;
-
-  if (parts.length <= 39) {
-    return parts;
-  }
-
-  const possibleSvgStart = parts[svgIndex] ?? "";
-
-  if (!possibleSvgStart.includes("<svg")) {
-    return parts;
-  }
-
-  const svgEndIndex = parts.findIndex(
-    (part, index) => index >= svgIndex && part.includes("</svg>"),
-  );
-
-  if (svgEndIndex <= svgIndex) {
-    return parts;
-  }
-
-  return [
-    ...parts.slice(0, svgIndex),
-    parts.slice(svgIndex, svgEndIndex + 1).join("\r\n"),
-    ...parts.slice(svgEndIndex + 1),
-  ];
-}
 
 // Unused data sections
 // latLongs ("coords")

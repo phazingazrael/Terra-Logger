@@ -4,7 +4,7 @@ Name: {{name}}
 Aliases: {{name}}
 Capital: {{#capital}}Yes{{/capital}}{{^capital}}No{{/capital}}
 Country: {{country.name}}
-Defences:
+Defenses:
 GovtType: {{country.govForm}}
 Imports:
 Exports:
@@ -48,7 +48,7 @@ tags:
 > **Rulers** | `=this.Rulers` |
 > **Leaders** | `=this.Leaders` |
 > **Govt Type** | `=this.GovtType` ({{country.govName}}) |
-> **Defenses** | `=this.Defences` |
+> **Defenses** | `=this.Defenses` |
 > **Religions** | `=this.Religions` |
 > ###### Commerce
 >  |

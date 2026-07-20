@@ -59,41 +59,6 @@ type AtlasExportBlock = {
   [key: string]: unknown;
 };
 
-export function renderAtlasContentToMarkdown({
-  entity,
-  sourceType,
-  data,
-  headingLevel = 2,
-}: {
-  entity: Record<string, unknown>;
-  sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
-  headingLevel?: number;
-}): string {
-  const content = entity.content;
-
-  if (!isAtlasContent(content)) return "";
-
-  const sections = content.sections ?? [];
-
-  const renderedSections = sections
-    .filter((section) => shouldExportSection(section, sourceType))
-    .map((section) =>
-      renderAtlasSectionToMarkdown({
-        section,
-        entity,
-        sourceType,
-        data,
-        headingLevel,
-      }),
-    )
-    .filter(Boolean);
-
-  return renderedSections.join("\n\n").trim();
-}
-
 export function renderAtlasSectionByLabelToMarkdown({
   entity,
   sourceType,
@@ -140,35 +105,6 @@ export function renderAtlasSectionByLabelToMarkdown({
     data,
     headingLevel,
   });
-}
-
-export function renderEntityDescriptionToMarkdown({
-  entity,
-  sourceType,
-  data,
-}: {
-  entity: Record<string, unknown>;
-  sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
-}): string {
-  const atlasDescription = renderAtlasSectionByLabelToMarkdown({
-    entity,
-    sourceType,
-    data,
-    labels: ["description"],
-    headingLevel: 2,
-  });
-
-  if (atlasDescription) return atlasDescription;
-
-  return [
-    markdownHeading(2, "Description"),
-    renderEntityDescriptionBodyToMarkdown({ entity, sourceType, data }),
-  ]
-    .filter(Boolean)
-    .join("\n\n");
 }
 
 export function renderEntityDescriptionBodyToMarkdown({
@@ -229,41 +165,6 @@ export function renderAtlasNoteEditorNotesToMarkdown(
   return renderedBlocks.join("\n\n").trim();
 }
 
-function shouldExportSection(
-  section: AtlasExportSection,
-  sourceType: ExportSourceType,
-): boolean {
-  const label = normalizeText(section.label ?? section.title ?? "");
-  const className = normalizeText(
-    [
-      section.className,
-      section.wrapper?.className,
-    ]
-      .filter(Boolean)
-      .join(" "),
-  );
-
-  // These are handled by dedicated export blocks.
-  if (label === "header" || className.includes("header")) return false;
-  if (label === "overview" || className.includes("overview")) return false;
-  if (label === "tags" || className.includes("tags")) return false;
-
-  // Notes use dedicated note-body and editor-notes blocks.
-  if (sourceType === "note") {
-    if (
-      label === "note body" ||
-      label === "imported note" ||
-      label === "editor notes" ||
-      className.includes("note legend") ||
-      className.includes("note body") ||
-      className.includes("editor notes")
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 function renderAtlasSectionToMarkdown({
   section,

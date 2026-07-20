@@ -1,16 +1,3 @@
-export function compactMarkdown(value: string): string {
-  return value
-    .replace(/\r\n/g, "\n")
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n{4,}/g, "\n\n\n")
-    .trim()
-    .concat("\n");
-}
-
-export function joinMarkdownBlocks(blocks: string[]): string {
-  return compactMarkdown(blocks.map((block) => block.trim()).filter(Boolean).join("\n\n"));
-}
-
 export function readString(
   entity: Record<string, unknown>,
   path: string,

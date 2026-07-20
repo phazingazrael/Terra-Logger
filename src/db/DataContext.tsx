@@ -1,4 +1,5 @@
 // src/db/DataContext.tsx
+/** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
 import React, {
 	createContext,
 	useContext,
@@ -24,15 +25,11 @@ type Ctx = {
 	activeMapId: string | null;
 	setActive: (mapId: string) => Promise<void>;
 	/** Lazy selector: returns the array for the active map & given store. */
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	useActive: <T = any>(store: MapScopedStore) => T[];
 	/** Lazy selector: returns the active map object from 'maps' store. */
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	useActiveMap: <T = any>() => T | null;
 	/** Mutations (already cache-aware) */
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	add: (store: MapScopedStore, data: any) => Promise<void>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	update: (store: MapScopedStore, key: string, updated: any) => Promise<void>;
 	remove: (store: MapScopedStore, key: string) => Promise<void>;
 	/** Optional: preload several stores for the active map at once */
@@ -47,8 +44,7 @@ export function useDB() {
 	return ctx;
 }
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
-export function DBProvider({ children }: React.PropsWithChildren<{}>) {
+export function DBProvider({ children }: React.PropsWithChildren<any>) {
 	const [activeMapId, setActiveState] = React.useState<string | null>(null);
 	// a simple "version" bump forces subscribers to reread the cache.
 	const [version, bump] = useReducer((x) => x + 1, 0);
@@ -65,16 +61,16 @@ export function DBProvider({ children }: React.PropsWithChildren<{}>) {
 		setActiveState(mapId);
 		await setActiveMapId(mapId);
 		// Optionally eager-preload a few hot stores here:
-		// await preloadForMap(mapId, ["cities", "npcs"]);
+		await preloadForMap(mapId, ["cities"]);
 		bump();
 	};
 
 	// Hook that components will call to read active data for a store
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+
 	function useActive<T = any>(store: MapScopedStore): T[] {
 		const [, force] = React.useReducer((x) => x + 1, 0);
 
-		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+		// biome-ignore lint/correctness/useExhaustiveDependencies: needs to run on map change
 		useEffect(() => {
 			let cancelled = false;
 			(async () => {
@@ -90,15 +86,14 @@ export function DBProvider({ children }: React.PropsWithChildren<{}>) {
 			// re-run when store or active map changes or provider version bumps
 		}, [store, activeMapId, version]);
 
-		return (activeMapId ? getCached(activeMapId, store) ?? [] : []) as T[];
+		return (activeMapId ? (getCached(activeMapId, store) ?? []) : []) as T[];
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const add = async (store: MapScopedStore, data: any) => {
 		await addAndCache(store, data, activeMapId);
 		bump();
 	};
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+
 	const update = async (store: MapScopedStore, key: string, updated: any) => {
 		await updateAndCache(store, key, updated, activeMapId);
 		bump();
@@ -113,7 +108,6 @@ export function DBProvider({ children }: React.PropsWithChildren<{}>) {
 		bump();
 	};
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	function useActiveMap<T = any>(): T | null {
 		const [, force] = React.useReducer((x) => x + 1, 0);
 		// biome-ignore lint/correctness/useExhaustiveDependencies: needs to run on map change

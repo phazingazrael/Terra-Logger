@@ -16,10 +16,6 @@ function createNoteContent(entity: TLNote): AtlasContent {
       entitySection("Note Body", "section note-legend", [descriptionBlock("Note Body")]),
       sectionPreset("Editor Notes", "section editor-notes", [richTextBlock("Add your notes here.")]),
       sectionPreset("Tags", "section tags", [computedBlock("largeTags", "Tags", "tags")], clear),
-      // entitySection("Metadata", "section metadata", [
-      //   entityFieldBlock("Type", "type"),
-      //   entityFieldBlock("Original ID", "id"),
-      // ]),
     ],
   });
 }
