@@ -1,5 +1,5 @@
 import React from "react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const LazyAnalytics = React.lazy(() =>
 	import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
