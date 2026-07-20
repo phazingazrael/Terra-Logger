@@ -1,13 +1,8 @@
 import React from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const LazyAnalytics = React.lazy(() =>
 	import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
-);
-
-const LazySpeedInsights = React.lazy(() =>
-	import("@vercel/speed-insights/next").then((m) => ({
-		default: m.SpeedInsights,
-	})),
 );
 
 /** Renders Vercel Analytics only in production. No-op in dev. */
@@ -16,7 +11,7 @@ export function ProdAnalytics() {
 	return (
 		<React.Suspense fallback={null}>
 			<LazyAnalytics />
-			<LazySpeedInsights />
+			<SpeedInsights />
 		</React.Suspense>
 	);
 }
