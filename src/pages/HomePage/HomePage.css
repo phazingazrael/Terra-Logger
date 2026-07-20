@@ -5,3 +5,78 @@
   padding: 12px;
   margin-bottom: 24px;
 }
+
+.homePage {
+  padding-block: 1.5rem;
+}
+
+.homeHeader {
+  justify-content: right;
+}
+
+.homeHero,
+.homeCard,
+.whatsNew {
+  border-radius: 12px;
+}
+
+.homeHero {
+  margin-bottom: 1.5rem;
+}
+
+.homeHeroTitle {
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* .homeHeroText {
+  max-width: 72ch;
+} */
+
+.homeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.homeCard {
+  height: 100%;
+}
+
+.homeFeatureList {
+  margin-block: 1rem;
+  padding-left: 1.25rem;
+}
+
+.homeFeatureList li {
+  margin-bottom: 0.5rem;
+}
+
+.whatsNewSummary {
+  max-width: 85ch;
+}
+
+.whatsNewSummaryChip {
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+.whatsNewSummaryChip .MuiChip-label {
+  white-space: normal;
+}
+
+.homeCommitList {
+  padding-left: 1.25rem;
+}
+
+.homeCommitList li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .homeGrid {
+    grid-template-columns: 1fr;
+  }
+}

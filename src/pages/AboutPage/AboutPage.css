@@ -5,3 +5,86 @@
   padding: 12px;
   margin-bottom: 24px;
 }
+
+.aboutPage {
+  padding-block: 1.5rem;
+}
+
+.aboutHero,
+.aboutCard {
+  border-radius: 12px;
+}
+
+.aboutHero {
+  margin-bottom: 1.5rem;
+}
+
+.aboutHeroText {
+  max-width: 72ch;
+  margin-top: 0.75rem;
+}
+
+.aboutGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.aboutCard {
+  height: 100%;
+}
+
+.aboutDeveloperCard,
+.aboutCreditsCard {
+  grid-column: 1 / -1;
+}
+
+.aboutList {
+  margin-block: 1rem 0;
+  padding-left: 1.25rem;
+}
+
+.aboutList li {
+  margin-bottom: 0.5rem;
+}
+
+.socialBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.socialBadge:hover {
+  transform: translateY(-1px);
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.26); */
+  opacity: 0.95;
+}
+
+.socialBadgeGithub {
+  color: #ffffff !important;
+  background: #24292f;
+}
+.socialBadgeGithub:hover {
+  box-shadow: 0 4px 10px rgba(36, 41, 47, 0.5);
+}
+
+.socialBadgeReddit {
+  color: #ffffff !important;
+  background: rgb(255, 69, 0);
+}
+.socialBadgeReddit:hover {
+  box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5);
+}
+
+@media (max-width: 900px) {
+  .aboutGrid {
+    grid-template-columns: 1fr;
+  }
+}

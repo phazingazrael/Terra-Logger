@@ -1,185 +1,177 @@
-import { Container, Typography } from "@mui/material";
+import {
+	Card,
+	CardContent,
+	Container,
+	Divider,
+	Link,
+	Stack,
+	Typography,
+} from "@mui/material";
+import { GithubLogo, RedditLogo } from "@phosphor-icons/react";
 
 import "./AboutPage.css";
+
 const AboutPage = () => {
 	return (
 		<Container className="aboutPage">
-			<div className="contentSubBody">
-				<section className="section tlAbout">
-					<Typography variant="h5">About Terra-Logger's history</Typography>
-					<p>
-						Terra-Logger was first come up with in June of 2023.
-						<br />I had been using Azgaar's Fantasy Map Generator for several
-						years prior to this point to create and manage the World Map for my
-						Table Top RPG Campaign.
-					</p>
-					<p>
-						In May of 2023 I had learned about using Obsidian.md for Table Top
-						RPG's and was immediately interested in using this method to manage
-						my campaign and homebrew world, There was 1 major issue however, My
-						world map contained over 700 cities! There was no way I was going to
-						write that many documents by hand.
-					</p>
-					<p>
-						Terra-Logger first started out as a command line utility to read an
-						Exported .json file from Azgaar's Fantasy Map Generator and output
-						basic markdown files for each Country and City.
-					</p>
-					<p>
-						Soon I had made too many changes and fixes to it that I decided to
-						restart from scratch, And I also decided that Terra-Logger would be
-						useful for other people as well, thus I began working on the first
-						proof of concept. Several times I redesigned the way it would look
-						and work, and several times I changed my mind on how it would be
-						accessible to others.
-						<br />I had considered a few options:
-						<ul>
+			<section className="section tlAbout aboutHero">
+				<Typography variant="h3" component="h1">
+					About Terra-Logger
+				</Typography>
+
+				<Typography variant="body1" className="aboutHeroText">
+					Terra-Logger is a worldbuilding utility built around Azgaar Fantasy
+					Map Generator data. It helps turn generated map data into editable,
+					exportable campaign documentation for Markdown and Obsidian workflows.
+				</Typography>
+			</section>
+
+			<section className="aboutGrid">
+				<Card className="aboutCard">
+					<CardContent>
+						<Typography variant="h5" component="h2">
+							Why it exists
+						</Typography>
+
+						<Typography variant="body2" color="text.secondary">
+							Terra-Logger started from a tabletop RPG problem: managing a world
+							map with hundreds of cities without hand-writing every document.
+						</Typography>
+
+						<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+							The first version was a command-line utility that converted Azgaar
+							exports into basic Markdown. It later became a hosted web app so
+							the workflow could be more visual, editable, and useful to other
+							worldbuilders.
+						</Typography>
+					</CardContent>
+				</Card>
+
+				<Card className="aboutCard">
+					<CardContent>
+						<Typography variant="h5" component="h2">
+							Project direction
+						</Typography>
+
+						<ul className="aboutList">
 							<li>
-								"Self Hosted" - Creating some type of self hosted website for
-								either use inside of a program such as an amp stack install
-								(Apache, MySql, PHP)
+								Import and update Azgaar <code>.map</code> files.
 							</li>
+							<li>Create editable Atlas pages for world entities.</li>
 							<li>
-								"Desktop Program" - Using ElectronJS to create a desktop program
+								Support pre-export editing instead of raw generated output only.
 							</li>
+							<li>Export Markdown and Obsidian-ready vault structures.</li>
 							<li>
-								"Web Host" - Something that could be uploaded to a webhosting
-								platform.
+								Keep templates flexible instead of forcing one campaign style.
 							</li>
 						</ul>
-						In the end I went with a Web Host solution. Currently code is hosted
-						on Github with Vercel pulling and hosting the code for public
-						access.
-					</p>
-				</section>
-				<section className="section devAbout">
-					<Typography variant="h5">About the Developer</Typography>
-					<p>
-						Hi there! I'm Phazingazrael, But I go by Phaze.
-						<br />
-						I'm a Hobbyist Web Developer and a Table Top RPG Enthusiast.
-						<br />
-						You can find me on{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://github.com/phazingazrael"
+					</CardContent>
+				</Card>
+
+				<Card className="aboutCard aboutDeveloperCard">
+					<CardContent>
+						<Typography variant="h5" component="h2">
+							About the developer
+						</Typography>
+
+						<Typography variant="body2" color="text.secondary">
+							Terra-Logger is built by Phazingazrael / Phaze, a hobbyist web
+							developer and tabletop RPG enthusiast.
+						</Typography>
+
+						<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+							The project combines long-running interests in web development,
+							worldbuilding, tabletop RPGs, and tools that make large creative
+							projects easier to maintain.
+						</Typography>
+
+						<Stack
+							direction="row"
+							spacing={1.5}
+							flexWrap="wrap"
+							useFlexGap
+							sx={{ mt: 2 }}
 						>
-							Github
-						</a>{" "}
-						as well as on{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://www.reddit.com/user/Phazingazrael/"
-						>
-							Reddit
-						</a>
-					</p>
-					<p>
-						<strong style={{ fontSize: "1.3rem", fontWeight: "400" }}>
-							A little bit about me
-						</strong>
-						<br />I picked up Web Development a long, long time ago, Probably
-						around 23 years ago.
-						<br />I was in Middle School / Junior High School at the time and
-						found the thought of making my own websites to be a lot fun.
-						<br /> In High School I got even more into it and ended up taking a
-						class through our "Applied Technologies Center" for it, although I
-						ended up never learning anything new in that class, I did end up
-						participating in a few educational competitions because of it.
-					</p>
-					<p>
-						For a brief time after high school I had an internship at a local
-						Media Production company assisting in building and maintaining their
-						website among other responsibilities.
-					</p>
-					<strong style={{ fontSize: "1.3rem", fontWeight: "400" }}>
-						My Hobbies
-					</strong>
-					<br />I have a Lot of hobbies, And most of them are pretty nerdy!
-					<ul>
-						<li>Programming / Web Development</li>
-						<li>Table Top RPG's</li>
-						<li>Video Games</li>
-						<ul>
-							<li>Minecraft</li>
-							<li>Pokemon</li>
-							<li>Oxygen Not Included</li>
-							<li>Satisfactory</li>
+							<Link
+								className="socialBadge socialBadgeGithub"
+								target="_blank"
+								rel="noreferrer"
+								href="https://github.com/phazingazrael"
+								underline="none"
+							>
+								<GithubLogo size={20} weight="fill" />
+								<span>GitHub</span>
+							</Link>
+
+							<Link
+								className="socialBadge socialBadgeReddit"
+								target="_blank"
+								rel="noreferrer"
+								href="https://www.reddit.com/user/Phazingazrael/"
+								underline="none"
+							>
+								<RedditLogo size={20} weight="fill" />
+								<span>Reddit</span>
+							</Link>
+						</Stack>
+					</CardContent>
+				</Card>
+
+				<Card className="aboutCard aboutCreditsCard">
+					<CardContent>
+						<Typography variant="h5" component="h2">
+							Credits and acknowledgments
+						</Typography>
+
+						<Typography variant="body2" color="text.secondary">
+							Terra-Logger exists because of the tools, resources, and community
+							ideas that came before it.
+						</Typography>
+
+						<Divider sx={{ my: 2 }} />
+
+						<ul className="aboutList">
+							<li>
+								<Link
+									target="_blank"
+									rel="noreferrer"
+									href="https://github.com/Azgaar/Fantasy-Map-Generator"
+								>
+									Azgaar&apos;s Fantasy Map Generator
+								</Link>{" "}
+								for the map generator Terra-Logger is built around.
+							</li>
+
+							<li>
+								<Link
+									target="_blank"
+									rel="noreferrer"
+									href="https://github.com/Shuggaloaf/Simple_NPC_Generator/"
+								>
+									Shuggaloaf&apos;s System Agnostic RPG NPC Generator
+								</Link>{" "}
+								for future NPC generation direction.
+							</li>
+
+							<li>
+								<Link
+									target="_blank"
+									rel="noreferrer"
+									href="https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/"
+								>
+									u/Osellic&apos;s worldbuilding resource
+								</Link>{" "}
+								for community worldbuilding inspiration.
+							</li>
+
+							<li>
+								Lythande&apos;s shared worldbuilding spreadsheet resources.
+							</li>
 						</ul>
-						<li>Reading / Audiobooks</li>
-						<li>Longboarding, albeit more "street surfing"</li>
-						<li>So much more than I can list here</li>
-					</ul>
-				</section>
-				<section className="section credits">
-					<Typography variant="h5">Credits and Acknowledgments</Typography>
-					<p>
-						We would like to express our gratitude to the developers of{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://github.com/Azgaar/Fantasy-Map-Generator"
-						>
-							Azgaar's Fantasy Map Generator
-						</a>{" "}
-						for their fantastic tool, which inspired and provided the foundation
-						for Terra-Logger.
-					</p>
-					<p>
-						We would like to express our gratitude to{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://github.com/Shuggaloaf/"
-						>
-							Shuggaloaf
-						</a>{" "}
-						for their{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://github.com/Shuggaloaf/Simple_NPC_Generator/"
-						>
-							System Agnostic RPG NPC Generator
-						</a>
-						. Currently needs to be implemented in basic format to provide basic
-						npc data when loading map. Will be extended with customization
-						later.
-					</p>
-					<p>
-						We would like to express our gratitude to{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://www.reddit.com/user/Osellic/"
-						>
-							u/Oselic
-						</a>{" "}
-						for their work on{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/"
-						>
-							This
-						</a>
-						.
-					</p>
-					<p>
-						We would like to express our gratitude to Lythande for their work on{" "}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href="https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452"
-						>
-							This
-						</a>
-						.
-					</p>
-				</section>
-			</div>
+					</CardContent>
+				</Card>
+			</section>
 		</Container>
 	);
 };
