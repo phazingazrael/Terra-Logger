@@ -31,8 +31,30 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.7",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.7",
-  "commitCount": 40,
+  "commitCount": 44,
   "majorChanges": [
+    {
+      "hash": "94e116b6f953777167929d90d63be55d7b164312",
+      "shortHash": "94e116b",
+      "date": "2026-07-20T19:22:36-06:00",
+      "subject": "perf: ⚡️ improve rendering performance, virtualize lists, and harden map import",
+      "type": "perf",
+      "scope": null,
+      "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/94e116b6f953777167929d90d63be55d7b164312"
+    },
+    {
+      "hash": "b096b9b41bb1a9a36366f354d7af4d4af5ddebc1",
+      "shortHash": "b096b9b",
+      "date": "2026-07-20T14:57:03-06:00",
+      "subject": "refactor: 📝 Rewrite Home and About pages.",
+      "type": "refactor",
+      "scope": null,
+      "details": "📝 Rewrite Home and About pages.",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b096b9b41bb1a9a36366f354d7af4d4af5ddebc1"
+    },
     {
       "hash": "47834cc2d7b0d59597df35ba1cf74b207e12811f",
       "shortHash": "47834cc",
@@ -216,6 +238,7 @@ export const releaseChanges: ReleaseChanges = {
     "feat",
     "fix",
     "other",
+    "perf",
     "refactor",
     "style"
   ],
@@ -225,6 +248,50 @@ export const releaseChanges: ReleaseChanges = {
     "cleanup"
   ],
   "commits": [
+    {
+      "hash": "94e116b6f953777167929d90d63be55d7b164312",
+      "shortHash": "94e116b",
+      "date": "2026-07-20T19:22:36-06:00",
+      "subject": "perf: ⚡️ improve rendering performance, virtualize lists, and harden map import",
+      "type": "perf",
+      "scope": null,
+      "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/94e116b6f953777167929d90d63be55d7b164312"
+    },
+    {
+      "hash": "7b7b1c1672067475f87b5434dcb6cf3048a4b8be",
+      "shortHash": "7b7b1c1",
+      "date": "2026-07-20T16:24:40-06:00",
+      "subject": "Update analytics.tsx",
+      "type": "other",
+      "scope": null,
+      "details": "Update analytics.tsx",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/7b7b1c1672067475f87b5434dcb6cf3048a4b8be"
+    },
+    {
+      "hash": "dc7aa87f52b1dac44f1edc9d7b1668315f1f2d46",
+      "shortHash": "dc7aa87",
+      "date": "2026-07-20T16:22:51-06:00",
+      "subject": "Update analytics.tsx",
+      "type": "other",
+      "scope": null,
+      "details": "Update analytics.tsx",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/dc7aa87f52b1dac44f1edc9d7b1668315f1f2d46"
+    },
+    {
+      "hash": "b096b9b41bb1a9a36366f354d7af4d4af5ddebc1",
+      "shortHash": "b096b9b",
+      "date": "2026-07-20T14:57:03-06:00",
+      "subject": "refactor: 📝 Rewrite Home and About pages.",
+      "type": "refactor",
+      "scope": null,
+      "details": "📝 Rewrite Home and About pages.",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b096b9b41bb1a9a36366f354d7af4d4af5ddebc1"
+    },
     {
       "hash": "e341f76de08e59c2676332255b110393864c2c99",
       "shortHash": "e341f76",
@@ -666,5 +733,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-07-20T20:34:33.036Z"
+  "generatedAt": "2026-07-21T01:22:46.547Z"
 };

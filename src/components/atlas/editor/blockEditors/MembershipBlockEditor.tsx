@@ -1,12 +1,11 @@
 import type { AtlasBlock } from "../../../../definitions/Atlas";
 
-export function MembershipBlockEditor({
-	block,
-}: Readonly<{
-	block: AtlasBlock;
-	onChange: (block: AtlasBlock) => void;
-}>) {
-	console.log("MembershipBlockEditor - block:", block);
+export function MembershipBlockEditor(
+	_props: Readonly<{
+		block: AtlasBlock;
+		onChange: (block: AtlasBlock) => void;
+	}>,
+) {
 	return (
 		<p>
 			Membership editor placeholder. Keep this block editor isolated for

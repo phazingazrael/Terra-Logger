@@ -1,8 +1,9 @@
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
 import { useEffect, lazy } from "react";
 import { useDB } from "../../db/DataContext";
 
 import type { TLReligion } from "../../definitions/TerraLogger";
+import { VirtualizedCardGrid } from "../../components/Virtualized";
 
 const ReligionCard = lazy(() => import("../../components/Cards/religion"));
 
@@ -20,13 +21,15 @@ function ReligionsPage() {
 	return (
 		<Container>
 			<div className="contentSubBody ReligionsPage">
-				<Grid container spacing={2}>
-					{religions.map((entry) => (
-						<Grid size={3} key={entry._id} id={entry._id}>
+				<VirtualizedCardGrid
+					items={religions}
+					getKey={(entry) => entry._id}
+					renderItem={(entry) => (
+						<div id={entry._id}>
 							<ReligionCard {...entry} />
-						</Grid>
-					))}
-				</Grid>
+						</div>
+					)}
+				/>
 			</div>
 		</Container>
 	);

@@ -54,6 +54,27 @@ function CountryView() {
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
+	const relatedLookups = useMemo(
+		() => ({
+			citiesByCountryId: cities.reduce((map, relatedCity) => {
+				const countryId = relatedCity.country?._id;
+				if (!countryId) return map;
+				const group = map.get(countryId);
+				if (group) group.push(relatedCity);
+				else map.set(countryId, [relatedCity]);
+				return map;
+			}, new Map()),
+			countriesByEntityId: new Map(
+				countries.map((entry) => [entry._id, entry]),
+			),
+			countriesByNumericId: new Map(
+				countries.map((entry) => [entry.id, entry]),
+			),
+			tagsById: new Map(tags.map((tag) => [tag._id, tag])),
+		}),
+		[cities, countries, tags],
+	);
+
 	const countryAdapter = useMemo(() => getAtlasAdapter("country"), []);
 
 	const countryContent = useMemo(() => {
@@ -83,8 +104,9 @@ function CountryView() {
 				notes,
 				tags,
 			},
+			relatedLookups,
 		};
-	}, [country, notes, cities, countries, cultures, tags]);
+	}, [country, notes, cities, countries, cultures, tags, relatedLookups]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");

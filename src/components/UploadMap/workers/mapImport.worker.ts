@@ -41,7 +41,7 @@ function parseLoadedResultInWorker(
     ? resultAsString
     : decodeURIComponent(atob(resultAsString));
 
-  const mapFile = repairSvgLineBreakSplit(decoded.split(/\r?\n/));
+  const mapFile = repairMultilineMapSections(decoded.split(/\r?\n/));
   const versionparts = mapFile[0].split("|")[0].split(".").map(Number);
 
   if (
@@ -196,6 +196,38 @@ ctx.onmessage = async (event: MessageEvent<MapImportWorkerRequest>) => {
   }
 };
 
+
+function repairMultilineMapSections(parts: string[]): string[] {
+  const svgRepaired = repairSvgLineBreakSplit(parts);
+  return repairNameBasesLineBreakSplit(svgRepaired);
+}
+
+function repairNameBasesLineBreakSplit(parts: string[]): string[] {
+  const expectedSectionCount = 39;
+  const nameBasesIndex = 31;
+  const trailingSectionCount = expectedSectionCount - (nameBasesIndex + 1);
+
+  if (parts.length <= expectedSectionCount) {
+    return parts;
+  }
+
+  const riversIndex = parts.length - trailingSectionCount;
+  const possibleRivers = parts[riversIndex] ?? "";
+
+  // Modern FMG files end with rivers, rulers, fonts, markers, cell routes,
+  // routes, and zones. Custom name bases may contain literal line breaks,
+  // causing the single names section at index 31 to be split into many lines.
+  if (!/^\s*\[\s*\{[\s\S]*\"source\"\s*:/i.test(possibleRivers)) {
+    return parts;
+  }
+
+  return [
+    ...parts.slice(0, nameBasesIndex),
+    parts.slice(nameBasesIndex, riversIndex).join("\n"),
+    ...parts.slice(riversIndex),
+  ];
+}
+
 function repairSvgLineBreakSplit(parts: string[]): string[] {
   const svgIndex = 5;
 
@@ -205,13 +237,25 @@ function repairSvgLineBreakSplit(parts: string[]): string[] {
 
   const possibleSvgStart = parts[svgIndex] ?? "";
 
-  if (!possibleSvgStart.includes("<svg")) {
+  if (!/<svg\b/i.test(possibleSvgStart)) {
     return parts;
   }
 
-  const svgEndIndex = parts.findIndex(
-    (part, index) => index >= svgIndex && part.includes("</svg>"),
-  );
+  let svgDepth = 0;
+  let svgEndIndex = -1;
+
+  for (let index = svgIndex; index < parts.length; index += 1) {
+    const part = parts[index] ?? "";
+    const openingTags = part.match(/<svg\b/gi)?.length ?? 0;
+    const closingTags = part.match(/<\/svg\s*>/gi)?.length ?? 0;
+
+    svgDepth += openingTags - closingTags;
+
+    if (svgDepth === 0 && closingTags > 0) {
+      svgEndIndex = index;
+      break;
+    }
+  }
 
   if (svgEndIndex <= svgIndex) {
     return parts;

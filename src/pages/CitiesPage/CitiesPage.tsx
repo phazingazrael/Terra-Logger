@@ -7,21 +7,13 @@ import {
 	Container,
 	FormControl,
 	FormControlLabel,
-	Grid,
 	InputLabel,
 	MenuItem,
 	OutlinedInput,
 	Select,
 	Typography,
 } from "@mui/material";
-import {
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-	lazy,
-	useDeferredValue,
-} from "react";
+import { useEffect, useMemo, useState, lazy, useDeferredValue } from "react";
 import { useDB } from "../../db/DataContext";
 import { getAllTags } from "../../components/Tags/Tags";
 
@@ -31,11 +23,9 @@ import BookLoader from "../../components/Util/bookLoader";
 
 import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
 import type { Tag } from "../../definitions/Common";
+import { VirtualizedCardGrid } from "../../components/Virtualized";
 
 const CityCard = lazy(() => import("../../components/Cards/city"));
-const CityCardSkeleton = lazy(
-	() => import("../../components/Cards/citySkeleton"),
-);
 
 type CountryListItem = {
 	name: string;
@@ -72,18 +62,6 @@ function CitiesPage() {
 				}))
 				.sort((a, b) => (a.name > b.name ? 1 : -1)),
 		[countries],
-	);
-
-	const contentElRef = useRef<HTMLElement | null>(null);
-
-	// Pagination
-	const [visibleCount, setVisibleCount] = useState(25);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
-	const SKELETON_COUNT = 25;
-
-	const skeletonItems = useMemo(
-		() => Array.from({ length: SKELETON_COUNT }),
-		[],
 	);
 
 	// Filtering
@@ -206,61 +184,6 @@ function CitiesPage() {
 		setOnlyCapitals(false);
 		setSelectedGovForm("");
 	};
-
-	useEffect(() => {
-		setVisibleCount(50);
-	}, []);
-
-	const visibleCities = useMemo(
-		() => filteredCities.slice(0, visibleCount),
-		[filteredCities, visibleCount],
-	);
-
-	const loadMore = () => {
-		if (isLoadingMore) return;
-
-		setIsLoadingMore(true);
-
-		// simulate async (or use real delay if needed)
-		setTimeout(() => {
-			setVisibleCount((prev) => prev + 50);
-			setIsLoadingMore(false);
-		}, 100); // small delay so skeletons are visible
-	};
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: adding it causes "changes on render" warning
-	useEffect(() => {
-		// Try ID first (you already use it), fallback to class
-		contentElRef.current = document.querySelector(".Content");
-		const el = contentElRef.current;
-		if (!el) return;
-
-		let ticking = false;
-		loadMore();
-
-		const handleScroll = () => {
-			if (ticking) return;
-			ticking = true;
-
-			requestAnimationFrame(() => {
-				const scrollTop = el.scrollTop;
-				const visibleHeight = el.clientHeight;
-				const totalHeight = el.scrollHeight;
-
-				if (scrollTop + visibleHeight >= totalHeight - 300) {
-					loadMore();
-				}
-
-				ticking = false;
-			});
-		};
-
-		el.addEventListener("scroll", handleScroll);
-
-		return () => {
-			el.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
 
 	return (
 		<Container>
@@ -394,24 +317,12 @@ function CitiesPage() {
 						</Typography>
 					</div>
 				) : (
-					<Grid container spacing={2}>
-						{visibleCities.map((city) => (
-							<Grid size={3} key={city._id}>
-								<CityCard {...city} />
-							</Grid>
-						))}
-
-						{/* Skeletons while loading */}
-						{isLoadingMore &&
-							skeletonItems.map(() => (
-								<Grid
-									size={3}
-									key={`skeleton-${Math.random().toString(36).substring(2)}`}
-								>
-									<CityCardSkeleton />
-								</Grid>
-							))}
-					</Grid>
+					<VirtualizedCardGrid
+						items={filteredCities}
+						getKey={(city) => city._id}
+						renderItem={(city) => <CityCard {...city} />}
+						estimateRowHeight={390}
+					/>
 				)}
 			</div>
 		</Container>

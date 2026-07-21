@@ -43,6 +43,27 @@ function CityView() {
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
+	const relatedLookups = useMemo(
+		() => ({
+			citiesByCountryId: cities.reduce((map, relatedCity) => {
+				const countryId = relatedCity.country?._id;
+				if (!countryId) return map;
+				const group = map.get(countryId);
+				if (group) group.push(relatedCity);
+				else map.set(countryId, [relatedCity]);
+				return map;
+			}, new Map<string, TLCity[]>()),
+			countriesByEntityId: new Map(
+				countries.map((country) => [country._id, country]),
+			),
+			countriesByNumericId: new Map(
+				countries.map((country) => [country.id, country]),
+			),
+			tagsById: new Map(tags.map((tag) => [tag._id, tag])),
+		}),
+		[cities, countries, tags],
+	);
+
 	const cityAdapter = useMemo(() => getAtlasAdapter("city"), []);
 
 	const cityContent = useMemo(() => {
@@ -72,18 +93,14 @@ function CityView() {
 				notes,
 				tags,
 			},
+			relatedLookups,
 		};
-	}, [city, notes, cities, countries, cultures, tags]);
+	}, [city, notes, cities, countries, cultures, tags, relatedLookups]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");
 		if (el) el.scrollTo({ top: 0, behavior: "auto" });
 	}, []);
-
-	console.log(
-		"City description section:",
-		cityContent?.sections.find((section) => section.title === "Description"),
-	);
 
 	function handleSaveCityAtlasContent(
 		payload: AtlasPageEditorSavePayload<"city">,
@@ -110,7 +127,6 @@ function CityView() {
 				};
 
 				await update("cities", String(updatedCity._id), updatedCity);
-				console.log("Atlas related updates on save:", payload.relatedUpdates);
 				await saveAtlasRelatedUpdates({
 					updates: payload.relatedUpdates,
 					entity: updatedCity,

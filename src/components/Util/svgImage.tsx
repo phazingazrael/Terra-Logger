@@ -1,16 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 
 function normalizeSvgForImage(svg: string): string {
 	let next = svg.trim();
 
-	if (!next.startsWith("<svg")) {
-		return next;
-	}
-
+	if (!next.startsWith("<svg")) return next;
 	if (!next.includes("xmlns=")) {
 		next = next.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
 	}
-
 	if (!next.includes("xmlns:xlink=")) {
 		next = next.replace(
 			"<svg",
@@ -21,7 +17,7 @@ function normalizeSvgForImage(svg: string): string {
 	return next;
 }
 
-export function SvgImage({
+export const SvgImage = memo(function SvgImage({
 	svg,
 	className,
 	alt = "SVG image",
@@ -30,30 +26,12 @@ export function SvgImage({
 	className?: string;
 	alt?: string;
 }>) {
-	const normalizedSvg = useMemo(() => {
+	const source = useMemo(() => {
 		if (!svg) return null;
-		return normalizeSvgForImage(svg);
+		const normalizedSvg = normalizeSvgForImage(svg);
+		return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(normalizedSvg)}`;
 	}, [svg]);
 
-	const [url, setUrl] = useState<string | null>(null);
-
-	useEffect(() => {
-		if (!normalizedSvg) {
-			setUrl(null);
-			return;
-		}
-
-		const blob = new Blob([normalizedSvg], {
-			type: "image/svg+xml;charset=utf-8",
-		});
-
-		const objectUrl = URL.createObjectURL(blob);
-		setUrl(objectUrl);
-
-		return () => URL.revokeObjectURL(objectUrl);
-	}, [normalizedSvg]);
-
-	if (!url) return null;
-
-	return <img className={className} src={url} alt={alt} />;
-}
+	if (!source) return null;
+	return <img className={className} src={source} alt={alt} loading="lazy" />;
+});

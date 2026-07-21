@@ -9,7 +9,6 @@ import {
 	Avatar,
 	Box,
 } from "@mui/material";
-import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
 
 import { getPoliticalColor, getPoliticalIcon } from "../Util/countryUtils";
@@ -18,6 +17,7 @@ import type { Context } from "../../definitions/Common";
 import type { TLCountry } from "../../definitions/TerraLogger";
 
 import "./cards.css";
+import { SvgImage } from "../Util/svgImage";
 
 function CountryCard(props: Readonly<TLCountry>) {
 	const country = props;
@@ -54,10 +54,10 @@ function CountryCard(props: Readonly<TLCountry>) {
 				variant="rounded"
 				title={ImageAlt}
 			>
-				<div
+				<SvgImage
+					svg={country.coaSVG}
 					className="svg-container CoA"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is safe, Generated locally from data
-					dangerouslySetInnerHTML={{ __html: country.coaSVG }}
+					alt={`${country.name} coat of arms`}
 				/>
 			</Avatar>
 
@@ -154,10 +154,10 @@ function CountryCard(props: Readonly<TLCountry>) {
 						<>
 							Tags:
 							<br />
-							{country.tags.map((tag) => (
+							{country.tags.map((tag, index) => (
 								<Chip
 									size="small"
-									key={`${tag.Name}-${uuidv7()}`}
+									key={`tag-${index}-${tag._id}`}
 									label={tag.Name}
 								/>
 							))}

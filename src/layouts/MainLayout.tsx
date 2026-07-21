@@ -91,7 +91,6 @@ const dark = createTheme({
 
 function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
-	const [Theme, setTheme] = useState({});
 	const { activeMapId } = useDB();
 	const [themeName, setThemeName] = useState<"light" | "dark">("light");
 	const navigate = useNavigate();
@@ -142,11 +141,9 @@ function MainLayout() {
 			if (themeName === "dark") {
 				// Add class "dark" to the root element
 				rootElement.classList.add("dark");
-				setTheme(dark);
 			} else {
 				// Remove class "dark" from the root element
 				rootElement.classList.remove("dark");
-				setTheme(light);
 			}
 		}
 		/**
@@ -204,7 +201,12 @@ function MainLayout() {
 							<NavTrail />
 							<div className="contentBody">
 								<Outlet
-									context={{ Theme, mapsList, setThemeName, reloadMapsList }}
+									context={{
+										Theme: selectedTheme,
+										mapsList,
+										setThemeName,
+										reloadMapsList,
+									}}
 								/>
 							</div>
 						</ContentMain>

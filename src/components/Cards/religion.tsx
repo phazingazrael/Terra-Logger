@@ -9,7 +9,6 @@ import {
 	Avatar,
 	Box,
 } from "@mui/material";
-import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
 
 import { getFormColor, getFormIcon, getTypeColor } from "../Util/religionUtils";
@@ -159,10 +158,10 @@ function ReligionCard(props: Readonly<TLReligion>) {
 						<>
 							Tags:
 							<br />
-							{religion.tags.map((tag) => (
+							{religion.tags.map((tag, index) => (
 								<Chip
 									size="small"
-									key={`${tag.Name}-${uuidv7()}`}
+									key={`tag-${index}-${tag._id}`}
 									label={tag.Name}
 								/>
 							))}

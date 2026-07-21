@@ -23,14 +23,26 @@ function ExportPage() {
 	const Notes = useActive<TLNote>("notes");
 	const Religions = useActive<TLReligion>("religions");
 
+	const citiesByCountryName = useMemo(() => {
+		const byName = new Map<string, TLCity[]>();
+		for (const city of Cities) {
+			const countryName = city.country?.name;
+			if (!countryName) continue;
+			const existing = byName.get(countryName);
+			if (existing) existing.push(city);
+			else byName.set(countryName, [city]);
+		}
+		return byName;
+	}, [Cities]);
+
 	// Attach cities to countries, excluding "Unknown"
 	const Countries = useMemo<TLCountry[]>(() => {
 		if (!CountriesRaw.length) return [];
 		return CountriesRaw.filter((c) => c.name !== "Unknown").map((country) => ({
 			...country,
-			cities: Cities.filter((city) => city.country?.name === country.name),
+			cities: citiesByCountryName.get(country.name) ?? [],
 		}));
-	}, [CountriesRaw, Cities]);
+	}, [CountriesRaw, citiesByCountryName]);
 
 	// TODO: Enable choosing what is exported
 	const data: DataSets = {

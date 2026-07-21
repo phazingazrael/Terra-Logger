@@ -74,9 +74,8 @@ const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
 					<Accordion
 						disableGutters
 						expanded={expanded}
-						onChange={(event, isExpanded) => {
+						onChange={(_event, isExpanded) => {
 							handleAccordionChange(isExpanded);
-							console.info(event);
 						}}
 					>
 						<AccordionSummary expandIcon={<ExpandMoreIcon />}>

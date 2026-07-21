@@ -1,8 +1,9 @@
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
 import { useEffect, lazy } from "react";
 import { useDB } from "../../db/DataContext";
 
 import type { TLCulture } from "../../definitions/TerraLogger";
+import { VirtualizedCardGrid } from "../../components/Virtualized";
 
 const CultureCard = lazy(() => import("../../components/Cards/culture"));
 
@@ -18,13 +19,15 @@ function CulturesPage() {
 	return (
 		<Container>
 			<div className="contentSubBody CulturesPage">
-				<Grid container spacing={2}>
-					{cultures.map((entry) => (
-						<Grid size={3} key={entry._id} id={entry._id}>
+				<VirtualizedCardGrid
+					items={cultures}
+					getKey={(entry) => entry._id}
+					renderItem={(entry) => (
+						<div id={entry._id}>
 							<CultureCard {...entry} />
-						</Grid>
-					))}
-				</Grid>
+						</div>
+					)}
+				/>
 			</div>
 		</Container>
 	);

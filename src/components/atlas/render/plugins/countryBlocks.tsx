@@ -238,6 +238,9 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 											>
 												<Link
 													to={`/view_country/${
+														context.relatedLookups?.countriesByNumericId?.get(
+															relation.id,
+														)?._id ??
 														countries?.find((c) => c.id === relation.id)?._id
 													}`}
 												>

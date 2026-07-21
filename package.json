@@ -11,10 +11,11 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "tsc && vite",
-    "build": "tsc && vite build",
+    "dev": "node scripts/generate-release-changes.mjs && tsc && vite",
+    "build": "node scripts/generate-release-changes.mjs && tsc && vite build",
     "preview": "vite preview",
-    "changelog": "node scripts/release-changelog.mjs",
+    "changes:generate": "node scripts/generate-release-changes.mjs",
+    "changelog": "node scripts/release-changelog.mjs && node scripts/generate-release-changes.mjs",
     "changelog:dry": "node scripts/release-changelog.mjs --dry-run",
     "release:changelog": "node scripts/release-changelog.mjs --commit --tag --push"
   },
@@ -24,6 +25,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@phosphor-icons/react": "^2.1.10",
+    "@tanstack/react-virtual": "^3.14.7",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "dompurify": "^3.3.3",

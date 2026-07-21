@@ -1,13 +1,71 @@
-.NotesPage .noteGrid {
-  max-height: 50dvh;
-  overflow: auto;
-  padding-right: 1dvw;
-  padding-left: 1dvw;
-  padding-top: 1dvh;
-  background-blend-mode: color-burn;
-  background: rgb(190 190 190 / 25%);
+.notes-filter-container {
+	display: block;
+	padding: 0.5rem;
 }
 
-.NotesPage .noteType {
-  text-transform: capitalize;
+.notes-filter-row {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.notes-search-input {
+	height: 2.5rem;
+	width: min(50%, 42rem);
+	background-color: #ffffff;
+	border-radius: 0.375rem;
+	border: 2px solid #d1d5db;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+}
+
+.notes-search-input:focus {
+	outline: none;
+	border-color: #6b7280;
+	box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.5);
+}
+
+.notes-search-input::placeholder {
+	color: #6b7280;
+}
+
+.note-type-chips {
+	display: flex;
+	width: 100%;
+	gap: 0.5rem;
+	overflow-x: auto;
+	padding: 0.5rem 0 0.25rem;
+}
+
+.note-type-chips .MuiChip-root {
+	flex: 0 0 auto;
+}
+
+.note-type-chips .selected {
+	background-color: #6b7280;
+	color: #ffffff;
+	border-color: #ffffff;
+}
+
+.NotesPage .no-results {
+	display: flex;
+	justify-content: center;
+	margin-top: 2rem;
+	margin-bottom: 15dvh;
+}
+
+.NotesPage .BookLoader {
+	max-height: 44dvh;
+	padding-top: 0;
+}
+
+@media (max-width: 700px) {
+	.notes-filter-row {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.notes-search-input {
+		width: 100%;
+	}
 }

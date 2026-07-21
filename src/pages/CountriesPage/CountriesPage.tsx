@@ -1,8 +1,9 @@
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
 import { lazy, useEffect, useMemo } from "react";
 import { useDB } from "../../db/DataContext";
 
 import type { TLCountry } from "../../definitions/TerraLogger";
+import { VirtualizedCardGrid } from "../../components/Virtualized";
 
 const CountryCard = lazy(() => import("../../components/Cards/country"));
 
@@ -21,13 +22,15 @@ function CountriesPage() {
 	return (
 		<Container>
 			<div className="contentSubBody CountriesPage">
-				<Grid container spacing={2}>
-					{sortedCountries.map((entry) => (
-						<Grid size={3} key={entry._id} id={entry._id}>
-							<CountryCard {...entry} />
-						</Grid>
-					))}
-				</Grid>
+				<VirtualizedCardGrid
+					items={sortedCountries}
+					getKey={(country) => country._id}
+					renderItem={(country) => (
+						<div id={country._id}>
+							<CountryCard {...country} />
+						</div>
+					)}
+				/>
 			</div>
 		</Container>
 	);

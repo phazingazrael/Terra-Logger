@@ -9,7 +9,6 @@ import {
 	Avatar,
 	Box,
 } from "@mui/material";
-import { v7 as uuidv7 } from "uuid";
 import { Link, useOutletContext } from "react-router-dom";
 
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -18,6 +17,7 @@ import type { Context } from "../../definitions/Common";
 import type { TLCity } from "../../definitions/TerraLogger";
 
 import "./cards.css";
+import { SvgImage } from "../Util/svgImage";
 import {
 	getFeatureIcon,
 	getSettlementColor,
@@ -57,10 +57,10 @@ function CityCard(props: Readonly<TLCity>) {
 				variant="rounded"
 				title={ImageAlt}
 			>
-				<div
+				<SvgImage
+					svg={city.coaSVG}
 					className="svg-container CoA"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is safe, Generated locally from data
-					dangerouslySetInnerHTML={{ __html: city.coaSVG }}
+					alt={`${city.name} coat of arms`}
 				/>
 			</Avatar>
 
@@ -140,9 +140,9 @@ function CityCard(props: Readonly<TLCity>) {
 					) : null}
 
 					{city.features && city.features.length > 0
-						? city.features.map((feature) => (
+						? city.features.map((feature, index) => (
 								<Chip
-									key={`${feature}-${uuidv7()}`}
+									key={`feature-${index}-${feature}`}
 									label={feature || "Unknown"}
 									size="small"
 									sx={{

@@ -1,4 +1,5 @@
 /* Fix SVG image aspect ratio */
+/** biome-ignore-all lint/complexity/noImportantStyles: used for overrides */
 .CitiesPage .MuiAvatar-root svg,
 .CitiesPage .MuiAvatar-root img,
 .CountriesPage .MuiAvatar-root svg,
@@ -35,6 +36,10 @@
 }
 
 /* note styles */
+.note-card {
+  border-radius: 15px;
+}
+
 .note-card a {
   display: flex;
   flex-direction: column;
@@ -42,6 +47,29 @@
 }
 
 .note-name {
-  text-wrap: auto;
-  overflow: auto;
+    text-wrap: auto;
+    overflow: auto;
+    background: rgba(131, 9, 172, 0.37);
+
+}
+
+/* Existing Terra-Logger note types */
+.note-name.note-type-city, .note-name.note-type-burg {
+  background-color: rgba(25, 118, 210, 0.37);
+}
+
+.note-name.note-type-country, .note-name.note-type-state {
+  background-color: rgba(46, 125, 50, 0.37);
+}
+
+.note-name.note-type-label {
+  background-color: rgba(106, 27, 154, 0.37);
+}
+
+.note-name.note-type-regiment {
+  background-color: rgba(183, 28, 28, 0.37);
+}
+
+.note-name.note-type-marker {
+  background-color: rgba(239, 108, 0, 0.37);
 }

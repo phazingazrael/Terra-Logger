@@ -12,6 +12,122 @@ import type { AppInfo } from "./definitions/AppInfo";
 import "./App.css";
 import { BookLoader, handleSvgReplace } from "./components/Util";
 
+const router = createBrowserRouter([
+	{
+		path: "/",
+		async lazy() {
+			const [{ default: MainLayout }, { default: ErrorBoundary }] =
+				await Promise.all([
+					import("./layouts/MainLayout"),
+					import("./pages/ErrorPage/ErrorPage"),
+				]);
+			return { Component: MainLayout, ErrorBoundary };
+		},
+		children: [
+			{
+				index: true,
+				lazy: () =>
+					import("./pages/HomePage/HomePage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "settings",
+				lazy: () =>
+					import("./pages/Settings/Settings").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "countries",
+				lazy: () =>
+					import("./pages/CountriesPage/CountriesPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "cities",
+				lazy: () =>
+					import("./pages/CitiesPage/CitiesPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "religions",
+				lazy: () =>
+					import("./pages/ReligionsPage/ReligionsPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "notes",
+				lazy: () =>
+					import("./pages/Notes/Notes").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "cultures",
+				lazy: () =>
+					import("./pages/CulturesPage/CulturesPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "export",
+				lazy: () =>
+					import("./pages/ExportPage/export").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "about",
+				lazy: () =>
+					import("./pages/AboutPage/AboutPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			// Viewing Pages
+			{
+				path: "view_city/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/city").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "view_country/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/country").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "view_religion/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/religion").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "view_note/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/note").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "view_culture/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/culture").then((m) => ({
+						Component: m.default,
+					})),
+			},
+		],
+		HydrateFallback: () => <div>Loading...</div>,
+	},
+]);
+
 const App = (): JSX.Element => {
 	const { useActiveMap } = useDB();
 	const activeMap = useActiveMap<MapInf>();
@@ -86,122 +202,6 @@ const App = (): JSX.Element => {
 
 	// avoid layout flash while classifying device or loading settings
 	if (device === "unknown" || !settingsLoaded) return <BookLoader />;
-
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			async lazy() {
-				const [{ default: MainLayout }, { default: ErrorBoundary }] =
-					await Promise.all([
-						import("./layouts/MainLayout"),
-						import("./pages/ErrorPage/ErrorPage"),
-					]);
-				return { Component: MainLayout, ErrorBoundary };
-			},
-			children: [
-				{
-					index: true,
-					lazy: () =>
-						import("./pages/HomePage/HomePage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "settings",
-					lazy: () =>
-						import("./pages/Settings/Settings").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "countries",
-					lazy: () =>
-						import("./pages/CountriesPage/CountriesPage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "cities",
-					lazy: () =>
-						import("./pages/CitiesPage/CitiesPage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "religions",
-					lazy: () =>
-						import("./pages/ReligionsPage/ReligionsPage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "notes",
-					lazy: () =>
-						import("./pages/Notes/Notes").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "cultures",
-					lazy: () =>
-						import("./pages/CulturesPage/CulturesPage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "export",
-					lazy: () =>
-						import("./pages/ExportPage/export").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "about",
-					lazy: () =>
-						import("./pages/AboutPage/AboutPage").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				// Viewing Pages
-				{
-					path: "view_city/:_id",
-					lazy: () =>
-						import("./pages/ViewingPages/city").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "view_country/:_id",
-					lazy: () =>
-						import("./pages/ViewingPages/country").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "view_religion/:_id",
-					lazy: () =>
-						import("./pages/ViewingPages/religion").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "view_note/:_id",
-					lazy: () =>
-						import("./pages/ViewingPages/note").then((m) => ({
-							Component: m.default,
-						})),
-				},
-				{
-					path: "view_culture/:_id",
-					lazy: () =>
-						import("./pages/ViewingPages/culture").then((m) => ({
-							Component: m.default,
-						})),
-				},
-			],
-			HydrateFallback: () => <div>Loading...</div>,
-		},
-	]);
 
 	if (isHandheld) {
 		if (appSettings?.forceMobile !== true) {

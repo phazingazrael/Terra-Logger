@@ -33,7 +33,68 @@ import type {
 	TLCountry,
 	TLCulture,
 } from "../../../../definitions/TerraLogger";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
+
+type RichTextRendererProps = {
+	value: unknown;
+	emptyText: string;
+};
+
+const RichTextRenderer = memo(function RichTextRenderer({
+	value,
+	emptyText,
+}: Readonly<RichTextRendererProps>) {
+	const text = useMemo(() => readPlainTextFromRichTextValue(value), [value]);
+	const sanitized = useMemo(() => {
+		if (!text) return "";
+		return DOMPurify.sanitize(richTextJsonToHtml(value), {
+			USE_PROFILES: { html: true },
+			ADD_ATTR: ["target", "rel"],
+		});
+	}, [text, value]);
+
+	if (!text) return <p>{emptyText}</p>;
+	return (
+		<div
+			className="atlas-rich-text"
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized Atlas rich text HTML
+			dangerouslySetInnerHTML={{ __html: sanitized }}
+		/>
+	);
+});
+
+const DescriptionRenderer = memo(function DescriptionRenderer({
+	context,
+	emptyText,
+}: Readonly<{ context: AtlasRenderContext; emptyText: string }>) {
+	const description = useMemo(
+		() => resolveGenericDescription(context),
+		[context],
+	);
+	const sanitized = useMemo(() => {
+		if (!description.value || description.format !== "html") return "";
+		return DOMPurify.sanitize(description.value, {
+			USE_PROFILES: { html: true },
+			ADD_ATTR: ["target", "rel"],
+		});
+	}, [description]);
+
+	if (!description.value) return <p>{emptyText}</p>;
+	if (description.format === "html") {
+		return (
+			<div
+				className="atlas-description atlas-description--html"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized description HTML
+				dangerouslySetInnerHTML={{ __html: sanitized }}
+			/>
+		);
+	}
+	return (
+		<p className="atlas-description atlas-description--text">
+			{description.value}
+		</p>
+	);
+});
 
 type SplitListRenderGroup = {
 	name: string;
@@ -212,24 +273,10 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					? getEntityValue(context, block.binding?.entityPath)
 					: block.props.json;
 
-			const text = readPlainTextFromRichTextValue(value);
-
-			if (!text) {
-				return <p>{(block.props.emptyText ?? "No text listed.") as string}</p>;
-			}
-
-			const sanitized = DOMPurify.sanitize(richTextJsonToHtml(value), {
-				USE_PROFILES: {
-					html: true,
-				},
-				ADD_ATTR: ["target", "rel"],
-			});
-
 			return (
-				<div
-					className="atlas-rich-text"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized Atlas rich text HTML
-					dangerouslySetInnerHTML={{ __html: sanitized }}
+				<RichTextRenderer
+					value={value}
+					emptyText={String(block.props.emptyText ?? "No text listed.")}
 				/>
 			);
 		},
@@ -237,42 +284,12 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	description: {
 		type: "description",
 		label: "Description",
-		Render: ({ block, context }) => {
-			const description = resolveGenericDescription(context);
-
-			if (!description.value) {
-				return (
-					<p>
-						{(block.props.emptyText ?? "No description available.") as string}
-					</p>
-				);
-			}
-
-			if (description.format === "html") {
-				const sanitized = DOMPurify.sanitize(description.value, {
-					USE_PROFILES: {
-						html: true,
-					},
-					ADD_ATTR: ["target", "rel"],
-				});
-
-				return (
-					<div
-						className="atlas-description atlas-description--html"
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: domPUrify in effect
-						dangerouslySetInnerHTML={{
-							__html: sanitized,
-						}}
-					/>
-				);
-			}
-
-			return (
-				<p className="atlas-description atlas-description--text">
-					{description.value}
-				</p>
-			);
-		},
+		Render: ({ block, context }) => (
+			<DescriptionRenderer
+				context={context}
+				emptyText={String(block.props.emptyText ?? "No description available.")}
+			/>
+		),
 	},
 	detailsList: {
 		type: "detailsList",
@@ -364,12 +381,15 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				const Country = context?.entity as TLCountry;
 				const Cities = Country.cities;
 				const dbCities = context?.related?.cities as TLCity[];
-				let cities: TLCity[] = [];
-				if (dbCities) {
-					cities = dbCities.filter(
-						(city) => city.country?._id === context?.entity?._id,
-					);
-				}
+				const lookupCities = context.relatedLookups?.citiesByCountryId?.get(
+					String(context.entity._id),
+				);
+				const cities =
+					lookupCities ??
+					dbCities?.filter(
+						(city) => city.country?._id === context.entity._id,
+					) ??
+					[];
 
 				const cityItems = sortCountryCitiesForRenderer(
 					Array.isArray(Cities) && Cities.length ? Cities : cities,
@@ -541,11 +561,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			let UrbanPopulation = "" as string | undefined;
 			let RuralPopulation = "" as string | undefined;
 			let Title = "" as string | undefined;
-			console.log(context);
 			if (context?.sourceType === "culture") {
 				const culture = context.entity as TLCulture;
-				console.log("urban", culture.urbanPop);
-				console.log("rural", culture.ruralPop);
 				UrbanPopulation = culture.urbanPop;
 				RuralPopulation = culture.ruralPop;
 				Title = "Population";

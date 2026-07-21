@@ -31,19 +31,7 @@ type HomeChangeSummaryConfig = {
 
 const HOME_CHANGE_SUMMARY_CONFIG: HomeChangeSummaryConfig = {
 	includeTypes: ["feat", "fix", "perf", "refactor"],
-	includeScopes: [
-		"atlas",
-		"editor",
-		"editing",
-		"export",
-		"markdown",
-		"boti",
-		"upload",
-		"worker",
-		"changelog",
-		"home",
-		"about",
-	],
+	includeScopes: [],
 	includeCommitIds: [
 		// Add full or short hashes here when you want a specific commit included,
 		// even if it does not match the type/scope filters.

@@ -1,15 +1,16 @@
+import { AppBar, Button, Chip, Container, Typography } from "@mui/material";
 import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	Container,
-	Grid,
-	Typography,
-} from "@mui/material";
-import { useEffect, useMemo, Suspense, lazy } from "react";
-import { useDB } from "../../db/DataContext";
-
+	lazy,
+	Suspense,
+	useDeferredValue,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useState,
+} from "react";
 import { BookLoader } from "../../components/Util";
+import { VirtualizedCardGrid } from "../../components/Virtualized";
+import { useDB } from "../../db/DataContext";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 
@@ -17,70 +18,150 @@ const NoteCard = lazy(() => import("../../components/Cards/note"));
 
 import "./Notes.css";
 
+type NoteTypeOption = {
+	id: string;
+	label: string;
+	count: number;
+};
+
+function getNoteType(note: TLNote): string {
+	return note.id.replace(/\d+|-/g, "") || note.type || "other";
+}
+
+function formatNoteType(type: string): string {
+	if (type === "burg") return "City";
+	if (type === "state" || type === "stateLabel") return "Country";
+
+	return type
+		.replace(/([a-z])([A-Z])/g, "$1 $2")
+		.replace(/[_-]+/g, " ")
+		.replace(/^./, (character) => character.toUpperCase());
+}
+
 function NotesPage() {
-	// state management from DBProvider
 	const { useActive, activeMapId } = useDB();
 	const notes = useActive<TLNote>("notes");
 
-	const idTypes = useMemo(
-		() =>
-			Array.from(new Set(notes.map((note) => note.id.replace(/\d+|-/g, "")))),
-		[notes],
-	);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedType, setSelectedType] = useState<string | null>(null);
+	const deferredQuery = useDeferredValue(searchQuery.trim().toLowerCase());
+	const filterKey = `${activeMapId ?? "no-map"}:${selectedType ?? "all"}:${deferredQuery}`;
 
-	// On map change, scroll to top
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Map change should scroll to top
+	const noteTypes = useMemo<NoteTypeOption[]>(() => {
+		const counts = new Map<string, number>();
+
+		for (const note of notes) {
+			const type = getNoteType(note);
+			counts.set(type, (counts.get(type) ?? 0) + 1);
+		}
+
+		return Array.from(counts, ([id, count]) => ({
+			id,
+			label: formatNoteType(id),
+			count,
+		})).sort((a, b) => a.label.localeCompare(b.label));
+	}, [notes]);
+
+	const filteredNotes = useMemo(() => {
+		return notes.filter((note) => {
+			if (selectedType && getNoteType(note) !== selectedType) return false;
+
+			if (deferredQuery) {
+				const searchableText =
+					`${note.name ?? ""} ${note.legend ?? ""}`.toLowerCase();
+				if (!searchableText.includes(deferredQuery)) return false;
+			}
+
+			return true;
+		});
+	}, [deferredQuery, notes, selectedType]);
+
+	// Reset filters and scroll position whenever the active map changes.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: activeMapId intentionally controls the reset
 	useEffect(() => {
-		document.getElementById("Content")?.scrollTo({ top: 0 });
+		setSearchQuery("");
+		setSelectedType(null);
+		document.querySelector<HTMLElement>(".Content")?.scrollTo({ top: 0 });
 	}, [activeMapId]);
+
+	// A selected type can disappear after a note update or map data refresh.
+	useEffect(() => {
+		if (selectedType && !noteTypes.some((type) => type.id === selectedType)) {
+			setSelectedType(null);
+		}
+	}, [noteTypes, selectedType]);
+
+	// Filtering can leave the shared virtualizer at an offset that no longer
+	// exists in the smaller result set. Reset before paint and remount the grid
+	// through filterKey so stale row measurements cannot produce blank bands.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: filterKey intentionally controls the reset
+	useLayoutEffect(() => {
+		document.querySelector<HTMLElement>(".Content")?.scrollTo({ top: 0 });
+	}, [filterKey]);
+
+	const resetFilters = () => {
+		setSearchQuery("");
+		setSelectedType(null);
+	};
 
 	return (
 		<Container>
+			<AppBar position="sticky" color="default">
+				<div className="notes-filter-container">
+					<div className="notes-filter-row">
+						<input
+							className="notes-search-input"
+							placeholder="Search Notes..."
+							type="search"
+							value={searchQuery}
+							onChange={(event) => setSearchQuery(event.target.value)}
+						/>
+						<Button variant="contained" color="error" onClick={resetFilters}>
+							Reset Filters
+						</Button>
+					</div>
+
+					<div className="note-type-chips">
+						{noteTypes.map((type) => (
+							<Chip
+								clickable
+								key={type.id}
+								className={selectedType === type.id ? "selected" : ""}
+								label={`${type.label} (${type.count})`}
+								onClick={() =>
+									setSelectedType((current) =>
+										current === type.id ? null : type.id,
+									)
+								}
+							/>
+						))}
+					</div>
+				</div>
+			</AppBar>
+
 			<div className="contentSubBody NotesPage">
-				{/* Loading state while IndexedDB query resolves */}
 				{!notes.length ? (
 					<BookLoader />
-				) : notes.length === 0 ? (
-					<div
-						className="no-results"
-						style={{ display: "flex", justifyContent: "center", marginTop: 32 }}
-					>
+				) : filteredNotes.length === 0 ? (
+					<div className="no-results">
 						<Typography variant="h6" color="text.secondary">
-							No results found
+							No notes match the selected filters
 						</Typography>
 					</div>
 				) : (
 					<Suspense fallback={<BookLoader />}>
-						{idTypes.map((idType) => (
-							<Accordion key={idType}>
-								<AccordionSummary>
-									<Typography
-										color="text.secondary"
-										className="noteType"
-										variant="h5"
-									>
-										{idType === "burg"
-											? "city"
-											: idType === "state" || idType === "stateLabel"
-												? "country"
-												: idType}
-									</Typography>
-								</AccordionSummary>
-								<AccordionDetails>
-									<Grid container spacing={2} className="noteGrid">
-										{notes
-											.filter(
-												(note) => note.id.replace(/\d+|-/g, "") === idType,
-											)
-											.map((note) => (
-												<Grid size={2} key={note._id + note.name} id={note._id}>
-													<NoteCard {...note} />
-												</Grid>
-											))}
-									</Grid>
-								</AccordionDetails>
-							</Accordion>
-						))}
+						<VirtualizedCardGrid
+							key={filterKey}
+							items={filteredNotes}
+							getKey={(note) => note._id}
+							renderItem={(note) => (
+								<div id={note._id}>
+									<NoteCard {...note} />
+								</div>
+							)}
+							minColumnWidth={180}
+							estimateRowHeight={300}
+						/>
 					</Suspense>
 				)}
 			</div>
