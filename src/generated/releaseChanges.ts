@@ -31,18 +31,29 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.7",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.7",
-  "commitCount": 44,
+  "commitCount": 46,
   "majorChanges": [
     {
-      "hash": "94e116b6f953777167929d90d63be55d7b164312",
-      "shortHash": "94e116b",
+      "hash": "6625a0d4e6c42f30a586740a5c8eb33ea72337c8",
+      "shortHash": "6625a0d",
+      "date": "2026-07-21T23:24:20-06:00",
+      "subject": "refactor(NPC Generation): 📝 Refactor SSNG to be more inline with Terra-Logger standards",
+      "type": "refactor",
+      "scope": "NPC Generation",
+      "details": "📝 Refactor SSNG to be more inline with Terra-Logger standards",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6625a0d4e6c42f30a586740a5c8eb33ea72337c8"
+    },
+    {
+      "hash": "c94893cce51106d540c1ef753f35d1fff0d0688c",
+      "shortHash": "c94893c",
       "date": "2026-07-20T19:22:36-06:00",
       "subject": "perf: ⚡️ improve rendering performance, virtualize lists, and harden map import",
       "type": "perf",
       "scope": null,
       "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/94e116b6f953777167929d90d63be55d7b164312"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c"
     },
     {
       "hash": "b096b9b41bb1a9a36366f354d7af4d4af5ddebc1",
@@ -244,20 +255,43 @@ export const releaseChanges: ReleaseChanges = {
   ],
   "scopeOptions": [
     "Atlas Doc System",
+    "NPC Generation",
     "atlas",
     "cleanup"
   ],
   "commits": [
     {
-      "hash": "94e116b6f953777167929d90d63be55d7b164312",
-      "shortHash": "94e116b",
+      "hash": "6625a0d4e6c42f30a586740a5c8eb33ea72337c8",
+      "shortHash": "6625a0d",
+      "date": "2026-07-21T23:24:20-06:00",
+      "subject": "refactor(NPC Generation): 📝 Refactor SSNG to be more inline with Terra-Logger standards",
+      "type": "refactor",
+      "scope": "NPC Generation",
+      "details": "📝 Refactor SSNG to be more inline with Terra-Logger standards",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6625a0d4e6c42f30a586740a5c8eb33ea72337c8"
+    },
+    {
+      "hash": "f8ffb5e813cfdd3400d3187d055935ff0b5e9035",
+      "shortHash": "f8ffb5e",
+      "date": "2026-07-21T23:22:17-06:00",
+      "subject": "Update Export to use UUIDV7 instead of V4.",
+      "type": "other",
+      "scope": null,
+      "details": "Update Export to use UUIDV7 instead of V4.",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/f8ffb5e813cfdd3400d3187d055935ff0b5e9035"
+    },
+    {
+      "hash": "c94893cce51106d540c1ef753f35d1fff0d0688c",
+      "shortHash": "c94893c",
       "date": "2026-07-20T19:22:36-06:00",
       "subject": "perf: ⚡️ improve rendering performance, virtualize lists, and harden map import",
       "type": "perf",
       "scope": null,
       "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/94e116b6f953777167929d90d63be55d7b164312"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c"
     },
     {
       "hash": "7b7b1c1672067475f87b5434dcb6cf3048a4b8be",
@@ -733,5 +767,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-07-21T01:22:46.547Z"
+  "generatedAt": "2026-07-23T01:03:49.723Z"
 };
