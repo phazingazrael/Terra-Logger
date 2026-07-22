@@ -14,7 +14,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { v7 as uuidv7 } from "uuid";
 
 import LegacyTemplates from "./templates.json";
 import { getMarkdownDocumentTemplates } from "./builder/templateRegistry";
@@ -442,7 +442,7 @@ export function MarkdownExportPanel(props: {
 					{logs.length === 0 ? (
 						<div>{`[${new Date().toISOString().slice(0, 19).replace("T", " ")}] [{Ready}] ready. click “Export Markdown”.`}</div>
 					) : (
-						logs.map((line) => <div key={uuidv4()}>{line}</div>)
+						logs.map((line) => <div key={uuidv7()}>{line}</div>)
 					)}
 				</div>
 				<div style={{ marginTop: 8, fontSize: 12, color: "#374151" }}>
