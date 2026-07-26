@@ -48,10 +48,10 @@ import Lizardfolk_Female from "./names/lizard.f.json";
 import Lizardfolk_Surname from "./names/lizard.last.json";
 import Orc from "./names/orc.json";
 import OrcSurname from "./names/orc.last.json";
-import TiefFemale from "./names/tief.f.json";
-import TiefSurname from "./names/tief.last.json";
-import TiefMale from "./names/tief.m.json";
-import TiefNickname from "./names/tief.nick.json";
+import DemonkinFemale from "./names/demonkin.f.json";
+import DemonkinSurname from "./names/demonkin.last.json";
+import DemonkinMale from "./names/demonkin.m.json";
+import DemonkinNickname from "./names/demonkin.nick.json";
 
 //***********************************
 //*      CHARACTERISTICS LISTS      *
@@ -123,10 +123,10 @@ const Lizard_Male = Lizardfolk_Male as string[];
 const Lizard_Surname = Lizardfolk_Surname as string[];
 const Orc_Surname = OrcSurname as string[];
 const OrcNames = Orc as string[];
-const Demonkin_Female = TiefFemale as string[];
-const Demonkin_Male = TiefMale as string[];
-const Demonkin_Nickname = TiefNickname as string[];
-const Demonkin_Surname = TiefSurname as string[];
+const Demonkin_Female = DemonkinFemale as string[];
+const Demonkin_Male = DemonkinMale as string[];
+const Demonkin_Nickname = DemonkinNickname as string[];
+const Demonkin_Surname = DemonkinSurname as string[];
 
 //***********************************
 //*  CHARACTERISTICS LISTS          *
