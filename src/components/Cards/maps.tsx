@@ -1,7 +1,7 @@
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 
-import { rgbToRgba } from "../Util";
+import rgbToRgba from "../Util/rgb2rgba";
 
 import "./cards.css";
 import type { Context } from "../../definitions/Common";
@@ -17,7 +17,6 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 		themeColor = Theme.palette.primary.light;
 	}
 
-	const ImageAlt = "";
 	return (
 		<Card>
 			<CardMedia
@@ -26,9 +25,13 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 						? rgbToRgba(themeColor as string, 0.5 as number)
 						: "",
 				}}
-				title={ImageAlt}
+				title={info.name}
 			>
-				<input type="checkbox" onChange={() => handleMapSelect(id)} />
+				<input
+					type="checkbox"
+					aria-label={`Select map ${info.name}`}
+					onChange={() => handleMapSelect(id)}
+				/>
 			</CardMedia>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">

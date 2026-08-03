@@ -158,12 +158,8 @@ function ReligionCard(props: Readonly<TLReligion>) {
 						<>
 							Tags:
 							<br />
-							{religion.tags.map((tag, index) => (
-								<Chip
-									size="small"
-									key={`tag-${index}-${tag._id}`}
-									label={tag.Name}
-								/>
+							{religion.tags.map((tag) => (
+								<Chip size="small" key={`tag-${tag._id}`} label={tag.Name} />
 							))}
 						</>
 					)}

@@ -154,12 +154,8 @@ function CountryCard(props: Readonly<TLCountry>) {
 						<>
 							Tags:
 							<br />
-							{country.tags.map((tag, index) => (
-								<Chip
-									size="small"
-									key={`tag-${index}-${tag._id}`}
-									label={tag.Name}
-								/>
+							{country.tags.map((tag) => (
+								<Chip size="small" key={`tag-${tag._id}`} label={tag.Name} />
 							))}
 						</>
 					)}

@@ -8,7 +8,6 @@ import {
 	Avatar,
 	Box,
 } from "@mui/material";
-import { useMemo } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
 import type { TLCulture } from "../../definitions/TerraLogger";
@@ -21,17 +20,15 @@ function CultureCard(props: Readonly<TLCulture>) {
 
 	const { Theme }: Context = useOutletContext();
 
-	const totalPopulation = useMemo(() => {
-		const urbNum = Number.parseInt(
-			culture?.urbanPop?.replace(/,/g, "") ?? "0",
-			10,
-		);
-		const ruralNum = Number.parseInt(
-			culture?.ruralPop?.replace(/,/g, "") ?? "0",
-			10,
-		);
-		return ruralNum + urbNum;
-	}, [culture]);
+	const urbanPopulation = Number.parseInt(
+		culture?.urbanPop?.replace(/,/g, "") ?? "0",
+		10,
+	);
+	const ruralPopulation = Number.parseInt(
+		culture?.ruralPop?.replace(/,/g, "") ?? "0",
+		10,
+	);
+	const totalPopulation = urbanPopulation + ruralPopulation;
 
 	return (
 		<Card

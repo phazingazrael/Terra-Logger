@@ -140,9 +140,9 @@ function CityCard(props: Readonly<TLCity>) {
 					) : null}
 
 					{city.features && city.features.length > 0
-						? city.features.map((feature, index) => (
+						? city.features.map((feature) => (
 								<Chip
-									key={`feature-${index}-${feature}`}
+									key={`feature-${feature}`}
 									label={feature || "Unknown"}
 									size="small"
 									sx={{

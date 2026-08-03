@@ -5,7 +5,6 @@ import {
 	type ReactNode,
 	useEffect,
 	useLayoutEffect,
-	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -71,10 +70,7 @@ export function VirtualizedCardGrid<T>({
 		};
 	}, [scrollElement]);
 
-	const columnCount = useMemo(
-		() => getColumnCount(width, minColumnWidth, gap),
-		[gap, minColumnWidth, width],
-	);
+	const columnCount = getColumnCount(width, minColumnWidth, gap);
 	const rowCount = Math.ceil(items.length / columnCount);
 
 	const virtualizer = useVirtualizer({
@@ -94,7 +90,7 @@ export function VirtualizedCardGrid<T>({
 
 	useEffect(() => {
 		virtualizer.measure();
-	}, [columnCount, items, virtualizer]);
+	}, [virtualizer]);
 
 	return (
 		<Box
