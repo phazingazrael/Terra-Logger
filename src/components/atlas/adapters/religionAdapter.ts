@@ -16,13 +16,14 @@ function createReligionContent(entity: TLReligion): AtlasContent {
       entitySection("Membership", "section membership", [computedBlock("populationBlock", "Membership", "religion")], clear),
       sectionPreset("Overview", "section overview", [
         detailsListBlock([
-          { label: "Type", value: "type", valueMode: "entity" },
-          { label: "Form", value: "form", valueMode: "entity" },
-          { label: "Primary Deity", value: "deity", valueMode: "entity" },
+          { label: "Type", value: "type", valueMode: "entity", hideWhenEmpty: true },
+          { label: "Form", value: "form", valueMode: "entity", hideWhenEmpty: true },
+          { label: "Primary Deity", value: "deity", valueMode: "entity", hideWhenEmpty: true },
         ]),
         richTextBlock("Add a high-level summary of the faith and its core identity here."),
       ]),
 
+      entitySection("Religious Leaders", "section religious-leaders", [computedBlock("relatedNPCList", "Religious Leaders", "npc.relationships", { roleTitles: ["Religious Leader"], emptyText: "No religious leaders." })]),
       sectionPreset("Doctrine & Beliefs", "section doctrine-beliefs", [
         detailsListBlock([
           { label: "Deities / Domains", value: "[Deities, domains, tenets, prohibitions, and key rituals.]" },

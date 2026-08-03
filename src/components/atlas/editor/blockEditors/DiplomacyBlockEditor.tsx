@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
+import { Button } from "@mui/material";
 import type { AtlasEditorContext } from "../../../../definitions/Atlas";
 import type {
 	TLCountry,
 	TLDiplomacy,
 } from "../../../../definitions/TerraLogger";
-import { Button } from "@mui/material";
 
 const DIPLOMACY_PATH = "political.diplomacy";
 
@@ -28,44 +28,42 @@ export function DiplomacyBlockEditor({
 }) {
 	const diplomacy = getDiplomacyRelations(context.entity);
 	const countries = getCountryOptions(context);
-	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+	const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
+		null,
+	);
 	const [newCountryId, setNewCountryId] = useState("");
 	const [newStatus, setNewStatus] = useState("Neutral");
 
-	const visibleRelations = useMemo(
-		() =>
-			diplomacy
-				.map((relation, index) => ({ relation, index }))
-				.filter(({ relation }) => isVisibleDiplomacyRelation(relation)),
-		[diplomacy],
-	);
+	const visibleRelations = diplomacy.reduce<
+		Array<{ relation: TLDiplomacy; index: number }>
+	>((relations, relation, index) => {
+		if (isVisibleDiplomacyRelation(relation)) {
+			relations.push({ relation, index });
+		}
+		return relations;
+	}, []);
 
-	const statusOptions = useMemo(
-		() => getDiplomacyStatusOptions(diplomacy),
-		[diplomacy],
-	);
+	const statusOptions = getDiplomacyStatusOptions(diplomacy);
 
-	const activeCountryIds = useMemo(
-		() => new Set(visibleRelations.map(({ relation }) => relation.id)),
-		[visibleRelations],
+	const activeCountryIds = new Set(
+		visibleRelations.map(({ relation }) => relation.id),
 	);
 
 	const addableCountries = countries.filter(
 		(country) => !activeCountryIds.has(country.id),
 	);
 
-	const selectedRelation =
-		selectedIndex == null ? null : (diplomacy[selectedIndex] ?? null);
+	const selectedIndex =
+		selectedCountryId == null
+			? -1
+			: diplomacy.findIndex(
+					(relation) =>
+						relation.id === selectedCountryId &&
+						isVisibleDiplomacyRelation(relation),
+				);
 
-	useEffect(() => {
-		if (selectedIndex == null) return;
-
-		const relation = diplomacy[selectedIndex];
-
-		if (!relation || !isVisibleDiplomacyRelation(relation)) {
-			setSelectedIndex(null);
-		}
-	}, [diplomacy, selectedIndex]);
+	const selectedRelation = selectedIndex >= 0 ? diplomacy[selectedIndex] : null;
 
 	function setDiplomacy(nextDiplomacy: TLDiplomacy[]) {
 		context.onEntityFieldChange({
@@ -82,13 +80,25 @@ export function DiplomacyBlockEditor({
 		);
 	}
 
+	function changeSelectedRelation(index: number, nextRelation: TLDiplomacy) {
+		updateRelation(index, nextRelation);
+
+		if (nextRelation.id !== selectedCountryId) {
+			setSelectedCountryId(nextRelation.id);
+		}
+	}
+
 	function deactivateRelation(index: number) {
+		const relation = diplomacy[index];
+
+		if (!relation) return;
+
 		updateRelation(index, {
-			...diplomacy[index],
+			...relation,
 			status: "-",
 		});
 
-		setSelectedIndex(null);
+		setSelectedCountryId(null);
 	}
 
 	function addRelation() {
@@ -110,12 +120,11 @@ export function DiplomacyBlockEditor({
 
 		if (existingIndex >= 0) {
 			updateRelation(existingIndex, nextRelation);
-			setSelectedIndex(existingIndex);
 		} else {
 			setDiplomacy([...diplomacy, nextRelation]);
-			setSelectedIndex(diplomacy.length);
 		}
 
+		setSelectedCountryId(country.id);
 		setNewCountryId("");
 		setNewStatus("Neutral");
 	}
@@ -125,6 +134,7 @@ export function DiplomacyBlockEditor({
 			<header className="atlas-diplomacy-editor__header">
 				<div>
 					<strong>Diplomacy</strong>
+
 					<span>
 						{visibleRelations.length} active relation
 						{visibleRelations.length === 1 ? "" : "s"}
@@ -180,31 +190,31 @@ export function DiplomacyBlockEditor({
 			<label className="atlas-diplomacy-relation-select">
 				Choose relationship to edit
 				<select
-					value={selectedIndex == null ? "" : String(selectedIndex)}
+					value={selectedCountryId == null ? "" : String(selectedCountryId)}
 					onChange={(event) => {
 						const value = event.target.value;
-						setSelectedIndex(value ? Number(value) : null);
+
+						setSelectedCountryId(value ? Number(value) : null);
 					}}
 				>
 					<option value="">Select relationship...</option>
 
-					{visibleRelations.map(({ relation, index }) => (
-						<option key={`diplomacy-${relation.id}-${index}`} value={index}>
+					{visibleRelations.map(({ relation }) => (
+						<option key={`diplomacy-${relation.id}`} value={relation.id}>
 							{relation.name} — {relation.status}
 						</option>
 					))}
 				</select>
 			</label>
 
-			{selectedRelation && selectedIndex != null ? (
+			{selectedRelation && selectedIndex >= 0 ? (
 				<DiplomacyRelationEditor
 					relation={selectedRelation}
-					relationIndex={selectedIndex}
 					countries={countries}
 					activeCountryIds={activeCountryIds}
 					statusOptions={statusOptions}
 					onChange={(nextRelation) =>
-						updateRelation(selectedIndex, nextRelation)
+						changeSelectedRelation(selectedIndex, nextRelation)
 					}
 					onDeactivate={() => deactivateRelation(selectedIndex)}
 				/>
@@ -228,7 +238,6 @@ function DiplomacyRelationEditor({
 	onDeactivate,
 }: {
 	relation: TLDiplomacy;
-	relationIndex: number;
 	countries: CountryOption[];
 	activeCountryIds: Set<number>;
 	statusOptions: string[];
@@ -263,6 +272,7 @@ function DiplomacyRelationEditor({
 			<header className="atlas-diplomacy-relation-editor__header">
 				<div>
 					<strong>{relation.name || "Unnamed relationship"}</strong>
+
 					<span>{relation.status}</span>
 				</div>
 
@@ -290,7 +300,11 @@ function DiplomacyRelationEditor({
 					Display name
 					<input
 						value={relation.name ?? ""}
-						onChange={(event) => patchRelation({ name: event.target.value })}
+						onChange={(event) =>
+							patchRelation({
+								name: event.target.value,
+							})
+						}
 					/>
 				</label>
 
@@ -325,11 +339,14 @@ function getDiplomacyRelations(entity: unknown): TLDiplomacy[] {
 		};
 	};
 
-	if (!Array.isArray(country.political?.diplomacy)) return [];
+	if (!Array.isArray(country.political?.diplomacy)) {
+		return [];
+	}
 
-	return country.political.diplomacy
-		.map(normalizeDiplomacyRelation)
-		.filter((relation): relation is TLDiplomacy => Boolean(relation));
+	return country.political.diplomacy.flatMap((value) => {
+		const relation = normalizeDiplomacyRelation(value);
+		return relation ? [relation] : [];
+	});
 }
 
 function normalizeDiplomacyRelation(value: unknown): TLDiplomacy | null {
@@ -363,7 +380,9 @@ function getDiplomacyStatusOptions(diplomacy: TLDiplomacy[]): string[] {
 
 	for (const relation of diplomacy) {
 		if (!relation.status) continue;
-		if (isIgnoredDiplomacyStatus(relation.status)) continue;
+		if (isIgnoredDiplomacyStatus(relation.status)) {
+			continue;
+		}
 
 		statuses.add(relation.status);
 	}
@@ -375,11 +394,15 @@ function getCountryOptions(context: AtlasEditorContext): CountryOption[] {
 	const currentCountry = context.entity as Partial<TLCountry>;
 	const currentCountryId = toNumber(currentCountry.id);
 
-	return (context.related?.countries ?? [])
-		.map(normalizeCountryOption)
-		.filter((country): country is CountryOption => Boolean(country))
-		.filter((country) => country.id !== currentCountryId)
-		.sort((a, b) => a.name.localeCompare(b.name));
+	const countries: CountryOption[] = [];
+
+	for (const value of context.related?.countries ?? []) {
+		const country = normalizeCountryOption(value);
+		if (!country || country.id === currentCountryId) continue;
+		countries.push(country);
+	}
+
+	return countries.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function normalizeCountryOption(value: unknown): CountryOption | null {
@@ -401,7 +424,9 @@ function normalizeCountryOption(value: unknown): CountryOption | null {
 }
 
 function toNumber(value: unknown): number {
-	if (typeof value === "number" && Number.isFinite(value)) return value;
+	if (typeof value === "number" && Number.isFinite(value)) {
+		return value;
+	}
 
 	if (typeof value === "string") {
 		const parsed = Number(value);

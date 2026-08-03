@@ -7,6 +7,10 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	cityMapLink: {
 		type: "cityMapLink",
 		label: "City Map Link",
+		shouldRender: ({ context }) => {
+			const city = context.entity as { mapLink?: string };
+			return Boolean(city.mapLink?.trim());
+		},
 		Render: ({ block, context }) => {
 			const city = context.entity as { mapLink?: string };
 			if (!city.mapLink) return <p>No map link available.</p>;

@@ -13,6 +13,7 @@ import { LinkButtonBlockEditor } from "./blockEditors/LinkButtonBlockEditor";
 import { MembershipBlockEditor } from "./blockEditors/MembershipBlockEditor";
 import { MilitaryBlockEditor } from "./blockEditors/MilitaryBlockEditor";
 import { RichTextBlockEditor } from "./blockEditors/RichTextBlockEditor";
+import { RelationshipListBlockEditor } from "./blockEditors/RelationshipListBlockEditor";
 import { SplitListBlockEditor } from "./blockEditors/SplitListBlockEditor";
 
 export function BlockEditorSwitch({
@@ -24,6 +25,10 @@ export function BlockEditorSwitch({
 	context: AtlasEditorContext;
 	onChange: (block: AtlasBlock) => void;
 }) {
+	if (block.type === "relationship-list" || block.editor.editorType === "relationship-list") {
+		return <RelationshipListBlockEditor block={block} context={context} />;
+	}
+
 	if (isCountryCitiesMembershipBlock(block, context)) {
 		return <CountryCitiesMembershipEditor context={context} />;
 	}

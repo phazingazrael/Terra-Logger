@@ -40,6 +40,12 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	countryMilitary: {
 		type: "countryMilitary",
 		label: "Country Military",
+		shouldRender: ({ context }) => {
+			const country = context.entity as {
+				political?: { military?: unknown[] };
+			};
+			return Boolean(country.political?.military?.length);
+		},
 		Render: ({ context }) => {
 			const country = context.entity as {
 				political?: { military?: unknown[] };
@@ -179,6 +185,15 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	countryDiplomacy: {
 		type: "countryDiplomacy",
 		label: "Country Diplomacy",
+		shouldRender: ({ context }) => {
+			const country = context.entity as TLCountry;
+			return (country.political?.diplomacy ?? []).some(
+				(relation) =>
+					relation.status !== "-" &&
+					relation.status !== "x" &&
+					Boolean(relation.name?.trim()),
+			);
+		},
 		Render: ({ context }) => {
 			const country = context.entity as TLCountry;
 

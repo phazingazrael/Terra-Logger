@@ -20,9 +20,9 @@ function createCountryContent(entity: TLCountry): AtlasContent {
       entitySection("Military", "section military", [computedBlock("countryMilitary", "Military", "country.military")]),
       sectionPreset("Government & Power Structure", "section political-info", [
         detailsListBlock([
-          { label: "Government Type", value: "political.formName", valueMode: "entity", emptyText: "No government type listed." },
-          { label: "Capital", valueMode: "computed", resolver: "country.capitalCityName", emptyText: "No government capital listed.", },
-          { label: "Current Rulers", value: "[King, High Priestess, AI Overlord, Elder Council, etc.]" },
+          { label: "Government Type", value: "political.formName", valueMode: "entity", emptyText: "No government type listed.", hideWhenEmpty: true },
+          { label: "Capital", valueMode: "computed", resolver: "country.capitalCityName", emptyText: "No government capital listed.", hideWhenEmpty: true },
+          { label: "Current Rulers", valueMode: "computed", resolver: "country.currentRulers", emptyText: "No current rulers recorded.", hideWhenEmpty: true },
           { label: "Noble Houses & Factions", value: "[Major power groups, noble families, rival factions.]" },
           { label: "Laws & Justice System", value: "[Trial by combat? Magic-enforced law? A dystopian police state?]" },
           { label: "Corruption Level", value: "[Low, moderate, high, controlled by crime syndicates.]" }
@@ -43,7 +43,7 @@ function createCountryContent(entity: TLCountry): AtlasContent {
           },
         ]),
         detailsListBlock([
-          { label: "Economic Description", value: "economy.description", valueMode: "entity", emptyText: "No economic description listed." },
+          { label: "Economic Description", value: "economy.description", valueMode: "entity", emptyText: "No economic description listed.", hideWhenEmpty: true },
           { label: "Major Industries", value: "[Alchemy, soul-forging, mecha production, space mining, etc.]" },
           { label: "Currency and Trade", value: "[Gold coins, credits, mana crystals, barter system, etc.]" },
           { label: "Notable Guilds & Corporations", value: "[Merchant houses, cybernetic megacorps, thieves’ guilds, etc.]" },
@@ -54,14 +54,15 @@ function createCountryContent(entity: TLCountry): AtlasContent {
       entitySection("Diplomacy", "section diplomacy", [computedBlock("countryDiplomacy", "Diplomacy", "country.political.diplomacy")]),
       sectionPreset("History", "section history", [
         detailsListBlock([
-          { label: "Historical Overview", value: "history.details", valueMode: "entity", emptyText: "No historical overview listed." },
-          // change line below to render history.events[] as a list of events with dates and descriptions
+          { label: "Historical Overview", value: "history.details", valueMode: "entity", emptyText: "No historical overview listed.", hideWhenEmpty: true },
+
           { label: "Major Events", value: "[Wars, revolutions, golden ages, disasters, etc.]" },
           { label: "Notable Founding Myths/Legends", value: "[Ancient tales about how the city was formed or its divine/magical origins.]" },
           { label: "Major Wars & Conflicts", value: "[Significant wars, galactic conflicts, magical wars, or civil uprisings.]" },
           { label: "Epochs & Eras", value: "[Different historical periods, dynasties, or interstellar ages.]" },
           { label: "Notable Leaders & Rulers", value: "[Kings, Emperors, Warlords, AI Governors, etc.]" },
         ]),
+        // change line below to render history.events[] as a list of events with dates and descriptions
         // entityChipListBlock("Events", "history.events"),
         richTextBlock("Add country history notes here."),
       ]),

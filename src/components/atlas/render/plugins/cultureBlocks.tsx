@@ -71,6 +71,10 @@ export const cultureBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	cultureOrigins: {
 		type: "cultureOrigins",
 		label: "Culture Origins",
+		shouldRender: ({ context }) => {
+			const culture = context.entity as { origins?: unknown[] };
+			return Boolean(culture.origins?.length);
+		},
 		Render: ({ context }) => {
 			const culture = context.entity as TLCulture;
 			const cultures = context?.related?.cultures as TLCulture[];
@@ -79,13 +83,20 @@ export const cultureBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 			const origins = useMemo(() => {
 				if (!rawOrigins) return [];
-				const O = cultures.filter((c) => rawOrigins?.includes(c.id));
-				const Origins = [] as { name: string; _id: string }[];
-				for (const o of O) {
-					Origins.push({ name: o.name, _id: o._id });
+
+				const originIds = new Set(rawOrigins);
+				const matchedOrigins = cultures
+					.filter((entry) => originIds.has(entry.id))
+					.map((entry) => ({
+						name: entry.name,
+						_id: entry._id,
+					}));
+
+				if (matchedOrigins.length === 0) {
+					return ["No Cultural Origins Found"];
 				}
-				if (Origins.length === 0) return ["No Cultural Origins Found"];
-				return Origins;
+
+				return matchedOrigins;
 			}, [cultures, rawOrigins]);
 
 			const base = useMemo(() => {

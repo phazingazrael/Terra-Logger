@@ -176,10 +176,15 @@ function SplitListGroupEditor({
 function StaticSplitListGroupEditor({
 	group,
 	onChange,
+	displayName,
 }: {
 	group: SplitListGroup;
 	onChange: (group: SplitListGroup) => void;
+	displayName?: string;
 }) {
+	if (displayName == null || displayName === "") {
+		displayName = group.label ?? group.name ?? "Sub-list";
+	}
 	const items = Array.isArray(group.children) ? group.children : [];
 
 	function setItems(nextItems: unknown[]) {
@@ -198,6 +203,7 @@ function StaticSplitListGroupEditor({
 					className="atlas-split-list-item-editor"
 				>
 					<textarea
+						aria-label={`${displayName} item ${itemIndex + 1}`}
 						value={formatItemValue(item)}
 						onChange={(event) =>
 							setItems(updateArrayItem(items, itemIndex, event.target.value))
@@ -351,9 +357,9 @@ function createEntityPathForNewGroup(
 	const basePath = getCommonEntityPathBase(groups);
 	const baseSlug = toCamelCase(label) || "newList";
 	const existingPaths = new Set(
-		groups
-			.map((group) => group.entityPath)
-			.filter((path): path is string => Boolean(path)),
+		groups.flatMap((group) =>
+			group.entityPath ? [group.entityPath] : [],
+		),
 	);
 
 	let candidate = `${basePath}.${baseSlug}`;

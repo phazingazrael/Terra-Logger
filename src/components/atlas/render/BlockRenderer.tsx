@@ -3,6 +3,7 @@ import type {
 	AtlasRenderContext,
 } from "../../../definitions/Atlas";
 import { atlasBlockPlugins } from "./plugins/registry";
+import { shouldRenderAtlasBlock } from "./utils/blockVisibility";
 
 export function BlockRenderer({
 	block,
@@ -19,6 +20,10 @@ export function BlockRenderer({
 				Missing block plugin: {block.type}
 			</div>
 		);
+	}
+
+	if (!shouldRenderAtlasBlock(block, context)) {
+		return null;
 	}
 
 	return (

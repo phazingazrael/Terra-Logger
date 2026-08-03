@@ -47,15 +47,23 @@ export function CountryCitiesMembershipEditor({
 	const currentCities = embeddedCities;
 
 	const currentCityKeys = useMemo(
-		() => new Set(currentCities.map(getCityKey).filter(Boolean)),
+		() =>
+			new Set(
+				currentCities.flatMap((city) => {
+					const key = getCityKey(city);
+					return key ? [key] : [];
+				}),
+			),
 		[currentCities],
 	);
 
 	const unassignedCities = useMemo(
 		() =>
 			relatedCities
-				.filter((city) => !currentCityKeys.has(getCityKey(city)))
-				.filter(cityHasNoCountry)
+				.filter(
+					(city) =>
+						!currentCityKeys.has(getCityKey(city)) && cityHasNoCountry(city),
+				)
 				.sort((a, b) =>
 					getCityDisplayName(a).localeCompare(getCityDisplayName(b)),
 				),
@@ -131,22 +139,25 @@ export function CountryCitiesMembershipEditor({
 						<strong>Add existing unassigned city</strong>
 
 						<div className="atlas-country-cities-add__controls">
-							<select
-								value={selectedCityKey}
-								onChange={(event) => setSelectedCityKey(event.target.value)}
-							>
-								<option value="">Select city...</option>
+							<label>
+								City
+								<select
+									value={selectedCityKey}
+									onChange={(event) => setSelectedCityKey(event.target.value)}
+								>
+									<option value="">Select city...</option>
 
-								{unassignedCities.map((city) => {
-									const key = getCityKey(city);
+									{unassignedCities.map((city) => {
+										const key = getCityKey(city);
 
-									return (
-										<option key={key} value={key}>
-											{getCityDisplayName(city)}
-										</option>
-									);
-								})}
-							</select>
+										return (
+											<option key={key} value={key}>
+												{getCityDisplayName(city)}
+											</option>
+										);
+									})}
+								</select>
+							</label>
 
 							<Button
 								variant="outlined"
@@ -366,9 +377,10 @@ function getCityDisplayName(city: TLCity): string {
 
 function getCityMetaLabel(city: TLCity): string {
 	const record = city as Record<string, unknown>;
-	const parts = [record.type, record.size]
-		.map((value) => String(value ?? "").trim())
-		.filter(Boolean);
+	const parts = [record.type, record.size].flatMap((value) => {
+		const text = String(value ?? "").trim();
+		return text ? [text] : [];
+	});
 
 	return parts.join(" · ");
 }

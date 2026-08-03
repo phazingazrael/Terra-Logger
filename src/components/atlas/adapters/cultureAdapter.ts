@@ -16,6 +16,7 @@ function createCultureContent(entity: TLCulture): AtlasContent {
       entitySection("Population", "section population", [computedBlock("populationBlock", "Population", "culture")], clear),
       entitySection("Description", "section description", [descriptionBlock(),]),
       sectionPreset("Overview", "section overview", [richTextBlock("Add a general description of this culture, its traits, and identity."),]),
+      entitySection("Cultural Elders", "section cultural-elders", [computedBlock("relatedNPCList", "Cultural Elders", "npc.relationships", { roleTitles: ["Cultural Elder"], emptyText: "No cultural elders." })]),
       sectionPreset("Traditions & Customs", "section traditions-customs", [richTextBlock("Add festivals, social norms, etiquette, rites of passage, and customs here."),]),
       sectionPreset("Arts & Expression", "section arts-expression", [richTextBlock("Add music, dance, theatre, visual arts, literature, and architecture here."),]),
       sectionPreset("Daily Life", "section daily-life", [richTextBlock("Add dress, cuisine, values, everyday practices, and taboos here."),]),

@@ -7,6 +7,10 @@ export const noteBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	noteLegend: {
 		type: "noteLegend",
 		label: "Note Legend",
+		shouldRender: ({ context }) => {
+			const note = context.entity as { legend?: string };
+			return Boolean(note.legend?.trim());
+		},
 		Render: ({ context }) => {
 			const note = context.entity as { legend?: string };
 			return (

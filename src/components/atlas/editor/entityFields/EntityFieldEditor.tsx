@@ -50,11 +50,11 @@ export function EntityFieldEditor<TSource extends AtlasSourceType>({
 	}
 	return (
 		<div className="atlas-entity-field">
-			{/** biome-ignore lint/a11y/noLabelWithoutControl: too bad */}
-			<label className="atlas-entity-field__label">
+			<div className="atlas-entity-field__label">
 				<span>{schema.label}</span>
+
 				{schema.description ? <small>{schema.description}</small> : null}
-			</label>
+			</div>
 
 			{renderFieldEditor({
 				sourceType,
@@ -220,6 +220,7 @@ function StringListEditor({
 				<label>
 					Add existing {schema.itemLabel?.toLowerCase() ?? "item"}
 					<select
+						aria-label={schema.label}
 						value={selectedOption}
 						onChange={(event) => {
 							setSelectedOption(event.target.value);
@@ -489,9 +490,10 @@ function TagListEditor<TSource extends AtlasSourceType>({
 function normalizeAppliedTags(value: unknown): Tag[] {
 	if (!Array.isArray(value)) return [];
 
-	return value
-		.map((tag) => normalizeTag(tag))
-		.filter((tag): tag is Tag => Boolean(tag));
+	return value.flatMap((entry) => {
+		const tag = normalizeTag(entry);
+		return tag ? [tag] : [];
+	});
 }
 
 function mergeAvailableTags(
@@ -645,6 +647,7 @@ function ReferenceListEditor<TSource extends AtlasSourceType>({
 			))}
 
 			<select
+				aria-label={`Add ${schema.itemLabel ?? schema.label ?? "reference"}`}
 				value=""
 				onChange={(event) => {
 					addReference(event.target.value);
@@ -782,6 +785,7 @@ function SelectFieldEditor<TSource extends AtlasSourceType>({
 
 	return (
 		<select
+			aria-label={schema.label}
 			value={String(value ?? "")}
 			onChange={(event) => onChange(event.target.value)}
 		>

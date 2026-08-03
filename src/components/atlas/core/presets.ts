@@ -9,12 +9,16 @@ export type DetailRow =
     value: string;
     valueMode?: "static";
     emptyText?: string;
+    hideWhenEmpty?: boolean;
+    hideWhenEqualTo?: string;
   }
   | {
     label: string;
     value: string;
     valueMode: "entity";
     emptyText?: string;
+    hideWhenEmpty?: boolean;
+    hideWhenEqualTo?: string;
   }
   | {
     label: string;
@@ -22,6 +26,8 @@ export type DetailRow =
     resolver: string;
     args?: Record<string, unknown>;
     emptyText?: string;
+    hideWhenEmpty?: boolean;
+    hideWhenEqualTo?: string;
   };
 
 type SplitListGroup = { name: string; children: string[]; };
@@ -130,6 +136,61 @@ export function richTextBlock(text = "", label = "Rich Text"): AtlasBlock {
       editorType: "richText",
     },
     props: { json: createRichTextJson(text) },
+  };
+}
+
+
+export function npcCurrentLocationBlock(label = "Current Location"): AtlasBlock {
+  return {
+    id: createAtlasId("block"),
+    kind: "block",
+    type: "npc-current-location",
+    label,
+    dataMode: "entity",
+    binding: { entityPath: "currentLocation" },
+    editor: {
+      editable: false,
+      removable: false,
+      reorderable: true,
+      editorType: "entity",
+    },
+    props: { emptyText: "No current location recorded." },
+  };
+}
+
+export function npcRelationshipGraphBlock(label = "Relationship Graph"): AtlasBlock {
+  return {
+    id: createAtlasId("block"),
+    kind: "block",
+    type: "npc-relationship-graph",
+    label,
+    dataMode: "computed",
+    binding: { entityPath: "relationships" },
+    editor: {
+      editable: true,
+      removable: false,
+      reorderable: true,
+      editorType: "relationship-list",
+    },
+    props: { emptyText: "No relationships recorded." },
+  };
+}
+
+export function npcHistoryTimelineBlock(label = "History"): AtlasBlock {
+  return {
+    id: createAtlasId("block"),
+    kind: "block",
+    type: "npc-history-timeline",
+    label,
+    dataMode: "entity",
+    binding: { entityPath: "history" },
+    editor: {
+      editable: false,
+      removable: false,
+      reorderable: true,
+      editorType: "entity",
+    },
+    props: { emptyText: "No history recorded." },
   };
 }
 

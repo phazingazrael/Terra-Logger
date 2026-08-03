@@ -12,7 +12,6 @@ export function SectionRenderer({
 	section: AtlasSection;
 	context: AtlasRenderContext;
 }>) {
-	if (section.editor.collapsed) return null;
 	return (
 		<Paper
 			className={`atlas-section ${section.wrapper.className ?? ""}`.trim()}

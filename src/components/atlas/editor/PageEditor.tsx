@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, type SetStateAction, useEffect, useMemo, useReducer, useRef } from "react";
 import type {
 	AtlasAdapter,
+	AtlasBlockPreset,
 	AtlasContent,
 	AtlasEditorContext,
 	AtlasEntityBySource,
 	AtlasPageEditorSavePayload,
 	AtlasRelatedUpdate,
 	AtlasRenderContext,
+	AtlasSection,
 	AtlasSourceType,
 } from "../../../definitions/Atlas";
 import {
@@ -19,9 +21,73 @@ import { setValueAtPath } from "./entityFields/entityFieldAccess";
 import { SectionEditor } from "./SectionEditor";
 import "../styles/editor.css";
 import { Button } from "@mui/material";
-import { commonBlockPresets, commonSectionPresets } from "../adapters/shared";
 
 type AtlasSectionDraft = AtlasContent["sections"][number];
+
+const EMPTY_SECTIONS: AtlasSection[] = [];
+
+export type AtlasInlineEditorSection = Readonly<{
+	id: string;
+	title: string;
+	render: ReactNode;
+}>;
+
+const EMPTY_INLINE_SECTIONS: readonly AtlasInlineEditorSection[] = [];
+
+
+type PageEditorState<TSource extends AtlasSourceType> = {
+	contentDraft: AtlasContent;
+	entityDraft: AtlasEntityBySource[TSource];
+	relatedUpdates: AtlasRelatedUpdate[];
+	activeSectionId: string | null;
+	selectedSectionPresetIndex: string;
+};
+
+type PageEditorAction<TSource extends AtlasSourceType> =
+	| { type: "set-content"; value: SetStateAction<AtlasContent> }
+	| { type: "set-entity"; value: SetStateAction<AtlasEntityBySource[TSource]> }
+	| { type: "set-related-updates"; value: SetStateAction<AtlasRelatedUpdate[]> }
+	| { type: "set-active-section"; value: SetStateAction<string | null> }
+	| { type: "set-section-preset"; value: SetStateAction<string> }
+	| { type: "reset"; state: PageEditorState<TSource> };
+
+function resolveStateAction<T>(current: T, action: SetStateAction<T>): T {
+	return typeof action === "function"
+		? (action as (value: T) => T)(current)
+		: action;
+}
+
+function pageEditorReducer<TSource extends AtlasSourceType>(
+	state: PageEditorState<TSource>,
+	action: PageEditorAction<TSource>,
+): PageEditorState<TSource> {
+	switch (action.type) {
+		case "set-content":
+			return { ...state, contentDraft: resolveStateAction(state.contentDraft, action.value) };
+		case "set-entity":
+			return { ...state, entityDraft: resolveStateAction(state.entityDraft, action.value) };
+		case "set-related-updates":
+			return { ...state, relatedUpdates: resolveStateAction(state.relatedUpdates, action.value) };
+		case "set-active-section":
+			return { ...state, activeSectionId: resolveStateAction(state.activeSectionId, action.value) };
+		case "set-section-preset":
+			return { ...state, selectedSectionPresetIndex: resolveStateAction(state.selectedSectionPresetIndex, action.value) };
+		case "reset":
+			return action.state;
+	}
+}
+
+export type AtlasEditorToolbarContext<TSource extends AtlasSourceType> =
+	Readonly<{
+		content: AtlasContent;
+		entity: AtlasEntityBySource[TSource];
+		relatedUpdates: readonly AtlasRelatedUpdate[];
+		replaceDraft: (next: {
+			content?: AtlasContent;
+			entity?: AtlasEntityBySource[TSource];
+			relatedUpdates?: AtlasRelatedUpdate[];
+		}) => void;
+	}>;
 
 type PageEditorProps<TSource extends AtlasSourceType> = Readonly<{
 	content: AtlasContent;
@@ -29,47 +95,48 @@ type PageEditorProps<TSource extends AtlasSourceType> = Readonly<{
 	context: AtlasRenderContext<TSource>;
 	onSave: (payload: AtlasPageEditorSavePayload<TSource>) => void;
 	onClose?: () => void;
+	inlineSections?: readonly AtlasInlineEditorSection[];
+	renderToolbarActions?: (
+		context: AtlasEditorToolbarContext<TSource>,
+	) => ReactNode;
 }>;
 
-export function PageEditor<TSource extends AtlasSourceType>({
+function usePageEditorModel<TSource extends AtlasSourceType>({
 	content,
+	adapter,
 	context,
 	onSave,
 	onClose,
+	inlineSections = EMPTY_INLINE_SECTIONS,
+	renderToolbarActions,
 }: Readonly<PageEditorProps<TSource>>) {
 	const activePanelBodyRef = useRef<HTMLDivElement | null>(null);
 
-	const [contentDraft, setContentDraft] = useState<AtlasContent>(() =>
-		structuredClone(content),
-	);
+	const [state, dispatch] = useReducer(pageEditorReducer<TSource>, {
+		contentDraft: structuredClone(content),
+		entityDraft: structuredClone(context.entity),
+		relatedUpdates: [],
+		activeSectionId: inlineSections[0]?.id ?? content.sections[0]?.id ?? null,
+		selectedSectionPresetIndex: "",
+	});
 
-	const [entityDraft, setEntityDraft] = useState<AtlasEntityBySource[TSource]>(
-		() => structuredClone(context.entity),
-	);
+	const { contentDraft, entityDraft, relatedUpdates, activeSectionId, selectedSectionPresetIndex } = state;
+	const setContentDraft = (value: SetStateAction<AtlasContent>) => dispatch({ type: "set-content", value });
+	const setEntityDraft = (value: SetStateAction<AtlasEntityBySource[TSource]>) => dispatch({ type: "set-entity", value });
+	const setRelatedUpdates = (value: SetStateAction<AtlasRelatedUpdate[]>) => dispatch({ type: "set-related-updates", value });
+	const setActiveSectionId = (value: SetStateAction<string | null>) => dispatch({ type: "set-active-section", value });
+	const setSelectedSectionPresetIndex = (value: SetStateAction<string>) => dispatch({ type: "set-section-preset", value });
 
-	const [relatedUpdates, setRelatedUpdates] = useState<AtlasRelatedUpdate[]>(
-		[],
-	);
+	const sectionPresets = adapter.sectionPresets;
+	const blockPresets = adapter.blockPresets;
 
-	const [activeSectionId, setActiveSectionId] = useState<string | null>(
-		content.sections[0]?.id ?? null,
-	);
+	const sections = contentDraft.sections ?? EMPTY_SECTIONS;
 
-	const [selectedSectionPresetIndex, setSelectedSectionPresetIndex] =
-		useState("");
+	const activeInlineSection =
+		inlineSections.find((section) => section.id === activeSectionId) ?? null;
 
-	const sectionPresets = useMemo(() => commonSectionPresets(), []);
-	const blockPresets = useMemo(() => commonBlockPresets(), []);
-
-	const sections = contentDraft.sections ?? [];
-
-	const activeSection = useMemo(
-		() =>
-			sections.find((section) => section.id === activeSectionId) ??
-			sections[0] ??
-			null,
-		[sections, activeSectionId],
-	);
+	const activeSection =
+		sections.find((section) => section.id === activeSectionId) ?? null;
 
 	const activeSectionIndex = activeSection
 		? sections.findIndex((section) => section.id === activeSection.id)
@@ -106,18 +173,17 @@ export function PageEditor<TSource extends AtlasSourceType>({
 		relatedUpdates.length > 0;
 
 	useEffect(() => {
-		if (sections.length === 0) {
-			setActiveSectionId(null);
-			return;
-		}
+		const validInline = inlineSections.some(
+			(section) => section.id === activeSectionId,
+		);
+		const validAtlas = sections.some(
+			(section) => section.id === activeSectionId,
+		);
 
-		if (
-			!activeSectionId ||
-			!sections.some((section) => section.id === activeSectionId)
-		) {
-			setActiveSectionId(sections[0].id);
+		if (!activeSectionId || (!validInline && !validAtlas)) {
+			setActiveSectionId(inlineSections[0]?.id ?? sections[0]?.id ?? null);
 		}
-	}, [sections, activeSectionId]);
+	}, [sections, inlineSections, activeSectionId]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: resets scroll on section change
 	useEffect(() => {
@@ -137,11 +203,16 @@ export function PageEditor<TSource extends AtlasSourceType>({
 	}, [activeSectionId]);
 
 	function handleDiscard() {
-		setContentDraft(structuredClone(content));
-		setEntityDraft(structuredClone(context.entity));
-		setRelatedUpdates([]);
-		setActiveSectionId(content.sections[0]?.id ?? null);
-		setSelectedSectionPresetIndex("");
+		dispatch({
+			type: "reset",
+			state: {
+				contentDraft: structuredClone(content),
+				entityDraft: structuredClone(context.entity),
+				relatedUpdates: [],
+				activeSectionId: inlineSections[0]?.id ?? content.sections[0]?.id ?? null,
+				selectedSectionPresetIndex: "",
+			},
+		});
 	}
 
 	function handleClose() {
@@ -187,6 +258,38 @@ export function PageEditor<TSource extends AtlasSourceType>({
 		});
 	}
 
+	const toolbarContext: AtlasEditorToolbarContext<TSource> = {
+		content: contentDraft,
+		entity: entityDraft,
+		relatedUpdates,
+		replaceDraft: (next) => {
+			if (next.content) {
+				const nextContent = structuredClone(next.content);
+
+				setContentDraft(nextContent);
+
+				const selectionStillExists =
+					nextContent.sections.some(
+						(section) => section.id === activeSectionId,
+					) || inlineSections.some((section) => section.id === activeSectionId);
+
+				if (!selectionStillExists) {
+					setActiveSectionId(
+						inlineSections[0]?.id ?? nextContent.sections[0]?.id ?? null,
+					);
+				}
+			}
+
+			if (next.entity) {
+				setEntityDraft(structuredClone(next.entity));
+			}
+
+			if (next.relatedUpdates) {
+				setRelatedUpdates([...next.relatedUpdates]);
+			}
+		},
+	};
+
 	function handleRemoveActiveSection() {
 		if (!activeSection) return;
 
@@ -196,11 +299,34 @@ export function PageEditor<TSource extends AtlasSourceType>({
 
 		if (!shouldRemove) return;
 
-		setContentDraft((current) =>
-			removeSectionFromDocument(current, activeSection.id),
+		const removedIndex = sections.findIndex(
+			(section) => section.id === activeSection.id,
 		);
-	}
 
+		const nextContent = removeSectionFromDocument(
+			contentDraft,
+			activeSection.id,
+		);
+
+		const nextSection =
+			nextContent.sections[removedIndex] ??
+			nextContent.sections[removedIndex - 1] ??
+			null;
+
+		setContentDraft(nextContent);
+		setActiveSectionId(nextSection?.id ?? inlineSections[0]?.id ?? null);
+	}
+	return { context, onSave, inlineSections, renderToolbarActions, activePanelBodyRef, contentDraft, setContentDraft, entityDraft, relatedUpdates, activeSectionId, setActiveSectionId, selectedSectionPresetIndex, setSelectedSectionPresetIndex, sectionPresets, blockPresets, sections, activeInlineSection, activeSection, activeSectionIndex, canRemoveActiveSection, editorContext, dirty, handleDiscard, handleClose, handleAddSection, handleMoveActiveSection, toolbarContext, handleRemoveActiveSection };
+}
+
+type PageEditorModel<TSource extends AtlasSourceType> = ReturnType<
+	typeof usePageEditorModel<TSource>
+>;
+
+function PageEditorView<TSource extends AtlasSourceType>(
+	model: PageEditorModel<TSource>,
+) {
+	const { context, onSave, inlineSections, renderToolbarActions, activePanelBodyRef, contentDraft, setContentDraft, entityDraft, relatedUpdates, activeSectionId, setActiveSectionId, selectedSectionPresetIndex, setSelectedSectionPresetIndex, sectionPresets, blockPresets, sections, activeInlineSection, activeSection, activeSectionIndex, canRemoveActiveSection, editorContext, dirty, handleDiscard, handleClose, handleAddSection, handleMoveActiveSection, toolbarContext, handleRemoveActiveSection } = model;
 	return (
 		<div className="atlas-embedded-editor">
 			<div className="atlas-embedded-editor-workspace">
@@ -208,6 +334,8 @@ export function PageEditor<TSource extends AtlasSourceType>({
 					<strong>Edit {context.entity.name}</strong>
 
 					<div className="atlas-embedded-editor-topbar__actions">
+						{renderToolbarActions?.(toolbarContext)}
+
 						<Button
 							type="button"
 							variant="outlined"
@@ -244,21 +372,23 @@ export function PageEditor<TSource extends AtlasSourceType>({
 							<strong>Sections</strong>
 
 							<div className="atlas-embedded-editor-add-section">
-								<select
-									value={selectedSectionPresetIndex}
-									onChange={(event) =>
-										setSelectedSectionPresetIndex(event.target.value)
-									}
-								>
-									<option value="">Add section...</option>
+								<label>
+									Add section
+									<select
+										value={selectedSectionPresetIndex}
+										onChange={(event) =>
+											setSelectedSectionPresetIndex(event.target.value)
+										}
+									>
+										<option value="">Select section type...</option>
 
-									{sectionPresets.map((preset, index) => (
-										// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-										<option key={`section-preset-${index}`} value={index}>
-											{getSectionPresetLabel(preset, index)}
-										</option>
-									))}
-								</select>
+										{sectionPresets.map((preset, index) => (
+											<option key={preset.id} value={index}>
+												{getSectionPresetLabel(preset, index)}
+											</option>
+										))}
+									</select>
+								</label>
 
 								<Button
 									variant="outlined"
@@ -273,6 +403,25 @@ export function PageEditor<TSource extends AtlasSourceType>({
 						</div>
 
 						<div className="atlas-embedded-editor-section-list">
+							{inlineSections.map((section) => {
+								const isActive = section.id === activeSectionId;
+
+								return (
+									<button
+										key={section.id}
+										type="button"
+										className={
+											isActive
+												? "atlas-embedded-editor-section-tab atlas-embedded-editor-section-tab--active"
+												: "atlas-embedded-editor-section-tab"
+										}
+										onClick={() => setActiveSectionId(section.id)}
+									>
+										<span>{section.title}</span>
+									</button>
+								);
+							})}
+
 							{sections.map((section) => {
 								const isActive = section.id === activeSection?.id;
 
@@ -295,7 +444,20 @@ export function PageEditor<TSource extends AtlasSourceType>({
 					</aside>
 
 					<main className="atlas-embedded-editor-panel">
-						{activeSection ? (
+						{activeInlineSection ? (
+							<>
+								<header className="atlas-embedded-editor-panel__header">
+									<strong>{activeInlineSection.title}</strong>
+								</header>
+
+								<div
+									className="atlas-embedded-editor-panel__body"
+									ref={activePanelBodyRef}
+								>
+									{activeInlineSection.render}
+								</div>
+							</>
+						) : activeSection ? (
 							<>
 								<header className="atlas-embedded-editor-panel__header">
 									<strong>{getSectionTitle(activeSection)}</strong>
@@ -343,8 +505,9 @@ export function PageEditor<TSource extends AtlasSourceType>({
 									ref={activePanelBodyRef}
 								>
 									<SectionEditor
+										key={activeSection.id}
 										section={activeSection}
-										blockPresets={blockPresets}
+										blockPresets={blockPresets as AtlasBlockPreset[]}
 										context={editorContext}
 										onChange={(section) =>
 											setContentDraft((current) =>
@@ -364,6 +527,19 @@ export function PageEditor<TSource extends AtlasSourceType>({
 			</div>
 		</div>
 	);
+}
+
+export function PageEditor<TSource extends AtlasSourceType>({
+	content,
+	adapter,
+	context,
+	onSave,
+	onClose,
+	inlineSections = EMPTY_INLINE_SECTIONS,
+	renderToolbarActions,
+}: Readonly<PageEditorProps<TSource>>) {
+	const model = usePageEditorModel({ content, adapter, context, onSave, onClose, inlineSections, renderToolbarActions });
+	return <PageEditorView<TSource> {...model} />;
 }
 
 function getSectionTitle(section: AtlasSectionDraft): string {

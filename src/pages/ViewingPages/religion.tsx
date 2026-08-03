@@ -2,28 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Container } from "@mui/material";
 
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
 import type { TLNote, TLReligion } from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
-import {
-	AtlasRenderer,
-	PageEditor,
-	getAtlasAdapter,
-	isAtlasContent,
-} from "../../components/atlas";
+import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { isAtlasContent } from "../../components/atlas/core/validators";
+import { PageEditor } from "../../components/atlas/editor/PageEditor";
+import { AtlasRenderer } from "../../components/atlas/render/Renderer";
 import type {
 	AtlasContent,
 	AtlasPageEditorSavePayload,
 } from "../../definitions/Atlas";
 import type { Tag } from "../../definitions/Common";
-import { saveAtlasRelatedUpdates } from "../../components/atlas";
+import type { TLNPC } from "../../definitions/TerraLogger";
+import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
+import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
 
 function ReligionView() {
 	const religionId = useParams();
 
-	const { useActive, update, add } = useDB();
+	const { update, add } = useDB();
 	const religions = useActive<TLReligion>("religions");
 	const religion = useMemo(
 		() => religions.find((r) => r._id === religionId?._id),
@@ -33,6 +33,7 @@ function ReligionView() {
 	const cities = useActive("cities");
 	const cultures = useActive("cultures");
 	const tags = useActive<Tag>("tags");
+	const npcs = useActive<TLNPC>("npcs");
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
 	const [localReligionContent, setLocalReligionContent] =
@@ -40,14 +41,15 @@ function ReligionView() {
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
-	const religionAdapter = useMemo(() => getAtlasAdapter("religion"), []);
+	const religionAdapter = getAtlasAdapter("religion");
 
 	const religionContent = useMemo(() => {
 		if (!religion) return null;
 
 		if (localReligionContent) return localReligionContent;
 
-		if (isAtlasContent(religion.content)) return religion.content;
+		if (isAtlasContent(religion.content))
+			return ensureContextualNPCSections(religion.content);
 
 		return religionAdapter.createDefaultContent(religion);
 	}, [religion, religionAdapter, localReligionContent]);
@@ -64,9 +66,10 @@ function ReligionView() {
 				religions,
 				notes,
 				tags,
+				npcs,
 			},
 		};
-	}, [religion, religions, notes, cities, cultures, tags]);
+	}, [religion, religions, notes, cities, cultures, tags, npcs]);
 
 	function handleSaveReligionAtlasContent(
 		payload: AtlasPageEditorSavePayload<"religion">,

@@ -8,6 +8,14 @@ export const religionBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	religionMembership: {
 		type: "religionMembership",
 		label: "Religion Membership",
+		shouldRender: ({ context }) => {
+			const religion = context.entity as {
+				members?: { urban?: number; rural?: number };
+			};
+			return Boolean(
+				(religion.members?.urban ?? 0) || (religion.members?.rural ?? 0),
+			);
+		},
 		Render: ({ context }) => {
 			const religion = context.entity as {
 				members?: { urban?: number; rural?: number };

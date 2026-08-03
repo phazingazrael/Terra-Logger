@@ -442,3 +442,21 @@
 .atlas-block.atlas-block--richText {
   margin-top: 5px !important;
 }
+
+/* NPC structured Atlas sections */
+.ViewPage.NPC {
+  .npc-current-location,
+  .npc-relationship-graph,
+  .npc-history,
+  .npc-current-location .atlas-section__blocks,
+  .npc-relationship-graph .atlas-section__blocks,
+  .npc-history .atlas-section__blocks {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .npc-relationship-graph .MuiChip-root,
+  .npc-history .MuiChip-root {
+    max-width: 100%;
+  }
+}

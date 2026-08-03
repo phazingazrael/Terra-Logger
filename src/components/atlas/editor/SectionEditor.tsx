@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
 	AtlasBlockPreset,
 	AtlasEditorContext,
@@ -26,14 +26,19 @@ export function SectionEditor({
 }) {
 	const [titleDraft, setTitleDraft] = useState(section.title);
 
-	useEffect(() => {
-		setTitleDraft(section.title);
-	}, [section]);
-
 	function commitTitle() {
 		const nextTitle = titleDraft.trim();
 
-		if (!nextTitle || nextTitle === section.title) return;
+		if (!nextTitle) {
+			setTitleDraft(section.title);
+			return;
+		}
+
+		setTitleDraft(nextTitle);
+
+		if (nextTitle === section.title) {
+			return;
+		}
 
 		onChange({
 			...section,
@@ -53,7 +58,6 @@ export function SectionEditor({
 						onKeyDown={(event) => {
 							if (event.key === "Enter") {
 								event.preventDefault();
-								commitTitle();
 								event.currentTarget.blur();
 							}
 						}}

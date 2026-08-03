@@ -4,6 +4,7 @@ import { countryBlockPlugins } from "./countryBlocks";
 import { cultureBlockPlugins } from "./cultureBlocks";
 import { genericBlockPlugins } from "./genericBlocks";
 import { noteBlockPlugins } from "./noteBlocks";
+import { npcBlockPlugins } from "./npcBlocks";
 import { religionBlockPlugins } from "./religionBlocks";
 
 export const atlasBlockPlugins: Record<string, AtlasBlockPlugin> = {
@@ -13,4 +14,5 @@ export const atlasBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	...cultureBlockPlugins,
 	...religionBlockPlugins,
 	...noteBlockPlugins,
+	...npcBlockPlugins,
 };

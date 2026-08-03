@@ -2,15 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Container } from "@mui/material";
 
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
-import {
-	AtlasRenderer,
-	PageEditor,
-	getAtlasAdapter,
-	isAtlasContent,
-	saveAtlasRelatedUpdates,
-} from "../../components/atlas";
+import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { isAtlasContent } from "../../components/atlas/core/validators";
+import { PageEditor } from "../../components/atlas/editor/PageEditor";
+import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
+import { AtlasRenderer } from "../../components/atlas/render/Renderer";
 
 import type { TLCulture, TLNote } from "../../definitions/TerraLogger";
 import type {
@@ -20,11 +18,13 @@ import type {
 
 import "./viewStyles.css";
 import type { Tag } from "../../definitions/Common";
+import type { TLNPC } from "../../definitions/TerraLogger";
+import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
 
 function CultureView() {
 	const cultureId = useParams();
 
-	const { useActive, update, add } = useDB();
+	const { update, add } = useDB();
 	const cultures = useActive("cultures");
 	const culture = useMemo(
 		() => cultures.find((c) => c._id === cultureId?._id),
@@ -32,6 +32,7 @@ function CultureView() {
 	);
 	const notes = useActive<TLNote>("notes");
 	const tags = useActive<Tag>("tags");
+	const npcs = useActive<TLNPC>("npcs");
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
 	const [localCultureContent, setLocalCultureContent] =
@@ -39,14 +40,15 @@ function CultureView() {
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
-	const cultureAdapter = useMemo(() => getAtlasAdapter("culture"), []);
+	const cultureAdapter = getAtlasAdapter("culture");
 
 	const cultureContent = useMemo(() => {
 		if (!culture) return null;
 
 		if (localCultureContent) return localCultureContent;
 
-		if (isAtlasContent(culture.content)) return culture.content;
+		if (isAtlasContent(culture.content))
+			return ensureContextualNPCSections(culture.content);
 
 		return cultureAdapter.createDefaultContent(culture);
 	}, [culture, cultureAdapter, localCultureContent]);
@@ -61,9 +63,10 @@ function CultureView() {
 				cultures,
 				notes,
 				tags,
+				npcs,
 			},
 		};
-	}, [culture, cultures, notes, tags]);
+	}, [culture, cultures, notes, tags, npcs]);
 
 	function handleSaveCultureAtlasContent(
 		payload: AtlasPageEditorSavePayload<"culture">,

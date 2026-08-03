@@ -20,6 +20,18 @@ const SANITIZE_CONFIG = {
 	ADD_ATTR: ["target", "rel"],
 };
 
+function isSafeLinkHref(value: string): boolean {
+	const trimmed = value.trim().toLowerCase();
+
+	return (
+		trimmed.startsWith("http://") ||
+		trimmed.startsWith("https://") ||
+		trimmed.startsWith("mailto:") ||
+		trimmed.startsWith("#") ||
+		trimmed.startsWith("/")
+	);
+}
+
 export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 	const editorRef = useRef<HTMLDivElement | null>(null);
 	const isFocusedRef = useRef(false);
@@ -37,6 +49,8 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 		const editor = editorRef.current;
 		if (!editor) return;
 
+		// Safe sink: initialHtml is sanitized with DOMPurify.
+		// react-doctor-disable-next-line react-doctor/dangerous-html-sink
 		editor.innerHTML = initialHtml;
 	}, [initialHtml]);
 
@@ -53,6 +67,8 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 		if (cameFromThisEditor) return;
 		if (isFocusedRef.current) return;
 
+		// Safe sink: generated HTML is sanitized before assignment.
+		// react-doctor-disable-next-line react-doctor/dangerous-html-sink
 		editor.innerHTML = sanitizeHtml(richTextJsonToHtml(value));
 		lastCommittedValueRef.current = value;
 	}, [value]);
@@ -61,7 +77,15 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 		const editor = editorRef.current;
 		if (!editor) return;
 
-		const nextJson = htmlToRichTextJson(editor.innerHTML);
+		const sanitizedHtml = sanitizeHtml(editor.innerHTML);
+
+		if (sanitizedHtml !== editor.innerHTML) {
+			// Safe sink: sanitizedHtml is the DOMPurify output.
+			// react-doctor-disable-next-line react-doctor/dangerous-html-sink
+			editor.innerHTML = sanitizedHtml;
+		}
+
+		const nextJson = htmlToRichTextJson(sanitizedHtml);
 
 		if (nextJson === lastCommittedValueRef.current) return;
 
@@ -79,8 +103,14 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 	}
 
 	function handleCreateLink() {
-		const href = window.prompt("Enter link URL");
+		const href = window.prompt("Enter link URL")?.trim();
+
 		if (!href) return;
+
+		if (!isSafeLinkHref(href)) {
+			window.alert("Use an HTTP, HTTPS, mail, anchor, or internal link.");
+			return;
+		}
 
 		runCommand("createLink", href);
 	}
@@ -159,6 +189,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 				className="atlas-rte"
 				contentEditable
 				suppressContentEditableWarning
+				aria-label="Rich text editor"
 				role="textbox"
 				aria-multiline="true"
 				tabIndex={0}
@@ -167,6 +198,14 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 				}}
 				onBlur={() => {
 					isFocusedRef.current = false;
+					commitChange();
+				}}
+				onPaste={(event) => {
+					event.preventDefault();
+
+					const text = event.clipboardData.getData("text/plain");
+
+					document.execCommand("insertText", false, text);
 					commitChange();
 				}}
 			/>

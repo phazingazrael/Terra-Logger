@@ -1,33 +1,34 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Button, Container } from "@mui/material";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import type { TLCity, TLNote } from "../../definitions/TerraLogger";
 import type { Tag } from "../../definitions/Common";
+import type { TLNPC } from "../../definitions/TerraLogger";
+import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
 
 import "./viewStyles.css";
 import type {
 	AtlasContent,
 	AtlasPageEditorSavePayload,
 } from "../../definitions/Atlas";
-import {
-	AtlasRenderer,
-	PageEditor,
-	getAtlasAdapter,
-	isAtlasContent,
-	saveAtlasRelatedUpdates,
-} from "../../components/atlas";
+import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { isAtlasContent } from "../../components/atlas/core/validators";
+import { PageEditor } from "../../components/atlas/editor/PageEditor";
+import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
+import { AtlasRenderer } from "../../components/atlas/render/Renderer";
 
 function CityView() {
 	const cityId = useParams();
-	const { useActive, update, add } = useDB();
+	const { update, add } = useDB();
 	const cities = useActive<TLCity>("cities");
 	const notes = useActive<TLNote>("notes");
 	const countries = useActive("countries");
 	const cultures = useActive("cultures");
 	const tags = useActive<Tag>("tags");
+	const npcs = useActive<TLNPC>("npcs");
 
 	const city = useMemo(
 		() => cities.find((c) => c._id === cityId?._id),
@@ -64,7 +65,7 @@ function CityView() {
 		[cities, countries, tags],
 	);
 
-	const cityAdapter = useMemo(() => getAtlasAdapter("city"), []);
+	const cityAdapter = getAtlasAdapter("city");
 
 	const cityContent = useMemo(() => {
 		if (!city) return null;
@@ -74,7 +75,7 @@ function CityView() {
 		}
 
 		if (isAtlasContent(city.content)) {
-			return city.content;
+			return ensureContextualNPCSections(city.content);
 		}
 
 		return cityAdapter.createDefaultContent(city);
@@ -92,10 +93,11 @@ function CityView() {
 				cultures,
 				notes,
 				tags,
+				npcs,
 			},
 			relatedLookups,
 		};
-	}, [city, notes, cities, countries, cultures, tags, relatedLookups]);
+	}, [city, notes, cities, countries, cultures, tags, npcs, relatedLookups]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");

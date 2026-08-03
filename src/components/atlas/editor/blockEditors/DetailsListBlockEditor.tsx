@@ -7,14 +7,18 @@ import { EntityFieldEditor } from "../entityFields/EntityFieldEditor";
 import { getEntityFieldSchema } from "../entityFields/entityFieldCatalog";
 import { getValueAtPath } from "../entityFields/entityFieldAccess";
 import { Button } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 
 type Row = {
+	id: string;
 	label: string;
 	value?: string;
 	valueMode?: "static" | "entity" | "computed";
 	resolver?: string;
 	args?: Record<string, unknown>;
 	emptyText?: string;
+	hideWhenEmpty?: boolean;
+	hideWhenEqualTo?: string;
 };
 
 export function DetailsListBlockEditor({
@@ -34,48 +38,44 @@ export function DetailsListBlockEditor({
 		onChange({ ...block, props: { ...block.props, rows: nextRows } });
 	}
 
-	function updateRow(index: number, nextRow: Row) {
-		setRows(
-			rows.map((row, currentIndex) => (currentIndex === index ? nextRow : row)),
-		);
+	function updateRow(rowId: string, nextRow: Row) {
+		setRows(rows.map((row) => (row.id === rowId ? nextRow : row)));
 	}
 
-	function removeRow(index: number) {
+	function removeRow(rowId: string) {
 		setRows(
-			rows.filter((row, currentIndex) => {
-				if (currentIndex !== index) return true;
-
-				return row.valueMode === "computed";
-			}),
+			rows.filter((row) => row.id !== rowId || row.valueMode === "computed"),
 		);
 	}
 
 	return (
 		<div className="atlas-field-stack">
-			{rows.map((row, index) => {
+			{rows.map((row) => {
 				const mode = row.valueMode ?? "static";
 				const isComputed = mode === "computed";
 
 				return (
-					// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-					<div key={`row-${index}`} className="atlas-details-row-editor">
+					<div key={row.id} className="atlas-details-row-editor">
 						<div className="atlas-row-editor">
-							<input
-								value={row.label}
-								placeholder="Label"
-								onChange={(event) =>
-									updateRow(index, {
-										...row,
-										label: event.target.value,
-									})
-								}
-							/>
+							<label>
+								Row label
+								<input
+									value={row.label}
+									placeholder="Label"
+									onChange={(event) =>
+										updateRow(row.id, {
+											...row,
+											label: event.target.value,
+										})
+									}
+								/>
+							</label>
 
 							{!isComputed ? (
 								<Button
 									variant="outlined"
 									type="button"
-									onClick={() => removeRow(index)}
+									onClick={() => removeRow(row.id)}
 								>
 									Remove
 								</Button>
@@ -86,10 +86,11 @@ export function DetailsListBlockEditor({
 							row={row}
 							context={context}
 							onStaticChange={(value) =>
-								updateRow(index, {
+								updateRow(row.id, {
 									...row,
 									value,
 									valueMode: "static",
+									id: uuidv4(),
 								})
 							}
 						/>
@@ -107,6 +108,7 @@ export function DetailsListBlockEditor({
 							label: "Label",
 							value: "Value",
 							valueMode: "static",
+							id: uuidv4(),
 						},
 					])
 				}
@@ -133,6 +135,7 @@ function DetailsRowValueEditor({
 
 		return (
 			<ResolvedDetailsValueEditor
+				label={row.label || "Detail value"}
 				value={resolvedValue}
 				disabled
 				emptyText={row.emptyText}
@@ -148,6 +151,7 @@ function DetailsRowValueEditor({
 		if (!schema) {
 			return (
 				<ResolvedDetailsValueEditor
+					label={row.label || "Detail value"}
 					value={resolvedValue}
 					emptyText={row.emptyText}
 					onChange={(nextValue) =>
@@ -163,6 +167,7 @@ function DetailsRowValueEditor({
 		if (isSimpleDetailsField(schema.editor)) {
 			return (
 				<ResolvedDetailsValueEditor
+					label={row.label || "Detail value"}
 					value={resolvedValue}
 					emptyText={row.emptyText}
 					onChange={(nextValue) =>
@@ -206,16 +211,19 @@ function ResolvedDetailsValueEditor({
 	value,
 	emptyText,
 	disabled = false,
+	label,
 	onChange,
 }: {
 	value: unknown;
 	emptyText?: string;
 	disabled?: boolean;
+	label: string;
 	onChange?: (value: string | boolean) => void;
 }) {
 	if (typeof value === "boolean") {
 		return (
 			<select
+				aria-label={label}
 				value={String(value)}
 				disabled={disabled}
 				onChange={(event) => onChange?.(event.target.value === "true")}
@@ -253,19 +261,20 @@ function formatDetailsValue(value: unknown, emptyText?: string): string {
 
 	if (Array.isArray(value)) {
 		return value
-			.map((item) => {
-				if (typeof item === "string") return item;
-				if (typeof item === "number" || typeof item === "boolean")
-					return String(item);
+			.flatMap((item) => {
+				if (typeof item === "string") return item ? [item] : [];
+				if (typeof item === "number" || typeof item === "boolean") {
+					return [String(item)];
+				}
 
 				if (item && typeof item === "object") {
 					const record = item as Record<string, unknown>;
-					return String(record.name ?? record.Name ?? record.label ?? "");
+					const text = String(record.name ?? record.Name ?? record.label ?? "");
+					return text ? [text] : [];
 				}
 
-				return "";
+				return [];
 			})
-			.filter(Boolean)
 			.join("\n");
 	}
 

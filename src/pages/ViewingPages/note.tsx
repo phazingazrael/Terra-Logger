@@ -3,13 +3,11 @@ import { Button, Container } from "@mui/material";
 
 import { useParams } from "react-router-dom";
 
-import {
-	AtlasRenderer,
-	PageEditor,
-	getAtlasAdapter,
-	isAtlasContent,
-	saveAtlasRelatedUpdates,
-} from "../../components/atlas";
+import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { isAtlasContent } from "../../components/atlas/core/validators";
+import { PageEditor } from "../../components/atlas/editor/PageEditor";
+import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
+import { AtlasRenderer } from "../../components/atlas/render/Renderer";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 import type {
@@ -19,13 +17,13 @@ import type {
 
 import "./viewStyles.css";
 
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 import type { Tag } from "../../definitions/Common";
 
 function NoteView() {
 	const { _id } = useParams<{ _id: string }>();
 
-	const { useActive, update, add } = useDB();
+	const { update, add } = useDB();
 	const notes = useActive<TLNote>("notes");
 	const tags = useActive<Tag>("tags");
 	const note = useMemo(() => notes.find((r) => r._id === _id), [notes, _id]);
@@ -37,7 +35,7 @@ function NoteView() {
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
-	const noteAdapter = useMemo(() => getAtlasAdapter("note"), []);
+	const noteAdapter = getAtlasAdapter("note");
 
 	const noteContent = useMemo(() => {
 		if (!note) return null;

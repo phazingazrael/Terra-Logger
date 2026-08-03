@@ -5,6 +5,7 @@ import type {
 import { isAtlasContent } from "../core/validators";
 import { SectionRenderer } from "./SectionRenderer";
 import { ClearSectionRenderer } from "./ClearSectionRenderer";
+import { getVisibleAtlasSection } from "./utils/blockVisibility";
 
 export function AtlasRenderer({
 	content,
@@ -23,15 +24,21 @@ export function AtlasRenderer({
 	return (
 		<div className={`${content.layout.className ?? ""}`.trim()}>
 			{content.sections.map((section) => {
+				const visibleSection = getVisibleAtlasSection(section, context);
+
+				if (!visibleSection) {
+					return null;
+				}
+
 				const SectionComponent =
-					section.wrapper.variant === "clear"
+					visibleSection.wrapper.variant === "clear"
 						? ClearSectionRenderer
 						: SectionRenderer;
 
 				return (
 					<SectionComponent
-						key={section.id}
-						section={section}
+						key={visibleSection.id}
+						section={visibleSection}
 						context={context}
 					/>
 				);

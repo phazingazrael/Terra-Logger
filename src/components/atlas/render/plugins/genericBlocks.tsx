@@ -119,11 +119,10 @@ function resolveSplitListGroups(
 		const configuredGroups = block.props.groups;
 
 		if (Array.isArray(configuredGroups)) {
-			return configuredGroups
-				.map((group, index) =>
-					resolveEntitySplitListGroup(group, index, context),
-				)
-				.filter((group): group is SplitListRenderGroup => Boolean(group));
+			return configuredGroups.flatMap((group, index) => {
+				const resolved = resolveEntitySplitListGroup(group, index, context);
+				return resolved ? [resolved] : [];
+			});
 		}
 
 		const sourceValue = getEntityValue(context, block.binding?.entityPath);
@@ -179,46 +178,42 @@ function normalizeSplitListGroups(value: unknown): SplitListRenderGroup[] {
 		return [];
 	}
 
-	return value
-		.map((group, index) => {
-			if (!group || typeof group !== "object") {
-				return null;
-			}
+	return value.flatMap((group, index) => {
+		if (!group || typeof group !== "object") {
+			return [];
+		}
 
-			const maybeGroup = group as {
-				name?: unknown;
-				label?: unknown;
-				children?: unknown;
-				emptyText?: unknown;
-			};
+		const maybeGroup = group as {
+			name?: unknown;
+			label?: unknown;
+			children?: unknown;
+			emptyText?: unknown;
+		};
 
-			const name =
-				typeof maybeGroup.name === "string"
-					? maybeGroup.name
-					: typeof maybeGroup.label === "string"
-						? maybeGroup.label
-						: `List ${index + 1}`;
+		const name =
+			typeof maybeGroup.name === "string"
+				? maybeGroup.name
+				: typeof maybeGroup.label === "string"
+					? maybeGroup.label
+					: `List ${index + 1}`;
 
-			const children = Array.isArray(maybeGroup.children)
-				? maybeGroup.children
-				: [];
+		const children = Array.isArray(maybeGroup.children)
+			? maybeGroup.children
+			: [];
 
-			const emptyText =
-				typeof maybeGroup.emptyText === "string"
-					? maybeGroup.emptyText
-					: JSON.stringify(maybeGroup.emptyText);
+		const emptyText =
+			typeof maybeGroup.emptyText === "string"
+				? maybeGroup.emptyText
+				: JSON.stringify(maybeGroup.emptyText);
 
-			return {
+		return [
+			{
 				name,
 				children,
 				emptyText,
-			};
-		})
-		.filter((group): group is SplitListRenderGroup => {
-			if (group === null) return false;
-			const { emptyText, ...rest } = group;
-			return Boolean(rest);
-		});
+			},
+		];
+	});
 }
 
 function resolveDetailsRowValue(
@@ -251,10 +246,53 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+function isEmptyDetailsValue(value: unknown): boolean {
+	if (value === undefined || value === null) return true;
+	if (typeof value === "string") return value.trim().length === 0;
+	if (Array.isArray(value)) return value.length === 0;
+	return false;
+}
+
+function normalizeComparableDetailsValue(value: unknown): string {
+	return String(formatValue(value)).trim().toLocaleLowerCase();
+}
+
+function getStringSet(value: unknown): ReadonlySet<string> {
+	if (!Array.isArray(value)) {
+		return new Set();
+	}
+
+	return new Set(value.map(String));
+}
+
+function relationshipMatchesRelatedNPCBlock(
+	relationship: {
+		relatedEntityType: string;
+		relatedEntityId: string;
+		roleTitle?: string;
+		relationshipType: string;
+	},
+	sourceType: string,
+	entityId: string,
+	roleTitles: ReadonlySet<string>,
+	relationshipTypes: ReadonlySet<string>,
+): boolean {
+	return (
+		relationship.relatedEntityType === sourceType &&
+		relationship.relatedEntityId === entityId &&
+		(roleTitles.size === 0 || roleTitles.has(relationship.roleTitle ?? "")) &&
+		(relationshipTypes.size === 0 ||
+			relationshipTypes.has(relationship.relationshipType))
+	);
+}
+
 export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	heading: {
 		type: "heading",
 		label: "Heading",
+		shouldRender: ({ block }) =>
+			typeof block.props.text === "string" &&
+			block.props.text.trim().length > 0,
 		Render: ({ block }) => {
 			const text = block.props.text ?? "";
 			return (
@@ -267,6 +305,14 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	richText: {
 		type: "richText",
 		label: "Rich Text",
+		shouldRender: ({ block, context }) => {
+			const value =
+				block.dataMode === "entity"
+					? getEntityValue(context, block.binding?.entityPath)
+					: block.props.json;
+
+			return readPlainTextFromRichTextValue(value).trim().length > 0;
+		},
 		Render: ({ block, context }) => {
 			const value =
 				block.dataMode === "entity"
@@ -284,6 +330,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	description: {
 		type: "description",
 		label: "Description",
+		shouldRender: ({ context }) =>
+			resolveGenericDescription(context).value.trim().length > 0,
 		Render: ({ block, context }) => (
 			<DescriptionRenderer
 				context={context}
@@ -294,36 +342,100 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	detailsList: {
 		type: "detailsList",
 		label: "Details List",
+		shouldRender: ({ block, context }) => {
+			const rows = Array.isArray(block.props.rows) ? block.props.rows : [];
+			return rows.some((row) => {
+				const detail = row as {
+					value?: unknown;
+					valueMode?: unknown;
+					resolver?: unknown;
+					args?: unknown;
+					hideWhenEmpty?: unknown;
+					hideWhenEqualTo?: unknown;
+				};
+				const rawValue = resolveDetailsRowValue(detail, context);
+
+				if (detail.hideWhenEmpty === true && isEmptyDetailsValue(rawValue)) {
+					return false;
+				}
+
+				if (
+					typeof detail.hideWhenEqualTo === "string" &&
+					!isEmptyDetailsValue(rawValue)
+				) {
+					const comparisonValue = getEntityValue(
+						context,
+						detail.hideWhenEqualTo,
+					);
+					if (
+						!isEmptyDetailsValue(comparisonValue) &&
+						normalizeComparableDetailsValue(rawValue) ===
+							normalizeComparableDetailsValue(comparisonValue)
+					) {
+						return false;
+					}
+				}
+
+				return true;
+			});
+		},
 		Render: ({ block, context }) => {
 			const rows = Array.isArray(block.props.rows) ? block.props.rows : [];
+			const visibleRows = rows.flatMap((row, index) => {
+				const detail = row as {
+					label?: unknown;
+					value?: unknown;
+					valueMode?: unknown;
+					resolver?: unknown;
+					args?: unknown;
+					emptyText?: unknown;
+					hideWhenEmpty?: unknown;
+					hideWhenEqualTo?: unknown;
+				};
+				const rawValue = resolveDetailsRowValue(detail, context);
 
-			if (rows.length === 0) {
-				return (
-					<p>{(block.props.emptyText ?? "No details listed.") as string}</p>
-				);
+				if (detail.hideWhenEmpty === true && isEmptyDetailsValue(rawValue)) {
+					return [];
+				}
+
+				if (
+					typeof detail.hideWhenEqualTo === "string" &&
+					!isEmptyDetailsValue(rawValue)
+				) {
+					const comparisonValue = getEntityValue(
+						context,
+						detail.hideWhenEqualTo,
+					);
+					if (
+						!isEmptyDetailsValue(comparisonValue) &&
+						normalizeComparableDetailsValue(rawValue) ===
+							normalizeComparableDetailsValue(comparisonValue)
+					) {
+						return [];
+					}
+				}
+
+				return [{ detail, index, rawValue }];
+			});
+
+			if (visibleRows.length === 0) {
+				return typeof block.props.emptyText === "string" ? (
+					<p>{block.props.emptyText}</p>
+				) : null;
 			}
+
 			return (
 				<div className="atlas-details-list">
-					{rows.map((row, index) => {
-						const detail = row as {
-							label?: unknown;
-							value?: unknown;
-							valueMode?: unknown;
-							emptyText?: unknown;
-						};
-
+					{visibleRows.map(({ detail, index, rawValue }) => {
 						const label = detail.label ?? "";
-
-						const rawValue = resolveDetailsRowValue(detail, context);
-
-						const renderedValue =
-							rawValue === undefined || rawValue === null || rawValue === ""
-								? String(detail.emptyText)
-								: formatValue(rawValue);
+						const renderedValue = isEmptyDetailsValue(rawValue)
+							? typeof detail.emptyText === "string"
+								? detail.emptyText
+								: ""
+							: formatValue(rawValue);
 
 						return (
 							<div
-								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
 								key={`detail-${index}-${stableRenderKey(detail.label, "row")}`}
 								className="detail-container"
 							>
@@ -341,13 +453,14 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	chipList: {
 		type: "chipList",
 		label: "Chip List",
+		shouldRender: ({ block }) =>
+			Array.isArray(block.props.chips) && block.props.chips.length > 0,
 		Render: ({ block }) => {
 			const chips = Array.isArray(block.props.chips) ? block.props.chips : [];
 			return (
 				<div>
-					{chips.map((chip, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-						<span key={`chip-${index}-${stableRenderKey(chip, "chip")}`}>
+					{chips.map((chip) => (
+						<span key={`chip-${stableRenderKey(chip, "chip")}`}>
 							{String(chip)}
 						</span>
 					))}
@@ -358,6 +471,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	entityField: {
 		type: "entityField",
 		label: "Entity Field",
+		shouldRender: ({ block, context }) =>
+			!isEmptyDetailsValue(getEntityValue(context, block.binding?.entityPath)),
 		Render: ({ block, context }) => {
 			const value = getEntityValue(context, block.binding?.entityPath);
 			return (
@@ -373,6 +488,26 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	entityChipList: {
 		type: "entityChipList",
 		label: "Entity Chip List",
+		shouldRender: ({ block, context }) => {
+			if (block.binding?.entityPath === "cities") {
+				const country = context.entity as TLCountry;
+				const lookupCities = context.relatedLookups?.citiesByCountryId?.get(
+					String(context.entity._id),
+				);
+				const relatedCities = context.related?.cities?.filter(
+					(city) => city.country?._id === context.entity._id,
+				);
+
+				return (
+					(Array.isArray(country.cities) && country.cities.length > 0) ||
+					Boolean(lookupCities?.length) ||
+					Boolean(relatedCities?.length)
+				);
+			}
+
+			const value = getEntityValue(context, block.binding?.entityPath);
+			return Array.isArray(value) && value.length > 0;
+		},
 		Render: ({ block, context }) => {
 			const value = getEntityValue(context, block.binding?.entityPath);
 			const items = Array.isArray(value) ? value : [];
@@ -397,10 +532,9 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 
 				return (
 					<div className="tag-list">
-						{cityItems.map((item, index) => (
+						{cityItems.map((item) => (
 							<span
-								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-								key={`entity-chip-${index}-${stableRenderKey(item, "item")}`}
+								key={`entity-chip-${stableRenderKey(item, "item")}`}
 								className="tag"
 								style={
 									item.capital === true
@@ -419,14 +553,13 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				return <p>{(block.props.emptyText ?? "No items listed.") as string}</p>;
 			return (
 				<div className="tag-list">
-					{items.map((item, index) => {
+					{items.map((item) => {
 						const record = isRecord(item) ? item : {};
 						const isCapital = record.capital === true;
 
 						return (
 							<span
-								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-								key={`entity-chip-${index}-${stableRenderKey(item, "item")}`}
+								key={`entity-chip${stableRenderKey(item, "item")}`}
 								className="tag"
 								style={isCapital ? { ...TagStyles, ...Capital } : TagStyles}
 							>
@@ -443,6 +576,10 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	splitList: {
 		type: "splitList",
 		label: "Split List",
+		shouldRender: ({ block, context }) =>
+			resolveSplitListGroups(block, context).some(
+				(group) => group.children.length > 0,
+			),
 		Render: ({ block, context }) => {
 			const groups = resolveSplitListGroups(block, context);
 
@@ -491,6 +628,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	largeTags: {
 		type: "largeTags",
 		label: "Large Tags",
+		shouldRender: ({ context }) => context.entity.tags.length > 0,
 		Render: ({ context }) => {
 			const Tags = context.entity.tags;
 			const theme = useTheme();
@@ -506,12 +644,11 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						Tags
 					</Typography>
 					<Grid className="tags-grid" container spacing={2}>
-						{Tags?.map((tag: Tag, index) => (
+						{Tags?.map((tag: Tag) => (
 							<Grid
 								className="tags-grid-item"
 								size={gridSize}
-								// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
-								key={`tag-${index}-${stableRenderKey(tag, "tag")}`}
+								key={`tag-${stableRenderKey(tag, "tag")}`}
 							>
 								<Card
 									sx={{
@@ -576,17 +713,17 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				}
 			}
 
-			const totalPopulation = useMemo(() => {
-				const urbNum = Number.parseInt(
-					UrbanPopulation?.replace(/,/g, "") ?? "0",
-					10,
-				);
-				const ruralNum = Number.parseInt(
-					RuralPopulation?.replace(/,/g, "") ?? "0",
-					10,
-				);
-				return ruralNum + urbNum;
-			}, [RuralPopulation, UrbanPopulation]);
+			const urbanPopulation = Number.parseInt(
+				UrbanPopulation?.replace(/,/g, "") ?? "0",
+				10,
+			);
+			const ruralPopulation = Number.parseInt(
+				RuralPopulation?.replace(/,/g, "") ?? "0",
+				10,
+			);
+
+			const totalPopulation = urbanPopulation + ruralPopulation;
+
 			const ruralPercentage = useMemo(() => {
 				if (!totalPopulation) return 0;
 				const rural = Number.parseInt(
@@ -726,6 +863,69 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						</Grid>
 					</Grid>
 				</div>
+			);
+		},
+	},
+	relatedNPCList: {
+		type: "relatedNPCList",
+		label: "Related NPCs",
+		shouldRender: ({ block, context }) => {
+			const entityId = String((context.entity as { _id?: unknown })._id ?? "");
+			const roleTitles = getStringSet(block.props.roleTitles);
+			const relationshipTypes = getStringSet(block.props.relationshipTypes);
+
+			return (context.related?.npcs ?? []).some((npc) =>
+				npc.relationships.some((relationship) =>
+					relationshipMatchesRelatedNPCBlock(
+						relationship,
+						context.sourceType,
+						entityId,
+						roleTitles,
+						relationshipTypes,
+					),
+				),
+			);
+		},
+		Render: ({ block, context }) => {
+			const entityId = String((context.entity as { _id?: unknown })._id ?? "");
+			const roleTitles = getStringSet(block.props.roleTitles);
+			const relationshipTypes = getStringSet(block.props.relationshipTypes);
+			const matches = (context.related?.npcs ?? []).filter((npc) =>
+				npc.relationships.some((relationship) =>
+					relationshipMatchesRelatedNPCBlock(
+						relationship,
+						context.sourceType,
+						entityId,
+						roleTitles,
+						relationshipTypes,
+					),
+				),
+			);
+			if (matches.length === 0)
+				return (
+					<Typography color="text.secondary">
+						{String(block.props.emptyText ?? "No related NPCs.")}
+					</Typography>
+				);
+			return (
+				<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+					{matches.map((npc) => {
+						const relationship = npc.relationships.find(
+							(item) =>
+								item.relatedEntityType === context.sourceType &&
+								item.relatedEntityId === entityId,
+						);
+						return (
+							<Chip
+								key={npc._id}
+								label={`${npc.fullName || npc.name}${relationship?.roleTitle ? ` — ${relationship.roleTitle}` : ""}`}
+								component="a"
+								clickable
+								href={`#/view_npc/${npc._id}`}
+							/>
+						);
+					})}
+				</Box>
 			);
 		},
 	},

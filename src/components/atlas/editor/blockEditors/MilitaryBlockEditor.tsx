@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AtlasEditorContext } from "../../../../definitions/Atlas";
 import type { TLMilitary } from "../../../../definitions/TerraLogger";
 import { Button } from "@mui/material";
@@ -30,21 +30,14 @@ export function MilitaryBlockEditor({
 			? String(selectedIndex)
 			: "";
 
-	const regiments = useMemo(
-		() =>
-			military
-				.map((unit, index) => ({ unit, index }))
-				.filter(({ unit }) => getMilitaryKind(unit) === "regiment"),
-		[military],
-	);
+	const regiments: Array<{ unit: TLMilitary; index: number }> = [];
+	const fleets: Array<{ unit: TLMilitary; index: number }> = [];
 
-	const fleets = useMemo(
-		() =>
-			military
-				.map((unit, index) => ({ unit, index }))
-				.filter(({ unit }) => getMilitaryKind(unit) === "fleet"),
-		[military],
-	);
+	for (const [index, unit] of military.entries()) {
+		const kind = getMilitaryKind(unit);
+		if (kind === "regiment") regiments.push({ unit, index });
+		if (kind === "fleet") fleets.push({ unit, index });
+	}
 
 	useEffect(() => {
 		if (selectedIndex == null) return;
@@ -416,9 +409,10 @@ function getMilitaryUnits(entity: unknown): TLMilitary[] {
 
 	if (!Array.isArray(country.political?.military)) return [];
 
-	return country.political.military
-		.map(normalizeMilitaryUnit)
-		.filter((unit): unit is TLMilitary => Boolean(unit));
+	return country.political.military.flatMap((entry) => {
+		const unit = normalizeMilitaryUnit(entry);
+		return unit ? [unit] : [];
+	});
 }
 
 function normalizeMilitaryUnit(value: unknown): TLMilitary | null {

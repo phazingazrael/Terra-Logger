@@ -74,21 +74,18 @@ export async function saveAtlasRelatedUpdates({
     }
   }
 
-  for (const [key, city] of pendingCityUpdates) {
-    await update("cities", key, city);
-  }
-
-  for (const [key, note] of pendingNoteUpdates) {
-    await update("notes", key, note);
-  }
-
-  for (const [key, tag] of pendingTagUpdates) {
-    await update("tags", key, tag);
-  }
-
-  for (const tag of pendingTagAdds.values()) {
-    await add("tags", tag);
-  }
+  await Promise.all([
+    ...Array.from(pendingCityUpdates, ([key, city]) =>
+      update("cities", key, city),
+    ),
+    ...Array.from(pendingNoteUpdates, ([key, note]) =>
+      update("notes", key, note),
+    ),
+    ...Array.from(pendingTagUpdates, ([key, tag]) =>
+      update("tags", key, tag),
+    ),
+    ...Array.from(pendingTagAdds.values(), (tag) => add("tags", tag)),
+  ]);
 }
 
 function getAppliedTagsFromEntity(entity: unknown): StoredTag[] {
@@ -98,9 +95,10 @@ function getAppliedTagsFromEntity(entity: unknown): StoredTag[] {
 
   if (!Array.isArray(tags)) return [];
 
-  return tags
-    .map(normalizeStoredTag)
-    .filter((tag): tag is StoredTag => Boolean(tag));
+  return tags.flatMap((entry) => {
+    const tag = normalizeStoredTag(entry);
+    return tag ? [tag] : [];
+  });
 }
 
 function normalizeStoredTag(value: unknown): StoredTag | null {

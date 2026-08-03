@@ -138,6 +138,36 @@ export const entityFieldCatalog: AtlasEntityFieldCatalog = {
     { path: "type", label: "Type", editor: "text" },
   ],
 
+  npc: [
+    { path: "name", label: "Name", editor: "text" },
+    { path: "fullName", label: "Full Name", editor: "text" },
+    { path: "nickName", label: "Nickname", editor: "text" },
+    { path: "aliases", label: "Aliases", editor: "stringList", itemLabel: "Alias" },
+    { path: "pronouns", label: "Pronouns", editor: "stringList", itemLabel: "Pronoun" },
+    { path: "pronounced", label: "Pronunciation", editor: "text" },
+    { path: "heritage", label: "Heritage", editor: "text" },
+    { path: "age", label: "Age", editor: "number" },
+    { path: "sexuality", label: "Sexuality", editor: "text" },
+    { path: "alignment", label: "Alignment", editor: "text" },
+    { path: "condition", label: "Condition", editor: "text" },
+    { path: "background", label: "Background", editor: "textarea" },
+    { path: "aspirationsMotivations", label: "Aspirations & Motivations", editor: "textarea" },
+    { path: "publicPerception", label: "Public Perception", editor: "textarea" },
+    { path: "hiddenDetails", label: "Hidden Details", editor: "textarea" },
+    { path: "appearance.build", label: "Build", editor: "text" },
+    { path: "appearance.skinTone", label: "Skin Tone", editor: "text" },
+    { path: "appearance.complexion", label: "Complexion", editor: "text" },
+    { path: "appearance.eyeShape", label: "Eye Shape", editor: "text" },
+    { path: "appearance.eyeColor", label: "Eye Color", editor: "text" },
+    { path: "appearance.hairStyle", label: "Hair Style", editor: "text" },
+    { path: "appearance.hairColor", label: "Hair Color", editor: "text" },
+    { path: "appearance.facialHair", label: "Facial Hair", editor: "text" },
+    { path: "appearance.descriptors", label: "Appearance Descriptors", editor: "textarea" },
+    { path: "personality.demeanor", label: "Demeanor", editor: "textarea" },
+    { path: "personality.activities", label: "Activities", editor: "textarea" },
+    { path: "tags", label: "Tags", editor: "tagList" },
+  ],
+
   note: [
     { path: "legend", label: "Body", editor: "textarea" },
     { path: "name", label: "Name", editor: "text" },
@@ -205,6 +235,10 @@ export const computedBlockEditableFields: AtlasComputedFieldMap = {
     populationBlock: ["members.rural", "members.urban"],
   },
 
+  npc: {
+    npcHeader: ["name", "fullName", "nickName", "aliases", "pronouns", "pronounced", "heritage", "age", "sexuality", "alignment", "condition"],
+  },
+
   note: {
     noteHeader: ["name", "type"],
     noteBody: ["legend"],
@@ -222,7 +256,8 @@ export function getEntityFieldSchemas(
   sourceType: keyof typeof entityFieldCatalog,
   paths: string[],
 ): AtlasEntityFieldSchema[] {
-  return paths
-    .map((path) => getEntityFieldSchema(sourceType, path))
-    .filter((schema): schema is AtlasEntityFieldSchema => Boolean(schema));
+  return paths.flatMap((path) => {
+    const schema = getEntityFieldSchema(sourceType, path);
+    return schema ? [schema] : [];
+  });
 }

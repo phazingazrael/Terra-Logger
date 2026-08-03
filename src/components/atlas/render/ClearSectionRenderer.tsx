@@ -13,7 +13,6 @@ export function ClearSectionRenderer({
 	section: AtlasSection;
 	context: AtlasRenderContext;
 }>) {
-	if (section.editor.collapsed) return null;
 	return (
 		<div
 			className={`atlas-section clear ${section.wrapper.className ?? ""}`.trim()}

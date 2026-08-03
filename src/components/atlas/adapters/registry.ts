@@ -4,6 +4,7 @@ import { countryAdapter } from "./countryAdapter";
 import { cultureAdapter } from "./cultureAdapter";
 import { noteAdapter } from "./noteAdapter";
 import { religionAdapter } from "./religionAdapter";
+import { npcAdapter } from "./npcAdapter";
 
 export const atlasAdapters = {
   city: cityAdapter,
@@ -11,6 +12,7 @@ export const atlasAdapters = {
   culture: cultureAdapter,
   religion: religionAdapter,
   note: noteAdapter,
+  npc: npcAdapter,
 } satisfies { [K in AtlasSourceType]: AtlasAdapter<K> };
 
 export function getAtlasAdapter<TSource extends AtlasSourceType>(sourceType: TSource): AtlasAdapter<TSource> {

@@ -70,10 +70,13 @@ export function migrateLegacyJsonUiContent({
   legacyContent,
   strategy = "replaceMatchingEditable",
 }: MigrateLegacyJsonUiArgs): AtlasContent {
-  const legacySections = getChildren(legacyContent)
-    .filter((child) => child.type === "Section")
-    .map(convertLegacySection)
-    .filter((section): section is AtlasSection => Boolean(section));
+  const legacySections: AtlasSection[] = [];
+
+  for (const child of getChildren(legacyContent)) {
+    if (child.type !== "Section") continue;
+    const section = convertLegacySection(child);
+    if (section) legacySections.push(section);
+  }
 
   const sections =
     strategy === "appendLegacySections"
@@ -104,9 +107,13 @@ function convertLegacySection(node: LegacyJsonUiNode): AtlasSection | null {
   const className = readString(props.className, "section legacy-jsonui");
   const editable = props.edit === true;
 
-  const blocks = getChildren(node)
-    .flatMap((child) => convertLegacyChildToBlocks(child, title))
-    .filter((block): block is AtlasBlock => Boolean(block));
+  const blocks: AtlasBlock[] = [];
+
+  for (const child of getChildren(node)) {
+    for (const block of convertLegacyChildToBlocks(child, title)) {
+      if (block) blocks.push(block);
+    }
+  }
 
   if (blocks.length === 0) return null;
 
@@ -181,36 +188,28 @@ function convertLegacyListToBlocks(node: LegacyJsonUiNode): AtlasBlock[] {
   );
 
   if (listType === "Detail") {
-    const rows = listItems
-      .map((item) => {
-        const itemProps = getProps(item);
+    const rows = listItems.flatMap((item) => {
+      const itemProps = getProps(item);
 
-        const label = cleanDetailLabel(
-          readString(itemProps.label, ""),
-        );
+      const label = cleanDetailLabel(
+        readString(itemProps.label, ""),
+      );
 
-        const value =
-          readString(itemProps.value, "") ||
-          readString(itemProps.text, "") ||
-          extractText(item);
+      const value =
+        readString(itemProps.value, "") ||
+        readString(itemProps.text, "") ||
+        extractText(item);
 
-        if (!label && !value) return null;
+      if (!label && !value) return [];
 
-        return {
+      return [
+        {
           label: label || "Detail",
           value,
           emptyText: "",
-        };
-      })
-      .filter(
-        (
-          row,
-        ): row is {
-          label: string;
-          value: string;
-          emptyText: string;
-        } => Boolean(row),
-      );
+        },
+      ];
+    });
 
     if (rows.length === 0) return [];
 
@@ -222,17 +221,16 @@ function convertLegacyListToBlocks(node: LegacyJsonUiNode): AtlasBlock[] {
     ];
   }
 
-  const children = listItems
-    .map((item) => {
-      const itemProps = getProps(item);
+  const children = listItems.flatMap((item) => {
+    const itemProps = getProps(item);
+    const text = (
+      readString(itemProps.text, "") ||
+      readString(itemProps.value, "") ||
+      extractText(item)
+    ).trim();
 
-      return (
-        readString(itemProps.text, "") ||
-        readString(itemProps.value, "") ||
-        extractText(item)
-      ).trim();
-    })
-    .filter(Boolean);
+    return text ? [text] : [];
+  });
 
   if (children.length === 0) return [];
 
@@ -341,17 +339,14 @@ function appendLegacySections(
   defaultSections: AtlasSection[],
   legacySections: AtlasSection[],
 ): AtlasSection[] {
-  return [
-    ...defaultSections,
-    ...legacySections
-      .filter(
-        (section) =>
-          !PROTECTED_SECTION_TITLES.has(
-            normalizeTitle(section.title),
-          ),
-      )
-      .map(makeAppendedLegacySection),
-  ];
+  const appendedSections = [...defaultSections];
+
+  for (const section of legacySections) {
+    if (PROTECTED_SECTION_TITLES.has(normalizeTitle(section.title))) continue;
+    appendedSections.push(makeAppendedLegacySection(section));
+  }
+
+  return appendedSections;
 }
 
 function makeAppendedLegacySection(
@@ -416,8 +411,10 @@ function extractText(node: LegacyJsonUiNode): string {
     readString(props.value, "");
 
   const childText = getChildren(node)
-    .map((child) => extractText(child))
-    .filter(Boolean)
+    .flatMap((child) => {
+      const text = extractText(child);
+      return text ? [text] : [];
+    })
     .join("\n");
 
   return [ownText, childText].filter(Boolean).join("\n");
@@ -442,22 +439,24 @@ function readString(value: unknown, fallback: string): string {
 function readStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
 
-  return value
-    .map((item) => {
-      if (typeof item === "string") return item;
-      if (isRecord(item)) {
-        return (
-          readString(item.name, "") ||
-          readString(item.label, "") ||
-          readString(item.text, "") ||
-          readString(item.value, "")
-        );
-      }
+  const strings: string[] = [];
 
-      return "";
-    })
-    .map((item) => item.trim())
-    .filter(Boolean);
+  for (const item of value) {
+    const text =
+      typeof item === "string"
+        ? item
+        : isRecord(item)
+          ? readString(item.name, "") ||
+            readString(item.label, "") ||
+            readString(item.text, "") ||
+            readString(item.value, "")
+          : "";
+
+    const trimmed = text.trim();
+    if (trimmed) strings.push(trimmed);
+  }
+
+  return strings;
 }
 
 function cleanDetailLabel(value: string): string {

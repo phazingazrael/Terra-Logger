@@ -14,13 +14,18 @@ export function formatValue(value: unknown): string {
 	if (typeof value === "number" || typeof value === "boolean") return String(value);
 	if (Array.isArray(value)) {
 		return value
-			.map((entry) => {
-				if (typeof entry === "string") return entry;
-				if (entry && typeof entry === "object" && "name" in entry) return String((entry as { name: unknown }).name);
-				if (entry && typeof entry === "object" && "Name" in entry) return String((entry as { Name: unknown }).Name);
-				return String(entry);
+			.flatMap((entry) => {
+				let text: string;
+
+				if (typeof entry === "string") text = entry;
+				else if (entry && typeof entry === "object" && "name" in entry)
+					text = String((entry as { name: unknown }).name);
+				else if (entry && typeof entry === "object" && "Name" in entry)
+					text = String((entry as { Name: unknown }).Name);
+				else text = String(entry);
+
+				return text ? [text] : [];
 			})
-			.filter(Boolean)
 			.join(", ");
 	}
 	if (typeof value === "object" && "name" in value) return String((value as { name: unknown }).name);

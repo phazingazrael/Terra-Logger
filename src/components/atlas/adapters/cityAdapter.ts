@@ -17,6 +17,7 @@ function createCityContent(entity: TLCity): AtlasContent {
         descriptionBlock(),
       ]),
       entitySection("Features", "section featuresList", [entityChipListBlock("Features", "features")]),
+      entitySection("Notable NPCs", "section notable-npcs", [computedBlock("relatedNPCList", "Notable NPCs", "npc.relationships", { roleTitles: ["Notable NPC"], emptyText: "No notable NPCs." })]),
       entitySection("Map", "section map-link", [computedBlock("cityMapLink", "Map Link", "city.mapLink", { text: "🗺️ View City Map" })]),
       sectionPreset("History", "section history", [detailsListBlock([
         { label: "Notable Founding Myths/Legends", value: "[Ancient tales about how the city was formed or its divine/magical origins.]" },
@@ -47,7 +48,7 @@ function createCityContent(entity: TLCity): AtlasContent {
       sectionPreset("Government & Power Structure", "section government-power", [
         detailsListBlock([
           { label: "Government Type", value: "[Monarchy, Theocracy, AI-Controlled, Mage Council, etc.]" },
-          { label: "Current Ruler(s)", value: "[King, High Priestess, AI Overlord, Elder Council, etc.]" },
+          { label: "Current Ruler(s)", valueMode: "computed", resolver: "city.currentRulers", emptyText: "No current city leaders recorded." },
           { label: "Noble Houses & Factions", value: "[Major power groups, noble families, rival factions.]" },
           { label: "Laws & Justice System", value: "[Trial by combat? Magic-enforced law? A dystopian police state?]" },
           { label: "Corruption Level", value: "[Low, moderate, high, controlled by crime syndicates.]" },

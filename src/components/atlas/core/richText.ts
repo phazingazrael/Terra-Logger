@@ -122,9 +122,13 @@ export function htmlToRichTextJson(html: string): string {
   const parser = new DOMParser();
   const document = parser.parseFromString(html, "text/html");
 
-  const content = Array.from(document.body.childNodes)
-    .flatMap(convertDomNodeToBlocks)
-    .filter((block): block is AtlasRichTextBlockNode => Boolean(block));
+  const content: AtlasRichTextBlockNode[] = [];
+
+  for (const childNode of Array.from(document.body.childNodes)) {
+    for (const block of convertDomNodeToBlocks(childNode)) {
+      if (block) content.push(block);
+    }
+  }
 
   const doc: AtlasRichTextDoc = {
     type: "doc",
@@ -161,9 +165,10 @@ function normalizeRichTextDoc(value: unknown): AtlasRichTextDoc | null {
   if (value.type !== "doc") return null;
   if (!Array.isArray(value.content)) return null;
 
-  const content = value.content
-    .map(normalizeBlockNode)
-    .filter((block): block is AtlasRichTextBlockNode => Boolean(block));
+  const content = value.content.flatMap((entry) => {
+    const block = normalizeBlockNode(entry);
+    return block ? [block] : [];
+  });
 
   return {
     type: "doc",
@@ -405,12 +410,15 @@ function convertDomNodeToBlocks(node: ChildNode): AtlasRichTextBlockNode[] {
   }
 
   if (tagName === "ul" || tagName === "ol") {
-    const items = Array.from(node.children)
-      .filter((child) => child.tagName.toLowerCase() === "li")
-      .map((child) => ({
-        type: "listItem" as const,
+    const items: Array<{ type: "listItem"; content?: AtlasRichTextInlineNode[] }> = [];
+
+    for (const child of Array.from(node.children)) {
+      if (child.tagName.toLowerCase() !== "li") continue;
+      items.push({
+        type: "listItem",
         content: convertInlineChildren(child),
-      }));
+      });
+    }
 
     return [
       {

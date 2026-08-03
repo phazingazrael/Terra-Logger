@@ -5,6 +5,7 @@ import type {
 	TLCulture,
 	TLNote,
 	TLReligion,
+	TLNPC
 } from "./TerraLogger";
 import type { Tag } from "./Common";
 
@@ -16,9 +17,10 @@ export type AtlasSourceType =
 	| "country"
 	| "culture"
 	| "religion"
-	| "note";
+	| "note"
+	| "npc";
 
-export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote;
+export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote | TLNPC;
 
 export type AtlasEntityBySource = {
 	city: TLCity;
@@ -26,6 +28,7 @@ export type AtlasEntityBySource = {
 	culture: TLCulture;
 	religion: TLReligion;
 	note: TLNote;
+	npc: TLNPC;
 };
 
 export type AtlasRelatedEntities = Partial<{
@@ -34,6 +37,7 @@ export type AtlasRelatedEntities = Partial<{
 	cultures: TLCulture[];
 	religions: TLReligion[];
 	notes: TLNote[];
+	npcs: TLNPC[];
 	tags: Tag[];
 }>;
 
@@ -138,32 +142,32 @@ export type AtlasEntityFieldChange = {
 
 export type AtlasRelatedUpdate =
 	| {
-			action: "add";
-			store: "tags";
-			value: Tag & {
-				mapId?: string;
-			};
-	  }
+		action: "add";
+		store: "tags";
+		value: Tag & {
+			mapId?: string;
+		};
+	}
 	| {
-			action: "update";
-			store: "tags";
-			key: string;
-			value: Tag & {
-				mapId?: string;
-			};
-	  }
+		action: "update";
+		store: "tags";
+		key: string;
+		value: Tag & {
+			mapId?: string;
+		};
+	}
 	| {
-			action: "update";
-			store: "notes";
-			key: string;
-			value: TLNote;
-	  }
+		action: "update";
+		store: "notes";
+		key: string;
+		value: TLNote;
+	}
 	| {
-			action: "update";
-			store: "cities";
-			key: string;
-			value: TLCity;
-	  };
+		action: "update";
+		store: "cities";
+		key: string;
+		value: TLCity;
+	};
 
 export type AtlasRelatedUpdateHandler = (update: AtlasRelatedUpdate) => void;
 
@@ -185,6 +189,10 @@ export type AtlasPageEditorSavePayload<
 export type AtlasBlockPlugin = {
 	type: string;
 	label: string;
+	shouldRender?: (props: {
+		block: AtlasBlock;
+		context: AtlasRenderContext;
+	}) => boolean;
 	Render: (props: {
 		block: AtlasBlock;
 		context: AtlasRenderContext;

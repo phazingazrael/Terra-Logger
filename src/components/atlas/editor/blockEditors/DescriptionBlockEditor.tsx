@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import type {
 	AtlasEditorContext,
 	AtlasSourceType,
@@ -24,24 +23,23 @@ export function DescriptionBlockEditor({
 }: {
 	context: AtlasEditorContext;
 }) {
-	const source = useMemo(
-		() => resolveDescriptionEditorSource(context),
-		[context],
+	const source = resolveDescriptionEditorSource(context);
+
+	return (
+		<DescriptionEditor key={source.key} context={context} source={source} />
 	);
-	const [loadedSourceKey, setLoadedSourceKey] = useState(source.key);
-	const [editorValue, setEditorValue] = useState(source.json);
+}
 
-	useEffect(() => {
-		if (source.key === loadedSourceKey) return;
-
-		setLoadedSourceKey(source.key);
-		setEditorValue(source.json);
-	}, [source.key, source.json, loadedSourceKey]);
-
+function DescriptionEditor({
+	context,
+	source,
+}: {
+	context: AtlasEditorContext;
+	source: DescriptionSource;
+}) {
 	function handleChange(json: string) {
-		setEditorValue(json);
-
 		const plainText = readPlainTextFromRichTextValue(json).trim();
+
 		const html = plainText ? richTextJsonToHtml(json).trim() : "";
 
 		context.onEntityFieldChange({
@@ -70,7 +68,7 @@ export function DescriptionBlockEditor({
 				</p>
 			) : null}
 
-			<RichTextEditor value={editorValue} onChange={handleChange} />
+			<RichTextEditor value={source.json} onChange={handleChange} />
 		</div>
 	);
 }
@@ -180,7 +178,10 @@ function getEntityNameCandidates(entity: unknown): Set<string> {
 	const record = entity as Record<string, unknown>;
 
 	return new Set(
-		[record.name, record.nameFull].map(normalizeName).filter(Boolean),
+		[record.name, record.nameFull].flatMap((value) => {
+			const name = normalizeName(value);
+			return name ? [name] : [];
+		}),
 	);
 }
 

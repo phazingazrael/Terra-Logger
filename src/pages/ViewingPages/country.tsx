@@ -2,32 +2,33 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Container } from "@mui/material";
 
 import { useParams } from "react-router-dom";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
 import type { TLCountry, TLDiplomacy } from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
 
-import {
-	AtlasRenderer,
-	getAtlasAdapter,
-	isAtlasContent,
-	PageEditor,
-	saveAtlasRelatedUpdates,
-} from "../../components/atlas";
+import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { isAtlasContent } from "../../components/atlas/core/validators";
+import { PageEditor } from "../../components/atlas/editor/PageEditor";
+import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
+import { AtlasRenderer } from "../../components/atlas/render/Renderer";
 import type {
 	AtlasContent,
 	AtlasPageEditorSavePayload,
 } from "../../definitions/Atlas";
 import type { Tag } from "../../definitions/Common";
+import type { TLNPC } from "../../definitions/TerraLogger";
+import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
 
 function CountryView() {
 	const countryId = useParams();
-	const { useActive, update, add } = useDB();
+	const { update, add } = useDB();
 	const countries = useActive("countries");
 	const notes = useActive("notes");
 	const cities = useActive("cities");
 	const tags = useActive<Tag>("tags");
+	const npcs = useActive<TLNPC>("npcs");
 	const country = useMemo(
 		() => countries.find((c) => c._id === countryId?._id),
 		[countries, countryId?._id],
@@ -75,7 +76,7 @@ function CountryView() {
 		[cities, countries, tags],
 	);
 
-	const countryAdapter = useMemo(() => getAtlasAdapter("country"), []);
+	const countryAdapter = getAtlasAdapter("country");
 
 	const countryContent = useMemo(() => {
 		if (!country) return null;
@@ -85,7 +86,7 @@ function CountryView() {
 		}
 
 		if (isAtlasContent(country.content)) {
-			return country.content;
+			return ensureContextualNPCSections(country.content);
 		}
 
 		return countryAdapter.createDefaultContent(country);
@@ -103,10 +104,11 @@ function CountryView() {
 				cultures,
 				notes,
 				tags,
+				npcs,
 			},
 			relatedLookups,
 		};
-	}, [country, notes, cities, countries, cultures, tags, relatedLookups]);
+	}, [country, notes, cities, countries, cultures, tags, npcs, relatedLookups]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");

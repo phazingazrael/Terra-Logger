@@ -30,6 +30,7 @@ export function BlockList({
 		<div className="atlas-block-list">
 			<BlockPresetMenu presets={blockPresets} onAdd={onAdd} />
 
+
 			{blocks.map((block, index) => {
 				const hasMultipleBlocks = blocks.length > 1;
 				const isComputedBlock = block.dataMode === "computed";

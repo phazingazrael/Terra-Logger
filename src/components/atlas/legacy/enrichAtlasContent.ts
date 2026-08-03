@@ -85,6 +85,7 @@ const ENRICHMENT_SECTION_TITLES: Record<AtlasSourceType, string[]> = {
     "Notes",
   ],
   note: [],
+  npc: ["Current Location", "Relationship Graph", "History"],
 };
 
 const SECTION_TITLE_ALIASES: Partial<
@@ -155,9 +156,10 @@ function enrichSectionFromBlueprint(
   let changed = false;
 
   const existingBlockKeys = new Set(
-    existingSection.blocks
-      .map((block) => enrichableBlockKey(block))
-      .filter((key): key is string => Boolean(key)),
+    existingSection.blocks.flatMap((block) => {
+      const key = enrichableBlockKey(block);
+      return key ? [key] : [];
+    }),
   );
 
   const blocksToAppend = blueprintSection.blocks.filter((block) => {

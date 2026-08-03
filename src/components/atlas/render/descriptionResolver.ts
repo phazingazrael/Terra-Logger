@@ -177,12 +177,10 @@ function normalizeDescriptionValue(
 
 function getEntityNameCandidates(entity: DescribableEntity): Set<string> {
   return new Set(
-    [
-      entity.name,
-      entity.nameFull,
-    ]
-      .map(normalizeName)
-      .filter(Boolean),
+    [entity.name, entity.nameFull].flatMap((value) => {
+      const name = normalizeName(value);
+      return name ? [name] : [];
+    }),
   );
 }
 
