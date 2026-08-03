@@ -11,7 +11,6 @@
 //  **********************************************
 
 import type { GeneratorRecord } from "../../../../db/generators";
-import type { GeneratedNPC } from "../../types";
 import { generateNPCAppearance } from "./appearance";
 import { resolveNPCGenerationSelection } from "./catalogSelection";
 import { generateNPCName } from "./names";

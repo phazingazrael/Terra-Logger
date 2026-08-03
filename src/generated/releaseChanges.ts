@@ -31,8 +31,107 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.8",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
-  "commitCount": 48,
+  "commitCount": 59,
   "majorChanges": [
+    {
+      "hash": "11dcdf04d8fbdc8c4f64c0bacee10d94bf5a3376",
+      "shortHash": "11dcdf0",
+      "date": "2026-08-02T19:26:32-06:00",
+      "subject": "fix: 🔥 Remove unused import preventing build",
+      "type": "fix",
+      "scope": null,
+      "details": "🔥 Remove unused import preventing build",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/11dcdf04d8fbdc8c4f64c0bacee10d94bf5a3376"
+    },
+    {
+      "hash": "544ab5d4d21f149f15d22a7498ccb34b82eb3b54",
+      "shortHash": "544ab5d",
+      "date": "2026-08-02T19:23:52-06:00",
+      "subject": "refactor(react): remove dead code and apply component cleanup",
+      "type": "refactor",
+      "scope": "react",
+      "details": "remove dead code and apply component cleanup",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/544ab5d4d21f149f15d22a7498ccb34b82eb3b54"
+    },
+    {
+      "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
+      "shortHash": "ccfb93c",
+      "date": "2026-08-02T19:23:11-06:00",
+      "subject": "feat(ui): add NPC pages, routes, and navigation",
+      "type": "feat",
+      "scope": "ui",
+      "details": "add NPC pages, routes, and navigation",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ccfb93c4500cd0428736822432dc94aaa43637e1"
+    },
+    {
+      "hash": "749b1b0970e3cbe7620d68ce83859f2e6b4942fb",
+      "shortHash": "749b1b0",
+      "date": "2026-08-02T19:22:12-06:00",
+      "subject": "feat(import): add NPC population and import diagnostics",
+      "type": "feat",
+      "scope": "import",
+      "details": "add NPC population and import diagnostics",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/749b1b0970e3cbe7620d68ce83859f2e6b4942fb"
+    },
+    {
+      "hash": "b1cbccd19e4e38e00bc8026b637cd86ef86e4373",
+      "shortHash": "b1cbccd",
+      "date": "2026-08-02T19:21:23-06:00",
+      "subject": "feat(export): add NPC exports and improve Markdown Builder",
+      "type": "feat",
+      "scope": "export",
+      "details": "add NPC exports and improve Markdown Builder",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b1cbccd19e4e38e00bc8026b637cd86ef86e4373"
+    },
+    {
+      "hash": "3b20c8178efe4e018cdb7a142a151b35dcc7db48",
+      "shortHash": "3b20c81",
+      "date": "2026-08-02T19:20:36-06:00",
+      "subject": "feat(atlas): expand document editing and add NPC support",
+      "type": "feat",
+      "scope": "atlas",
+      "details": "expand document editing and add NPC support",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/3b20c8178efe4e018cdb7a142a151b35dcc7db48"
+    },
+    {
+      "hash": "16684376869ee052a2b6779990b132f7800e3066",
+      "shortHash": "1668437",
+      "date": "2026-08-02T19:19:38-06:00",
+      "subject": "feat(npc): implement NPC generation and management",
+      "type": "feat",
+      "scope": "npc",
+      "details": "implement NPC generation and management",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/16684376869ee052a2b6779990b132f7800e3066"
+    },
+    {
+      "hash": "ff2dbee6930656af7da0b40154d685b977533fcf",
+      "shortHash": "ff2dbee",
+      "date": "2026-08-02T19:18:44-06:00",
+      "subject": "feat(generators): add configurable NPC generation catalogs",
+      "type": "feat",
+      "scope": "generators",
+      "details": "add configurable NPC generation catalogs",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ff2dbee6930656af7da0b40154d685b977533fcf"
+    },
+    {
+      "hash": "1195435bbfef0987acadb6ab4f1df675f218b405",
+      "shortHash": "1195435",
+      "date": "2026-08-02T19:16:12-06:00",
+      "subject": "refactor(db): add NPC persistence and split database services",
+      "type": "refactor",
+      "scope": "db",
+      "details": "add NPC persistence and split database services",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/1195435bbfef0987acadb6ab4f1df675f218b405"
+    },
     {
       "hash": "d34f9ef8eadf56f436b10fd86b0eff08b545709a",
       "shortHash": "d34f9ef",
@@ -257,9 +356,138 @@ export const releaseChanges: ReleaseChanges = {
     "Atlas Doc System",
     "NPC Generation",
     "atlas",
-    "cleanup"
+    "cleanup",
+    "db",
+    "export",
+    "generators",
+    "import",
+    "npc",
+    "react",
+    "release",
+    "ui"
   ],
   "commits": [
+    {
+      "hash": "11dcdf04d8fbdc8c4f64c0bacee10d94bf5a3376",
+      "shortHash": "11dcdf0",
+      "date": "2026-08-02T19:26:32-06:00",
+      "subject": "fix: 🔥 Remove unused import preventing build",
+      "type": "fix",
+      "scope": null,
+      "details": "🔥 Remove unused import preventing build",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/11dcdf04d8fbdc8c4f64c0bacee10d94bf5a3376"
+    },
+    {
+      "hash": "14a2f740524525b5598083cae6dc75ab38e16601",
+      "shortHash": "14a2f74",
+      "date": "2026-08-02T19:25:11-06:00",
+      "subject": "chore(release): prepare version 1.0.8",
+      "type": "chore",
+      "scope": "release",
+      "details": "prepare version 1.0.8",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/14a2f740524525b5598083cae6dc75ab38e16601"
+    },
+    {
+      "hash": "7fe724b7ef8aabbed14a8405861548c975143aa4",
+      "shortHash": "7fe724b",
+      "date": "2026-08-02T19:24:34-06:00",
+      "subject": "docs: update Terra-Logger roadmap and feature status",
+      "type": "docs",
+      "scope": null,
+      "details": "update Terra-Logger roadmap and feature status",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/7fe724b7ef8aabbed14a8405861548c975143aa4"
+    },
+    {
+      "hash": "544ab5d4d21f149f15d22a7498ccb34b82eb3b54",
+      "shortHash": "544ab5d",
+      "date": "2026-08-02T19:23:52-06:00",
+      "subject": "refactor(react): remove dead code and apply component cleanup",
+      "type": "refactor",
+      "scope": "react",
+      "details": "remove dead code and apply component cleanup",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/544ab5d4d21f149f15d22a7498ccb34b82eb3b54"
+    },
+    {
+      "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
+      "shortHash": "ccfb93c",
+      "date": "2026-08-02T19:23:11-06:00",
+      "subject": "feat(ui): add NPC pages, routes, and navigation",
+      "type": "feat",
+      "scope": "ui",
+      "details": "add NPC pages, routes, and navigation",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ccfb93c4500cd0428736822432dc94aaa43637e1"
+    },
+    {
+      "hash": "749b1b0970e3cbe7620d68ce83859f2e6b4942fb",
+      "shortHash": "749b1b0",
+      "date": "2026-08-02T19:22:12-06:00",
+      "subject": "feat(import): add NPC population and import diagnostics",
+      "type": "feat",
+      "scope": "import",
+      "details": "add NPC population and import diagnostics",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/749b1b0970e3cbe7620d68ce83859f2e6b4942fb"
+    },
+    {
+      "hash": "b1cbccd19e4e38e00bc8026b637cd86ef86e4373",
+      "shortHash": "b1cbccd",
+      "date": "2026-08-02T19:21:23-06:00",
+      "subject": "feat(export): add NPC exports and improve Markdown Builder",
+      "type": "feat",
+      "scope": "export",
+      "details": "add NPC exports and improve Markdown Builder",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b1cbccd19e4e38e00bc8026b637cd86ef86e4373"
+    },
+    {
+      "hash": "3b20c8178efe4e018cdb7a142a151b35dcc7db48",
+      "shortHash": "3b20c81",
+      "date": "2026-08-02T19:20:36-06:00",
+      "subject": "feat(atlas): expand document editing and add NPC support",
+      "type": "feat",
+      "scope": "atlas",
+      "details": "expand document editing and add NPC support",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/3b20c8178efe4e018cdb7a142a151b35dcc7db48"
+    },
+    {
+      "hash": "16684376869ee052a2b6779990b132f7800e3066",
+      "shortHash": "1668437",
+      "date": "2026-08-02T19:19:38-06:00",
+      "subject": "feat(npc): implement NPC generation and management",
+      "type": "feat",
+      "scope": "npc",
+      "details": "implement NPC generation and management",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/16684376869ee052a2b6779990b132f7800e3066"
+    },
+    {
+      "hash": "ff2dbee6930656af7da0b40154d685b977533fcf",
+      "shortHash": "ff2dbee",
+      "date": "2026-08-02T19:18:44-06:00",
+      "subject": "feat(generators): add configurable NPC generation catalogs",
+      "type": "feat",
+      "scope": "generators",
+      "details": "add configurable NPC generation catalogs",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ff2dbee6930656af7da0b40154d685b977533fcf"
+    },
+    {
+      "hash": "1195435bbfef0987acadb6ab4f1df675f218b405",
+      "shortHash": "1195435",
+      "date": "2026-08-02T19:16:12-06:00",
+      "subject": "refactor(db): add NPC persistence and split database services",
+      "type": "refactor",
+      "scope": "db",
+      "details": "add NPC persistence and split database services",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/1195435bbfef0987acadb6ab4f1df675f218b405"
+    },
     {
       "hash": "ede9ab6bc941c48ece98c745dd2b6accb09cceca",
       "shortHash": "ede9ab6",
@@ -789,5 +1017,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-08-03T00:50:04.438Z"
+  "generatedAt": "2026-08-03T01:26:36.463Z"
 };
