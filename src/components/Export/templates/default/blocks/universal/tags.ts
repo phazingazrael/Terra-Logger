@@ -17,16 +17,14 @@ export function createDefaultTagsBlock(id: string): MarkdownBlock {
         ? (entity.tags as ExportTag[])
         : [];
 
-      const lines = tags
-        .map((tag) => {
-          const name = tag.Name?.trim() || tag.name?.trim();
-          const type = tag.Type?.trim() || tag.type?.trim();
+      const lines = tags.flatMap((tag) => {
+        const name = tag.Name?.trim() || tag.name?.trim();
+        const type = tag.Type?.trim() || tag.type?.trim();
 
-          if (!name) return "";
+        if (!name) return [];
 
-          return type ? `${name} — ${formatTagTypeLabel(type)}` : name;
-        })
-        .filter(Boolean);
+        return [type ? `${name} — ${formatTagTypeLabel(type)}` : name];
+      });
 
       if (lines.length === 0) return "";
 

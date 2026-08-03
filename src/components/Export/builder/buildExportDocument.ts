@@ -12,9 +12,10 @@ export function buildExportDocument({
 }): string {
   const blocks = template.getBlocks(context.sourceType);
 
-  const renderedBlocks = blocks
-    .map((block) => block.render(context).trim())
-    .filter(Boolean);
+  const renderedBlocks = blocks.flatMap((block) => {
+    const rendered = block.render(context).trim();
+    return rendered ? [rendered] : [];
+  });
 
   return `${renderedBlocks.join("\n\n")}\n`;
 }

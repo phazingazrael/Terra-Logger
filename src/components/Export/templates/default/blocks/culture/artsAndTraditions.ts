@@ -61,7 +61,12 @@ function formatValue(value: unknown): string {
   if (typeof value === "number" || typeof value === "boolean") return String(value);
 
   if (Array.isArray(value)) {
-    return value.map(formatValue).filter(Boolean).join(", ");
+    return value
+      .flatMap((item) => {
+        const formatted = formatValue(item);
+        return formatted ? [formatted] : [];
+      })
+      .join(", ");
   }
 
   if (typeof value === "object") {

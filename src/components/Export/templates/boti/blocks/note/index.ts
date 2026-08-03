@@ -29,8 +29,10 @@ const botiNoteBlock: MarkdownBlock = {
     const blocks = noteBlockGroups[templateKey] ?? fallbackNoteBlocks;
 
     return blocks
-      .map((block) => block.render(context).trim())
-      .filter(Boolean)
+      .flatMap((block) => {
+        const rendered = block.render(context).trim();
+        return rendered ? [rendered] : [];
+      })
       .join("\n\n");
   },
 };

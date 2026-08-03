@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useDB } from "../../db/DataContext";
+import { useActive, useActiveMap } from "../../db/DataContext";
 
 import { MarkdownExportPanel } from "../../components/Export/Export";
 
@@ -13,15 +13,16 @@ import type {
 } from "../../definitions/TerraLogger";
 
 import type { DataSets } from "../../definitions/Export";
+import type { TLNPC } from "../../definitions/TerraLogger";
 
 function ExportPage() {
-	const { useActive, useActiveMap } = useDB();
 	const MapInfo = useActiveMap<MapInf>();
 	const Cities = useActive<TLCity>("cities");
 	const CountriesRaw = useActive<TLCountry>("countries");
 	const Cultures = useActive<TLCulture>("cultures");
 	const Notes = useActive<TLNote>("notes");
 	const Religions = useActive<TLReligion>("religions");
+	const NPCs = useActive<TLNPC>("npcs");
 
 	const citiesByCountryName = useMemo(() => {
 		const byName = new Map<string, TLCity[]>();
@@ -38,10 +39,14 @@ function ExportPage() {
 	// Attach cities to countries, excluding "Unknown"
 	const Countries = useMemo<TLCountry[]>(() => {
 		if (!CountriesRaw.length) return [];
-		return CountriesRaw.filter((c) => c.name !== "Unknown").map((country) => ({
-			...country,
-			cities: citiesByCountryName.get(country.name) ?? [],
-		}));
+		return CountriesRaw.reduce<TLCountry[]>((countries, country) => {
+			if (country.name === "Unknown") return countries;
+			countries.push({
+				...country,
+				cities: citiesByCountryName.get(country.name) ?? [],
+			});
+			return countries;
+		}, []);
 	}, [CountriesRaw, citiesByCountryName]);
 
 	// TODO: Enable choosing what is exported
@@ -53,6 +58,7 @@ function ExportPage() {
 		Cultures,
 		Notes,
 		Religions,
+		NPCs,
 	};
 
 	return (

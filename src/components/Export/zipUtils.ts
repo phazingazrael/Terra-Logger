@@ -67,7 +67,7 @@ export async function createZipBlob(
   const zip = new JSZip();
 
   for (const file of files) {
-    zip.file(file.path, file.content);
+    zip.file(file.path, file.content, file.content instanceof Uint8Array ? { binary: true } : undefined);
   }
 
   return zip.generateAsync(

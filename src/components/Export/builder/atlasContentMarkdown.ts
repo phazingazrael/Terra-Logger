@@ -138,9 +138,10 @@ export function renderAtlasNoteBodyToMarkdown(
     return renderLegacyNoteBody(entity);
   }
 
-  const renderedBlocks = (bodySection.blocks ?? [])
-    .map((block) => renderNoteBodyBlock(block, entity))
-    .filter(Boolean);
+  const renderedBlocks = (bodySection.blocks ?? []).flatMap((block) => {
+    const rendered = renderNoteBodyBlock(block, entity);
+    return rendered ? [rendered] : [];
+  });
 
   const body = renderedBlocks.join("\n\n").trim();
 
@@ -158,9 +159,10 @@ export function renderAtlasNoteEditorNotesToMarkdown(
 
   if (!editorNotesSection) return "";
 
-  const renderedBlocks = (editorNotesSection.blocks ?? [])
-    .map((block) => renderEditorNotesBlock(block, entity))
-    .filter(Boolean);
+  const renderedBlocks = (editorNotesSection.blocks ?? []).flatMap((block) => {
+    const rendered = renderEditorNotesBlock(block, entity);
+    return rendered ? [rendered] : [];
+  });
 
   return renderedBlocks.join("\n\n").trim();
 }
@@ -184,16 +186,16 @@ function renderAtlasSectionToMarkdown({
   const title = section.label?.trim() || section.title?.trim() || "";
   const blocks = Array.isArray(section.blocks) ? section.blocks : [];
 
-  const renderedBlocks = blocks
-    .map((block) =>
-      renderGenericAtlasBlockToMarkdown({
-        block,
-        entity,
-        sourceType,
-        data,
-      }),
-    )
-    .filter(Boolean);
+  const renderedBlocks = blocks.flatMap((block) => {
+    const rendered = renderGenericAtlasBlockToMarkdown({
+      block,
+      entity,
+      sourceType,
+      data,
+    });
+
+    return rendered ? [rendered] : [];
+  });
 
   if (renderedBlocks.length === 0) return "";
 
@@ -289,9 +291,10 @@ function renderPotentialGroupsBlock(
 
   if (!Array.isArray(rawGroups)) return "";
 
-  const renderedGroups = rawGroups
-    .map((group) => renderAtlasGroup(group, entity))
-    .filter(Boolean);
+  const renderedGroups = rawGroups.flatMap((group) => {
+    const rendered = renderAtlasGroup(group, entity);
+    return rendered ? [rendered] : [];
+  });
 
   return renderedGroups.join("\n\n").trim();
 }
@@ -732,9 +735,10 @@ function renderPotentialListValue(
 ): string {
   if (!Array.isArray(value)) return "";
 
-  const items = value
-    .map((item) => formatAtlasListItem(item, entity))
-    .filter(Boolean);
+  const items = value.flatMap((item) => {
+    const formatted = formatAtlasListItem(item, entity);
+    return formatted ? [formatted] : [];
+  });
 
   if (items.length === 0) return "";
 
@@ -757,8 +761,10 @@ function formatAtlasListItem(
 
   if (Array.isArray(value)) {
     return value
-      .map((item) => formatAtlasListItem(item, entity))
-      .filter(Boolean)
+      .flatMap((item) => {
+        const formatted = formatAtlasListItem(item, entity);
+        return formatted ? [formatted] : [];
+      })
       .join(", ");
   }
 
@@ -807,9 +813,10 @@ function renderUnknownAtlasValue(
   }
 
   if (Array.isArray(value)) {
-    const items = value
-      .map((item) => renderUnknownAtlasValue(item, entity, options))
-      .filter(Boolean);
+    const items = value.flatMap((item) => {
+      const rendered = renderUnknownAtlasValue(item, entity, options);
+      return rendered ? [rendered] : [];
+    });
 
     if (items.length === 0) return "";
 
@@ -851,9 +858,10 @@ function renderUnknownAtlasValue(
   ]);
 
   if (Array.isArray(groups)) {
-    const renderedGroups = groups
-      .map((group) => renderAtlasGroup(group, entity))
-      .filter(Boolean);
+    const renderedGroups = groups.flatMap((group) => {
+      const rendered = renderAtlasGroup(group, entity);
+      return rendered ? [rendered] : [];
+    });
 
     if (renderedGroups.length > 0) {
       return renderedGroups.join("\n\n");
@@ -872,20 +880,18 @@ function renderUnknownAtlasValue(
 
   if (children) return children;
 
-  const entries = Object.entries(record)
-    .filter(([key, entryValue]) => {
-      if (options?.skipKeys?.has(key)) return false;
-      if (isAtlasMetadataKey(key)) return false;
-      return !isEmptyExportValue(entryValue);
-    })
-    .map(([key, entryValue]) => {
-      const rendered = renderUnknownAtlasValue(entryValue, entity, options);
+  const entries: string[] = [];
 
-      if (!rendered) return "";
+  for (const [key, entryValue] of Object.entries(record)) {
+    if (options?.skipKeys?.has(key)) continue;
+    if (isAtlasMetadataKey(key)) continue;
+    if (isEmptyExportValue(entryValue)) continue;
 
-      return `**${formatObjectKey(key)}:** ${rendered}`;
-    })
-    .filter(Boolean);
+    const rendered = renderUnknownAtlasValue(entryValue, entity, options);
+    if (!rendered) continue;
+
+    entries.push(`**${formatObjectKey(key)}:** ${rendered}`);
+  }
 
   return entries.join("\n");
 }
@@ -955,10 +961,12 @@ function formatExportValue(value: unknown): string {
   }
 
   if (Array.isArray(value)) {
-    const items = value
-      .map(formatExportListItem)
-      .map((item) => item.trim())
-      .filter(Boolean);
+    const items: string[] = [];
+
+    for (const itemValue of value) {
+      const item = formatExportListItem(itemValue).trim();
+      if (item) items.push(item);
+    }
 
     return markdownList(items);
   }
@@ -1001,11 +1009,10 @@ function formatExportObject(value: Record<string, unknown>): string {
   const entries = Object.entries(value)
     .filter(([, entryValue]) => !isEmptyExportValue(entryValue))
     .slice(0, 6)
-    .map(
-      ([key, entryValue]) =>
-        `${formatObjectKey(key)}: ${formatSimpleValue(entryValue)}`,
-    )
-    .filter(Boolean);
+    .flatMap(([key, entryValue]) => {
+      const formatted = `${formatObjectKey(key)}: ${formatSimpleValue(entryValue)}`;
+      return formatted ? [formatted] : [];
+    });
 
   return entries.join(", ");
 }
@@ -1022,7 +1029,12 @@ function formatSimpleValue(value: unknown): string {
   }
 
   if (Array.isArray(value)) {
-    return value.map(formatExportListItem).filter(Boolean).join(", ");
+    return value
+      .flatMap((item) => {
+        const formatted = formatExportListItem(item);
+        return formatted ? [formatted] : [];
+      })
+      .join(", ");
   }
 
   if (typeof value === "object") {
@@ -1207,8 +1219,10 @@ function isRichTextDoc(value: unknown): boolean {
 function renderRichTextJsonToMarkdown(value: unknown): string {
   if (Array.isArray(value)) {
     return value
-      .map((node) => renderRichTextNodeToMarkdown(node))
-      .filter(Boolean)
+      .flatMap((node) => {
+        const rendered = renderRichTextNodeToMarkdown(node);
+        return rendered ? [rendered] : [];
+      })
       .join("\n\n")
       .trim();
   }
@@ -1223,8 +1237,10 @@ function renderRichTextJsonToMarkdown(value: unknown): string {
       : [];
 
   return nodes
-    .map((node) => renderRichTextNodeToMarkdown(node))
-    .filter(Boolean)
+    .flatMap((node) => {
+      const rendered = renderRichTextNodeToMarkdown(node);
+      return rendered ? [rendered] : [];
+    })
     .join("\n\n")
     .trim();
 }
@@ -1244,8 +1260,10 @@ function renderRichTextNodeToMarkdown(value: unknown): string {
   if (text) return applyRichTextMarks(text, node.marks);
 
   const renderedChildren = children
-    .map((child) => renderRichTextNodeToMarkdown(child))
-    .filter(Boolean)
+    .flatMap((child) => {
+      const rendered = renderRichTextNodeToMarkdown(child);
+      return rendered ? [rendered] : [];
+    })
     .join("");
 
   switch (type) {
@@ -1369,47 +1387,34 @@ export function renderUnhandledAtlasSectionsToMarkdown({
   const handledLabels = new Set(handledSectionLabels.map(normalizeText));
   const handledClasses = handledSectionClassNames.map(normalizeText);
 
-  const renderedSections = (content.sections ?? [])
-    .filter((section) => {
-      const label = normalizeText(section.label ?? section.title ?? "");
-      const className = normalizeText(
-        [
-          section.className,
-          section.wrapper?.className,
-        ]
-          .filter(Boolean)
-          .join(" "),
-      );
+  const renderedSections: string[] = [];
 
-      if (!label && !className) return false;
+  for (const section of content.sections ?? []) {
+    const label = normalizeText(section.label ?? section.title ?? "");
+    const className = normalizeText(
+      [section.className, section.wrapper?.className].filter(Boolean).join(" "),
+    );
 
-      if (handledLabels.has(label)) return false;
+    if (!label && !className) continue;
+    if (handledLabels.has(label)) continue;
 
-      if (
-        handledClasses.some(
-          (handledClass) =>
-            handledClass &&
-            (className === handledClass ||
-              className.includes(handledClass)),
-        )
-      ) {
-        return false;
-      }
+    const handledClassMatch = handledClasses.some(
+      (handledClass) =>
+        handledClass &&
+        (className === handledClass || className.includes(handledClass)),
+    );
+    if (handledClassMatch) continue;
+    if (isAlwaysSkippedAtlasSection(label, className)) continue;
 
-      if (isAlwaysSkippedAtlasSection(label, className)) return false;
-
-      return true;
-    })
-    .map((section) =>
-      renderAtlasSectionToMarkdown({
-        section,
-        entity,
-        sourceType,
-        data,
-        headingLevel,
-      }),
-    )
-    .filter(Boolean);
+    const rendered = renderAtlasSectionToMarkdown({
+      section,
+      entity,
+      sourceType,
+      data,
+      headingLevel,
+    });
+    if (rendered) renderedSections.push(rendered);
+  }
 
   return renderedSections.join("\n\n").trim();
 }

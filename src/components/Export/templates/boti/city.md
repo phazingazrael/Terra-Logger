@@ -221,7 +221,7 @@ tags:
 >       - Perception
 >       - Speed
 >       - Speeds
->       - Ancestry
+>       - Race
 >       - Heritage
 >       - Condition
 >       - Occupation
@@ -266,7 +266,7 @@ tags:
 >       - Gender
 >       - Condition
 >       - Alignment
->       - Ancestry
+>       - Race
 >       - OwnedLocations
 >       - AssociatedGroup
 >       - AssociatedReligion

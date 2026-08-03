@@ -11,6 +11,7 @@ import { getDefaultNoteBlocks } from "./blocks/note";
 import { getDefaultCityBlocks } from "./blocks/city";
 import { getDefaultCountryBlocks } from "./blocks/country";
 import { getDefaultMapBlocks } from "./blocks/map";
+import { getDefaultNPCBlocks } from "./blocks/npc";
 
 export const defaultTemplate: MarkdownDocumentTemplate = {
   id: "default",
@@ -30,6 +31,8 @@ export const defaultTemplate: MarkdownDocumentTemplate = {
         return getDefaultReligionBlocks();
       case "map":
         return getDefaultMapBlocks();
+      case "npc":
+        return getDefaultNPCBlocks();
 
 
       default:

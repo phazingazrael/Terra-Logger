@@ -1,4 +1,5 @@
-import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf } from "./TerraLogger";
+import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf, TLNPC } from "./TerraLogger";
+
 
 /**
  * DataSets is an object that contains all the data that we need to render the markdown files.
@@ -17,6 +18,7 @@ export type DataSets = {
   Cultures: TLCulture[];
   Notes: TLNote[];
   Religions: TLReligion[];
+  NPCs: TLNPC[];
 };
 
 /**
@@ -80,7 +82,7 @@ export type PartialTemplates = Partial<TemplateMap>;
 export type FileSpec = {
   path: string; // path of the file relative to the root of the zip archive (or cwd if not zip)
   name: string; // name of the file without the path
-  content: string; // contents of the file as a string (markdown text)
+  content: string | Uint8Array; // text or binary file contents
 };
 
 /**

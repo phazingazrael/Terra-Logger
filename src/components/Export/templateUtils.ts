@@ -74,45 +74,35 @@ export function resolveRawFromGlob(requestPath: string): string | undefined {
 export async function resolveTemplateFilesFromJson(
   files: PartialTemplates,
 ): Promise<PartialTemplates> {
-  const out: PartialTemplates = {};
+  const keys = Object.keys(files) as (keyof TemplateMap)[];
+  const resolved = await Promise.all(
+    keys.map(async (key) => {
+      const path = files[key];
+      if (!path) return null;
 
-  for (const key of Object.keys(files) as (keyof TemplateMap)[]) {
-    const path = files[key];
-    if (!path) {
-      continue;
-    }
-    // 1) Resolve at build-time from RAW_TEMPLATES (preferred: no network)
-
-    const raw = resolveRawFromGlob(path);
-    if (typeof raw === "string") {
-      out[key] = raw;
-      continue;
-    }
-
-    // 2) Optional
-    /**
-     * Last-resort dynamic raw import.
-     *
-     * Important:
-     * we append ?raw here too, otherwise a markdown file may be parsed as a
-     * source module instead of returned as text.
-     */
-    try {
-      const rawPath = path.includes("?") ? `${path}&raw` : `${path}?raw`;
-      const mod = await import(/* @vite-ignore */ rawPath);
-      const content = (mod as { default?: unknown }).default;
-
-      if (typeof content === "string") {
-        out[key] = content;
+      const bundled = resolveRawFromGlob(path);
+      if (typeof bundled === "string") {
+        return [key, bundled] as const;
       }
-    } catch {
-      // 3) No fetch fallback — we explicitly avoid runtime HTTP in production
-      throw new Error(
-        `Template not bundled: ${String(path)} — ensure it matches RAW_TEMPLATES glob.`,
-      );
-    }
-  }
 
+      try {
+        const rawPath = path.includes("?") ? `${path}&raw` : `${path}?raw`;
+        const mod = await import(/* @vite-ignore */ rawPath);
+        const content = (mod as { default?: unknown }).default;
+
+        return typeof content === "string" ? ([key, content] as const) : null;
+      } catch {
+        throw new Error(
+          `Template not bundled: ${String(path)} — ensure it matches RAW_TEMPLATES glob.`,
+        );
+      }
+    }),
+  );
+
+  const out: PartialTemplates = {};
+  for (const entry of resolved) {
+    if (entry) out[entry[0]] = entry[1];
+  }
   return out;
 }
 

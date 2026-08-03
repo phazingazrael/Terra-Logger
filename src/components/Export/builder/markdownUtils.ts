@@ -32,10 +32,10 @@ export function markdownHeading(level: number, text: string): string {
 }
 
 export function markdownList(items: string[]): string {
-  const lines = items
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .map((item) => `- ${item}`);
+  const lines = items.flatMap((item) => {
+    const trimmed = item.trim();
+    return trimmed ? [`- ${trimmed}`] : [];
+  });
 
   return lines.join("\n");
 }

@@ -3,6 +3,7 @@
  * Transforms DataSets into .md and .svg files using Mustache templates.
  */
 
+import { createNPCPortraitExportFiles } from "../NPC/portraits/export";
 import Mustache from "mustache";
 import type {
 	DataSets,
@@ -88,6 +89,8 @@ function getSourceTypeFromSingular(
 			return "religion";
 		case "Note":
 			return "note";
+		case "NPC":
+			return "npc";
 		default:
 			return null;
 	}
@@ -132,7 +135,7 @@ export function renderMarkdownFiles(
 
 		return (
 			(template.id === "default" || template.id === "boti") &&
-			["note", "culture", "religion", "city", "country", "map"].includes(
+			["note", "culture", "religion", "city", "country", "map", "npc"].includes(
 				sourceType,
 			)
 		);
@@ -340,6 +343,18 @@ export function renderMarkdownFiles(
 			templates.Religion ?? "",
 			opt.filenameFields.Religions ?? [],
 		);
+	}
+
+	if (exports?.includes("NPCs")) {
+		add(
+			"NPCs",
+			"NPC",
+			"npcs",
+			data.NPCs ?? [],
+			templates.NPC ?? "",
+			opt.filenameFields.NPCs ?? ["name", "_id"],
+		);
+		files.push(...createNPCPortraitExportFiles(data.NPCs ?? []));
 	}
 
 	return files;

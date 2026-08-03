@@ -10,6 +10,7 @@ export const DEFAULT_RENDER_OPTIONS: Required<RenderOptions> = {
 		Cultures: ["name", "code", "id", "_id"],
 		Notes: ["name", "id", "_id"],
 		Religions: ["name", "code", "_id"],
+		NPCs: ["name", "_id"],
 	},
 	extension: ".md", // default file extension for markdown files
 	css: afmgcss,

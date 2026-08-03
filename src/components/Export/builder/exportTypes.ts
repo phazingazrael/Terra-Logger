@@ -8,7 +8,8 @@ export type ExportSourceType =
   | "country"
   | "culture"
   | "religion"
-  | "note";
+  | "note"
+  | "npc";
 
 export type ExportEntity = Record<string, unknown>;
 

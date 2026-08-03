@@ -119,16 +119,15 @@ function normalizeTags(value: unknown): string[] {
   const tags = Array.isArray(value) ? value : [];
 
   return tags
-    .map((tag) => {
-      if (typeof tag === "string") return tag.trim();
+    .flatMap((tag) => {
+      let name = "";
 
-      if (tag && typeof tag === "object") {
+      if (typeof tag === "string") name = tag.trim();
+      else if (tag && typeof tag === "object") {
         const record = tag as Record<string, unknown>;
-
-        return String(record.Name ?? record.name ?? "").trim();
+        name = String(record.Name ?? record.name ?? "").trim();
       }
 
-      return "";
-    })
-    .filter(Boolean);
+      return name ? [name] : [];
+    });
 }

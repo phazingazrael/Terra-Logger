@@ -126,9 +126,10 @@ function resolveCultureOrigins(context: ExportContext): string[] {
       ? []
       : [rawOrigins];
 
-  return originValues
-    .map((origin) => resolveCultureOrigin(origin, context))
-    .filter(Boolean);
+  return originValues.flatMap((origin) => {
+    const resolved = resolveCultureOrigin(origin, context);
+    return resolved ? [resolved] : [];
+  });
 }
 
 function resolveCultureOrigin(
@@ -291,10 +292,10 @@ function resolveReligionOrigins(
       ? []
       : [rawOrigins];
 
-  return originValues
-    .map((origin) => resolveReligionOrigin(origin, context))
-    .filter(Boolean)
-    .map((origin) => ({ origin }));
+  return originValues.flatMap((originValue) => {
+    const origin = resolveReligionOrigin(originValue, context);
+    return origin ? [{ origin }] : [];
+  });
 }
 
 function resolveReligionOrigin(
@@ -681,8 +682,10 @@ function getCountryReferenceValues(country: ExportRecord): Set<string> {
       country.nameFull,
       country.title,
     ]
-      .map((value) => String(value ?? "").trim())
-      .filter(Boolean),
+      .flatMap((value) => {
+        const reference = String(value ?? "").trim();
+        return reference ? [reference] : [];
+      }),
   );
 }
 
@@ -790,7 +793,10 @@ function resolveCountryWarCampaigns(context: ExportContext): string[] {
         ? []
         : [rawCampaigns];
 
-  return campaigns.map(formatCountryNamedValue).filter(Boolean);
+  return campaigns.flatMap((campaign) => {
+    const formatted = formatCountryNamedValue(campaign);
+    return formatted ? [formatted] : [];
+  });
 }
 
 function normalizeCountryMilitary(value: unknown): ExportRecord[] {

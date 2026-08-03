@@ -53,10 +53,10 @@ const defaultExports: Array<string> = [
 	"Map",
 	"Notes",
 	"Religions",
-	// "NPCs",
+	"NPCs",
 ];
 
-export function MarkdownExportPanel(props: {
+function useMarkdownExportPanelModel(props: {
 	data: DataSets;
 	templates?: PartialTemplates;
 	zipName?: string;
@@ -66,7 +66,6 @@ export function MarkdownExportPanel(props: {
 
 	// State
 	const [showExportOptions, setShowExportOptions] = useState(false);
-	const [selectAllDefaults, setSelectAllDefaults] = useState(false);
 	const [defaultexports, setDefaultexports] =
 		useState<Array<string>>(defaultExports);
 	const [status, setStatus] = useState<string>("Idle");
@@ -112,9 +111,15 @@ export function MarkdownExportPanel(props: {
 		Files: PartialTemplates;
 	};
 
+	const allDefaultsSelected = defaultExports.every((option) =>
+		defaultexports.includes(option),
+	);
+
+	const someDefaultsSelected =
+		defaultexports.length > 0 && !allDefaultsSelected;
+
 	const handleSelectAllDefaults = () => {
-		setSelectAllDefaults(!selectAllDefaults);
-		setDefaultexports(selectAllDefaults ? [] : [...defaultExports]);
+		setDefaultexports(allDefaultsSelected ? [] : [...defaultExports]);
 	};
 
 	const handleSelectDefault = (option: string) => {
@@ -159,6 +164,7 @@ export function MarkdownExportPanel(props: {
 			cultures: data.Cultures?.length,
 			notes: data.Notes?.length,
 			religions: data.Religions?.length,
+			npcs: data.NPCs?.length,
 		};
 
 		try {
@@ -166,7 +172,7 @@ export function MarkdownExportPanel(props: {
 			log("INFO", `• Selected Template: ${tplName}`);
 			log(
 				"INFO",
-				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}` : ""}`,
+				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}, ` : ""}${defaultexports.includes("NPCs") ? `npcs=${counts.npcs}` : ""}`,
 			);
 
 			setStatus("Preparing templates…");
@@ -256,9 +262,11 @@ export function MarkdownExportPanel(props: {
 		a.remove();
 		URL.revokeObjectURL(url);
 	};
+	return { className, showExportOptions, setShowExportOptions, defaultexports, status, percent, logs, exportingRef, exported, zipDownloaded, hideBotiWarning, setHideBotiWarning, termRef, markdownTemplates, tplId, setTplId, isBOTI, allDefaultsSelected, someDefaultsSelected, handleSelectAllDefaults, handleSelectDefault, run, downloadLogs };
+}
 
-	// console.log("defaultexports", defaultexports);
-
+function MarkdownExportPanelView(model: ReturnType<typeof useMarkdownExportPanelModel>) {
+	const { className, showExportOptions, setShowExportOptions, defaultexports, status, percent, logs, exportingRef, exported, zipDownloaded, hideBotiWarning, setHideBotiWarning, termRef, markdownTemplates, tplId, setTplId, isBOTI, allDefaultsSelected, someDefaultsSelected, handleSelectAllDefaults, handleSelectDefault, run, downloadLogs } = model;
 	return (
 		<div className={className ?? "p-2 border rounded"}>
 			<FormControl size="small" sx={{ minWidth: 240, mr: 2 }}>
@@ -316,7 +324,8 @@ export function MarkdownExportPanel(props: {
 						<FormControlLabel
 							control={
 								<Checkbox
-									checked={defaultexports.length === defaultExports.length}
+									checked={allDefaultsSelected}
+									indeterminate={someDefaultsSelected}
 									onChange={handleSelectAllDefaults}
 								/>
 							}
@@ -381,8 +390,9 @@ export function MarkdownExportPanel(props: {
 							This Template has a large initial file size. Core assets zipped
 							are 22.7MB.
 						</strong>
-						<p>
-							This template will:
+						<div>
+							<p>This template will:</p>
+
 							<ul style={{ margin: 0, paddingLeft: 18 }}>
 								<li>Create a custom Obsidian Vault folder structure</li>
 								<li>
@@ -402,7 +412,7 @@ export function MarkdownExportPanel(props: {
 									</ul>
 								</li>
 							</ul>
-						</p>
+						</div>
 					</Alert>
 				)}
 
@@ -451,4 +461,14 @@ export function MarkdownExportPanel(props: {
 			</div>
 		</div>
 	);
+}
+
+export function MarkdownExportPanel(props: {
+	data: DataSets;
+	templates?: PartialTemplates;
+	zipName?: string;
+	className?: string;
+}) {
+	const model = useMarkdownExportPanelModel(props);
+	return <MarkdownExportPanelView {...model} />;
 }

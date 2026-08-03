@@ -9,6 +9,7 @@ import { getBotiCultureBlocks } from "./blocks/culture";
 import { getBotiMapBlocks } from "./blocks/map";
 import { getBotiNoteBlocks } from "./blocks/note";
 import { getBotiReligionBlocks } from "./blocks/religion";
+import { getBotiNPCBlocks } from "./blocks/npc";
 
 export const botiTemplate: MarkdownDocumentTemplate = {
 	id: "boti",
@@ -28,6 +29,8 @@ export const botiTemplate: MarkdownDocumentTemplate = {
 				return getBotiNoteBlocks();
 			case "religion":
 				return getBotiReligionBlocks();
+			case "npc":
+				return getBotiNPCBlocks();
 			default:
 				return [];
 		}
