@@ -1,37 +1,43 @@
 .Settings .section {
-  background-color: #fff;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 24px;
+	background-color: #fff;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	padding: 12px;
+	margin-bottom: 24px;
 }
 
 div#root.dark .section {
-  background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 .sectionAlt {
-  margin-bottom: 24px;
+	margin-bottom: 24px;
 }
 
 .select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 16px;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 16px;
 }
 
 div#root.dark select,
 div#root.dark input[type="checkbox"] {
-  background-color: #2d3748;
-  border-color: #708090;
-  color: #fff;
+	background-color: #2d3748;
+	border-color: #708090;
+	color: #fff;
 }
 
 .input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.generatorCatalogSettings textarea {
+	font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+	font-size: 0.85rem;
+	line-height: 1.45;
 }

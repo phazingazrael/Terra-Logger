@@ -1,18 +1,24 @@
-import { Container } from "@mui/material";
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { type JSX, useEffect, useState } from "react";
 import type { Context } from "../../definitions/Common";
-import { useEffect, useState, type JSX } from "react";
 
 import "./Settings.css";
 
-import MapManager from "../../components/MapManager/index";
-import UploadMap from "../../components/UploadMap/UploadMap";
 import { useOutletContext } from "react-router-dom";
+import MapManager from "../../components/MapManager/index";
+import UploadMap, { type MapImportSummary } from "../../components/UploadMap/UploadMap";
+import ImportSummaryContent from "../../components/UploadMap/ImportSummaryContent";
 
 import { getAppSettings, setTheme } from "../../db/appSettings";
+import { useDB } from "../../db/DataContext";
 import type { AppInfo } from "../../definitions/AppInfo";
+import GeneratorCatalogSettings from "./GeneratorCatalogSettings";
 
 function Settings(): JSX.Element {
 	const [app, setApp] = useState<AppInfo | null>(null);
+	const [importSummary, setImportSummary] = useState<MapImportSummary | null>(null);
+	const [isOpeningImportedMap, setOpeningImportedMap] = useState(false);
+	const { setActive } = useDB();
 
 	const { mapsList, setThemeName }: Context = useOutletContext();
 
@@ -23,6 +29,25 @@ function Settings(): JSX.Element {
 			setApp(s);
 		})();
 	}, []);
+
+
+	const handleImportSummary = (summary: MapImportSummary) => {
+		// MainLayout's Content paper is the Settings page scroll container.
+		document.querySelector<HTMLElement>(".Content")?.scrollTo({ top: 0 });
+		setImportSummary(summary);
+	};
+
+	const openImportedMap = async () => {
+		if (!importSummary || isOpeningImportedMap) return;
+
+		setOpeningImportedMap(true);
+		try {
+			await setActive(importSummary.mapId);
+			setImportSummary(null);
+		} finally {
+			setOpeningImportedMap(false);
+		}
+	};
 
 	const updateTheme = (newTheme: "light" | "dark") => {
 		setApp((prev) => {
@@ -47,10 +72,10 @@ function Settings(): JSX.Element {
 				<div className="section">
 					{mapsList.length > 0 ? (
 						<span id="MapsList">
-							<MapManager />
+							<MapManager onImportSummary={handleImportSummary} />
 						</span>
 					) : (
-						<UploadMap />
+						<UploadMap onImportSummary={handleImportSummary} />
 					)}
 				</div>
 
@@ -83,7 +108,37 @@ function Settings(): JSX.Element {
 						</span>
 					</div>
 				</div>
+
+				<div className="section">
+					<GeneratorCatalogSettings />
+				</div>
 			</div>
+
+			<Dialog
+				open={importSummary !== null}
+				onClose={(_, reason) => {
+					if (reason !== "backdropClick" && !isOpeningImportedMap) {
+						setImportSummary(null);
+					}
+				}}
+				disableEscapeKeyDown={isOpeningImportedMap}
+				fullWidth
+				maxWidth="md"
+			>
+				<DialogTitle>Map Import Complete</DialogTitle>
+				<DialogContent dividers>
+					<ImportSummaryContent summary={importSummary} />
+				</DialogContent>
+				<DialogActions>
+					<Button
+						variant="contained"
+						onClick={() => void openImportedMap()}
+						disabled={isOpeningImportedMap}
+					>
+						{isOpeningImportedMap ? "Opening Map..." : "Open Map"}
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 }
