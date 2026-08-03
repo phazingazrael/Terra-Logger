@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 import { useEffect, lazy } from "react";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
 import type { TLCulture } from "../../definitions/TerraLogger";
 import { VirtualizedCardGrid } from "../../components/Virtualized";
@@ -8,7 +8,7 @@ import { VirtualizedCardGrid } from "../../components/Virtualized";
 const CultureCard = lazy(() => import("../../components/Cards/culture"));
 
 function CulturesPage() {
-	const { useActive, activeMapId } = useDB();
+	const { activeMapId } = useDB();
 	const cultures = useActive<TLCulture>("cultures");
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Map change should scroll to top

@@ -5,7 +5,7 @@ import {
 	Typography,
 	Divider,
 } from "@mui/material";
-import { useDB } from "../db/DataContext";
+import { useActive } from "../db/DataContext";
 
 type LabelMap = Record<string, string>;
 import type {
@@ -14,6 +14,7 @@ import type {
 	TLReligion,
 	TLNote,
 	TLCulture,
+	TLNPC,
 } from "../definitions/TerraLogger";
 
 /** Breadcrumbs based on the current pathname. */
@@ -31,12 +32,12 @@ function BreadcrumbsNav({
 	const { pathname } = useLocation();
 	const segments = pathname.split("/").filter(Boolean);
 
-	const { useActive } = useDB();
 	const religions = useActive<TLReligion>("religions");
 	const countries = useActive<TLCountry>("countries");
 	const cities = useActive<TLCity>("cities");
 	const notes = useActive<TLNote>("notes");
 	const cultures = useActive<TLCulture>("cultures");
+	const npcs = useActive<TLNPC>("npcs");
 
 	const crumbs = [
 		{ to: rootTo, label: rootLabel },
@@ -48,6 +49,7 @@ function BreadcrumbsNav({
 			if (seg === "view_city") return { to: "/cities", label: "City" };
 			if (seg === "view_note") return { to: "/notes", label: "Notes" };
 			if (seg === "view_culture") return { to: "/cultures", label: "Cultures" };
+			if (seg === "view_npcs") return { to: "/npcs", label: "NPCs" };
 			const prevSeg = segments[i - 1];
 			if (prevSeg === "view_religion") {
 				const religion = religions.find((r) => r._id === seg);
@@ -68,6 +70,10 @@ function BreadcrumbsNav({
 			if (prevSeg === "view_culture") {
 				const culture = cultures.find((c) => c._id === seg);
 				return { to, label: culture?.name ?? "" };
+			}
+			if (prevSeg === "view_npcs") {
+				const npc = npcs.find((n) => n._id === seg);
+				return { to, label: npc?.name ?? "" };
 			}
 			const label = labelMap?.[seg] ?? seg;
 			return { to, label };

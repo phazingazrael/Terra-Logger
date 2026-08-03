@@ -1,6 +1,5 @@
-import { useMemo, useState, type JSX } from "react";
+import { useState, type JSX } from "react";
 import { useDB } from "../db/DataContext";
-
 import { NavLink } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -14,7 +13,6 @@ import {
 	MenuList,
 	useTheme,
 } from "@mui/material";
-
 import { HouseLineIcon } from "@phosphor-icons/react/dist/ssr/HouseLine";
 import { GlobeStandIcon } from "@phosphor-icons/react/dist/ssr/GlobeStand";
 import { FadersIcon } from "@phosphor-icons/react/dist/ssr/Faders";
@@ -23,359 +21,158 @@ import { SealQuestionIcon } from "@phosphor-icons/react/dist/ssr/SealQuestion";
 import { NotebookIcon } from "@phosphor-icons/react/dist/ssr/Notebook";
 import { DiamondsFourIcon } from "@phosphor-icons/react/dist/ssr/DiamondsFour";
 import { GlobeHemisphereWestIcon } from "@phosphor-icons/react/dist/ssr/GlobeHemisphereWest";
-
 import { handleSvgReplace } from "./Util/handleSvgReplace";
-
 import type { MapInf } from "../definitions/TerraLogger";
 
-const MainNav = (mapsList: { mapsList: MapInf[] }): JSX.Element => {
-	const { activeMapId, setActive } = useDB();
-	const [expanded, setExpanded] = useState(false); // State to manage accordion expansion
+function handleNavClick() {
+	const content = document.querySelector(".Content");
+	if (content instanceof HTMLElement) {
+		content.scrollTo({ top: 0, behavior: "auto" });
+	}
+}
 
+type NavIcon = typeof HouseLineIcon;
+
+type NavigationItem = {
+	label: string;
+	to: string;
+	icon: NavIcon;
+	activePrefixes?: string[];
+};
+
+const ENTITY_ITEMS: NavigationItem[] = [
+	{ label: "Countries", to: "/countries", icon: NotebookIcon, activePrefixes: ["/view_country"] },
+	{ label: "Cities", to: "/cities", icon: NotebookIcon, activePrefixes: ["/view_city"] },
+	{ label: "Religions", to: "/religions", icon: NotebookIcon, activePrefixes: ["/view_religion"] },
+	{ label: "Cultures", to: "/cultures", icon: NotebookIcon, activePrefixes: ["/view_culture"] },
+	{ label: "NPCs", to: "/npcs", icon: NotebookIcon, activePrefixes: ["/view_npc"] },
+	{ label: "Notes", to: "/notes", icon: NotebookIcon, activePrefixes: ["/view_note"] },
+];
+
+function NavigationLink({ item }: { item: NavigationItem }) {
 	const theme = useTheme();
+	const Icon = item.icon;
 
-	const mapList = mapsList.mapsList;
-
-	const activeMap = useMemo(
-		() => mapList.find((m) => m.mapId === activeMapId),
-		[mapList, activeMapId],
+	return (
+		<NavLink
+			onClick={handleNavClick}
+			to={item.to}
+			className={({ isActive }) => {
+				const prefixMatch = item.activePrefixes?.some((prefix) =>
+					location.pathname.startsWith(prefix),
+				);
+				return isActive || prefixMatch ? "active" : "";
+			}}
+		>
+			<MenuItem>
+				<ListItemIcon>
+					<Icon color={theme.palette.primary.main} size={28} weight="duotone" />
+				</ListItemIcon>
+				<ListItemText>{item.label}</ListItemText>
+				<ListItemIcon className="inactive">
+					<DiamondsFourIcon
+						size={28}
+						color={theme.palette.primary.main}
+						weight="duotone"
+					/>
+				</ListItemIcon>
+			</MenuItem>
+		</NavLink>
 	);
-	const mapName = activeMap?.info.name ?? "";
-	const mapLoaded = !!activeMap;
+}
 
-	const handleNavClick = () => {
-		const el = document.querySelector(".Content");
-		if (el) el.scrollTo({ top: 0, behavior: "auto" });
-	};
+function MapSelector({
+	maps,
+	activeMapId,
+	onSelect,
+}: {
+	maps: MapInf[];
+	activeMapId: string | null;
+	onSelect: (map: MapInf) => void;
+}) {
+	const [expanded, setExpanded] = useState(false);
+	const theme = useTheme();
+	const activeMap = maps.find((map) => map.mapId === activeMapId);
+	const mapLabel = activeMap?.info.name ?? (maps.length ? "Select Map" : "No Map Loaded");
 
-	const handleAccordionChange = (isExpanded: boolean) => {
-		setExpanded(isExpanded);
-	};
+	function selectMap(map: MapInf) {
+		onSelect(map);
+		setExpanded(false);
+	}
 
-	const handleMenuItemClick = (m: MapInf) => {
-		// canonical: store-wide mapId
-		if (!m.mapId) {
-			console.warn("Selected map has no mapId; cannot set active.", m);
+	return (
+		<MenuItem className="mapSelect">
+			{maps.length ? (
+				<Accordion
+					disableGutters
+					expanded={expanded}
+					onChange={(_event, isExpanded) => setExpanded(isExpanded)}
+				>
+					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+						<ListItemIcon>
+							<GlobeStandIcon size={28} color={theme.palette.primary.main} weight="duotone" />
+						</ListItemIcon>
+						<ListItemText>{mapLabel}</ListItemText>
+					</AccordionSummary>
+					<AccordionDetails>
+						<MenuList>
+							{maps.map((map) => (
+								<MenuItem key={map.info.ID} onClick={() => selectMap(map)}>
+									<ListItemIcon>
+										<GlobeHemisphereWestIcon
+											size={24}
+											color={theme.palette.primary.main}
+											weight="duotone"
+										/>
+									</ListItemIcon>
+									<ListItemText>{map.info.name}</ListItemText>
+								</MenuItem>
+							))}
+						</MenuList>
+					</AccordionDetails>
+				</Accordion>
+			) : (
+				<>
+					<ListItemIcon>
+						<GlobeStandIcon size={28} color={theme.palette.primary.main} weight="duotone" />
+					</ListItemIcon>
+					<ListItemText>{mapLabel}</ListItemText>
+				</>
+			)}
+		</MenuItem>
+	);
+}
+
+function MainNav({ mapsList }: { mapsList: MapInf[] }): JSX.Element {
+	const { activeMapId, setActive } = useDB();
+	const mapLoaded = mapsList.some((map) => map.mapId === activeMapId);
+
+	function selectMap(map: MapInf) {
+		if (!map.mapId) {
+			console.warn("Selected map has no mapId; cannot set active.", map);
 			return;
 		}
-		setActive(m.mapId);
-		handleSvgReplace({
-			svg: m.SVG,
-			height: m.info.height,
-			width: m.info.width,
-		});
-		setExpanded(false);
-	};
+		void setActive(map.mapId);
+		handleSvgReplace({ svg: map.SVG, height: map.info.height, width: map.info.width });
+	}
 
 	return (
 		<MenuList>
-			<MenuItem className="mapSelect">
-				{mapList.length > 0 ? (
-					<Accordion
-						disableGutters
-						expanded={expanded}
-						onChange={(_event, isExpanded) => {
-							handleAccordionChange(isExpanded);
-						}}
-					>
-						<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-							<ListItemIcon>
-								<GlobeStandIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>{mapLoaded ? mapName : "Select Map"}</ListItemText>
-						</AccordionSummary>
-						<AccordionDetails>
-							<MenuList>
-								{mapList.map((m: MapInf) => (
-									<MenuItem
-										key={m.info.ID}
-										onClick={() => handleMenuItemClick(m)}
-									>
-										<ListItemIcon>
-											<GlobeHemisphereWestIcon
-												size={24}
-												color={theme.palette.primary.main}
-												weight="duotone"
-											/>
-										</ListItemIcon>
-										<ListItemText>{m.info.name}</ListItemText>
-									</MenuItem>
-								))}
-							</MenuList>
-						</AccordionDetails>
-					</Accordion>
-				) : (
-					<>
-						<ListItemIcon>
-							<GlobeStandIcon
-								size={28}
-								color={theme.palette.primary.main}
-								weight="duotone"
-							/>
-						</ListItemIcon>
-						<ListItemText>{mapLoaded ? mapName : "No Map Loaded"}</ListItemText>
-					</>
-				)}
-			</MenuItem>
+			<MapSelector maps={mapsList} activeMapId={activeMapId} onSelect={selectMap} />
 			<Divider />
-			<NavLink
-				onClick={handleNavClick}
-				to="/"
-				className={({ isActive }) => (isActive ? "active" : "")}
-			>
-				<MenuItem>
-					<ListItemIcon>
-						<HouseLineIcon
-							color={theme.palette.primary.main}
-							size={28}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-					<ListItemText>Home</ListItemText>
-					<ListItemIcon className="inactive">
-						<DiamondsFourIcon
-							size={28}
-							color={theme.palette.primary.main}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-				</MenuItem>
-			</NavLink>
+			<NavigationLink item={{ label: "Home", to: "/", icon: HouseLineIcon }} />
 			{mapLoaded ? (
 				<div className="subMenu">
-					<NavLink
-						onClick={handleNavClick}
-						to="/countries"
-						className={({ isActive }) => {
-							const path = location.pathname;
-							return isActive || path.startsWith("/view_country")
-								? "active"
-								: "";
-						}}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<NotebookIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>Countries</ListItemText>
-							<ListItemIcon className="inactive">
-								<DiamondsFourIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-					<NavLink
-						onClick={handleNavClick}
-						to="/cities"
-						className={({ isActive }) => {
-							const path = location.pathname;
-							return isActive || path.startsWith("/view_city") ? "active" : "";
-						}}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<NotebookIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>Cities</ListItemText>
-							<ListItemIcon className="inactive">
-								<DiamondsFourIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-					<NavLink
-						onClick={handleNavClick}
-						to="/religions"
-						className={({ isActive }) => {
-							const path = location.pathname;
-							return isActive || path.startsWith("/view_religion")
-								? "active"
-								: "";
-						}}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<NotebookIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>Religions</ListItemText>
-							<ListItemIcon className="inactive">
-								<DiamondsFourIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-					<NavLink
-						onClick={handleNavClick}
-						to="/cultures"
-						className={({ isActive }) => {
-							const path = location.pathname;
-							return isActive || path.startsWith("/view_culture")
-								? "active"
-								: "";
-						}}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<NotebookIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>Cultures</ListItemText>
-							<ListItemIcon className="inactive">
-								<DiamondsFourIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-					<NavLink
-						onClick={handleNavClick}
-						to="/notes"
-						className={({ isActive }) => {
-							const path = location.pathname;
-							return isActive || path.startsWith("/view_note") ? "active" : "";
-						}}
-					>
-						<MenuItem>
-							<ListItemIcon>
-								<NotebookIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-							<ListItemText>Notes</ListItemText>
-							<ListItemIcon className="inactive">
-								<DiamondsFourIcon
-									size={28}
-									color={theme.palette.primary.main}
-									weight="duotone"
-								/>
-							</ListItemIcon>
-						</MenuItem>
-					</NavLink>
-					{/* <NavLink onClick={handleNavClick}
-							to="/tags"
-							className={({ isActive }) => (isActive ? "active" : "")}
-						>
-							<MenuItem>
-								<ListItemIcon>
-									<TiTags />
-								</ListItemIcon>
-								<ListItemText>Tags</ListItemText>
-								<ListItemIcon className="inactive">
-									<DiamondsFourIcon size={28} color={theme.palette.primary.main} weight="duotone" />
-								</ListItemIcon>
-							</MenuItem>
-						</NavLink> */}
+					{ENTITY_ITEMS.map((item) => <NavigationLink key={item.to} item={item} />)}
 				</div>
-			) : (
-				""
-			)}
-
-			<NavLink
-				onClick={handleNavClick}
-				to="/settings"
-				className={({ isActive }) => (isActive ? "active" : "")}
-			>
-				<MenuItem>
-					<ListItemIcon>
-						<FadersIcon
-							size={28}
-							color={theme.palette.primary.main}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-					<ListItemText>Settings</ListItemText>
-					<ListItemIcon className="inactive">
-						<DiamondsFourIcon
-							size={28}
-							color={theme.palette.primary.main}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-				</MenuItem>
-			</NavLink>
+			) : null}
+			<NavigationLink item={{ label: "Settings", to: "/settings", icon: FadersIcon }} />
 			{mapLoaded ? (
-				<NavLink
-					onClick={handleNavClick}
-					to="/export"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					<MenuItem>
-						<ListItemIcon>
-							<ExportIcon
-								size={28}
-								color={theme.palette.primary.main}
-								weight="duotone"
-							/>
-						</ListItemIcon>
-						<ListItemText>Export Map</ListItemText>
-						<ListItemIcon className="inactive">
-							<DiamondsFourIcon
-								size={28}
-								color={theme.palette.primary.main}
-								weight="duotone"
-							/>
-						</ListItemIcon>
-					</MenuItem>
-				</NavLink>
-			) : (
-				""
-			)}
-			<NavLink
-				onClick={handleNavClick}
-				to="/about"
-				className={({ isActive }) => (isActive ? "active" : "")}
-			>
-				<MenuItem>
-					<ListItemIcon>
-						<SealQuestionIcon
-							size={28}
-							color={theme.palette.primary.main}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-					<ListItemText>About</ListItemText>
-					<ListItemIcon className="inactive">
-						<DiamondsFourIcon
-							size={28}
-							color={theme.palette.primary.main}
-							weight="duotone"
-						/>
-					</ListItemIcon>
-				</MenuItem>
-			</NavLink>
+				<NavigationLink item={{ label: "Export Map", to: "/export", icon: ExportIcon }} />
+			) : null}
+			<NavigationLink item={{ label: "About", to: "/about", icon: SealQuestionIcon }} />
 		</MenuList>
 	);
-};
+}
+
 export default MainNav;

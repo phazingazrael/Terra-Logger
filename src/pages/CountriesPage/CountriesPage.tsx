@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 import { lazy, useEffect, useMemo } from "react";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
 import type { TLCountry } from "../../definitions/TerraLogger";
 import { VirtualizedCardGrid } from "../../components/Virtualized";
@@ -8,7 +8,7 @@ import { VirtualizedCardGrid } from "../../components/Virtualized";
 const CountryCard = lazy(() => import("../../components/Cards/country"));
 
 function CountriesPage() {
-	const { useActive, activeMapId } = useDB();
+	const { activeMapId } = useDB();
 	const countries = useActive<TLCountry>("countries");
 	const sortedCountries = useMemo(
 		() => [...countries].sort((a, b) => (a.name > b.name ? 1 : -1)),

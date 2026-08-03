@@ -1,0 +1,118 @@
+.npc-search-filter-container {
+	display: block;
+	padding: 0.5rem 0.75rem;
+}
+
+.npc-search-row {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	width: 100%;
+}
+
+.npc-search-input {
+	height: 2.5rem;
+	width: 50%;
+	min-width: 16rem;
+	background-color: #ffffff;
+	border-radius: 0.375rem;
+	border: 2px solid #d1d5db;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+}
+
+.npc-search-input:focus {
+	outline: none;
+	border-color: #6b7280;
+	box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.5);
+}
+
+.npc-search-input::placeholder {
+	color: #6b7280;
+}
+
+.npc-search-input:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.npc-search-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	margin-left: auto;
+}
+
+.npc-filter-controls {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+
+.npc-active-filter-chips {
+	padding: 0 0.5rem 0.5rem;
+}
+
+.npc-filter-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	min-height: 2rem;
+	padding: 0 0.5rem 0.25rem;
+}
+
+.NPCsPage {
+	padding-top: 1rem;
+}
+
+.npc-no-results {
+	display: flex;
+	justify-content: center;
+	margin-top: 2rem;
+	margin-bottom: 15dvh;
+}
+
+@media (max-width: 700px) {
+	.npc-search-row {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.npc-search-input {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.npc-search-actions {
+		justify-content: stretch;
+		margin-left: 0;
+	}
+
+	.npc-search-actions > button {
+		flex: 1;
+	}
+
+	.npc-filter-controls > .MuiFormControl-root {
+		width: calc(50% - 16px);
+		min-width: 140px;
+	}
+
+	
+.npc-active-filter-chips {
+	padding: 0 0.5rem 0.5rem;
+}
+
+.npc-filter-summary {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+}
+
+.npc-search-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}

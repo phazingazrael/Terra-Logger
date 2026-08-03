@@ -8,15 +8,15 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { BookLoader } from "../../components/Util";
+import BookLoader from "../../components/Util/bookLoader";
 import { VirtualizedCardGrid } from "../../components/Virtualized";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 
 const NoteCard = lazy(() => import("../../components/Cards/note"));
 
-import "./Notes.css";
+import "./notesPage.css";
 
 type NoteTypeOption = {
 	id: string;
@@ -39,7 +39,7 @@ function formatNoteType(type: string): string {
 }
 
 function NotesPage() {
-	const { useActive, activeMapId } = useDB();
+	const { activeMapId } = useDB();
 	const notes = useActive<TLNote>("notes");
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -106,40 +106,39 @@ function NotesPage() {
 
 	return (
 		<Container>
-			<AppBar position="sticky" color="default">
-				<div className="notes-filter-container">
-					<div className="notes-filter-row">
-						<input
-							className="notes-search-input"
-							placeholder="Search Notes..."
-							type="search"
-							value={searchQuery}
-							onChange={(event) => setSearchQuery(event.target.value)}
-						/>
-						<Button variant="contained" color="error" onClick={resetFilters}>
-							Reset Filters
-						</Button>
-					</div>
-
-					<div className="note-type-chips">
-						{noteTypes.map((type) => (
-							<Chip
-								clickable
-								key={type.id}
-								className={selectedType === type.id ? "selected" : ""}
-								label={`${type.label} (${type.count})`}
-								onClick={() =>
-									setSelectedType((current) =>
-										current === type.id ? null : type.id,
-									)
-								}
-							/>
-						))}
-					</div>
-				</div>
-			</AppBar>
-
 			<div className="contentSubBody NotesPage">
+				<AppBar position="sticky" color="default">
+					<div className="notes-filter-container">
+						<div className="notes-filter-row">
+							<input
+								className="notes-search-input"
+								placeholder="Search Notes..."
+								type="search"
+								value={searchQuery}
+								onChange={(event) => setSearchQuery(event.target.value)}
+							/>
+							<Button variant="contained" color="error" onClick={resetFilters}>
+								Reset Filters
+							</Button>
+						</div>
+
+						<div className="note-type-chips">
+							{noteTypes.map((type) => (
+								<Chip
+									clickable
+									key={type.id}
+									className={selectedType === type.id ? "selected" : ""}
+									label={`${type.label} (${type.count})`}
+									onClick={() =>
+										setSelectedType((current) =>
+											current === type.id ? null : type.id,
+										)
+									}
+								/>
+							))}
+						</div>
+					</div>
+				</AppBar>
 				{!notes.length ? (
 					<BookLoader />
 				) : filteredNotes.length === 0 ? (

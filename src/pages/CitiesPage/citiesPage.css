@@ -58,3 +58,12 @@
   max-height: 44dvh !important;
   padding-top: 0 !important;
 }
+
+.CitiesPage header {
+    margin-bottom: 20px;
+    padding: 0.3rem;
+}
+
+.search-field span{
+  display:none; 
+}

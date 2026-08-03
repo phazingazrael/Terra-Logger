@@ -1,6 +1,6 @@
 import { useEffect, useState, type JSX } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useDB } from "./db/DataContext";
+import { useActiveMap } from "./db/DataContext";
 import { useDeviceType } from "./hooks/useDeviceType";
 import { getAppSettings } from "./db/appSettings";
 
@@ -10,7 +10,8 @@ import type { MapInf } from "./definitions/TerraLogger";
 import type { AppInfo } from "./definitions/AppInfo";
 
 import "./App.css";
-import { BookLoader, handleSvgReplace } from "./components/Util";
+import BookLoader from "./components/Util/bookLoader";
+import { handleSvgReplace } from "./components/Util/handleSvgReplace";
 
 const router = createBrowserRouter([
 	{
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
 			{
 				path: "notes",
 				lazy: () =>
-					import("./pages/Notes/Notes").then((m) => ({
+					import("./pages/NotesPage/notesPage").then((m) => ({
 						Component: m.default,
 					})),
 			},
@@ -70,6 +71,13 @@ const router = createBrowserRouter([
 				path: "cultures",
 				lazy: () =>
 					import("./pages/CulturesPage/CulturesPage").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
+				path: "npcs",
+				lazy: () =>
+					import("./pages/NPCsPage/NPCsPage").then((m) => ({
 						Component: m.default,
 					})),
 			},
@@ -117,6 +125,13 @@ const router = createBrowserRouter([
 					})),
 			},
 			{
+				path: "view_npc/:_id",
+				lazy: () =>
+					import("./pages/ViewingPages/npc").then((m) => ({
+						Component: m.default,
+					})),
+			},
+			{
 				path: "view_culture/:_id",
 				lazy: () =>
 					import("./pages/ViewingPages/culture").then((m) => ({
@@ -129,7 +144,6 @@ const router = createBrowserRouter([
 ]);
 
 const App = (): JSX.Element => {
-	const { useActiveMap } = useDB();
 	const activeMap = useActiveMap<MapInf>();
 
 	// load appSettings from IndexedDB so we can check forceMobile
@@ -158,18 +172,25 @@ const App = (): JSX.Element => {
 	const device = useDeviceType();
 	const isHandheld = device === "phone" || device === "tablet";
 
-	// resize map
-	// biome-ignore lint/correctness/useExhaustiveDependencies: needs to run on each map change
-	useEffect(() => {
-		if (!activeMap) return;
+	const activeMapSvg = activeMap?.SVG;
+	const activeMapHeight = activeMap?.info.height;
+	const activeMapWidth = activeMap?.info.width;
 
-		if (activeMap.SVG && activeMap.SVG !== "") {
-			handleSvgReplace({
-				svg: activeMap.SVG,
-				height: activeMap.info.height,
-				width: activeMap.info.width,
-			});
+	// resize map
+	useEffect(() => {
+		if (
+			!activeMapSvg ||
+			activeMapHeight === undefined ||
+			activeMapWidth === undefined
+		) {
+			return;
 		}
+
+		handleSvgReplace({
+			svg: activeMapSvg,
+			height: activeMapHeight,
+			width: activeMapWidth,
+		});
 
 		function handleResize() {
 			const { innerHeight, innerWidth } = window;
@@ -177,28 +198,38 @@ const App = (): JSX.Element => {
 			const mapElement = document.getElementById("map");
 			const viewBox = document.getElementById("viewbox");
 
-			const originalHeight = activeMap?.info.height;
-			const originalWidth = activeMap?.info.width;
-
-			if (mapElement && viewBox) {
-				mapElement.setAttribute("height", innerHeight as unknown as string);
-				mapElement.setAttribute("width", innerWidth as unknown as string);
-
-				viewBox.setAttribute("height", innerHeight as unknown as string);
-				viewBox.setAttribute("width", innerWidth as unknown as string);
-
-				const sx = innerWidth / (originalWidth || 1);
-				const sy = innerHeight / (originalHeight || 1);
-
-				const fmt = (n: number) => (Number.isFinite(n) ? +n.toFixed(6) : 1);
-				viewBox.setAttribute("transform", `scale(${fmt(sx)} ${fmt(sy)})`);
+			if (!mapElement || !viewBox) {
+				return;
 			}
+
+			mapElement.setAttribute("height", String(innerHeight));
+			mapElement.setAttribute("width", String(innerWidth));
+
+			viewBox.setAttribute("height", String(innerHeight));
+			viewBox.setAttribute("width", String(innerWidth));
+
+			const safeWidth = activeMapWidth || 1;
+			const safeHeight = activeMapHeight || 1;
+
+			const scaleX = innerWidth / safeWidth;
+			const scaleY = innerHeight / safeHeight;
+
+			const formatScale = (value: number) =>
+				Number.isFinite(value) ? Number(value.toFixed(6)) : 1;
+
+			viewBox.setAttribute(
+				"transform",
+				`scale(${formatScale(scaleX)} ${formatScale(scaleY)})`,
+			);
 		}
 
 		window.addEventListener("resize", handleResize);
 		handleResize();
-		return () => window.removeEventListener("resize", handleResize);
-	}, [activeMap?.SVG, activeMap?.info.width, activeMap?.info.height]);
+
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		};
+	}, [activeMapSvg, activeMapHeight, activeMapWidth]);
 
 	// avoid layout flash while classifying device or loading settings
 	if (device === "unknown" || !settingsLoaded) return <BookLoader />;

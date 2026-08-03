@@ -14,7 +14,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState, lazy, useDeferredValue } from "react";
-import { useDB } from "../../db/DataContext";
+import { useActive, useDB } from "../../db/DataContext";
 import { getAllTags } from "../../components/Tags/Tags";
 
 import "./citiesPage.css";
@@ -47,8 +47,12 @@ const EXCLUDED_TAG_IDS = new Set<string>([
 	"0192be16-c07d-7739-8b58-d67e3913403a", // Metropolis
 ]);
 
-function CitiesPage() {
-	const { useActive, activeMapId } = useDB();
+const resetResultViewport = () => {
+	document.getElementById("Content")?.scrollTo({ top: 0 });
+};
+
+function useCitiesPageModel() {
+	const { activeMapId } = useDB();
 	const cities = useActive<TLCity>("cities");
 	const countries = useActive<TLCountry>("countries");
 	const countriesList = useMemo<CountryListItem[]>(
@@ -176,6 +180,26 @@ function CitiesPage() {
 		selectedTagIdSet,
 	]);
 
+	const resultDefinitionKey = useMemo(
+		() =>
+			JSON.stringify({
+				query: deferredQuery,
+				country: selectedCountry,
+				tags: [...selectedTagIds].sort(),
+				size: selectedSize,
+				government: selectedGovForm,
+				capitalsOnly: onlyCapitals,
+			}),
+		[
+			deferredQuery,
+			selectedCountry,
+			selectedTagIds,
+			selectedSize,
+			selectedGovForm,
+			onlyCapitals,
+		],
+	);
+
 	const resetFilters = () => {
 		setSearchQuery("");
 		setSelectedCountry(null);
@@ -183,134 +207,204 @@ function CitiesPage() {
 		setSelectedSize("");
 		setOnlyCapitals(false);
 		setSelectedGovForm("");
+		resetResultViewport();
 	};
+	return {
+		cities,
+		countriesList,
+		searchQuery,
+		setSearchQuery,
+		selectedCountry,
+		setSelectedCountry,
+		selectedTagIds,
+		setSelectedTagIds,
+		selectedSize,
+		setSelectedSize,
+		onlyCapitals,
+		setOnlyCapitals,
+		selectedGovForm,
+		setSelectedGovForm,
+		allSizes,
+		allGovForms,
+		allTags,
+		filteredCities,
+		resultDefinitionKey,
+		resetFilters,
+	};
+}
 
+function CitiesPageView(model: ReturnType<typeof useCitiesPageModel>) {
+	const {
+		cities,
+		countriesList,
+		searchQuery,
+		setSearchQuery,
+		selectedCountry,
+		setSelectedCountry,
+		selectedTagIds,
+		setSelectedTagIds,
+		selectedSize,
+		setSelectedSize,
+		onlyCapitals,
+		setOnlyCapitals,
+		selectedGovForm,
+		setSelectedGovForm,
+		allSizes,
+		allGovForms,
+		allTags,
+		filteredCities,
+		resultDefinitionKey,
+		resetFilters,
+	} = model;
 	return (
 		<Container>
-			<AppBar position="sticky" color="default">
-				<div className="search-filter-container">
-					<div>
-						<input
-							className="search-input"
-							placeholder="Search Cities..."
-							type="search"
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value.toString())}
-						/>
-						<Button
-							variant="contained"
-							color="error"
-							className="filter-all"
-							onClick={resetFilters}
-						>
-							Reset Filters
-						</Button>
-					</div>
-
-					{/* Country filter chips */}
-					<div className="country-chips">
-						{countriesList.map((country) => (
-							<Chip
-								clickable
-								key={country._id}
-								id={country._id}
-								className={country._id === selectedCountry ? "selected" : ""}
-								onClick={() =>
-									setSelectedCountry((prev) =>
-										prev === country._id ? null : country._id,
-									)
-								}
-								label={country.name}
-								sx={{
-									bgcolor: country.color,
-									border: "1px solid black",
-									m: 0.5,
-								}}
-							/>
-						))}
-					</div>
-
-					{/* Tags (multi by _id, display Name) */}
-					<FormControl sx={{ m: 1, width: 220 }} size="small">
-						<InputLabel id="tags-label">Tags</InputLabel>
-						<Select
-							labelId="tags-label"
-							multiple
-							value={selectedTagIds}
-							onChange={(e) => setSelectedTagIds(e.target.value as string[])}
-							input={<OutlinedInput label="Tags" />}
-							renderValue={(ids) =>
-								ids
-									.map((id) => allTags.find((t) => t._id === id)?.Name ?? id)
-									.join(", ")
-							}
-						>
-							{allTags.map((tag) => (
-								<MenuItem key={tag._id} value={tag._id}>
-									{tag.Name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-
-					{/* Size (single) */}
-					<FormControl sx={{ m: 1, width: 160 }} size="small">
-						<InputLabel id="size-label">Size</InputLabel>
-						<Select
-							labelId="size-label"
-							value={selectedSize}
-							onChange={(e) => setSelectedSize(e.target.value)}
-							input={<OutlinedInput label="Size" />}
-						>
-							<MenuItem value="">Any</MenuItem>
-							{allSizes.map((s) => (
-								<MenuItem key={s} value={s}>
-									{s}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-
-					{/* Government form (single) */}
-					<FormControl sx={{ m: 1, width: 220 }} size="small">
-						<InputLabel id="govform-label">Government Type</InputLabel>
-						<Select
-							labelId="govform-label"
-							value={selectedGovForm}
-							onChange={(e) => setSelectedGovForm(e.target.value)}
-							input={<OutlinedInput label="Government Type" />}
-						>
-							<MenuItem value="">Any</MenuItem>
-							{allGovForms.map((g) => (
-								<MenuItem key={g} value={g}>
-									{g}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-
-					{/* Capitals only */}
-					<FormControlLabel
-						sx={{ m: 1 }}
-						control={
-							<Checkbox
-								checked={onlyCapitals}
-								onChange={(e) => setOnlyCapitals(e.target.checked)}
-								sx={{ ariaLabel: "Show only capitals" }}
-							/>
-						}
-						label="Capitals only"
-					/>
-				</div>
-			</AppBar>
 			<div className="contentSubBody CitiesPage">
+				<AppBar position="sticky" color="default">
+					<div className="search-filter-container">
+						<div>
+							<label className="search-field">
+								<span>Search cities</span>
+								<input
+									className="search-input"
+									placeholder="Search Cities..."
+									type="search"
+									value={searchQuery}
+									onChange={(e) => {
+										setSearchQuery(e.target.value.toString());
+										resetResultViewport();
+									}}
+								/>
+							</label>
+							<Button
+								variant="contained"
+								color="error"
+								className="filter-all"
+								onClick={resetFilters}
+							>
+								Reset Filters
+							</Button>
+						</div>
+
+						{/* Country filter chips */}
+						<div className="country-chips">
+							{countriesList.map((country) => (
+								<Chip
+									clickable
+									key={country._id}
+									id={country._id}
+									className={country._id === selectedCountry ? "selected" : ""}
+									onClick={() => {
+										setSelectedCountry((prev) =>
+											prev === country._id ? null : country._id,
+										);
+										resetResultViewport();
+									}}
+									label={country.name}
+									sx={{
+										bgcolor: country.color,
+										border: "1px solid black",
+										m: 0.5,
+									}}
+								/>
+							))}
+						</div>
+
+						{/* Tags (multi by _id, display Name) */}
+						<FormControl sx={{ m: 1, width: 220 }} size="small">
+							<InputLabel id="tags-label">Tags</InputLabel>
+							<Select
+								labelId="tags-label"
+								multiple
+								value={selectedTagIds}
+								onChange={(e) => {
+									setSelectedTagIds(e.target.value as string[]);
+									resetResultViewport();
+								}}
+								input={<OutlinedInput label="Tags" />}
+								renderValue={(ids) =>
+									ids
+										.map((id) => allTags.find((t) => t._id === id)?.Name ?? id)
+										.join(", ")
+								}
+							>
+								{allTags.map((tag) => (
+									<MenuItem key={tag._id} value={tag._id}>
+										{tag.Name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+
+						{/* Size (single) */}
+						<FormControl sx={{ m: 1, width: 160 }} size="small">
+							<InputLabel id="size-label">Size</InputLabel>
+							<Select
+								labelId="size-label"
+								value={selectedSize}
+								onChange={(e) => {
+									setSelectedSize(e.target.value);
+									resetResultViewport();
+								}}
+								input={<OutlinedInput label="Size" />}
+							>
+								<MenuItem value="">Any</MenuItem>
+								{allSizes.map((s) => (
+									<MenuItem key={s} value={s}>
+										{s}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+
+						{/* Government form (single) */}
+						<FormControl sx={{ m: 1, width: 220 }} size="small">
+							<InputLabel id="govform-label">Government Type</InputLabel>
+							<Select
+								labelId="govform-label"
+								value={selectedGovForm}
+								onChange={(e) => {
+									setSelectedGovForm(e.target.value);
+									resetResultViewport();
+								}}
+								input={<OutlinedInput label="Government Type" />}
+							>
+								<MenuItem value="">Any</MenuItem>
+								{allGovForms.map((g) => (
+									<MenuItem key={g} value={g}>
+										{g}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+
+						{/* Capitals only */}
+						<FormControlLabel
+							sx={{ m: 1 }}
+							control={
+								<Checkbox
+									checked={onlyCapitals}
+									onChange={(e) => {
+										setOnlyCapitals(e.target.checked);
+										resetResultViewport();
+									}}
+									sx={{ ariaLabel: "Show only capitals" }}
+								/>
+							}
+							label="Capitals only"
+						/>
+					</div>
+				</AppBar>
 				{/* Loading state while IndexedDB query resolves */}
 				{!cities.length ? (
 					<BookLoader />
 				) : filteredCities.length === 0 ? (
 					<div
 						className="no-results"
-						style={{ display: "flex", justifyContent: "center", marginTop: 32 }}
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							marginTop: 32,
+						}}
 					>
 						<Typography variant="h6" color="text.secondary">
 							No results found
@@ -318,6 +412,7 @@ function CitiesPage() {
 					</div>
 				) : (
 					<VirtualizedCardGrid
+						key={resultDefinitionKey}
 						items={filteredCities}
 						getKey={(city) => city._id}
 						renderItem={(city) => <CityCard {...city} />}
@@ -327,6 +422,11 @@ function CitiesPage() {
 			</div>
 		</Container>
 	);
+}
+
+function CitiesPage() {
+	const model = useCitiesPageModel();
+	return <CitiesPageView {...model} />;
 }
 
 export default CitiesPage;

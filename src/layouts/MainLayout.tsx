@@ -9,20 +9,17 @@ import {
 import { createTheme } from "@mui/material/styles";
 import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useDB } from "../db/DataContext";
 import { ToastContainer } from "react-toastify";
-import Icon from "../assets/icon.png";
-import { MainNav, NavTrail } from "../components";
-
-import { ContentMain } from "../components/Styled";
-
-import { getFullStore } from "../db/interactions";
-import { getAppSettings } from "../db/appSettings";
-
-import type { MapInf } from "../definitions/TerraLogger";
-
-import KuashanScript from "../assets/fonts/KaushanScript-Regular.ttf";
 import { ProdAnalytics } from "../analytics";
+import KaushanScript from "../assets/fonts/KaushanScript-Regular.ttf";
+import Icon from "../assets/icon.png";
+import MainNav from "../components/MainNav";
+import NavTrail from "../components/navTrail";
+import { ContentMain } from "../components/Styled/contentMain";
+import { getAppSettings } from "../db/appSettings";
+import { useDB } from "../db/DataContext";
+import { getFullStore } from "../db/interactions";
+import type { MapInf } from "../definitions/TerraLogger";
 
 const light = createTheme({
 	palette: {
@@ -48,7 +45,7 @@ const light = createTheme({
 		MuiCssBaseline: {
 			styleOverrides: `@font-face {
                         font-family: 'KaushanScript';
-                        src: local('KaushanScript'), url(${KuashanScript}) format('truetype');
+                        src: local('KaushanScript'), url(${KaushanScript}) format('truetype');
                     }`,
 		},
 	},
@@ -71,7 +68,7 @@ const dark = createTheme({
 		MuiCssBaseline: {
 			styleOverrides: `@font-face {
                         font-family: 'KaushanScript';
-                        src: local('KaushanScript'), url(${KuashanScript}) format('truetype');
+                        src: local('KaushanScript'), url(${KaushanScript}) format('truetype');
                     }`,
 		},
 		MuiAppBar: {
@@ -109,7 +106,7 @@ function MainLayout() {
 
 	// Centralized "reload maps list" helper, shared via Outlet context
 	const reloadMapsList = useCallback(async () => {
-		const mapsData = await getFullStore("maps");
+		const mapsData = await getFullStore<MapInf>("maps");
 		setMapsList(mapsData);
 	}, []);
 
@@ -165,7 +162,7 @@ function MainLayout() {
 
 	return (
 		<ThemeProvider theme={selectedTheme}>
-			<AppBar position="static">
+			<AppBar position="static" className="TerraLogger-Header">
 				<Toolbar disableGutters>
 					<img
 						src={Icon}
