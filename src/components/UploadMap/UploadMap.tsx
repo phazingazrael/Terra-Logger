@@ -1,22 +1,62 @@
-import { Alert, AlertTitle, Button, Divider, Stack } from "@mui/material";
+import {
+	Alert,
+	AlertTitle,
+	Backdrop,
+	Button,
+	Checkbox,
+	Collapse,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Divider,
+	FormControlLabel,
+	FormGroup,
+	Stack,
+	TextField,
+	Typography,
+} from "@mui/material";
 import { useRef, useState } from "react";
-import { toast, type Id } from "react-toastify";
-import { parseLoadedData } from "./Parse";
-
-import mutateData from "./Mutate";
-import BookLoader from "../Util/bookLoader";
-import { runMapImportWorker } from "./workers/mapImportClient";
-import type { MapImportWorkerResult } from "./workers/mapImportTypes";
-
-import { useDB } from "../../db/DataContext";
-
-import { addDataToStore, deleteEntireMapData } from "../../db/interactions";
-
 import { useOutletContext } from "react-router-dom";
-
-import type { MapInf } from "../../definitions/TerraLogger";
+import { type Id, toast } from "react-toastify";
+import {
+	initMapsDatabase,
+	type MapDatabaseStore,
+} from "../../db/connections/mapsDatabase";
+import { useDB } from "../../db/DataContext";
+import {
+	addDataToStore,
+	deleteEntireMapData,
+	queryDataFromStore,
+} from "../../db/interactions";
 import type { AppInfo } from "../../definitions/AppInfo";
 import type { Context } from "../../definitions/Common";
+import type { TLNPC } from "../../definitions/TerraLogger";
+import { generateAndPersistNPCHistory } from "../NPC/history/generation";
+import type { MapInf } from "../../definitions/TerraLogger";
+import BookLoader from "../Util/bookLoader";
+import mutateData from "./Mutate";
+import {
+	DEFAULT_SUPPORTING_NPC_CATEGORY_IDS,
+	SUPPORTING_NPC_CATEGORIES,
+	type SupportingNPCCategoryId,
+} from "../NPC/population/supportingCategories";
+import {
+	createMapUploadDiagnostics,
+	downloadMapUploadDiagnostics,
+	finishMapUploadDiagnostics,
+	type MapUploadDiagnostics,
+	type MapUploadGenerationOptions,
+} from "./diagnostics";
+import { parseLoadedData } from "./Parse";
+import { runMapImportWorker } from "./workers/mapImportClient";
+import type { MapImportWorkerResult } from "./workers/mapImportTypes";
+import ImportSummaryContent from "./ImportSummaryContent";
+import {
+	summarizeGeneratedNPCs,
+	summarizeUploadIssues,
+	type MapImportSummary,
+} from "./importSummary";
 
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,6 +76,8 @@ type UploadProgress = {
 
 type UploadProgressHandler = (progress: UploadProgress) => void;
 
+export type { MapImportSummary } from "./importSummary";
+
 function withBase(pathLike: string) {
 	const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
 	const rel = String(pathLike).replace(/^\/+/, "");
@@ -44,20 +86,80 @@ function withBase(pathLike: string) {
 
 const DEMO_MAP_PATH = "demo/demo.map";
 
+function clampToastProgress(percent: number): number {
+	return Math.max(0, Math.min(1, percent / 100));
+}
+
+function getUploadItemName(item: unknown, fallback: string): string {
+	if (!item || typeof item !== "object") {
+		return fallback;
+	}
+
+	const record = item as {
+		name?: unknown;
+		title?: unknown;
+		id?: unknown;
+		i?: unknown;
+	};
+
+	return String(
+		record.name ?? record.title ?? record.id ?? record.i ?? fallback,
+	);
+}
+
+function trimImportedStrings<T>(value: T): T {
+	if (typeof value === "string") {
+		return value.trim() as T;
+	}
+
+	if (Array.isArray(value)) {
+		return value.map((item) => trimImportedStrings(item)) as T;
+	}
+
+	if (value && typeof value === "object") {
+		const entries = Object.entries(value).map(([key, nestedValue]) => [
+			key,
+			trimImportedStrings(nestedValue),
+		]);
+
+		return Object.fromEntries(entries) as T;
+	}
+
+	return value;
+}
+
+function isMapFile(file: File): boolean {
+	return file.name.toLowerCase().endsWith(".map");
+}
+
 type UploadMapProps = {
 	mode?: MapImportMode;
 	onComplete?: () => void | Promise<void>;
+	onImportSummary?: (summary: MapImportSummary) => void | Promise<void>;
 	showDemoButton?: boolean;
-};
+ };
 
-function UploadMap({
+function useUploadMapModel({
 	mode = { kind: "create" },
 	onComplete,
+	onImportSummary,
 	showDemoButton = true,
 }: UploadMapProps) {
 	const { setActive } = useDB();
 	const [app] = useState<AppInfo | null>(null);
 	const [isLoading, setLoading] = useState(false);
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [isDraggingFile, setDraggingFile] = useState(false);
+	const [importSummary, setImportSummary] = useState<MapImportSummary | null>(
+		null,
+	);
+	const [isCompletingImport, setCompletingImport] = useState(false);
+	const [generateNPCs, setGenerateNPCs] = useState(false);
+	const [downloadLogs, setDownloadLogs] = useState(false);
+	const [supportingNPCsPerCategory, setSupportingNPCsPerCategory] = useState(1);
+	const [supportingCategoryIds, setSupportingCategoryIds] = useState<
+		SupportingNPCCategoryId[]
+	>([...DEFAULT_SUPPORTING_NPC_CATEGORY_IDS]);
 	const [, setUploadStatus] = useState("Idle");
 	const [, setUploadPercent] = useState(0);
 
@@ -68,10 +170,7 @@ function UploadMap({
 	const currentVersion = app?.application?.afmgVer ?? OLDEST_SUPPORTED_VERSION;
 
 	const uploadToastIdRef = useRef<Id | null>(null);
-
-	function clampToastProgress(percent: number): number {
-		return Math.max(0, Math.min(1, percent / 100));
-	}
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	function startUploadToast(message = "Starting map upload..."): Id {
 		const existingId = uploadToastIdRef.current;
@@ -167,6 +266,26 @@ function UploadMap({
 		updateUploadToast(progress.message, progress.percent);
 	};
 
+	function currentGenerationOptions(): MapUploadGenerationOptions {
+		return {
+			generateNPCs,
+			downloadLogs,
+			supportingNPCsPerCategory: Math.max(
+				0,
+				Math.min(100, Math.floor(supportingNPCsPerCategory || 0)),
+			),
+			supportingCategoryIds: [...supportingCategoryIds],
+		};
+	}
+
+	function toggleSupportingCategory(id: SupportingNPCCategoryId) {
+		setSupportingCategoryIds((current) =>
+			current.includes(id)
+				? current.filter((entry) => entry !== id)
+				: [...current, id],
+		);
+	}
+
 	type ImportMapFileOptions = {
 		mode?: MapImportMode;
 		initialMessage?: string;
@@ -174,6 +293,12 @@ function UploadMap({
 
 	async function importMapFile(file: File, options: ImportMapFileOptions = {}) {
 		const importMode = options.mode ?? mode;
+		const generation = currentGenerationOptions();
+		const diagnostics = createMapUploadDiagnostics({
+			fileName: file.name,
+			mode: importMode.kind,
+			options: generation,
+		});
 
 		startUploadToast(options.initialMessage ?? `Reading ${file.name}...`);
 
@@ -200,29 +325,14 @@ function UploadMap({
 			return;
 		}
 
-		await handleLoadedWorkerResult(result, importMode);
-	}
-
-	function getUploadItemName(item: unknown, fallback: string): string {
-		if (!item || typeof item !== "object") {
-			return fallback;
-		}
-
-		const record = item as {
-			name?: unknown;
-			title?: unknown;
-			id?: unknown;
-			i?: unknown;
-		};
-
-		return String(
-			record.name ?? record.title ?? record.id ?? record.i ?? fallback,
-		);
+		await handleLoadedWorkerResult(result, importMode, generation, diagnostics);
 	}
 
 	async function handleLoadedWorkerResult(
 		result: MapImportWorkerResult,
-		importMode: MapImportMode = mode,
+		importMode: MapImportMode,
+		generation: MapUploadGenerationOptions,
+		diagnostics: MapUploadDiagnostics,
 	) {
 		const { mapFile, mapVersion, versionString, validation } = result;
 		const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } = validation;
@@ -248,13 +358,27 @@ function UploadMap({
 
 		const parsedMap = parseLoadedData(mapFile);
 
-		await saveMapData(
+		const summary = await saveMapData(
 			parsedMap.parsedMap,
 			JSON.parse(versionString),
 			parsedMap.Pack,
 			reportUploadProgress,
 			importMode,
+			generation,
+			diagnostics,
 		);
+
+		finishMapUploadDiagnostics(diagnostics);
+		if (generation.downloadLogs) downloadMapUploadDiagnostics(diagnostics);
+		if (diagnostics.issues.length > 0) {
+			const errors = diagnostics.issues.filter(
+				(issue) => issue.severity === "error",
+			).length;
+			const warnings = diagnostics.issues.length - errors;
+			toast.warning(
+				`Map upload completed with ${errors} error${errors === 1 ? "" : "s"} and ${warnings} warning${warnings === 1 ? "" : "s"}.`,
+			);
+		}
 
 		finishUploadToast(
 			importMode.kind === "update"
@@ -262,37 +386,25 @@ function UploadMap({
 				: "Map upload complete. The map is ready.",
 		);
 
-		await onComplete?.();
-	}
-
-	function trimImportedStrings<T>(value: T): T {
-		if (typeof value === "string") {
-			return value.trim() as T;
+		// MapManager can own the completion summary so it survives this upload
+		// component being unmounted when the maps list refreshes. Standalone uses
+		// retain the local dialog as a fallback.
+		if (onImportSummary) {
+			await onImportSummary(summary);
+		} else {
+			setImportSummary(summary);
 		}
-
-		if (Array.isArray(value)) {
-			return value.map((item) => trimImportedStrings(item)) as T;
-		}
-
-		if (value && typeof value === "object") {
-			const entries = Object.entries(value).map(([key, nestedValue]) => [
-				key,
-				trimImportedStrings(nestedValue),
-			]);
-
-			return Object.fromEntries(entries) as T;
-		}
-
-		return value;
 	}
 
 	async function saveMapData(
 		data: MapInfo,
 		VersionString: string,
 		Pack: object,
-		onProgress?: UploadProgressHandler,
-		mode: MapImportMode = { kind: "create" },
-	): Promise<void> {
+		onProgress: UploadProgressHandler | undefined,
+		mode: MapImportMode,
+		generation: MapUploadGenerationOptions,
+		diagnostics: MapUploadDiagnostics,
+	): Promise<MapImportSummary> {
 		setUploadStatus("Converting to Terra-Logger data...");
 		setUploadPercent(30);
 
@@ -300,6 +412,7 @@ function UploadMap({
 			data as unknown as MapInfo,
 			Pack as unknown as Pack,
 			onProgress,
+			{ generation, diagnostics },
 		);
 
 		const mapData = trimImportedStrings(mutatedMapData);
@@ -311,7 +424,7 @@ function UploadMap({
 			info,
 			nameBases = [],
 			notes = [],
-			npcs = [],
+			npcs: generatedNPCs = [],
 			religions = [],
 			settings,
 			SVG,
@@ -319,6 +432,43 @@ function UploadMap({
 		} = mapData;
 
 		const mapId = `${mapData.info.name}-${mapData.info.ID}`;
+		diagnostics.mapId = mapId;
+
+		const existingNPCs =
+			mode.kind === "update"
+				? await queryDataFromStore<TLNPC>("npcs", "mapIdIndex", mapId)
+				: [];
+		const existingMapRows =
+			mode.kind === "update"
+				? await initMapsDatabase().then(
+						(database) =>
+							database.getAllFromIndex("maps", "mapIdIndex", mapId) as Promise<
+								MapInf[]
+							>,
+					)
+				: [];
+		const existingHistoryGenerator = existingMapRows[0]?.historyGenerator;
+		const existingSignatures = new Set(
+			existingNPCs.flatMap((npc) =>
+				(npc.relationships ?? []).map(
+					(rel) =>
+						`${rel.relatedEntityType}:${rel.relatedEntityId}:${rel.relationshipType}:${rel.roleTitle ?? ""}`,
+				),
+			),
+		);
+		const retainedGenerated = generatedNPCs.filter(
+			(npc) =>
+				!(npc.relationships ?? []).some((rel) =>
+					existingSignatures.has(
+						`${rel.relatedEntityType}:${rel.relatedEntityId}:${rel.relationshipType}:${rel.roleTitle ?? ""}`,
+					),
+				),
+		);
+		const npcs = [...existingNPCs, ...retainedGenerated];
+		diagnostics.counts["Existing NPCs preserved"] = existingNPCs.length;
+		diagnostics.counts["New NPCs generated"] = retainedGenerated.length;
+		diagnostics.counts["Generated duplicates skipped"] =
+			generatedNPCs.length - retainedGenerated.length;
 
 		if (mode.kind === "update" && mapId !== mode.expectedMapId) {
 			throw new Error(
@@ -341,6 +491,10 @@ function UploadMap({
 		const MapInf: MapInf = {
 			id: mapId,
 			mapId: mapId,
+			historyGenerator: existingHistoryGenerator ?? {
+				currentEraMinimumYear: 0,
+				previousEras: [],
+			},
 			info: { ...info, ver: VersionString },
 			settings: settings,
 			SVG: SVG,
@@ -355,6 +509,28 @@ function UploadMap({
 			const svgElement = svgDoc.documentElement;
 			MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
 		}
+
+		diagnostics.counts.Cities = cities.length;
+		diagnostics.counts.Countries = countries.length;
+		diagnostics.counts.Cultures = cultures.length;
+		diagnostics.counts.Religions = religions.length;
+		diagnostics.counts.Notes = notes.length;
+		diagnostics.counts.NPCs = npcs.length;
+
+		const importSummary: MapImportSummary = {
+			mapId,
+			mapName: info.name,
+			imported: [
+				{ label: "Cities", count: cities.length },
+				{ label: "Countries", count: countries.length },
+				{ label: "Cultures", count: cultures.length },
+				{ label: "Religions", count: religions.length },
+				{ label: "Notes", count: notes.length },
+				{ label: "Name Bases", count: nameBases.length },
+			].filter((entry) => entry.count > 0),
+			generatedNPCs: summarizeGeneratedNPCs(retainedGenerated),
+			issues: summarizeUploadIssues(diagnostics.issues),
+		};
 
 		const totalRecords =
 			1 +
@@ -392,7 +568,7 @@ function UploadMap({
 		};
 
 		const writeRecord = async (
-			storeName: string,
+			storeName: MapDatabaseStore,
 			section: string,
 			itemName: string | undefined,
 			value: unknown,
@@ -405,6 +581,8 @@ function UploadMap({
 		await writeRecord("maps", "Map Info", info.name, MapInf);
 
 		for (const city of cities) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord("cities", "Cities", getUploadItemName(city, "City"), {
 				mapId,
 				...city,
@@ -412,6 +590,8 @@ function UploadMap({
 		}
 
 		for (const country of countries) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord(
 				"countries",
 				"Countries",
@@ -424,6 +604,8 @@ function UploadMap({
 		}
 
 		for (const culture of cultures) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord(
 				"cultures",
 				"Cultures",
@@ -436,6 +618,8 @@ function UploadMap({
 		}
 
 		for (const nameBase of nameBases) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord(
 				"nameBases",
 				"Name Bases",
@@ -448,6 +632,8 @@ function UploadMap({
 		}
 
 		for (const note of notes) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord("notes", "Notes", getUploadItemName(note, "Note"), {
 				mapId,
 				...note,
@@ -455,13 +641,17 @@ function UploadMap({
 		}
 
 		for (const npc of npcs) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord("npcs", "NPCs", getUploadItemName(npc, "NPC"), {
-				mapId,
 				...npc,
+				mapId,
 			});
 		}
 
 		for (const religion of religions) {
+			// Writes stay sequential so progress is accurate and IndexedDB is not flooded.
+			// react-doctor-disable-next-line react-doctor/async-await-in-loop
 			await writeRecord(
 				"religions",
 				"Religions",
@@ -471,6 +661,33 @@ function UploadMap({
 					...religion,
 				},
 			);
+		}
+
+		if (generation.generateNPCs && retainedGenerated.length > 0) {
+			const generatedIds = retainedGenerated.map((npc) => npc._id);
+			onProgress?.({
+				section: "NPC History",
+				completed: 0,
+				total: retainedGenerated.length,
+				percent: 95,
+				message: "Generating and persisting NPC history...",
+			});
+			const historyDiagnostics = await generateAndPersistNPCHistory(mapId, {
+				npcIds: generatedIds,
+				replaceGenerated: true,
+				onProgress: (historyCompleted, historyTotal, message) =>
+					onProgress?.({
+						section: "NPC History",
+						completed: historyCompleted,
+						total: historyTotal,
+						percent: 95,
+						message,
+					}),
+			});
+			diagnostics.counts["NPC history entries generated"] =
+				historyDiagnostics.accepted;
+			diagnostics.counts["NPC history entries rejected"] =
+				historyDiagnostics.rejected;
 		}
 
 		onProgress?.({
@@ -484,42 +701,95 @@ function UploadMap({
 		await reloadMapsList();
 
 		onProgress?.({
-			section: "Finalizing",
-			completed,
-			total: totalRecords,
-			percent: 98,
-			message: "Setting active map...",
-		});
-
-		await setActive(mapId);
-
-		onProgress?.({
 			section: "Complete",
 			completed,
 			total: totalRecords,
 			percent: 100,
 			message: "Upload complete.",
 		});
+
+		return importSummary;
 	}
 
-	const readMAP = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
+	async function closeImportSummary() {
+		if (!importSummary || isCompletingImport) return;
 
+		setCompletingImport(true);
+		const completedSummary = importSummary;
+
+		try {
+			await setActive(completedSummary.mapId);
+			setImportSummary(null);
+			await onComplete?.();
+		} catch (error) {
+			console.error(error);
+			toast.error(
+				error instanceof Error
+					? `Map imported, but it could not be opened: ${error.message}`
+					: "Map imported, but it could not be opened.",
+			);
+		} finally {
+			setCompletingImport(false);
+		}
+	}
+
+	function selectMapFile(file: File | null) {
 		if (!file) {
+			setSelectedFile(null);
 			return;
 		}
+
+		if (!isMapFile(file)) {
+			toast.error("Please select an Azgaar Fantasy Map Generator .map file.");
+			setSelectedFile(null);
+			if (fileInputRef.current) fileInputRef.current.value = "";
+			return;
+		}
+
+		setSelectedFile(file);
+	}
+
+	const readMAP = (event: React.ChangeEvent<HTMLInputElement>) => {
+		selectMapFile(event.target.files?.[0] ?? null);
+	};
+
+	function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+		event.preventDefault();
+		event.dataTransfer.dropEffect = "copy";
+		setDraggingFile(true);
+	}
+
+	function handleDragLeave(event: React.DragEvent<HTMLDivElement>) {
+		if (event.currentTarget.contains(event.relatedTarget as Node | null))
+			return;
+		setDraggingFile(false);
+	}
+
+	function handleFileDrop(event: React.DragEvent<HTMLDivElement>) {
+		event.preventDefault();
+		setDraggingFile(false);
+		selectMapFile(event.dataTransfer.files?.[0] ?? null);
+	}
+
+	function clearSelectedFile() {
+		setSelectedFile(null);
+		if (fileInputRef.current) fileInputRef.current.value = "";
+	}
+
+	const uploadSelectedMap = async () => {
+		if (!selectedFile || isLoading) return;
 
 		setLoading(true);
 
 		try {
-			await importMapFile(file);
+			await importMapFile(selectedFile);
+			clearSelectedFile();
 			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (err: any) {
 			console.error(err);
 			failUploadToast(`Failed to load map: ${err?.message ?? String(err)}`);
 		} finally {
 			setLoading(false);
-			e.target.value = "";
 		}
 	};
 
@@ -551,16 +821,26 @@ function UploadMap({
 			setLoading(false);
 		}
 	};
+	return { showDemoButton, isLoading, selectedFile, isDraggingFile, importSummary, isCompletingImport, generateNPCs, setGenerateNPCs, downloadLogs, setDownloadLogs, supportingNPCsPerCategory, setSupportingNPCsPerCategory, supportingCategoryIds, afmgMin, currentVersion, fileInputRef, toggleSupportingCategory, closeImportSummary, readMAP, handleDragOver, handleDragLeave, handleFileDrop, uploadSelectedMap, loadDemoMap };
+}
 
+function UploadMapView(model: ReturnType<typeof useUploadMapModel>) {
+	const { showDemoButton, isLoading, selectedFile, isDraggingFile, importSummary, isCompletingImport, generateNPCs, setGenerateNPCs, downloadLogs, setDownloadLogs, supportingNPCsPerCategory, setSupportingNPCsPerCategory, supportingCategoryIds, afmgMin, currentVersion, fileInputRef, toggleSupportingCategory, closeImportSummary, readMAP, handleDragOver, handleDragLeave, handleFileDrop, uploadSelectedMap, loadDemoMap } = model;
 	return (
 		<div className="uploadForm">
 			<div>
 				<div className="custom-card" data-v0-t="card">
-					{isLoading ? (
-						<div className="custom-loading">
-							<BookLoader />
-						</div>
-					) : null}
+					<Backdrop
+						open={isLoading}
+						sx={{
+							position: "absolute",
+							inset: 0,
+							zIndex: 3,
+							backgroundColor: "rgba(0, 0, 0, 0.72)",
+						}}
+					>
+						<BookLoader />
+					</Backdrop>
 					<div className="card-header">
 						<h5 className="card-title">
 							Uh Oh, Looks like there isn&apos;t anything loaded, Want to load
@@ -573,16 +853,139 @@ function UploadMap({
 								<Stack sx={{ width: "100%" }} spacing={2}>
 									<Alert severity="success" className="UploadBox">
 										<AlertTitle>Upload your .map File</AlertTitle>
-										<label htmlFor="map-file-upload">Select a MAP file</label>
-										<input
-											type="file"
-											name="map-file-upload"
-											accept=".map"
-											onChange={readMAP}
-										/>
 
-										{showDemoButton ? (
-											<div style={{ marginTop: 8 }}>
+										<FormGroup sx={{ marginBottom: 2 }}>
+											<FormControlLabel
+												control={
+													<Checkbox
+														checked={generateNPCs}
+														onChange={(event) =>
+															setGenerateNPCs(event.target.checked)
+														}
+													/>
+												}
+												label="Generate NPCs"
+											/>
+											<FormControlLabel
+												control={
+													<Checkbox
+														checked={downloadLogs}
+														onChange={(event) =>
+															setDownloadLogs(event.target.checked)
+														}
+													/>
+												}
+												label="Download Map Upload Logs"
+											/>
+										</FormGroup>
+										<Collapse in={generateNPCs}>
+											<Stack
+												spacing={1.5}
+												sx={{
+													marginBottom: 2,
+													padding: 1.5,
+													border: "1px solid",
+													borderColor: "divider",
+													borderRadius: 1,
+												}}
+											>
+												<Typography variant="subtitle2">
+													Required leadership generation
+												</Typography>
+												<Typography variant="body2" color="text.secondary">
+													Leadership NPCs are always generated when NPC
+													generation is enabled.
+												</Typography>
+												<FormGroup row>
+													<FormControlLabel
+														disabled
+														control={<Checkbox checked />}
+														label="Country government roles"
+													/>
+													<FormControlLabel
+														disabled
+														control={<Checkbox checked />}
+														label="City leadership roles"
+													/>
+													<FormControlLabel
+														disabled
+														control={<Checkbox checked />}
+														label="Religion leadership roles"
+													/>
+													<FormControlLabel
+														disabled
+														control={<Checkbox checked />}
+														label="Culture elder roles"
+													/>
+												</FormGroup>
+
+												<Divider />
+												<Typography variant="subtitle2">
+													Optional supporting NPC generation
+												</Typography>
+												<TextField
+													type="number"
+													size="small"
+													label="NPCs per supporting category"
+													value={supportingNPCsPerCategory}
+													onChange={(event) =>
+														setSupportingNPCsPerCategory(
+															Number(event.target.value),
+														)
+													}
+													slotProps={{
+														htmlInput: { min: 0, max: 100, step: 1 },
+													}}
+												/>
+												<FormGroup row>
+													{SUPPORTING_NPC_CATEGORIES.map((category) => (
+														<FormControlLabel
+															key={category.id}
+															control={
+																<Checkbox
+																	checked={supportingCategoryIds.includes(
+																		category.id,
+																	)}
+																	onChange={() =>
+																		toggleSupportingCategory(category.id)
+																	}
+																/>
+															}
+															label={category.label}
+														/>
+													))}
+												</FormGroup>
+											</Stack>
+										</Collapse>
+										<label htmlFor="map-file-upload">Select a MAP file</label>
+										{/** biome-ignore lint/a11y/noStaticElementInteractions: why */}
+										<div
+											className={`map-file-drop-zone${isDraggingFile ? " is-dragging" : ""}${selectedFile ? " has-file" : ""}`}
+											onDragOver={handleDragOver}
+											onDragLeave={handleDragLeave}
+											onDrop={handleFileDrop}
+										>
+											<input
+												ref={fileInputRef}
+												id="map-file-upload"
+												type="file"
+												name="map-file-upload"
+												accept=".map"
+												onChange={readMAP}
+												disabled={isLoading}
+											/>
+											<Typography
+												variant="body2"
+												className="map-file-selection-status"
+											>
+												{selectedFile
+													? `Selected: ${selectedFile.name}`
+													: "Choose a .map file or drag and drop one here. Selection does not start the upload."}
+											</Typography>
+										</div>
+
+										<div className="map-upload-actions">
+											{showDemoButton ? (
 												<Button
 													variant="outlined"
 													onClick={loadDemoMap}
@@ -591,8 +994,17 @@ function UploadMap({
 												>
 													Load Demo Map
 												</Button>
-											</div>
-										) : null}
+											) : (
+												<span />
+											)}
+											<Button
+												variant="contained"
+												onClick={uploadSelectedMap}
+												disabled={isLoading || !selectedFile}
+											>
+												{isLoading ? "Uploading..." : "Upload"}
+											</Button>
+										</div>
 									</Alert>
 									<Alert severity="info">
 										<AlertTitle>Notice</AlertTitle>
@@ -651,8 +1063,43 @@ function UploadMap({
 			<div style={{ display: "none" }} className="alert custom-alert">
 				<p className="alertMessage">Warning!</p>
 			</div>
+
+			<Dialog
+				open={importSummary !== null}
+				onClose={(_, reason) => {
+					if (reason !== "backdropClick" && !isCompletingImport)
+						void closeImportSummary();
+				}}
+				disableEscapeKeyDown={isCompletingImport}
+				fullWidth
+				maxWidth="md"
+			>
+				<DialogTitle>Map Import Complete</DialogTitle>
+				<DialogContent dividers>
+					<ImportSummaryContent summary={importSummary} />
+				</DialogContent>
+				<DialogActions>
+					<Button
+						variant="contained"
+						onClick={() => void closeImportSummary()}
+						disabled={isCompletingImport}
+					>
+						{isCompletingImport ? "Opening Map..." : "Close"}
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</div>
 	);
+}
+
+function UploadMap({
+	mode = { kind: "create" },
+	onComplete,
+	onImportSummary,
+	showDemoButton = true,
+}: UploadMapProps) {
+	const model = useUploadMapModel({ mode, onComplete, onImportSummary, showDemoButton });
+	return <UploadMapView {...model} />;
 }
 
 export default UploadMap;

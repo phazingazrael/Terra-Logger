@@ -10,6 +10,8 @@ import type {
 	TLDiplomacy,
 } from "../../../definitions/TerraLogger";
 import { countryAdapter } from "../../atlas/adapters/countryAdapter";
+import { fetchText } from "../fetchText";
+import { validateSvgResponse } from "../svgUtil";
 
 export const mutateCountries = async (
 	data: MapInfo,
@@ -91,7 +93,6 @@ export const mutateCountries = async (
 				}
 			}
 			newCountry.political.diplomacy = [];
-			newCountry.political.diplomacy = [];
 			if (country.name === "Neutrals") {
 				newCountry.political.diplomacy = [];
 			} else {
@@ -121,22 +122,28 @@ export const mutateCountries = async (
 
 			if (country.coa) {
 				if ((country.coa as unknown as { custom: boolean }).custom !== true) {
-					// get coa svg from armoria and save to string inside of city data			const coa = country.coa;
+					// get coa svg from armoria and save to string inside of city data
 					const coa = country.coa;
 					try {
-						const response = await (typeof coa === "object" &&
-						Object.keys(coa).length > 0
-							? getCOA(country.i as unknown as string, coa)
-							: fetch(
-									`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-								).then((response) => response.text()));
-						const svg = response.replace(/_coa/g, "");
-						if (svg.startsWith("<!DOCTYPE html>")) {
-							throw new Error("Received HTML error page");
-						}
-						newCountry.coaSVG = svg;
+						// Keep requests sequential to avoid flooding the coat-of-arms service.
+					// react-doctor-disable-next-line react-doctor/async-await-in-loop
+					const svg =
+							typeof coa === "object" &&
+							coa !== null &&
+							Object.keys(coa).length > 0
+								? await getCOA(String(country.i), coa)
+								: await fetchText(
+										`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
+											String(randomSeed),
+										)}`,
+									);
+
+						newCountry.coaSVG = validateSvgResponse(svg);
 					} catch (error) {
-						console.error("Error fetching SVG:", country.name, error);
+						console.error(
+							`Error fetching the coat of arms for ${country.name}:`,
+							error,
+						);
 					}
 				} else {
 					const start = mapSVG.indexOf('<g id="defs-emblems">');
@@ -160,11 +167,23 @@ export const mutateCountries = async (
 					}
 					newCountry.coaSVG = stateCOA;
 				}
-			} else if (!country.coa || country.coa === undefined) {
-				const response = await fetch(
-					`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-				).then((response) => response.text());
-				newCountry.coaSVG = response;
+			} else if (!country.coa) {
+				try {
+					// Keep requests sequential to avoid flooding the coat-of-arms service.
+					// react-doctor-disable-next-line react-doctor/async-await-in-loop
+					const svg = await fetchText(
+						`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
+							String(randomSeed),
+						)}`,
+					);
+
+					newCountry.coaSVG = validateSvgResponse(svg);
+				} catch (error) {
+					console.error(
+						`Error fetching the coat of arms for ${country.name}:`,
+						error,
+					);
+				}
 			}
 			console.groupEnd();
 

@@ -1,17 +1,18 @@
 import { createTerraLoggerMap } from "../Util/mkEmpty/tlMap";
 
-import {
-	mutateCities,
-	mutateCountries,
-	mutateCultures,
-	mutateReligions,
-	mutateNameBases,
-	mutateNotes,
-} from "../Util/mutations";
+import { mutateCities } from "../Util/mutations/cities";
+import { mutateCountries } from "../Util/mutations/countries";
+import { mutateCultures } from "../Util/mutations/cultures";
+import { mutateNameBases } from "../Util/mutations/namebases";
+import { mutateNotes } from "../Util/mutations/notes";
+import { mutateReligions } from "../Util/mutations/religions";
 
 import { ensureAtlasContentForEntity } from "../atlas/legacy/enrichAtlasContent";
 
 import type { TLMapInfo } from "../../definitions/TerraLogger";
+import { generateNPCPopulation } from "../NPC/population/generatePopulation"
+import type { MapUploadDiagnostics, MapUploadGenerationOptions } from "./diagnostics";
+import { addUploadIssue } from "./diagnostics";
 
 export type MutateProgress = {
 	section: string;
@@ -31,10 +32,16 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 	tempMap.SVG = data.SVG;
 };
 
+export type MutateDataOptions = {
+	generation: MapUploadGenerationOptions;
+	diagnostics: MapUploadDiagnostics;
+};
+
 const mutateData = async (
 	data: MapInfo,
 	Pack: Pack,
-	onProgress?: MutateProgressHandler,
+	onProgress: MutateProgressHandler | undefined,
+	options: MutateDataOptions,
 ) => {
 	const { populationRate, urbanization, urbanDensity } = data.settings;
 
@@ -51,6 +58,7 @@ const mutateData = async (
 		"Relationships",
 		"Culture Population",
 		"SVG",
+		...(options.generation.generateNPCs ? ["NPC Population"] : []),
 	];
 
 	let completedMutationSteps = 0;
@@ -81,7 +89,7 @@ const mutateData = async (
 		reportMutationProgress("Map Info", data.info?.name);
 		assignMapInfo(tempMap, data);
 	} catch (error) {
-		console.error("Error assigning Map Info", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Map Info", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -95,7 +103,7 @@ const mutateData = async (
 
 		tempMap.cultures = Cultures;
 	} catch (error) {
-		console.error("Error mutating cultures:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cultures", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -111,7 +119,7 @@ const mutateData = async (
 
 		tempMap.cities = Cities;
 	} catch (error) {
-		console.error("Error mutating cities:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cities", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -126,7 +134,7 @@ const mutateData = async (
 
 		tempMap.countries = Countries;
 	} catch (error) {
-		console.error("Error mutating countries:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Countries", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -135,7 +143,7 @@ const mutateData = async (
 
 		tempMap.nameBases = NameBases;
 	} catch (error) {
-		console.error("Error mutating name bases:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Name Bases", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -144,7 +152,7 @@ const mutateData = async (
 
 		tempMap.notes = Notes;
 	} catch (error) {
-		console.error("Error mutating notes:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Notes", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	try {
@@ -159,7 +167,7 @@ const mutateData = async (
 
 		tempMap.religions = Religions;
 	} catch (error) {
-		console.error("Error mutating religions:", error);
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Religions", message: error instanceof Error ? error.message : String(error), continued: true });
 	}
 
 	reportMutationProgress("Relationships");
@@ -250,6 +258,23 @@ const mutateData = async (
 	tempMap.notes = tempMap.notes.map(
 		(note) => ensureAtlasContentForEntity("note", note).entity,
 	);
+
+	if (options.generation.generateNPCs) {
+		reportMutationProgress("NPC Population");
+		tempMap.npcs = await generateNPCPopulation(tempMap, {
+			supportingCategoryIds: options.generation.supportingCategoryIds,
+			supportingNPCsPerCategory: options.generation.supportingNPCsPerCategory,
+			onIssue: (issue) => addUploadIssue(options.diagnostics, issue),
+			onCount: (name, amount) => { options.diagnostics.counts[name] = (options.diagnostics.counts[name] ?? 0) + amount; },
+			onProgress: (progress) => {
+				const phaseProgress = progress.total > 0 ? progress.completed / progress.total : 1;
+				onProgress?.({ section: "NPC Population", item: progress.message, completed: progress.completed, total: progress.total, percent: Math.min(70, 58 + Math.round(phaseProgress * 12)), message: progress.message });
+			},
+		});
+	} else {
+		tempMap.npcs = [];
+		options.diagnostics.notes.push("NPC generation was disabled by the user.");
+	}
 
 	return tempMap;
 };

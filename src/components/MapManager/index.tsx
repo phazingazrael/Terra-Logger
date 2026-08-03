@@ -1,27 +1,35 @@
-import { Button, Grid, Modal, Box, Stack } from "@mui/material";
+import { Button, Dialog, DialogContent, Grid, Stack } from "@mui/material";
 import { lazy, useState } from "react";
 import { useDB } from "../../db/DataContext";
 import { deleteEntireMapData } from "../../db/interactions";
 
 import "./index.css";
-import { ModalStyle } from "../../styles";
-import UploadMap, { type MapImportMode } from "../UploadMap/UploadMap";
 import { useOutletContext } from "react-router-dom";
 import type { Context } from "../../definitions/Common";
+import UploadMap, { type MapImportMode, type MapImportSummary } from "../UploadMap/UploadMap";
 
 const MapsCard = lazy(() => import("../../components/Cards/maps"));
 
-const MapManager: React.FC = () => {
+type MapManagerProps = {
+	onImportSummary: (summary: MapImportSummary) => void | Promise<void>;
+};
+
+const MapManager: React.FC<MapManagerProps> = ({ onImportSummary }) => {
 	const { activeMapId, setActive } = useDB();
 	const { mapsList, reloadMapsList }: Context = useOutletContext();
 	const [selectedMaps, setSelectedMaps] = useState<string[]>([]);
 	const [uploadMode, setUploadMode] = useState<MapImportMode>({
 		kind: "create",
 	});
-
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+
+	const handleImportSummary = async (summary: MapImportSummary) => {
+		setSelectedMaps([]);
+		handleClose();
+		await onImportSummary(summary);
+	};
 
 	const openCreateUpload = () => {
 		setUploadMode({ kind: "create" });
@@ -59,7 +67,7 @@ const MapManager: React.FC = () => {
 		await reloadMapsList();
 
 		if (selectedMaps.includes(activeMapId ?? "")) {
-			await setActive("");
+			await setActive(null);
 		}
 
 		const mapElement = document.getElementById("map");
@@ -108,24 +116,34 @@ const MapManager: React.FC = () => {
 					Upload New Map
 				</Button>
 			</Stack>
-			<Modal
+			<Dialog
 				open={open}
 				onClose={handleClose}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description"
+				fullWidth
+				maxWidth="lg"
+				className="UploadMap-modal"
+				aria-labelledby="map-upload-dialog-title"
+				slotProps={{
+					paper: {
+						sx: {
+							maxHeight: "calc(100dvh - 64px)",
+							overflow: "hidden",
+						},
+					},
+				}}
 			>
-				<Box sx={ModalStyle} className="UploadMap-modal">
+				<DialogContent sx={{ p: { xs: 1, sm: 2 }, overflowY: "auto" }}>
+					<Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
+						<Button onClick={handleClose} disabled={false}>Close</Button>
+					</Stack>
 					<UploadMap
 						mode={uploadMode}
 						showDemoButton={uploadMode.kind === "create"}
-						onComplete={async () => {
-							await reloadMapsList();
-							setSelectedMaps([]);
-							handleClose();
-						}}
+						onImportSummary={handleImportSummary}
 					/>
-				</Box>
-			</Modal>
+				</DialogContent>
+			</Dialog>
+
 		</div>
 	);
 };

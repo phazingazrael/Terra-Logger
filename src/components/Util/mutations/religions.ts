@@ -11,9 +11,17 @@ export const mutateReligions = async (
 	populationRate: number,
 	urbanization: string,
 ) => {
+	const religionById = new Map(
+		data.religions.map((religion) => [religion.i, religion]),
+	);
+	const cultureById = new Map(
+		tempMap.cultures.map((culture) => [culture.id, culture]),
+	);
+	const cityById = new Map(tempMap.cities.map((city) => [city.id, city]));
+
 	for (const religion of data.religions) {
 		const newReligion: TLReligion = createEmptyReligion();
-		const Culture = tempMap.cultures.find((c) => c.id === religion.culture);
+		const Culture = cultureById.get(religion.culture);
 
 		newReligion._id = uuidv7();
 		newReligion.aliases = [newReligion.name];
@@ -269,9 +277,7 @@ export const mutateReligions = async (
 		) {
 			if (religion.origins.length > 0) {
 				for (const origin of religion.origins) {
-					const Origin = data.religions.find(
-						(religion) => religion.i === origin,
-					);
+					const Origin = religionById.get(origin);
 					if (Origin) {
 						Origins.push(Origin.name);
 					}
@@ -299,7 +305,7 @@ export const mutateReligions = async (
 				_Center._id = newReligion.culture._id;
 			} else {
 				const pcbCenter = Pack.cells.burg[religion.center];
-				const Center = tempMap.cities.find((city) => city.id === pcbCenter);
+				const Center = cityById.get(pcbCenter);
 				if (Center) {
 					_Center.i = Center.id;
 					_Center.name = Center.name;

@@ -96,18 +96,69 @@ div#root.dark .file-input select {
   position: relative;
 }
 
+/* Keep upload progress overlays scoped to the rendered upload surface. */
 .uploadForm {
   position: relative;
   z-index: 2;
+  min-height: 100%;
   overflow: hidden;
 }
 
-.custom-loading {
-  z-index: 1;
-  position: relative;
-  top: 69dvh;
-  background: rgba(0, 0, 0, 0.65);
-  margin-top: -69dvh;
-  height: 69dvh;
+.uploadForm > div,
+.uploadForm .custom-card {
+  min-height: inherit;
+}
+
+@media (max-width: 899px) {
+  .file-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-file-drop-zone {
+  margin-top: 0.25rem;
+  padding: 0.75rem;
+  border: 1px dashed #94a3b8;
   border-radius: 0.375rem;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.map-file-drop-zone.is-dragging {
+  border-style: solid;
+  border-color: currentColor;
+  background-color: rgba(148, 163, 184, 0.14);
+}
+
+.map-file-drop-zone.has-file {
+  border-style: solid;
+}
+
+.map-file-drop-zone input {
+  width: 100%;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.map-file-selection-status {
+  margin-top: 0.5rem !important;
+  overflow-wrap: anywhere;
+}
+
+.map-upload-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 499px) {
+  .map-upload-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .map-upload-actions > button {
+    width: 100%;
+  }
 }

@@ -1,10 +1,14 @@
-import { createEmptyCity, minmax } from "../../Util";
+import { createEmptyCity } from "../mkEmpty/tlCity";
+import { minmax } from "../minmax";
 
 import { v7 as uuidv7 } from "uuid";
 
 import getCOA from "../generators/coa/render";
 
 import type { TLMapInfo, TLCity } from "../../../definitions/TerraLogger";
+
+import { fetchText } from "../fetchText";
+import { validateSvgResponse } from "../svgUtil";
 
 import { cityAdapter } from "../../atlas/adapters/cityAdapter";
 
@@ -71,19 +75,25 @@ export const mutateCities = async (
 					const coa = city.coa;
 
 					try {
-						const response = await (typeof coa === "object" &&
-						Object.keys(coa).length > 0
-							? getCOA(city.i as unknown as string, coa)
-							: fetch(
-									`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-								).then((response) => response.text()));
-						const svg = response;
-						if (svg.startsWith("<!DOCTYPE html>")) {
-							throw new Error("Received HTML error page");
-						}
-						newCity.coaSVG = svg;
+						// Keep requests sequential to avoid flooding the coat-of-arms service.
+					// react-doctor-disable-next-line react-doctor/async-await-in-loop
+					const svg =
+							typeof coa === "object" &&
+							coa !== null &&
+							Object.keys(coa).length > 0
+								? await getCOA(String(city.i), coa)
+								: await fetchText(
+										`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
+											String(randomSeed),
+										)}`,
+									);
+
+						newCity.coaSVG = validateSvgResponse(svg);
 					} catch (error) {
-						console.error("Error fetching SVG:", city.name, error);
+						console.error(
+							`Error fetching the coat of arms for ${city.name}:`,
+							error,
+						);
 					}
 				} else {
 					const start = mapSVG.indexOf('<g id="defs-emblems">');
@@ -107,11 +117,23 @@ export const mutateCities = async (
 					}
 					newCity.coaSVG = cityCOA;
 				}
-			} else if (!city.coa || city.coa === undefined) {
-				const response = await fetch(
-					`https://armoria.herokuapp.com/?size=500&format=svg&seed=${randomSeed}`,
-				).then((response) => response.text());
-				newCity.coaSVG = response;
+			} else if (!city.coa) {
+				try {
+					// Keep requests sequential to avoid flooding the coat-of-arms service.
+					// react-doctor-disable-next-line react-doctor/async-await-in-loop
+					const svg = await fetchText(
+						`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
+							String(randomSeed),
+						)}`,
+					);
+
+					newCity.coaSVG = validateSvgResponse(svg);
+				} catch (error) {
+					console.error(
+						`Error fetching the coat of arms for ${city.name}:`,
+						error,
+					);
+				}
 			}
 
 			// size & sizeRaw from editors.js from Azgaar.
