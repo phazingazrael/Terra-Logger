@@ -1,187 +1,183 @@
 // src/db/client.ts
 /** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
-import { initDatabase } from "./database";
+import { ensurePersistentNPCFields } from "../components/NPC/persistence/normalize";
+import type { TLNPC } from "../definitions/TerraLogger";
+import type { TLMapInfo } from "../definitions/TerraLogger";
 import { getAppSettings, updateAppSettings } from "./appSettings";
 import {
-  addDataToStore,
-  updateDataInStore,
-  deleteDataFromStore,
-  queryDataFromStore,
+	initMapsDatabase,
+	type MapScopedStore,
+	mapScopedStores,
+} from "./connections/mapsDatabase";
+import {
+	addDataToStore,
+	deleteDataFromStore,
+	queryDataFromStore,
+	updateDataInStore,
 } from "./interactions";
+import {
+	addCachedRecord,
+	deleteCachedRecord,
+	getCachedMapRecord,
+	getCachedStore,
+	setCachedMap,
+	setCachedStore,
+	updateCachedRecord,
+} from "./mapCache";
 
-import type { TLMapInfo } from "../definitions/TerraLogger";
-
-/** Store names that have a "mapIdIndex" */
-export type MapScopedStore =
-  | "cities"
-  | "countries"
-  | "cultures"
-  | "notes"
-  | "npcs"
-  | "religions"
-  | "nameBases"
-  | "tags";
-
-const ALL_STORES: MapScopedStore[] = [
-  "cities",
-  "countries",
-  "cultures",
-  "notes",
-  "npcs",
-  "religions",
-  "nameBases",
-  "tags",
-];
-
-export async function getActiveMapId(): Promise<string> {
-  const s = await getAppSettings();
-  if (s.activeMapId === null) {
-    throw new Error("No active map selected.");
-  }
-  return s.activeMapId;
+export async function getActiveMapId(): Promise<string | null> {
+	const s = await getAppSettings();
+	return s.activeMapId;
 }
 
-export async function setActiveMapId(mapId: string): Promise<void> {
-  await updateAppSettings((prev) => {
-    if (prev.activeMapId === mapId) return prev;
-    return { ...prev, activeMapId: mapId };
-  });
+export async function setActiveMapId(mapId: string | null): Promise<void> {
+	await updateAppSettings((prev) => {
+		if (prev.activeMapId === mapId) return prev;
+		return { ...prev, activeMapId: mapId };
+	});
 }
 // ---------- map-scoped reads using your existing index ----------
 export function getAllByMapId<T = any>(
-  store: MapScopedStore,
-  mapId: string,
+	store: MapScopedStore,
+	mapId: string,
 ): Promise<T[]> {
-  return queryDataFromStore(
-    store,
-    "mapIdIndex",
-    IDBKeyRange.only(mapId),
-  ) as Promise<T[]>;
-}
-
-// ---------- in-memory cache (per active map) ----------
-
-type CacheBucket = Record<
-  MapScopedStore,
-  { rows: any[]; byId: Map<string, any> } | undefined
->;
-const cache: Record<string, CacheBucket> = Object.create(null);
-
-function ensureBucket(mapId: string): CacheBucket {
-  if (!cache[mapId]) {
-    cache[mapId] = Object.create(null);
-  }
-  return cache[mapId];
-}
-
-
-function setStoreCache(mapId: string, store: MapScopedStore, rows: any[]) {
-  const bucket = ensureBucket(mapId);
-  const byId = new Map<string, any>();
-  for (const r of rows) byId.set(String((r as any)._id), r);
-  bucket[store] = { rows, byId };
+	return queryDataFromStore(
+		store,
+		"mapIdIndex",
+		IDBKeyRange.only(mapId),
+	) as Promise<T[]>;
 }
 
 export function getCached(
-  mapId: string | null,
-  store: MapScopedStore,
+	mapId: string | null,
+	store: MapScopedStore,
 ): any[] | null {
-  if (!mapId) return null;
-  return cache[mapId]?.[store]?.rows ?? null;
+	return getCachedStore(mapId, store);
+}
+
+const NPC_COMPLETENESS_FIELDS = [
+	"nickName",
+	"pronounced",
+	"heritage",
+	"age",
+	"sexuality",
+	"alignment",
+	"condition",
+	"background",
+	"aspirationsMotivations",
+	"publicPerception",
+	"hiddenDetails",
+] as const;
+
+function npcNeedsCompletenessRepair(original: TLNPC, normalized: TLNPC): boolean {
+	return NPC_COMPLETENESS_FIELDS.some((field) => original[field] !== normalized[field]);
+}
+
+async function repairLoadedNPCs(rows: any[]): Promise<any[]> {
+	const normalized = rows.map((row) => ensurePersistentNPCFields(row as TLNPC));
+	const repairs = normalized.filter((row, index) => npcNeedsCompletenessRepair(rows[index] as TLNPC, row));
+	if (!repairs.length) return normalized;
+
+	const db = await initMapsDatabase();
+	const batchSize = 250;
+	for (let start = 0; start < repairs.length; start += batchSize) {
+		const tx = db.transaction("npcs", "readwrite");
+		// The bounded transaction batch must finish before the next batch begins.
+		// react-doctor-disable-next-line react-doctor/async-await-in-loop
+		await Promise.all(
+			repairs
+				.slice(start, start + batchSize)
+				.map((npc) => tx.store.put(npc)),
+		);
+		// react-doctor-disable-next-line react-doctor/async-await-in-loop
+		await tx.done;
+		// Yield between repair batches to keep the interface responsive.
+		// react-doctor-disable-next-line react-doctor/async-await-in-loop
+		await new Promise<void>((resolve) => setTimeout(resolve, 0));
+	}
+	return normalized;
+}
+
+async function prepareRowsForCache(store: MapScopedStore, rows: any[]): Promise<any[]> {
+	return store === "npcs" ? repairLoadedNPCs(rows) : rows;
 }
 
 export async function loadStoreIntoCache(
-  mapId: string,
-  store: MapScopedStore,
+	mapId: string,
+	store: MapScopedStore,
 ): Promise<any[]> {
-  const rows = await getAllByMapId(store, mapId);
-  setStoreCache(mapId, store, rows);
-  return rows;
+	const rows = await prepareRowsForCache(store, await getAllByMapId(store, mapId));
+	setCachedStore(mapId, store, rows);
+	return rows;
 }
 
 // ---------- cache-aware mutations (keep IDB + memory in sync) ----------
 
 export async function addAndCache(
-  store: MapScopedStore,
-  data: any,
-  activeMapId: string | null,
+	store: MapScopedStore,
+	data: any,
+	activeMapId: string | null,
 ): Promise<void> {
-  await addDataToStore(store, data);
-  if (activeMapId && data.mapId === activeMapId) {
-    const bucket = ensureBucket(activeMapId);
-    let s = bucket[store];
-    if (!s) {
-      s = { rows: [], byId: new Map() };
-      bucket[store] = s;
-    }
-    s.byId.set(String(data._id), data);
-    s.rows.push(data);
-  }
+	const prepared = store === "npcs" ? ensurePersistentNPCFields(data as TLNPC) : data;
+	await addDataToStore(store, prepared);
+	if (activeMapId && prepared.mapId === activeMapId) {
+		addCachedRecord(activeMapId, store, prepared);
+	}
 }
 
 export async function updateAndCache(
-  store: MapScopedStore,
-  key: string,
-  updated: any,
-  activeMapId: string | null,
+	store: MapScopedStore,
+	key: string,
+	updated: any,
+	activeMapId: string | null,
 ): Promise<void> {
-  await updateDataInStore(store, key, updated);
-  if (activeMapId && updated.mapId === activeMapId) {
-    const s = cache[activeMapId]?.[store];
-    if (s) {
-      s.byId.set(String(updated._id), updated);
-      const i = s.rows.findIndex(
-        (r) => String((r as any)._id) === String(updated._id),
-      );
-      if (i >= 0) s.rows[i] = updated;
-    }
-  }
+	const prepared = store === "npcs" ? ensurePersistentNPCFields(updated as TLNPC) : updated;
+	await updateDataInStore(store, key, prepared);
+	if (activeMapId && prepared.mapId === activeMapId) {
+		updateCachedRecord(activeMapId, store, prepared);
+	}
 }
 
 export async function deleteAndCache(
-  store: MapScopedStore,
-  key: string,
-  activeMapId: string | null,
+	store: MapScopedStore,
+	key: string,
+	activeMapId: string | null,
 ): Promise<void> {
-  await deleteDataFromStore(store, key);
-  if (!activeMapId) return;
-  const s = cache[activeMapId]?.[store];
-  if (s) {
-    s.byId.delete(String(key));
-    const i = s.rows.findIndex((r) => String((r as any)._id) === String(key));
-    if (i >= 0) s.rows.splice(i, 1);
-  }
+	await deleteDataFromStore(store, key);
+	if (activeMapId) deleteCachedRecord(activeMapId, store, key);
 }
 
 // Optional convenience: preload several stores for a map
 export async function preloadForMap(
-  mapId: string,
-  pick: MapScopedStore[] = ALL_STORES,
+	mapId: string,
+	pick: readonly MapScopedStore[] = mapScopedStores,
 ): Promise<void> {
-  const results = await Promise.all(pick.map((s) => getAllByMapId(s, mapId)));
-  results.forEach((rows, i) => {
-    setStoreCache(mapId, pick[i], rows)
-  });
+	const uniqueStores = [...new Set(pick)];
+	const results = await Promise.all(
+		uniqueStores.map(async (store) => prepareRowsForCache(store, await getAllByMapId(store, mapId))),
+	);
+	results.forEach((rows, i) => {
+		setCachedStore(mapId, uniqueStores[i], rows);
+	});
 }
 
 // ---------- active map (from 'maps' store) ----------
-const mapsCache = new Map<string, any>();
 export function getCachedMap<T = any>(id: string): T | null {
-  return (mapsCache.get(id) ?? null) as T | null;
+	return getCachedMapRecord<T>(id);
 }
 export async function loadActiveMapIntoCache<T = any>(
-  mapId: string,
+	mapId: string,
 ): Promise<T | undefined> {
-  // 1) The activeMapId is a mapId → use the mapIdIndex
-  const db = await initDatabase();
-  const tx = db.transaction("maps", "readonly");
-  let m = (await tx.store.index("mapIdIndex").get(mapId)) as T | undefined;
-  // 2) Fallbacks (legacy data): try keyPath 'id' or info.ID
-  if (!m) m = (await db.get("maps", mapId)) as T | undefined;
-  if (!m) {
-    const all = (await db.getAll("maps")) as TLMapInfo[];
-    m = all.find((r) => r?.info?.ID === mapId) as T | undefined;
-  }
-  if (m) mapsCache.set(mapId, m);
-  return m;
+	// 1) The activeMapId is a mapId → use the mapIdIndex
+	const db = await initMapsDatabase();
+	const tx = db.transaction("maps", "readonly");
+	let m = (await tx.store.index("mapIdIndex").get(mapId)) as T | undefined;
+	// 2) Fallbacks (legacy data): try keyPath 'id' or info.ID
+	if (!m) m = (await db.get("maps", mapId)) as T | undefined;
+	if (!m) {
+		const all = (await db.getAll("maps")) as TLMapInfo[];
+		m = all.find((r) => r?.info?.ID === mapId) as T | undefined;
+	}
+	if (m) setCachedMap(mapId, m);
+	return m;
 }

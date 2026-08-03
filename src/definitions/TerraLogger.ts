@@ -1,3 +1,4 @@
+import type { TLMapHistoryConfiguration } from "./History";
 // src/definitions/TerraLogger.ts //
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // visual effects only for eslint-disable //
@@ -5,6 +6,7 @@
 // TL_Map Interfaces
 import type { Tag } from "./Common";
 import type { AtlasContent } from "./Atlas";
+import type { TLHistoryEraReference } from "./History";
 
 export type TLOrdinary = {
   ordinary?: string;
@@ -266,6 +268,120 @@ export type TLCountry = {
   warCampaigns: { title: string; start: number; end: number; }[];
 };
 
+export type NPCCatalogRecordSnapshot = {
+  id: string;
+  name: string;
+  source: "default" | "user";
+  version: number;
+};
+
+export type NPCDisplayReference = {
+  id: string;
+  name: string;
+};
+
+export type NPCEntityType = "country" | "city" | "culture" | "religion" | "npc";
+
+export type NPCRelationship = {
+  id: string;
+  relatedEntityType: NPCEntityType;
+  relatedEntityId: string;
+  relationshipType: string;
+  roleTitle?: string;
+  primary?: boolean;
+  createdAt: string;
+  updatedAt: string;
+  source: "manual" | "contextual" | "map-generation" | "history";
+};
+
+export type NPCHistoryEntry = {
+  id: string;
+  year?: number;
+  era?: TLHistoryEraReference;
+  title: string;
+  description: string;
+  category?: string;
+  source: "generated" | "authored";
+  createdAt: string;
+};
+
+export type NPCPortrait =
+  | { kind: "placeholder" }
+  | { kind: "url"; value: string }
+  | {
+    kind: "uploaded";
+    data: string;
+    mimeType: string;
+    originalFileName?: string;
+  };
+
+export type NPCGenerationTrace = {
+  generator: "terra-logger/npc";
+  generatorVersion: string;
+  generatedAt: string;
+  mode: "manual" | "contextual" | "map-population" | "migration";
+  constraints?: Record<string, string>;
+  catalogs: {
+    ancestry?: NPCCatalogRecordSnapshot;
+    gender?: NPCCatalogRecordSnapshot;
+    profession?: NPCCatalogRecordSnapshot;
+    government?: NPCCatalogRecordSnapshot;
+    governmentRole?: NPCDisplayReference;
+  };
+};
+
+export type TLNPC = {
+  _id: string;
+  mapId: string;
+  name: string;
+  fullName: string;
+  nickName: string;
+  aliases: string[];
+  pronouns: string[];
+  pronounced: string;
+  ancestry?: NPCDisplayReference;
+  heritage: string;
+  gender?: NPCDisplayReference;
+  age: number | "";
+  sexuality: string;
+  alignment: string;
+  condition: string;
+  profession?: NPCDisplayReference & { description?: string };
+  appearance: {
+    build?: string;
+    skinTone?: string;
+    complexion?: string;
+    eyeShape?: string;
+    eyeColor?: string;
+    hairStyle?: string;
+    hairColor?: string;
+    facialHair?: string;
+    descriptors?: string;
+  };
+  personality: {
+    demeanor?: string;
+    activities?: string;
+  };
+  background: string;
+  aspirationsMotivations: string;
+  publicPerception: string;
+  hiddenDetails: string;
+  currentLocation?: NPCDisplayReference;
+  ownedLocations: NPCDisplayReference[];
+  groups: NPCDisplayReference[];
+  religions: NPCDisplayReference[];
+  notes: NPCDisplayReference[];
+  tags: Tag[];
+  portrait: NPCPortrait;
+  relationships: NPCRelationship[];
+  content?: AtlasContent;
+  history: NPCHistoryEntry[];
+  generation?: NPCGenerationTrace;
+  createdAt: string;
+  updatedAt: string;
+};
+
+
 export interface TLMapInfo {
   cities: TLCity[];
   countries: TLCountry[];
@@ -279,10 +395,9 @@ export interface TLMapInfo {
   };
   nameBases: TLNameBase[];
   notes: TLNote[];
-  npcs: {
-    name: string;
-  }[];
+  npcs: TLNPC[];
   religions: TLReligion[];
+  historyGenerator?: TLMapHistoryConfiguration;
   settings: {
     mapName: string;
     distanceUnit: string;
@@ -333,6 +448,7 @@ export interface MapInf {
     ver: string;
   };
   mapId: string;
+  historyGenerator?: TLMapHistoryConfiguration;
   settings: {
     mapName: string;
     distanceUnit: string;
@@ -393,3 +509,4 @@ export interface SettingsOpts {
     separate: number;
   }[];
 }
+
