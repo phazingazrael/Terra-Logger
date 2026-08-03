@@ -27,22 +27,22 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.7",
+  "version": "1.0.8",
   "previousTag": "1.0.0",
-  "currentTag": "1.0.7",
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.7",
-  "commitCount": 46,
+  "currentTag": "1.0.8",
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
+  "commitCount": 48,
   "majorChanges": [
     {
-      "hash": "6625a0d4e6c42f30a586740a5c8eb33ea72337c8",
-      "shortHash": "6625a0d",
+      "hash": "d34f9ef8eadf56f436b10fd86b0eff08b545709a",
+      "shortHash": "d34f9ef",
       "date": "2026-07-21T23:24:20-06:00",
       "subject": "refactor(NPC Generation): 📝 Refactor SSNG to be more inline with Terra-Logger standards",
       "type": "refactor",
       "scope": "NPC Generation",
       "details": "📝 Refactor SSNG to be more inline with Terra-Logger standards",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6625a0d4e6c42f30a586740a5c8eb33ea72337c8"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d34f9ef8eadf56f436b10fd86b0eff08b545709a"
     },
     {
       "hash": "c94893cce51106d540c1ef753f35d1fff0d0688c",
@@ -261,15 +261,37 @@ export const releaseChanges: ReleaseChanges = {
   ],
   "commits": [
     {
-      "hash": "6625a0d4e6c42f30a586740a5c8eb33ea72337c8",
-      "shortHash": "6625a0d",
+      "hash": "ede9ab6bc941c48ece98c745dd2b6accb09cceca",
+      "shortHash": "ede9ab6",
+      "date": "2026-07-27T21:05:33-06:00",
+      "subject": "Update App.css",
+      "type": "other",
+      "scope": null,
+      "details": "Update App.css",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ede9ab6bc941c48ece98c745dd2b6accb09cceca"
+    },
+    {
+      "hash": "ed551cd9b292c879bef5949d48a4c640b01b356e",
+      "shortHash": "ed551cd",
+      "date": "2026-07-25T22:39:47-06:00",
+      "subject": "Fix Demonkin naming",
+      "type": "other",
+      "scope": null,
+      "details": "Fix Demonkin naming",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ed551cd9b292c879bef5949d48a4c640b01b356e"
+    },
+    {
+      "hash": "d34f9ef8eadf56f436b10fd86b0eff08b545709a",
+      "shortHash": "d34f9ef",
       "date": "2026-07-21T23:24:20-06:00",
       "subject": "refactor(NPC Generation): 📝 Refactor SSNG to be more inline with Terra-Logger standards",
       "type": "refactor",
       "scope": "NPC Generation",
       "details": "📝 Refactor SSNG to be more inline with Terra-Logger standards",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6625a0d4e6c42f30a586740a5c8eb33ea72337c8"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d34f9ef8eadf56f436b10fd86b0eff08b545709a"
     },
     {
       "hash": "f8ffb5e813cfdd3400d3187d055935ff0b5e9035",
@@ -767,5 +789,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-07-23T01:03:49.723Z"
+  "generatedAt": "2026-08-03T00:50:04.438Z"
 };
