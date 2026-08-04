@@ -40,7 +40,8 @@ export function VirtualizedCardGrid<T>({
 	const [scrollMargin, setScrollMargin] = useState(0);
 
 	useLayoutEffect(() => {
-		setScrollElement(document.querySelector<HTMLElement>(".Content"));
+		const grid = gridRef.current;
+		setScrollElement((grid?.closest(".Content") as HTMLElement | null) ?? null);
 	}, []);
 
 	useEffect(() => {
@@ -88,9 +89,6 @@ export function VirtualizedCardGrid<T>({
 		},
 	});
 
-	useEffect(() => {
-		virtualizer.measure();
-	}, [virtualizer]);
 
 	return (
 		<Box
@@ -109,14 +107,16 @@ export function VirtualizedCardGrid<T>({
 				return (
 					<Box
 						key={virtualRow.key}
-						ref={virtualizer.measureElement}
 						data-index={virtualRow.index}
 						sx={{
 							position: "absolute",
 							top: 0,
 							left: 0,
 							width: "100%",
-							transform: `translateY(${virtualRow.start - scrollMargin}px)`,
+							height: `${estimateRowHeight}px`,
+							boxSizing: "border-box",
+							transform: `translate3d(0, ${virtualRow.start - scrollMargin}px, 0)`,
+							contain: "strict",
 							display: "grid",
 							gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
 							gap: `${gap}px`,
