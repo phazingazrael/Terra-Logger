@@ -15,8 +15,10 @@ type VirtualizedCardGridProps<T> = {
 	renderItem: (item: T, index: number) => ReactNode;
 	estimateRowHeight?: number;
 	gap?: number;
+	rowGap?: number;
 	minColumnWidth?: number;
 	overscan?: number;
+	fixedRowHeight?: boolean;
 	className?: string;
 };
 
@@ -30,8 +32,10 @@ export function VirtualizedCardGrid<T>({
 	renderItem,
 	estimateRowHeight = 360,
 	gap = 16,
+	rowGap = gap,
 	minColumnWidth = 240,
 	overscan = 3,
+	fixedRowHeight = false,
 	className,
 }: Readonly<VirtualizedCardGridProps<T>>) {
 	const gridRef = useRef<HTMLDivElement | null>(null);
@@ -89,6 +93,9 @@ export function VirtualizedCardGrid<T>({
 		},
 	});
 
+	useEffect(() => {
+		if (!fixedRowHeight) virtualizer.measure();
+	}, [fixedRowHeight, virtualizer]);
 
 	return (
 		<Box
@@ -107,20 +114,23 @@ export function VirtualizedCardGrid<T>({
 				return (
 					<Box
 						key={virtualRow.key}
+						ref={fixedRowHeight ? undefined : virtualizer.measureElement}
 						data-index={virtualRow.index}
 						sx={{
 							position: "absolute",
 							top: 0,
 							left: 0,
 							width: "100%",
-							height: `${estimateRowHeight}px`,
 							boxSizing: "border-box",
 							transform: `translate3d(0, ${virtualRow.start - scrollMargin}px, 0)`,
-							contain: "strict",
 							display: "grid",
 							gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-							gap: `${gap}px`,
-							paddingBottom: `${gap}px`,
+							columnGap: `${gap}px`,
+							rowGap: `${rowGap}px`,
+							paddingBottom: `${rowGap}px`,
+							...(fixedRowHeight
+								? { height: `${estimateRowHeight}px`, contain: "layout paint" }
+								: {}),
 						}}
 					>
 						{rowItems.map((item, columnIndex) => {

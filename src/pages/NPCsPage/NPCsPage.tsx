@@ -12,7 +12,13 @@ import {
 	Typography,
 	Slider,
 } from "@mui/material";
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import {
+	useCallback,
+	useDeferredValue,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import NPCCard from "../../components/Cards/npc";
 import { VirtualizedCardGrid } from "../../components/Virtualized";
@@ -27,7 +33,6 @@ type ComboboxOption = {
 	value: string;
 	label: string;
 };
-
 
 const SORT_OPTIONS: readonly ComboboxOption[] = [
 	{ value: "name-asc", label: "Name A–Z" },
@@ -254,6 +259,7 @@ function useNPCsPageModel() {
 	);
 	const deferredCriteria = useDeferredValue(filterCriteria);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Map change should reset filters
 	useEffect(() => {
 		let cancelled = false;
 
@@ -298,16 +304,16 @@ function useNPCsPageModel() {
 		};
 	}, []);
 
-	const updateState = useCallback(<K extends keyof NPCListState>(
-		key: K,
-		value: NPCListState[K],
-	) => {
-		resetResultsViewport();
-		setListState((current) => ({
-			...current,
-			[key]: value,
-		}));
-	}, []);
+	const updateState = useCallback(
+		<K extends keyof NPCListState>(key: K, value: NPCListState[K]) => {
+			resetResultsViewport();
+			setListState((current) => ({
+				...current,
+				[key]: value,
+			}));
+		},
+		[],
+	);
 
 	const loading = !npcsLoaded || catalogLoading;
 	const preparedNPCs = useMemo(() => npcs.map(prepareNPC), [npcs]);
@@ -320,48 +326,122 @@ function useNPCsPageModel() {
 		setListState((current) => {
 			const [minimum, maximum] = current.ageRange;
 			if (maximum === 0 || maximum > maximumAge) {
-				return { ...current, ageRange: [Math.min(minimum, maximumAge), maximumAge] };
+				return {
+					...current,
+					ageRange: [Math.min(minimum, maximumAge), maximumAge],
+				};
 			}
 			return current;
 		});
 	}, [maximumAge]);
 
-
 	const filterOptions = useMemo(
 		() => ({
-			races: toComboboxOptions(uniqueNames(preparedNPCs.map((item) => item.race))),
-			genders: toComboboxOptions(uniqueNames(preparedNPCs.map((item) => item.gender))),
-			professions: toComboboxOptions(uniqueNames(preparedNPCs.map((item) => item.profession))),
-			locations: toComboboxOptions(uniqueNames(preparedNPCs.map((item) => item.location))),
-			groups: toComboboxOptions(uniqueNames(preparedNPCs.flatMap((item) => [...item.groups]))),
-			religions: toComboboxOptions(uniqueNames(preparedNPCs.flatMap((item) => [...item.religions]))),
+			races: toComboboxOptions(
+				uniqueNames(preparedNPCs.map((item) => item.race)),
+			),
+			genders: toComboboxOptions(
+				uniqueNames(preparedNPCs.map((item) => item.gender)),
+			),
+			professions: toComboboxOptions(
+				uniqueNames(preparedNPCs.map((item) => item.profession)),
+			),
+			locations: toComboboxOptions(
+				uniqueNames(preparedNPCs.map((item) => item.location)),
+			),
+			groups: toComboboxOptions(
+				uniqueNames(preparedNPCs.flatMap((item) => [...item.groups])),
+			),
+			religions: toComboboxOptions(
+				uniqueNames(preparedNPCs.flatMap((item) => [...item.religions])),
+			),
 		}),
 		[preparedNPCs],
 	);
 
 	const visible = useMemo(() => {
 		const filtered = preparedNPCs.filter((item) => {
-			if (deferredCriteria.query && !item.searchText.includes(deferredCriteria.query)) return false;
-			if (deferredCriteria.race !== "all" && item.race !== deferredCriteria.race) return false;
-			if (deferredCriteria.gender !== "all" && item.gender !== deferredCriteria.gender) return false;
-			if (deferredCriteria.profession !== "all" && item.profession !== deferredCriteria.profession) return false;
-			if (deferredCriteria.location !== "all" && item.location !== deferredCriteria.location) return false;
-			if (deferredCriteria.group !== "all" && !item.groups.has(deferredCriteria.group)) return false;
-			if (deferredCriteria.religion !== "all" && !item.religions.has(deferredCriteria.religion)) return false;
-			if (!matchesAge(item.age, deferredCriteria.ageRange, maximumAge)) return false;
+			if (
+				deferredCriteria.query &&
+				!item.searchText.includes(deferredCriteria.query)
+			)
+				return false;
+			if (
+				deferredCriteria.race !== "all" &&
+				item.race !== deferredCriteria.race
+			)
+				return false;
+			if (
+				deferredCriteria.gender !== "all" &&
+				item.gender !== deferredCriteria.gender
+			)
+				return false;
+			if (
+				deferredCriteria.profession !== "all" &&
+				item.profession !== deferredCriteria.profession
+			)
+				return false;
+			if (
+				deferredCriteria.location !== "all" &&
+				item.location !== deferredCriteria.location
+			)
+				return false;
+			if (
+				deferredCriteria.group !== "all" &&
+				!item.groups.has(deferredCriteria.group)
+			)
+				return false;
+			if (
+				deferredCriteria.religion !== "all" &&
+				!item.religions.has(deferredCriteria.religion)
+			)
+				return false;
+			if (!matchesAge(item.age, deferredCriteria.ageRange, maximumAge))
+				return false;
 			return true;
 		});
 
 		filtered.sort((left, right) => {
-			if (deferredCriteria.sort === "name-desc") return right.displayName.localeCompare(left.displayName);
-			if (deferredCriteria.sort === "age-asc") return (left.age ?? Number.POSITIVE_INFINITY) - (right.age ?? Number.POSITIVE_INFINITY);
-			if (deferredCriteria.sort === "age-desc") return (right.age ?? Number.NEGATIVE_INFINITY) - (left.age ?? Number.NEGATIVE_INFINITY);
-			if (deferredCriteria.sort === "profession-asc") return left.profession.localeCompare(right.profession) || left.displayName.localeCompare(right.displayName);
-			if (deferredCriteria.sort === "race-asc") return left.race.localeCompare(right.race) || left.displayName.localeCompare(right.displayName);
-			if (deferredCriteria.sort === "location-asc") return left.location.localeCompare(right.location) || left.displayName.localeCompare(right.displayName);
-			if (deferredCriteria.sort === "relationships-desc") return right.npc.relationships.length - left.npc.relationships.length || left.displayName.localeCompare(right.displayName);
-			if (deferredCriteria.sort === "created-desc") return String(right.npc.createdAt ?? "").localeCompare(String(left.npc.createdAt ?? ""));
-			if (deferredCriteria.sort === "updated-desc") return String(right.npc.updatedAt ?? "").localeCompare(String(left.npc.updatedAt ?? ""));
+			if (deferredCriteria.sort === "name-desc")
+				return right.displayName.localeCompare(left.displayName);
+			if (deferredCriteria.sort === "age-asc")
+				return (
+					(left.age ?? Number.POSITIVE_INFINITY) -
+					(right.age ?? Number.POSITIVE_INFINITY)
+				);
+			if (deferredCriteria.sort === "age-desc")
+				return (
+					(right.age ?? Number.NEGATIVE_INFINITY) -
+					(left.age ?? Number.NEGATIVE_INFINITY)
+				);
+			if (deferredCriteria.sort === "profession-asc")
+				return (
+					left.profession.localeCompare(right.profession) ||
+					left.displayName.localeCompare(right.displayName)
+				);
+			if (deferredCriteria.sort === "race-asc")
+				return (
+					left.race.localeCompare(right.race) ||
+					left.displayName.localeCompare(right.displayName)
+				);
+			if (deferredCriteria.sort === "location-asc")
+				return (
+					left.location.localeCompare(right.location) ||
+					left.displayName.localeCompare(right.displayName)
+				);
+			if (deferredCriteria.sort === "relationships-desc")
+				return (
+					right.npc.relationships.length - left.npc.relationships.length ||
+					left.displayName.localeCompare(right.displayName)
+				);
+			if (deferredCriteria.sort === "created-desc")
+				return String(right.npc.createdAt ?? "").localeCompare(
+					String(left.npc.createdAt ?? ""),
+				);
+			if (deferredCriteria.sort === "updated-desc")
+				return String(right.npc.updatedAt ?? "").localeCompare(
+					String(left.npc.updatedAt ?? ""),
+				);
 			return left.displayName.localeCompare(right.displayName);
 		});
 
@@ -391,7 +471,10 @@ function useNPCsPageModel() {
 			? { key: "religion", label: `Religion: ${listState.religion}` }
 			: null,
 		listState.ageRange[0] !== 0 || listState.ageRange[1] !== maximumAge
-			? { key: "ageRange", label: `Age: ${listState.ageRange[0]}–${listState.ageRange[1]}` }
+			? {
+					key: "ageRange",
+					label: `Age: ${listState.ageRange[0]}–${listState.ageRange[1]}`,
+				}
 			: null,
 	].filter((item): item is { key: keyof NPCListState; label: string } =>
 		Boolean(item),
@@ -408,12 +491,50 @@ function useNPCsPageModel() {
 		setListState({ ...DEFAULT_STATE, ageRange: [0, maximumAge] });
 	};
 
-	return { navigate, activeMapId, preload, npcs, error, listState, genderDescriptions, creationOpen, setCreationOpen, updateState, loading, filterOptions, visible, activeFilters, clearFilter, resetFilters, maximumAge };
+	return {
+		navigate,
+		activeMapId,
+		preload,
+		npcs,
+		error,
+		listState,
+		genderDescriptions,
+		creationOpen,
+		setCreationOpen,
+		updateState,
+		loading,
+		filterOptions,
+		visible,
+		activeFilters,
+		clearFilter,
+		resetFilters,
+		maximumAge,
+	};
 }
 
 function NPCsPageView(model: ReturnType<typeof useNPCsPageModel>) {
-	const { navigate, activeMapId, preload, npcs, error, listState, genderDescriptions, creationOpen, setCreationOpen, updateState, loading, filterOptions, visible, activeFilters, clearFilter, resetFilters, maximumAge } = model;
-	const [ageDraft, setAgeDraft] = useState<[number, number]>(listState.ageRange);
+	const {
+		navigate,
+		activeMapId,
+		preload,
+		npcs,
+		error,
+		listState,
+		genderDescriptions,
+		creationOpen,
+		setCreationOpen,
+		updateState,
+		loading,
+		filterOptions,
+		visible,
+		activeFilters,
+		clearFilter,
+		resetFilters,
+		maximumAge,
+	} = model;
+	const [ageDraft, setAgeDraft] = useState<[number, number]>(
+		listState.ageRange,
+	);
 	useEffect(() => setAgeDraft(listState.ageRange), [listState.ageRange]);
 	return (
 		<Container>
@@ -510,12 +631,15 @@ function NPCsPageView(model: ReturnType<typeof useNPCsPageModel>) {
 								max={maximumAge}
 								disableSwap
 								valueLabelDisplay="auto"
-								onChange={(_event, value) => setAgeDraft(value as [number, number])}
-								onChangeCommitted={(_event, value) => updateState("ageRange", value as [number, number])}
+								onChange={(_event, value) =>
+									setAgeDraft(value as [number, number])
+								}
+								onChangeCommitted={(_event, value) =>
+									updateState("ageRange", value as [number, number])
+								}
 								disabled={maximumAge === 0}
 							/>
 						</Box>
-
 
 						<FilterCombobox
 							label="Sort"
@@ -580,6 +704,7 @@ function NPCsPageView(model: ReturnType<typeof useNPCsPageModel>) {
 						items={visible}
 						getKey={(npc) => npc._id}
 						estimateRowHeight={360}
+						fixedRowHeight
 						overscan={1}
 						renderItem={(npc) => (
 							<NPCCard

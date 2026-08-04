@@ -22,6 +22,7 @@ function ReligionsPage() {
 		<Container>
 			<div className="contentSubBody ReligionsPage">
 				<VirtualizedCardGrid
+					rowGap={24}
 					items={religions}
 					getKey={(entry) => entry._id}
 					renderItem={(entry) => (

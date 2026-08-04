@@ -20,6 +20,7 @@ function CulturesPage() {
 		<Container>
 			<div className="contentSubBody CulturesPage">
 				<VirtualizedCardGrid
+					rowGap={24}
 					items={cultures}
 					getKey={(entry) => entry._id}
 					renderItem={(entry) => (
