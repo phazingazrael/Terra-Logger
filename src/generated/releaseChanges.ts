@@ -32,7 +32,7 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.8",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
-  "commitCount": 59,
+  "commitCount": 66,
   "majorChanges": [
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
@@ -354,6 +354,61 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/c67d105a85056f202b658da75840eeb701cc2cfb"
     },
     {
+      "hash": "b4e90b30e250e1e81650d27e5257b8dcb869d6ed",
+      "shortHash": "b4e90b3",
+      "date": "2026-08-03T20:02:38-06:00",
+      "subject": "♻️ refactor(virtualization): isolate NPC virtualization behavior from shared card grids",
+      "type": "other",
+      "scope": null,
+      "details": "♻️ refactor(virtualization): isolate NPC virtualization behavior from shared card grids",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b4e90b30e250e1e81650d27e5257b8dcb869d6ed"
+    },
+    {
+      "hash": "d779038f7e18adbd95b40e392ce9c88798c8db5d",
+      "shortHash": "d779038",
+      "date": "2026-08-03T19:39:37-06:00",
+      "subject": "⚡ perf(npc): simplify NPC card rendering",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): simplify NPC card rendering",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d779038f7e18adbd95b40e392ce9c88798c8db5d"
+    },
+    {
+      "hash": "a32236c46ad5446a79fb496bc628364f975af345",
+      "shortHash": "a32236c",
+      "date": "2026-08-03T19:39:16-06:00",
+      "subject": "⚡ perf(npc): stabilize virtualized NPC scrolling",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): stabilize virtualized NPC scrolling",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a32236c46ad5446a79fb496bc628364f975af345"
+    },
+    {
+      "hash": "d862cf4d1edf8a03f386ea6eb89451749b8b9f1f",
+      "shortHash": "d862cf4",
+      "date": "2026-08-03T19:38:55-06:00",
+      "subject": "⚡ perf(npc): improve NPC filtering and page state",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): improve NPC filtering and page state",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d862cf4d1edf8a03f386ea6eb89451749b8b9f1f"
+    },
+    {
+      "hash": "372d5e0bf83000dc658de485bcd1b0d8b101b914",
+      "shortHash": "372d5e0",
+      "date": "2026-08-03T19:38:16-06:00",
+      "subject": "✨ feat(npc): associate generated NPCs with religions",
+      "type": "other",
+      "scope": null,
+      "details": "✨ feat(npc): associate generated NPCs with religions",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/372d5e0bf83000dc658de485bcd1b0d8b101b914"
+    },
+    {
       "hash": "ede9ab6bc941c48ece98c745dd2b6accb09cceca",
       "shortHash": "ede9ab6",
       "date": "2026-07-27T21:05:33-06:00",
@@ -610,6 +665,83 @@ export const releaseChanges: ReleaseChanges = {
     "ui"
   ],
   "commits": [
+    {
+      "hash": "b4e90b30e250e1e81650d27e5257b8dcb869d6ed",
+      "shortHash": "b4e90b3",
+      "date": "2026-08-03T20:02:38-06:00",
+      "subject": "♻️ refactor(virtualization): isolate NPC virtualization behavior from shared card grids",
+      "type": "other",
+      "scope": null,
+      "details": "♻️ refactor(virtualization): isolate NPC virtualization behavior from shared card grids",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/b4e90b30e250e1e81650d27e5257b8dcb869d6ed"
+    },
+    {
+      "hash": "7015145495293be1abc485b50e7f191df8a8c999",
+      "shortHash": "7015145",
+      "date": "2026-08-03T19:47:28-06:00",
+      "subject": "fix: 🐛 fix 'whats new' to properly select highlighted commit",
+      "type": "fix",
+      "scope": null,
+      "details": "🐛 fix 'whats new' to properly select highlighted commit",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/7015145495293be1abc485b50e7f191df8a8c999"
+    },
+    {
+      "hash": "8b2e7179a4c9a4fc1d808a28748beae07fb8667f",
+      "shortHash": "8b2e717",
+      "date": "2026-08-03T19:44:17-06:00",
+      "subject": "fix: 🐛 ensure nav trail for npcs renders properly.",
+      "type": "fix",
+      "scope": null,
+      "details": "🐛 ensure nav trail for npcs renders properly.",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8b2e7179a4c9a4fc1d808a28748beae07fb8667f"
+    },
+    {
+      "hash": "d779038f7e18adbd95b40e392ce9c88798c8db5d",
+      "shortHash": "d779038",
+      "date": "2026-08-03T19:39:37-06:00",
+      "subject": "⚡ perf(npc): simplify NPC card rendering",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): simplify NPC card rendering",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d779038f7e18adbd95b40e392ce9c88798c8db5d"
+    },
+    {
+      "hash": "a32236c46ad5446a79fb496bc628364f975af345",
+      "shortHash": "a32236c",
+      "date": "2026-08-03T19:39:16-06:00",
+      "subject": "⚡ perf(npc): stabilize virtualized NPC scrolling",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): stabilize virtualized NPC scrolling",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a32236c46ad5446a79fb496bc628364f975af345"
+    },
+    {
+      "hash": "d862cf4d1edf8a03f386ea6eb89451749b8b9f1f",
+      "shortHash": "d862cf4",
+      "date": "2026-08-03T19:38:55-06:00",
+      "subject": "⚡ perf(npc): improve NPC filtering and page state",
+      "type": "other",
+      "scope": null,
+      "details": "⚡ perf(npc): improve NPC filtering and page state",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d862cf4d1edf8a03f386ea6eb89451749b8b9f1f"
+    },
+    {
+      "hash": "372d5e0bf83000dc658de485bcd1b0d8b101b914",
+      "shortHash": "372d5e0",
+      "date": "2026-08-03T19:38:16-06:00",
+      "subject": "✨ feat(npc): associate generated NPCs with religions",
+      "type": "other",
+      "scope": null,
+      "details": "✨ feat(npc): associate generated NPCs with religions",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/372d5e0bf83000dc658de485bcd1b0d8b101b914"
+    },
     {
       "hash": "3f4da8f112995c70a8288490fb265e7d0a8dc807",
       "shortHash": "3f4da8f",
@@ -1260,5 +1392,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-08-04T01:01:20.518Z"
+  "generatedAt": "2026-08-04T02:03:27.371Z"
 };
