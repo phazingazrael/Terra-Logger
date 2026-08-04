@@ -62,7 +62,10 @@ const HomePage = () => {
 	const afmgVersion = app?.application.afmgVer ?? "1.105.15";
 
 	const summaryCommits = getHomepageSummaryCommits();
-	const releaseSummary = buildReleaseSummary(summaryCommits);
+	const releaseSummary = buildReleaseSummary(
+		summaryCommits,
+		releaseChanges.highlightedChange,
+	);
 
 	return (
 		<Container className="homePage">
@@ -252,7 +255,10 @@ function getHomepageSummaryCommits(): ReleaseChangeCommit[] {
 		.slice(0, HOME_CHANGE_SUMMARY_CONFIG.limit);
 }
 
-function buildReleaseSummary(commits: ReleaseChangeCommit[]): ReactNode {
+function buildReleaseSummary(
+	commits: ReleaseChangeCommit[],
+	highlightedChange: ReleaseChangeCommit | null,
+): ReactNode {
 	if (commits.length === 0) {
 		return "This release focuses on internal maintenance and smaller polish changes that do not appear in the curated Home page summary.";
 	}
@@ -295,7 +301,7 @@ function buildReleaseSummary(commits: ReleaseChangeCommit[]): ReactNode {
 			? `This release highlights ${formatList(summaryParts)}.`
 			: `This release highlights ${commits.length} curated project changes.`;
 
-	const topCommit = commits[0];
+	const topCommit = highlightedChange;
 
 	if (!topCommit) {
 		return summaryLead;
@@ -306,7 +312,7 @@ function buildReleaseSummary(commits: ReleaseChangeCommit[]): ReactNode {
 	return (
 		<>
 			{summaryLead} <br />
-			The most recent highlighted change is:{" "}
+			The highlighted change is:{" "}
 			<Chip
 				className="whatsNewSummaryChip"
 				component="span"

@@ -147,7 +147,24 @@ const parsedCommits = commits.map((commit) => {
   };
 });
 
-const majorChanges = parsedCommits.filter((commit) => isMajorChange(commit));
+const HIGHLIGHT_TYPE_PRIORITY = [
+  "feat",
+  "refactor",
+  "perf",
+  "docs",
+  "build",
+  "ci",
+  "test",
+  "style",
+  "chore",
+  "other",
+];
+
+const majorChanges = parsedCommits
+  .filter((commit) => isHighlightEligible(commit))
+  .sort(compareHighlightPriority);
+
+const highlightedChange = majorChanges[0] ?? null;
 
 const typeOptions = [
   ...new Set(parsedCommits.map((commit) => commit.type || "other")),
@@ -170,6 +187,7 @@ const releaseChanges = {
     : null,
   commitCount: parsedCommits.length,
   majorChanges,
+  highlightedChange,
   typeOptions,
   scopeOptions,
   commits: parsedCommits,
@@ -331,12 +349,32 @@ function parseCommitSubject(subject) {
   };
 }
 
-function isMajorChange(commit) {
+function isHighlightEligible(commit) {
+  if (commit.type === "fix") {
+    return false;
+  }
+
   if (commit.breaking) {
     return true;
   }
 
-  return ["feat", "fix", "perf", "refactor"].includes(commit.type);
+  return HIGHLIGHT_TYPE_PRIORITY.includes(commit.type);
+}
+
+function compareHighlightPriority(left, right) {
+  const leftPriority = getHighlightPriority(left.type);
+  const rightPriority = getHighlightPriority(right.type);
+
+  if (leftPriority !== rightPriority) {
+    return leftPriority - rightPriority;
+  }
+
+  return right.date.localeCompare(left.date);
+}
+
+function getHighlightPriority(type) {
+  const priority = HIGHLIGHT_TYPE_PRIORITY.indexOf(type);
+  return priority === -1 ? HIGHLIGHT_TYPE_PRIORITY.length : priority;
 }
 
 function getGithubRepoUrl(remoteName) {
@@ -385,6 +423,7 @@ function renderGeneratedFile(releaseChanges) {
     "\tcompareUrl: string | null;",
     "\tcommitCount: number;",
     "\tmajorChanges: ReleaseChangeCommit[];",
+    "\thighlightedChange: ReleaseChangeCommit | null;",
     "\ttypeOptions: string[];",
     "\tscopeOptions: string[];",
     "\tcommits: ReleaseChangeCommit[];",
