@@ -49,7 +49,7 @@ function BreadcrumbsNav({
 			if (seg === "view_city") return { to: "/cities", label: "City" };
 			if (seg === "view_note") return { to: "/notes", label: "Notes" };
 			if (seg === "view_culture") return { to: "/cultures", label: "Cultures" };
-			if (seg === "view_npcs") return { to: "/npcs", label: "NPCs" };
+			if (seg === "view_npc") return { to: "/npcs", label: "NPCs" };
 			const prevSeg = segments[i - 1];
 			if (prevSeg === "view_religion") {
 				const religion = religions.find((r) => r._id === seg);
@@ -71,7 +71,7 @@ function BreadcrumbsNav({
 				const culture = cultures.find((c) => c._id === seg);
 				return { to, label: culture?.name ?? "" };
 			}
-			if (prevSeg === "view_npcs") {
+			if (prevSeg === "view_npc") {
 				const npc = npcs.find((n) => n._id === seg);
 				return { to, label: npc?.name ?? "" };
 			}
