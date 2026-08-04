@@ -116,3 +116,110 @@
 	flex-direction: column;
 	gap: 0.25rem;
 }
+/* Lightweight, fixed-size NPC list cards keep scrolling work predictable. */
+.npc-list-card {
+	display: flex;
+	flex-direction: column;
+	height: 344px;
+	overflow: hidden;
+	contain: layout paint style;
+	transform: translateZ(0);
+}
+
+.npc-list-card__header {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	min-height: 104px;
+	padding: 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.npc-list-card__avatar {
+	width: 72px !important;
+	height: 72px !important;
+	flex: 0 0 auto;
+}
+
+.npc-list-card__identity {
+	min-width: 0;
+}
+
+.npc-list-card__body {
+	flex: 1 1 auto;
+	min-height: 0;
+	padding: 1rem;
+}
+
+.npc-list-card__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	min-height: 56px;
+	align-content: flex-start;
+	overflow: hidden;
+}
+
+.npc-list-card__tag {
+	display: inline-block;
+	max-width: 100%;
+	overflow: hidden;
+	padding: 0.25rem 0.625rem;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.06);
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.npc-list-card__line,
+.npc-list-card__relationships {
+	overflow: hidden;
+	margin: 1rem 0 0;
+	font-size: 0.875rem;
+	line-height: 1.43;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.npc-list-card__relationships {
+	margin-top: 0.5rem;
+	color: rgba(0, 0, 0, 0.6);
+}
+
+.npc-list-card__actions {
+	padding: 0 1rem 1rem;
+}
+
+.npc-list-card__view-link {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.55rem 1rem;
+	border-radius: 4px;
+	background: #26c6da;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	color: rgba(0, 0, 0, 0.87);
+	font-size: 0.875rem;
+	font-weight: 500;
+	line-height: 1.75;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.npc-list-card__view-link:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+	.npc-list-card__tag {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.npc-list-card__relationships {
+		color: rgba(255, 255, 255, 0.7);
+	}
+}

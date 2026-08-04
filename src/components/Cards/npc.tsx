@@ -1,16 +1,5 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	Chip,
-	Divider,
-	Stack,
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { Avatar, Box, Card, Typography } from "@mui/material";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import type { TLNPC } from "../../definitions/TerraLogger";
 import { resolveNPCPortraitSource } from "../NPC/portraits/placeholders";
@@ -26,28 +15,30 @@ function initials(name: string) {
 	);
 }
 
-export default function NPCCard({
+function NPCCard({
 	npc,
 	genderDescription,
 }: Readonly<{ npc: TLNPC; genderDescription?: string }>) {
 	const displayName = npc.fullName || npc.name || "Unnamed NPC";
+	const relationshipCount = npc.relationships.length;
+
 	return (
-		<Card
-			variant="outlined"
-			sx={{ display: "flex", flexDirection: "column", overflow: "hidden" }}
-		>
-			<Box
-				sx={{ display: "flex", gap: 2, alignItems: "center", p: 2, pb: 1.5 }}
-			>
+		<Card variant="outlined" className="npc-list-card">
+			<Box className="npc-list-card__header">
 				<Avatar
 					src={resolveNPCPortraitSource(npc)}
 					alt={`${displayName} portrait`}
-					sx={{ width: 72, height: 72, flexShrink: 0 }}
+					className="npc-list-card__avatar"
 				>
 					{initials(displayName)}
 				</Avatar>
-				<Box sx={{ minWidth: 0 }}>
-					<Typography variant="h6" component="h2" noWrap title={displayName}>
+				<Box className="npc-list-card__identity">
+					<Typography
+						variant="h6"
+						component="h2"
+						noWrap
+						title={displayName}
+					>
 						{displayName}
 					</Typography>
 					{npc.nickName ? (
@@ -60,49 +51,51 @@ export default function NPCCard({
 					</Typography>
 				</Box>
 			</Box>
-			<Divider />
-			<CardContent sx={{ flexGrow: 1, pt: 2 }}>
-				<Stack direction="row" gap={1} flexWrap="wrap">
+
+			<div className="npc-list-card__body">
+				<div className="npc-list-card__tags">
 					{npc.ancestry?.name ? (
-						<Chip size="small" label={npc.ancestry.name} />
+						<span className="npc-list-card__tag" title={npc.ancestry.name}>
+							{npc.ancestry.name}
+						</span>
 					) : null}
 					{npc.gender?.name ? (
-						<Tooltip
-							title={genderDescription || "No gender description is available."}
-							arrow
+						<span
+							className="npc-list-card__tag"
+							title={genderDescription || npc.gender.name}
 						>
-							<Chip size="small" label={npc.gender.name} />
-						</Tooltip>
+							{npc.gender.name}
+						</span>
 					) : null}
 					{npc.profession?.name ? (
-						<Tooltip title={npc.profession.description || ""}>
-							<Chip size="small" label={npc.profession.name} />
-						</Tooltip>
+						<span
+							className="npc-list-card__tag"
+							title={npc.profession.description || npc.profession.name}
+						>
+							{npc.profession.name}
+						</span>
 					) : null}
-				</Stack>
+				</div>
+
 				{npc.currentLocation?.name ? (
-					<Typography variant="body2" sx={{ mt: 2 }}>
+					<p className="npc-list-card__line" title={npc.currentLocation.name}>
 						<strong>Location:</strong> {npc.currentLocation.name}
-					</Typography>
+					</p>
 				) : null}
-				{npc.relationships.length ? (
-					<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-						{npc.relationships.length} relationship
-						{npc.relationships.length === 1 ? "" : "s"}
-					</Typography>
+				{relationshipCount ? (
+					<p className="npc-list-card__relationships">
+						{relationshipCount} relationship{relationshipCount === 1 ? "" : "s"}
+					</p>
 				) : null}
-			</CardContent>
-			<CardActions sx={{ px: 2, pb: 2 }}>
-				<Button
-					fullWidth
-					component={Link}
-					to={`/view_npc/${npc._id}`}
-					color="secondary"
-					variant="contained"
-				>
+			</div>
+
+			<div className="npc-list-card__actions">
+				<Link className="npc-list-card__view-link" to={`/view_npc/${npc._id}`}>
 					View NPC
-				</Button>
-			</CardActions>
+				</Link>
+			</div>
 		</Card>
 	);
 }
+
+export default memo(NPCCard);
