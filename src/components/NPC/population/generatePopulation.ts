@@ -1,4 +1,4 @@
-import type { TLNPC, NPCEntityType, NPCRelationship } from "../../../definitions/TerraLogger";
+import type { TLNPC, NPCEntityType, NPCRelationship, NPCDisplayReference } from "../../../definitions/TerraLogger";
 import type { TLMapInfo, TLCity, TLCountry, TLCulture, TLReligion } from "../../../definitions/TerraLogger";
 import { generateNPCDraft } from "../generator/engine/generate";
 import { buildGovernmentRoleAssignments } from "../generator/engine/government";
@@ -38,7 +38,7 @@ type ContextualRelationship = {
   primary?: boolean;
 };
 
-async function createContextualNPC(args: { mapId: string; entityType: NPCEntityType; entityId: string; relationshipType: string; roleTitle: string; primary?: boolean; additionalRelationships?: ContextualRelationship[]; currentLocation?: { id: string; name: string }; constraints?: NPCGenerationConstraints; random?: () => number }): Promise<TLNPC> {
+async function createContextualNPC(args: { mapId: string; entityType: NPCEntityType; entityId: string; relationshipType: string; roleTitle: string; primary?: boolean; additionalRelationships?: ContextualRelationship[]; currentLocation?: { id: string; name: string }; religion?: NPCDisplayReference; associateReligion?: "always" | "when-religious"; constraints?: NPCGenerationConstraints; random?: () => number }): Promise<TLNPC> {
   const now = new Date().toISOString();
   const draft = await generateNPCDraft({ constraints: args.constraints, random: args.random });
   const npc = createPersistentNPCFromDraft(draft, { mapId: args.mapId, mode: "map-population", constraints: args.constraints, now });
@@ -49,7 +49,45 @@ async function createContextualNPC(args: { mapId: string; entityType: NPCEntityT
     ),
   ];
   npc.currentLocation = args.currentLocation;
+  if (args.religion && (args.associateReligion === "always" || isReligiousProfession(npc.profession?.name, args.roleTitle))) {
+    npc.religions = [{ ...args.religion }];
+  }
   return npc;
+}
+
+
+function isReligiousProfession(professionName?: string, roleTitle?: string): boolean {
+  const value = `${professionName ?? ""} ${roleTitle ?? ""}`.toLocaleLowerCase();
+  return /\b(acolyte|cleric|clergy|priest|priestess|bishop|archbishop|pontiff|imam|mullah|monk|nun|friar|abbot|abbess|inquisitor|shrine|temple|religious|theologian|cantor|chaplain|oracle|druid)\b/.test(value);
+}
+
+function resolveReligionReference(map: TLMapInfo, value: unknown): NPCDisplayReference | undefined {
+  const normalized = String(value ?? "").trim().toLocaleLowerCase();
+  if (!normalized) return undefined;
+  const religion = map.religions.find((entry) =>
+    entry._id.toLocaleLowerCase() === normalized
+    || String(entry.i).toLocaleLowerCase() === normalized
+    || entry.name.toLocaleLowerCase() === normalized,
+  );
+  return religion ? { id: religion._id, name: religion.name } : undefined;
+}
+
+function primaryReligionForCountry(map: TLMapInfo, country?: TLCountry): NPCDisplayReference | undefined {
+  if (!country) return undefined;
+  for (const value of country.religions ?? []) {
+    const religion = resolveReligionReference(map, value);
+    if (religion) return religion;
+  }
+  return undefined;
+}
+
+function primaryReligionForCity(map: TLMapInfo, city: TLCity): NPCDisplayReference | undefined {
+  for (const value of city.religions ?? []) {
+    const religion = resolveReligionReference(map, value);
+    if (religion) return religion;
+  }
+  const country = map.countries.find((entry) => cityBelongsToCountry(city, entry));
+  return primaryReligionForCountry(map, country);
 }
 
 function normalizeGovernmentType(value: unknown): string | undefined {
@@ -109,19 +147,21 @@ async function generateCountryPopulation(map: TLMapInfo, mapId: string, country:
   for (const assignment of assignments) for (let index = 0; index < assignment.count; index += 1) // NPC creation is sequential to preserve seeded random order.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({
-    mapId,
-    entityType: "country",
-    entityId: country._id,
-    relationshipType: assignment.classification === "leader" ? "rules" : "serves",
-    roleTitle: assignment.title,
-    primary: assignment.classification === "leader" || assignment.primary,
-    additionalRelationships: assignment.classification === "leader"
-      ? leadershipHeadquartersRelationships(headquarters)
-      : [],
-    currentLocation: headquarters ? { id: headquarters._id, name: headquarters.name } : undefined,
-    constraints: { governmentDefinitionId: assignment.governmentDefinitionId, governmentRoleId: assignment.governmentRoleId, professionId: assignment.professionId },
-    random,
-  }));
+      mapId,
+      entityType: "country",
+      entityId: country._id,
+      relationshipType: assignment.classification === "leader" ? "rules" : "serves",
+      roleTitle: assignment.title,
+      primary: assignment.classification === "leader" || assignment.primary,
+      additionalRelationships: assignment.classification === "leader"
+        ? leadershipHeadquartersRelationships(headquarters)
+        : [],
+      currentLocation: headquarters ? { id: headquarters._id, name: headquarters.name } : undefined,
+      religion: primaryReligionForCountry(map, country),
+      associateReligion: "when-religious",
+      constraints: { governmentDefinitionId: assignment.governmentDefinitionId, governmentRoleId: assignment.governmentRoleId, professionId: assignment.professionId },
+      random,
+    }));
   return result;
 }
 
@@ -137,7 +177,7 @@ async function generateCityLeadership(map: TLMapInfo, mapId: string, city: TLCit
   for (const role of effectiveRoles) {
     // NPC creation is sequential to preserve seeded random order.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
-    result.push(await createContextualNPC({ mapId, entityType: "city", entityId: city._id, relationshipType: "leads", roleTitle: role.title, primary: role.primary ?? true, currentLocation: { id: city._id, name: city.name }, constraints: { governmentDefinitionId: definition?.id, professionId: role.professionId }, random }));
+    result.push(await createContextualNPC({ mapId, entityType: "city", entityId: city._id, relationshipType: "leads", roleTitle: role.title, primary: role.primary ?? true, currentLocation: { id: city._id, name: city.name }, religion: primaryReligionForCity(map, city), associateReligion: "when-religious", constraints: { governmentDefinitionId: definition?.id, professionId: role.professionId }, random }));
   }
   return result;
 }
@@ -148,6 +188,29 @@ async function generateSimpleContextPopulation(mapId: string, entityType: Exclud
     // NPC creation is sequential to preserve seeded random order and primary assignment.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({ mapId, entityType, entityId: entity._id, relationshipType, roleTitle, primary: index === 0, currentLocation: entityType === "city" ? { id: entity._id, name: entity.name } : undefined, random, constraints }));
+  }
+  return result;
+}
+
+async function generateReligiousAttendants(map: TLMapInfo, mapId: string, city: TLCity, count: number, relationshipType: string, roleTitle: string, random?: () => number, constraints?: NPCGenerationConstraints): Promise<TLNPC[]> {
+  const result: TLNPC[] = [];
+  const religion = primaryReligionForCity(map, city);
+  for (let index = 0; index < count; index += 1) {
+    // NPC creation is sequential to preserve seeded random order and primary assignment.
+    // react-doctor-disable-next-line react-doctor/async-await-in-loop
+    result.push(await createContextualNPC({
+      mapId,
+      entityType: "city",
+      entityId: city._id,
+      relationshipType,
+      roleTitle,
+      primary: index === 0,
+      currentLocation: { id: city._id, name: city.name },
+      religion,
+      associateReligion: "always",
+      random,
+      constraints,
+    }));
   }
   return result;
 }
@@ -172,9 +235,10 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
         issue({ severity: "warning", phase: "countries", message: "Skipped country leadership because no usable government type was provided.", entityType: "country", entityId: country._id, entityName: country.name, continued: true });
       } else {
         try {
-        // Country generation is sequential for deterministic progress and seeded random output.
-        // react-doctor-disable-next-line react-doctor/async-await-in-loop
-        const created = await generateCountryPopulation(map, mapId, country, options.random); npcs.push(...created); addCount("Country leadership NPCs", created.length); } catch (error) { issue({ severity: "error", phase: "countries", message: error instanceof Error ? error.message : String(error), entityType: "country", entityId: country._id, entityName: country.name, continued: true }); }
+          // Country generation is sequential for deterministic progress and seeded random output.
+          // react-doctor-disable-next-line react-doctor/async-await-in-loop
+          const created = await generateCountryPopulation(map, mapId, country, options.random); npcs.push(...created); addCount("Country leadership NPCs", created.length);
+        } catch (error) { issue({ severity: "error", phase: "countries", message: error instanceof Error ? error.message : String(error), entityType: "country", entityId: country._id, entityName: country.name, continued: true }); }
       }
       if ((index + 1) % yieldEvery === 0) {
         // Yield points intentionally serialize long-running generation.
@@ -189,7 +253,8 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
       try {
         // City generation is sequential for deterministic progress and seeded random output.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
-        const created = await generateCityLeadership(map, mapId, city, options.random); npcs.push(...created); addCount("City leadership NPCs", created.length); } catch (error) { issue({ severity: "error", phase: "cities", message: error instanceof Error ? error.message : String(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
+        const created = await generateCityLeadership(map, mapId, city, options.random); npcs.push(...created); addCount("City leadership NPCs", created.length);
+      } catch (error) { issue({ severity: "error", phase: "cities", message: error instanceof Error ? error.message : String(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
       if ((index + 1) % yieldEvery === 0) {
         // Yield points intentionally serialize long-running generation.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
@@ -227,6 +292,8 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
             primary: !associatedCountry && leaderIndex === 0,
             additionalRelationships,
             currentLocation: headquarters ? { id: headquarters._id, name: headquarters.name } : undefined,
+            religion: { id: religion._id, name: religion.name },
+            associateReligion: "always",
             random: options.random,
             constraints: { professionName: "Acolyte" },
           }));
@@ -245,7 +312,8 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
       try {
         // Context generation is sequential for deterministic progress and seeded random output.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
-        const created = await generateSimpleContextPopulation(mapId, "culture", culture, cultureCount, "represents", "Cultural Elder", options.random); npcs.push(...created); addCount("Culture elder NPCs", created.length); } catch (error) { issue({ severity: "error", phase: "cultures", message: error instanceof Error ? error.message : String(error), entityType: "culture", entityId: culture._id, entityName: culture.name, continued: true }); }
+        const created = await generateSimpleContextPopulation(mapId, "culture", culture, cultureCount, "represents", "Cultural Elder", options.random); npcs.push(...created); addCount("Culture elder NPCs", created.length);
+      } catch (error) { issue({ severity: "error", phase: "cultures", message: error instanceof Error ? error.message : String(error), entityType: "culture", entityId: culture._id, entityName: culture.name, continued: true }); }
     }
     report("cultures", map.cultures.length, map.cultures.length, "Culture elders processed.");
 
@@ -263,7 +331,9 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
         const professionName = randomItem(category.professionNames.filter((name) => availableProfessionNames.has(name.toLocaleLowerCase())), options.random);
         // Supporting generation is sequential for deterministic progress and seeded random output.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
-        const created = await generateSimpleContextPopulation(mapId, "city", city, count, category.relationshipType, category.roleTitle, options.random, professionName ? { professionName } : undefined);
+        const created = category.id === "religious-attendants"
+          ? await generateReligiousAttendants(map, mapId, city, count, category.relationshipType, category.roleTitle, options.random, professionName ? { professionName } : undefined)
+          : await generateSimpleContextPopulation(mapId, "city", city, count, category.relationshipType, category.roleTitle, options.random, professionName ? { professionName } : undefined);
         npcs.push(...created);
         addCount(`${category.label} NPCs`, created.length);
       } catch (error) { issue({ severity: "error", phase: "supporting", message: error instanceof Error ? error.message : String(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
