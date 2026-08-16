@@ -87,3 +87,9 @@ g#scaleBar,
 g#vignette {
   display: none;
 }
+
+/* TODO(Phaze): Remove the below rules once we have replaced the svg map with a canvas map. */
+#map {
+  will-change: transform;
+  transform: translateZ(0);
+}
