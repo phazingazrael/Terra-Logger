@@ -32,7 +32,7 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.8",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
-  "commitCount": 66,
+  "commitCount": 68,
   "majorChanges": [
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
@@ -231,6 +231,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c"
+    },
+    {
+      "hash": "e72786d4ef964b147dc13da8ac543a604926b56f",
+      "shortHash": "e72786d",
+      "date": "2026-08-03T20:04:50-06:00",
+      "subject": "docs: update what's new",
+      "type": "docs",
+      "scope": null,
+      "details": "update what's new",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e72786d4ef964b147dc13da8ac543a604926b56f"
     },
     {
       "hash": "7fe724b7ef8aabbed14a8405861548c975143aa4",
@@ -665,6 +676,28 @@ export const releaseChanges: ReleaseChanges = {
     "ui"
   ],
   "commits": [
+    {
+      "hash": "1efee9a0a521c74f26b760413bb06d48da4cb1be",
+      "shortHash": "1efee9a",
+      "date": "2026-08-16T17:38:20-06:00",
+      "subject": "fix: ⚡️ temp fix for svg map and scrolling lag",
+      "type": "fix",
+      "scope": null,
+      "details": "⚡️ temp fix for svg map and scrolling lag",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/1efee9a0a521c74f26b760413bb06d48da4cb1be"
+    },
+    {
+      "hash": "e72786d4ef964b147dc13da8ac543a604926b56f",
+      "shortHash": "e72786d",
+      "date": "2026-08-03T20:04:50-06:00",
+      "subject": "docs: update what's new",
+      "type": "docs",
+      "scope": null,
+      "details": "update what's new",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e72786d4ef964b147dc13da8ac543a604926b56f"
+    },
     {
       "hash": "b4e90b30e250e1e81650d27e5257b8dcb869d6ed",
       "shortHash": "b4e90b3",
@@ -1392,5 +1425,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-08-04T02:03:27.371Z"
+  "generatedAt": "2026-08-17T01:00:59.249Z"
 };
