@@ -79,6 +79,14 @@ const HomePage = () => {
 				>
 					<Chip label={`Terra-Logger v${appVersion}`} color="primary" />
 					<Chip label={`AFMG ${afmgVersion}+ compatible`} color="secondary" />
+					<Chip
+						label={`Max fully supported AFMG Version 1.123`}
+						color="warning"
+					/>
+					<Chip
+						label={`AFMG Versions 1.124 to 1.156 currently do not upload`}
+						color="error"
+					/>
 				</Stack>
 				<Typography variant="h5" component="h1" className="homeHeroTitle">
 					Turn Azgaar maps into editable worldbuilding documents.
