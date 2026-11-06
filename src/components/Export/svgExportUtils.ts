@@ -38,7 +38,7 @@ export function injectSvgStyle(rawSvg: unknown, css: string): string {
 }
 
 function ensureSvgNamespaces(svg: string): string {
-  return svg.replace(/<svg\b([^>]*)>/i, (attrs: string) => {
+  return svg.replace(/<svg\b([^>]*)>/i, (_match: string, attrs: string) => {
     let nextAttrs = attrs;
 
     if (!/\sxmlns=/i.test(nextAttrs)) {
