@@ -80,13 +80,26 @@
   max-height: 80vh;
 }
 
+/* Content Styling for all list pages */
+.CountriesPage,
+.ReligionsPage,
+.CulturesPage {
+  margin-top: 2dvh;
+}
+
+.contentBody header.MuiPaper-root {
+  margin-top: 1dvh;
+}
+
 /* TODO(Phaze): Remove the below rules once we have replaced the svg map with a canvas map */
 
 /* temp fix for svg map and scrolling lag */
-.Content, .contentBody {
+.Content,
+.contentBody {
   will-change: transform;
   transform: translateZ(0);
 }
+
 /* end temp fix for svg map and scrolling lag */
 
 .contentSubHead .MuiAlert-root {

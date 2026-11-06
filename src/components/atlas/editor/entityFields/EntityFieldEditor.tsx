@@ -51,7 +51,7 @@ export function EntityFieldEditor<TSource extends AtlasSourceType>({
 	return (
 		<div className="atlas-entity-field">
 			<div className="atlas-entity-field__label">
-				<span>{schema.label}</span>
+				{schema.label === "Tags" ? "" : <span>{schema.label}</span>}
 
 				{schema.description ? <small>{schema.description}</small> : null}
 			</div>
