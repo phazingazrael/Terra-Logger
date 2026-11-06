@@ -5,9 +5,11 @@
 .ViewPage {
   padding-left: 0dvw !important;
   padding-right: 0dvw !important;
+
   .wiki.editing {
     padding: 0px;
   }
+
   .wiki {
     padding: 20px;
 
@@ -336,6 +338,7 @@
 .ViewPage.Culture .atlas-section.header {
   margin-bottom: 0px;
 }
+
 .ViewPage.Culture .atlas-section.header section {
   width: 100%;
 }
@@ -443,8 +446,9 @@
   margin-top: 5px !important;
 }
 
-/* NPC structured Atlas sections */
+/* npc structured Atlas sections */
 .ViewPage.NPC {
+
   .npc-current-location,
   .npc-relationship-graph,
   .npc-history,

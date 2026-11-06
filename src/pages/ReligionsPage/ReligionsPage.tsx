@@ -16,8 +16,8 @@ function ReligionsPage() {
 		document.getElementById("Content")?.scrollTo({ top: 0 });
 	}, [activeMapId]);
 
-	//TODO(SELF): filter out "dead" religions by default?
-	//TODO(SELF): fix white on grey "type Pill"
+	//FIX?(Phaze): filter out "dead" religions by default?
+	//TODO(Phaze): fix white on grey "type Pill"
 	return (
 		<Container>
 			<div className="contentSubBody ReligionsPage">

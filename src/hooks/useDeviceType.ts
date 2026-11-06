@@ -62,7 +62,7 @@ export function useDeviceType(): DeviceType {
         typeof window.matchMedia === "function" &&
         window.matchMedia("(pointer: coarse)").matches;
 
-      const minVp = getViewportMin(); // CSS pixels
+      const minVp = getViewportMin(); // css pixels
       if (isCoarse) {
         if (minVp < 768) return "phone";
         if (minVp < 1024) return "tablet";

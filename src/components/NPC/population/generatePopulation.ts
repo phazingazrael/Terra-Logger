@@ -144,7 +144,8 @@ async function generateCountryPopulation(map: TLMapInfo, mapId: string, country:
   const assignments = buildGovernmentRoleAssignments(governmentType, { countryCount: map.countries.length, cityCount: country.cities.length, random });
   const result: TLNPC[] = [];
   const headquarters = countryHeadquartersCity(map, country);
-  for (const assignment of assignments) for (let index = 0; index < assignment.count; index += 1) // NPC creation is sequential to preserve seeded random order.
+  for (const assignment of assignments) for (let index = 0; index < assignment.count; index += 1)
+    // npc creation is sequential to preserve seeded random order.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({
       mapId,
@@ -175,7 +176,7 @@ async function generateCityLeadership(map: TLMapInfo, mapId: string, city: TLCit
   const effectiveRoles = roles.length ? roles : [{ id: "fallback-city-leader", title: "City Leader", description: "", classification: "leader" as const, primary: true, count: { mode: "fixed" as const, value: 1 } }];
   const result: TLNPC[] = [];
   for (const role of effectiveRoles) {
-    // NPC creation is sequential to preserve seeded random order.
+    // npc creation is sequential to preserve seeded random order.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({ mapId, entityType: "city", entityId: city._id, relationshipType: "leads", roleTitle: role.title, primary: role.primary ?? true, currentLocation: { id: city._id, name: city.name }, religion: primaryReligionForCity(map, city), associateReligion: "when-religious", constraints: { governmentDefinitionId: definition?.id, professionId: role.professionId }, random }));
   }
@@ -185,7 +186,7 @@ async function generateCityLeadership(map: TLMapInfo, mapId: string, city: TLCit
 async function generateSimpleContextPopulation(mapId: string, entityType: Exclude<NPCEntityType, "country" | "npc">, entity: TLCity | TLReligion | TLCulture, count: number, relationshipType: string, roleTitle: string, random?: () => number, constraints?: NPCGenerationConstraints): Promise<TLNPC[]> {
   const result: TLNPC[] = [];
   for (let index = 0; index < count; index += 1) {
-    // NPC creation is sequential to preserve seeded random order and primary assignment.
+    // npc creation is sequential to preserve seeded random order and primary assignment.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({ mapId, entityType, entityId: entity._id, relationshipType, roleTitle, primary: index === 0, currentLocation: entityType === "city" ? { id: entity._id, name: entity.name } : undefined, random, constraints }));
   }
@@ -196,7 +197,7 @@ async function generateReligiousAttendants(map: TLMapInfo, mapId: string, city: 
   const result: TLNPC[] = [];
   const religion = primaryReligionForCity(map, city);
   for (let index = 0; index < count; index += 1) {
-    // NPC creation is sequential to preserve seeded random order and primary assignment.
+    // npc creation is sequential to preserve seeded random order and primary assignment.
     // react-doctor-disable-next-line react-doctor/async-await-in-loop
     result.push(await createContextualNPC({
       mapId,

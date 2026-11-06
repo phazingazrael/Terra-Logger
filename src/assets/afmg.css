@@ -55,6 +55,7 @@
   stroke-linejoin: round;
 }
 
+/* biome-ignore lint/correctness/noUnknownTypeSelector: comes from afmg. */
 t,
 #regions,
 #cults,
@@ -171,7 +172,7 @@ t,
   cursor: default;
 }
 
-/* AFMG Fonts */
+/* afmg Fonts */
 
 /* ===========================
    Webfonts → @font-face + utilities

@@ -49,7 +49,6 @@ function ExportPage() {
 		}, []);
 	}, [CountriesRaw, citiesByCountryName]);
 
-	// TODO: Enable choosing what is exported
 	const data: DataSets = {
 		// biome-ignore lint/suspicious/noExplicitAny: Any is fine
 		MapInfo: MapInfo as any,
