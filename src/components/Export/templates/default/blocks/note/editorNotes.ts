@@ -2,10 +2,6 @@ import type { MarkdownBlock } from "../../../../builder/exportTypes";
 import { renderAtlasNoteEditorNotesToMarkdown } from "../../../../builder/atlasContentMarkdown";
 import { markdownHeading } from "../../../../builder/markdownUtils";
 
-const PLACEHOLDER_EDITOR_NOTES = new Set([
-  "add your notes here.",
-]);
-
 export const defaultEditorNotesBlock: MarkdownBlock = {
   id: "default.note.editorNotes",
 
@@ -14,7 +10,7 @@ export const defaultEditorNotesBlock: MarkdownBlock = {
 
     if (!editorNotes) return "";
 
-    if (PLACEHOLDER_EDITOR_NOTES.has(editorNotes.toLowerCase())) {
+    if (editorNotes.toLowerCase() === "add your notes here.") {
       return "";
     }
 

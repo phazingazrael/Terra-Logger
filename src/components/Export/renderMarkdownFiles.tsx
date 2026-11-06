@@ -1,6 +1,6 @@
-// components/Export/renderMarkdownFiles.ts
 /**
- * Transforms DataSets into .md and .svg files using Mustache templates.
+ * Builds Markdown and asset files from DataSets using the export builder
+ * or Mustache templates.
  */
 
 import { createNPCPortraitExportFiles } from "../NPC/portraits/export";
@@ -13,7 +13,7 @@ import type {
 } from "../../definitions/Export";
 import type { TLNote } from "../../definitions/TerraLogger";
 import { DEFAULT_RENDER_OPTIONS } from "./Constants";
-import { botiNoteFolder } from "./BotiUtils";
+import { botiNoteFolder, getBotiExportPath, isBotiTemplate } from "./BotiUtils";
 
 import { buildExportDocument } from "./builder/buildExportDocument";
 import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
@@ -34,8 +34,7 @@ const slug = (s: unknown, fb: string) =>
 		.toLowerCase();
 
 const filenameFrom = (
-	// biome-ignore lint/suspicious/noExplicitAny: obj is an arbitrary object that may have any properties, so we can't give it a more specific type
-	obj: Record<string, any>,
+	obj: Record<string, unknown>,
 	fields: string[],
 	fallback: string,
 ) => {
@@ -113,6 +112,7 @@ export function renderMarkdownFiles(
 	const renderBuilderContent = (
 		sourceType: ExportSourceType,
 		item: Record<string, unknown>,
+		documentPath?: string,
 	): string => {
 		const template = getMarkdownDocumentTemplate(opt.templateName);
 
@@ -123,6 +123,7 @@ export function renderMarkdownFiles(
 				templateId: template.id,
 				sourceType,
 				entity: item,
+				documentPath,
 			},
 		});
 	};
@@ -198,6 +199,37 @@ export function renderMarkdownFiles(
 			const base = filenameFrom(item, fields, `${dir}-${i + 1}`);
 			const name = withExt(base, opt.extension);
 			const sourceType = getSourceTypeFromSingular(singular);
+			let npcPath = `${prefix}${name}`;
+			if (singular === "NPC") {
+				let folder = "";
+				for (const relation of item.relationships ?? []) {
+					if (relation.relatedEntityType === "city") {
+						const city = data.Cities.find(
+							(city) => String(city._id) === String(relation.relatedEntityId),
+						);
+						if (city) {
+							folder = `${city.country.name}/${city.name}`;
+							break;
+						}
+					} else if (relation.relatedEntityType === "country") {
+						const country = data.Countries.find(
+							(country) => String(country._id) === String(relation.relatedEntityId),
+						);
+						if (country) {
+							folder = country.name;
+							break;
+						}
+					} else if (relation.profession?.name) {
+						folder = relation.profession.name;
+					} else if (relation.ancestry?.name) {
+						folder = `${relation.ancestry.name}`;
+					} else {
+						folder = "";
+					}
+				}
+				npcPath = `${prefix}${folder ? `${folder}/` : ""}${name}`;
+				if (isBotiTemplate(opt.templateName)) npcPath = getBotiExportPath(npcPath);
+			}
 
 			const exportItem =
 				singular === "Country"
@@ -214,7 +246,7 @@ export function renderMarkdownFiles(
 
 			const content =
 				usesBuilder && sourceType
-					? renderBuilderContent(sourceType, exportItem)
+					? renderBuilderContent(sourceType, exportItem, singular === "NPC" ? npcPath : undefined)
 					: Mustache.render(tpl, {
 							...global,
 							...exportItem,
@@ -280,6 +312,12 @@ export function renderMarkdownFiles(
 						content,
 					});
 				}
+			} else if (singular === "NPC") {
+				files.push({
+					path: npcPath,
+					name,
+					content,
+				});
 			} else {
 				files.push({ path: `${prefix}${name}`, name, content });
 			}

@@ -144,15 +144,15 @@ export function pickNoteTemplateKey(note: TLNote): string {
   if (["poi", "marker", "pin"].includes(root)) return "Note-POI";
 
   // optional: light tag-based fallback
-  const tags = Array.isArray((note as { tags?: unknown }).tags)
-    ? ((note as { tags?: unknown[] }).tags ?? [])
+  const tags = Array.isArray(note.tags)
+    ? (note.tags ?? [])
     : [];
 
   const has = (text: string) =>
     tags.some((tag) =>
       String(
-        (tag as { Type?: string; Name?: string })?.Type ??
-        (tag as { Type?: string; Name?: string })?.Name ??
+        tag?.Type ??
+        tag?.Name ??
         "",
       )
         .toLowerCase()

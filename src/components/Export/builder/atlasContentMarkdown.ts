@@ -1009,10 +1009,9 @@ function formatExportObject(value: Record<string, unknown>): string {
   const entries = Object.entries(value)
     .filter(([, entryValue]) => !isEmptyExportValue(entryValue))
     .slice(0, 6)
-    .flatMap(([key, entryValue]) => {
-      const formatted = `${formatObjectKey(key)}: ${formatSimpleValue(entryValue)}`;
-      return formatted ? [formatted] : [];
-    });
+    .map(([key, entryValue]) =>
+      `${formatObjectKey(key)}: ${formatSimpleValue(entryValue)}`,
+    );
 
   return entries.join(", ");
 }
