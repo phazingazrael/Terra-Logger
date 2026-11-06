@@ -20,7 +20,6 @@ import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
 import type {
 	TLCountry,
 	TLDiplomacy,
-	TLMilitary,
 } from "../../../../definitions/TerraLogger";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -41,15 +40,11 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "countryMilitary",
 		label: "Country Military",
 		shouldRender: ({ context }) => {
-			const country = context.entity as {
-				political?: { military?: unknown[] };
-			};
+			const country = context.entity as TLCountry;
 			return Boolean(country.political?.military?.length);
 		},
 		Render: ({ context }) => {
-			const country = context.entity as {
-				political?: { military?: unknown[] };
-			};
+			const country = context.entity as TLCountry;
 			const ID = context.entity._id;
 			const [activeTab, setActiveTab] = useState<string>("regiments");
 
@@ -58,12 +53,12 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 				: [];
 
 			const regiments =
-				(country.political as { military?: TLMilitary[] })?.military?.filter(
+				country.political?.military?.filter(
 					(unit) => unit.n === 0,
 				) ?? [];
 
 			const fleets =
-				(country.political as { military?: TLMilitary[] })?.military?.filter(
+				country.political?.military?.filter(
 					(unit) => unit.n === 1,
 				) ?? [];
 

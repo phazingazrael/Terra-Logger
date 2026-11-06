@@ -27,8 +27,8 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
 
 import DOMPurify from "dompurify";
-import type { Tag } from "../../../../definitions/Common";
 import type {
+	NPCRelationship,
 	TLCity,
 	TLCountry,
 	TLCulture,
@@ -266,12 +266,7 @@ function getStringSet(value: unknown): ReadonlySet<string> {
 }
 
 function relationshipMatchesRelatedNPCBlock(
-	relationship: {
-		relatedEntityType: string;
-		relatedEntityId: string;
-		roleTitle?: string;
-		relationshipType: string;
-	},
+	relationship: NPCRelationship,
 	sourceType: string,
 	entityId: string,
 	roleTitles: ReadonlySet<string>,
@@ -644,7 +639,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						Tags
 					</Typography>
 					<Grid className="tags-grid" container spacing={2}>
-						{Tags?.map((tag: Tag) => (
+						{Tags?.map((tag) => (
 							<Grid
 								className="tags-grid-item"
 								size={gridSize}
@@ -870,7 +865,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "relatedNPCList",
 		label: "Related NPCs",
 		shouldRender: ({ block, context }) => {
-			const entityId = String((context.entity as { _id?: unknown })._id ?? "");
+			const entityId = String(context.entity._id ?? "");
 			const roleTitles = getStringSet(block.props.roleTitles);
 			const relationshipTypes = getStringSet(block.props.relationshipTypes);
 
@@ -887,7 +882,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			);
 		},
 		Render: ({ block, context }) => {
-			const entityId = String((context.entity as { _id?: unknown })._id ?? "");
+			const entityId = String(context.entity._id ?? "");
 			const roleTitles = getStringSet(block.props.roleTitles);
 			const relationshipTypes = getStringSet(block.props.relationshipTypes);
 			const matches = (context.related?.npcs ?? []).filter((npc) =>

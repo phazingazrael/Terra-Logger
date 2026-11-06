@@ -8,11 +8,11 @@ export const noteBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "noteLegend",
 		label: "Note Legend",
 		shouldRender: ({ context }) => {
-			const note = context.entity as { legend?: string };
+			const note = context.entity as TLNote;
 			return Boolean(note.legend?.trim());
 		},
 		Render: ({ context }) => {
-			const note = context.entity as { legend?: string };
+			const note = context.entity as TLNote;
 			return (
 				<Typography
 					color="text.secondary"

@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
+import type { TLCity } from "../../../../definitions/TerraLogger";
 import { CapitalBadge } from "../../../../styles";
 import { SvgImage } from "../../../Util/svgImage";
 
@@ -8,11 +9,11 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "cityMapLink",
 		label: "City Map Link",
 		shouldRender: ({ context }) => {
-			const city = context.entity as { mapLink?: string };
+			const city = context.entity as TLCity;
 			return Boolean(city.mapLink?.trim());
 		},
 		Render: ({ block, context }) => {
-			const city = context.entity as { mapLink?: string };
+			const city = context.entity as TLCity;
 			if (!city.mapLink) return <p>No map link available.</p>;
 			return (
 				<div>
@@ -41,16 +42,7 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "cityHeader",
 		label: "City Header",
 		Render: ({ context }) => {
-			const city = context.entity as {
-				name?: string;
-				population?: number;
-				coaSVG?: string;
-				country?: {
-					name?: string;
-				};
-				size?: string;
-				capital?: boolean;
-			};
+			const city = context.entity as TLCity;
 			return (
 				<div className="header content-grid">
 					<div className="image">

@@ -1,5 +1,6 @@
 import { Box, Chip, Grid, Typography, useTheme } from "@mui/material";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
+import type { TLReligion } from "../../../../definitions/TerraLogger";
 import { getFormColor, getTypeColor } from "../../../Util/religionUtils";
 import PersonIcon from "@mui/icons-material/Person";
 import PlaceIcon from "@mui/icons-material/Place";
@@ -9,17 +10,13 @@ export const religionBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "religionMembership",
 		label: "Religion Membership",
 		shouldRender: ({ context }) => {
-			const religion = context.entity as {
-				members?: { urban?: number; rural?: number };
-			};
+			const religion = context.entity as TLReligion;
 			return Boolean(
 				(religion.members?.urban ?? 0) || (religion.members?.rural ?? 0),
 			);
 		},
 		Render: ({ context }) => {
-			const religion = context.entity as {
-				members?: { urban?: number; rural?: number };
-			};
+			const religion = context.entity as TLReligion;
 			return (
 				<dl className="atlas-details-list">
 					<div>
@@ -39,18 +36,7 @@ export const religionBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		label: "Religion Header",
 		Render: ({ context }) => {
 			const theme = useTheme();
-			const religion = context.entity as {
-				name?: string;
-				type?: string;
-				form?: string;
-				code?: string;
-				deity: string;
-				center: {
-					name?: string;
-					_id?: string;
-					i?: number;
-				};
-			};
+			const religion = context.entity as TLReligion;
 
 			return (
 				<div className="header">

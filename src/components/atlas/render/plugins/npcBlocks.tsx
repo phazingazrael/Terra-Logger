@@ -9,10 +9,6 @@ import { NPCHistoryTimeline } from "../../../NPC/history/NPCHistoryTimeline";
 import { getNPCRelationshipLabel } from "../../../NPC/relationships/registry";
 import { NPCRelationshipGraph } from "../../../NPC/relationships/RelationshipGraph";
 
-function relationshipRoute(type: string, id: string): string {
-	return type === "npc" ? `/view_npc/${id}` : `/view_${type}/${id}`;
-}
-
 function relationshipName(
 	context: AtlasRenderContext,
 	type: string,
@@ -77,10 +73,7 @@ export const npcBlockPlugins: Record<string, AtlasBlockPlugin> = {
 									component={Link}
 									clickable
 									size="small"
-									to={relationshipRoute(
-										relationship.relatedEntityType,
-										relationship.relatedEntityId,
-									)}
+									to={`/view_${relationship.relatedEntityType}/${relationship.relatedEntityId}`}
 									label={relationshipName(
 										context,
 										relationship.relatedEntityType,

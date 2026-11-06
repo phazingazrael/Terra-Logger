@@ -11,12 +11,7 @@ export const cultureBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		label: "Culture Header",
 		Render: ({ context }) => {
 			const theme = useTheme();
-			const culture = context.entity as {
-				name?: string;
-				type?: string;
-				code?: string;
-				color?: string;
-			};
+			const culture = context.entity as TLCulture;
 			return (
 				<div>
 					{/* Culture Name */}
@@ -72,7 +67,7 @@ export const cultureBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "cultureOrigins",
 		label: "Culture Origins",
 		shouldRender: ({ context }) => {
-			const culture = context.entity as { origins?: unknown[] };
+			const culture = context.entity as TLCulture;
 			return Boolean(culture.origins?.length);
 		},
 		Render: ({ context }) => {

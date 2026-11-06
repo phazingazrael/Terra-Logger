@@ -19,17 +19,17 @@ export function formatValue(value: unknown): string {
 
 				if (typeof entry === "string") text = entry;
 				else if (entry && typeof entry === "object" && "name" in entry)
-					text = String((entry as { name: unknown }).name);
+					text = String(entry.name);
 				else if (entry && typeof entry === "object" && "Name" in entry)
-					text = String((entry as { Name: unknown }).Name);
+					text = String(entry.Name);
 				else text = String(entry);
 
 				return text ? [text] : [];
 			})
 			.join(", ");
 	}
-	if (typeof value === "object" && "name" in value) return String((value as { name: unknown }).name);
-	if (typeof value === "object" && "Name" in value) return String((value as { Name: unknown }).Name);
+	if (typeof value === "object" && "name" in value) return String(value.name);
+	if (typeof value === "object" && "Name" in value) return String(value.Name);
 	return JSON.stringify(value);
 }
 

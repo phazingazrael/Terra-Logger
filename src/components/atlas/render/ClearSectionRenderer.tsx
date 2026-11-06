@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import { BlockRenderer } from "./BlockRenderer";
 import type {
-	AtlasBlock,
 	AtlasRenderContext,
 	AtlasSection,
 } from "../../../definitions/Atlas";
@@ -24,7 +23,7 @@ export function ClearSectionRenderer({
 					</Typography>
 				</div>
 				<div className="atlas-section__blocks">
-					{section.blocks.map((block: AtlasBlock) => (
+					{section.blocks.map((block) => (
 						<BlockRenderer key={block.id} block={block} context={context} />
 					))}
 				</div>
