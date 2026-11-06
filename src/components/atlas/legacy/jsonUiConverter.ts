@@ -111,7 +111,7 @@ function convertLegacySection(node: LegacyJsonUiNode): AtlasSection | null {
 
   for (const child of getChildren(node)) {
     for (const block of convertLegacyChildToBlocks(child, title)) {
-      if (block) blocks.push(block);
+      blocks.push(block);
     }
   }
 

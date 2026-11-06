@@ -237,8 +237,7 @@ function normalizeIdentitySection(section: AtlasSection): AtlasSection {
  */
 export function ensureNPCAtlasSystemSections(content: AtlasContent, entity?: TLNPC): AtlasContent {
   if (content.source.type !== "npc") return content;
-  const next = content;
-  const sections = next.sections.reduce<AtlasSection[]>((result, section) => {
+  const sections = content.sections.reduce<AtlasSection[]>((result, section) => {
     if (hasClass(section, "npc-relationships")) return result;
 
     const title = normalizedTitle(section.title);
@@ -250,13 +249,13 @@ export function ensureNPCAtlasSystemSections(content: AtlasContent, entity?: TLN
     return result;
   }, []);
 
-  const filteredContent = { ...next, sections };
+  const filteredContent = { ...content, sections };
   if (!sections.some(isGroupsSection)) sections.push(groupsSection(entity));
   if (!hasBlock(filteredContent, "npc-current-location")) sections.push(currentLocationSection());
   if (!hasBlock(filteredContent, "npc-relationship-graph")) sections.push(relationshipGraphSection());
   if (!hasBlock(filteredContent, "npc-history-timeline")) sections.push(historySection());
 
-  return { ...next, sections };
+  return { ...content, sections };
 }
 
 export const npcAdapter: AtlasAdapter<"npc"> = {

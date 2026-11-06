@@ -73,7 +73,7 @@ export function EntityBlockEditor({
 }
 
 function getSchemasForBlock(block: AtlasBlock, context: AtlasEditorContext) {
-	const sourceType = context.sourceType as AtlasSourceType;
+	const sourceType = context.sourceType;
 
 	const directPaths = getDirectEntityPaths(block, sourceType);
 

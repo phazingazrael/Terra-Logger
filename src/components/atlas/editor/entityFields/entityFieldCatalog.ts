@@ -17,17 +17,14 @@ function toOptions(values: readonly string[]) {
   }));
 }
 
-const diplomacyStatusOptions = [
+const diplomacyStatusOptions = toOptions([
   "Ally",
   "Friendly",
   "Neutral",
   "Suspicion",
   "Rival",
   "Enemy",
-].map((status) => ({
-  label: status,
-  value: status,
-}));
+]);
 
 export const entityFieldCatalog: AtlasEntityFieldCatalog = {
   country: [

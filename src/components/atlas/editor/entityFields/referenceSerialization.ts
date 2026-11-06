@@ -49,17 +49,7 @@ export function getCurrentReferenceValue(value: unknown): string {
     return String(value);
   }
 
-  if (!isRecord(value)) return "";
-
-  const candidate =
-    value._id ??
-    value.id ??
-    value.i ??
-    value.name ??
-    value.Name ??
-    value.title;
-
-  return candidate == null ? "" : String(candidate);
+  return getReferenceOptionValue(value);
 }
 
 export function serializeReferenceValue(

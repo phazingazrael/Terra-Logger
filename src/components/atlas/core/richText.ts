@@ -54,13 +54,6 @@ export function createRichTextJson(text = ""): string {
     })),
   };
 
-  if (doc.content.length === 0) {
-    doc.content.push({
-      type: "paragraph",
-      content: [],
-    });
-  }
-
   return JSON.stringify(doc);
 }
 
@@ -126,7 +119,7 @@ export function htmlToRichTextJson(html: string): string {
 
   for (const childNode of Array.from(document.body.childNodes)) {
     for (const block of convertDomNodeToBlocks(childNode)) {
-      if (block) content.push(block);
+      content.push(block);
     }
   }
 

@@ -3,7 +3,6 @@ import type {
 	AtlasEditorContext,
 } from "../../../../definitions/Atlas";
 import type {
-	NPCRelationship,
 	TLNPC,
 } from "../../../../definitions/TerraLogger";
 import {
@@ -56,7 +55,7 @@ export function RelationshipListBlockEditor({
 		<NPCRelationshipEditor
 			npc={npc}
 			options={options}
-			onSave={(relationships: NPCRelationship[]) => {
+			onSave={(relationships) => {
 				context.onEntityFieldChange({
 					path: "relationships",
 					value: relationships,

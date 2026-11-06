@@ -21,7 +21,7 @@ export function CountryCitiesMembershipEditor({
 	);
 
 	const embeddedCities = useMemo(
-		() => normalizeCityList((country as { cities?: unknown }).cities),
+		() => normalizeCityList(country.cities),
 		[country],
 	);
 

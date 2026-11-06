@@ -96,7 +96,7 @@ export function BlockEditorSwitch({
 function isCountryMilitaryBlock(block: AtlasBlock): boolean {
 	return (
 		block.type === "countryMilitary" ||
-		(block.binding as { resolver?: string } | undefined)?.resolver ===
+		block.binding?.resolver ===
 			"country.military"
 	);
 }
@@ -104,7 +104,7 @@ function isCountryMilitaryBlock(block: AtlasBlock): boolean {
 function isCountryDiplomacyBlock(block: AtlasBlock): boolean {
 	return (
 		block.type === "countryDiplomacy" ||
-		(block.binding as { resolver?: string } | undefined)?.resolver ===
+		block.binding?.resolver ===
 			"country.political.diplomacy"
 	);
 }
@@ -113,7 +113,7 @@ function isDescriptionBlock(block: AtlasBlock): boolean {
 	return (
 		block.type === "description" ||
 		block.editor.editorType === "description" ||
-		(block.binding as { resolver?: string } | undefined)?.resolver ===
+		block.binding?.resolver ===
 			"generic.description"
 	);
 }
