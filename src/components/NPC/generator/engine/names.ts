@@ -92,7 +92,7 @@ export function generateNPCName(
 		const nickname = pickRandom(nicknames, random);
 		return {
 			fullName: [given, family].filter(Boolean).join(" "),
-			nickName: nickname ? nickname : "",
+			nickName: nickname ?? "",
 			clan: "*Giant display their Clan name last.",
 		};
 	}

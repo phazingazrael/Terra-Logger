@@ -194,13 +194,24 @@ export default function GuidedNPCCreationDialog({
 		])
 			.then(([nextAncestries, nextGenders, nextProfessions]) => {
 				if (cancelled) return;
-				dispatch({ type: "catalogs-loaded", ancestries: nextAncestries, genders: nextGenders, professions: nextProfessions });
+				dispatch({
+					type: "catalogs-loaded",
+					ancestries: nextAncestries,
+					genders: nextGenders,
+					professions: nextProfessions,
+				});
 			})
 			.catch((cause: unknown) => {
-				if (!cancelled)
-					dispatch({ type: "catalogs-failed", error: cause instanceof Error ? cause.message : "Generator catalogs could not be loaded." });
-			})
-;
+				if (!cancelled) {
+					dispatch({
+						type: "catalogs-failed",
+						error:
+							cause instanceof Error
+								? cause.message
+								: "Generator catalogs could not be loaded.",
+					});
+				}
+			});
 		return () => {
 			cancelled = true;
 		};

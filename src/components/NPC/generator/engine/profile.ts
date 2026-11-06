@@ -3,7 +3,7 @@ import {
 	listActiveNPCProfileValues,
 } from "../profile";
 import { pickWeighted, randomInteger, type RandomSource } from "./random";
-import type { NPCGenerationSelection } from "../../types";
+import type { NPCGenerationSelection, NPCProfileField } from "../../types";
 
 export type GeneratedNPCProfile = {
 	nickName: string;
@@ -37,7 +37,7 @@ function renderTemplate(
 }
 
 function selectValue(
-	field: Parameters<typeof listActiveNPCProfileValues>[0],
+	field: NPCProfileField,
 	selection: NPCGenerationSelection,
 	random: RandomSource,
 ): string {

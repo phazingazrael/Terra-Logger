@@ -11,8 +11,7 @@ export type PersistNPCDraftOptions = {
 };
 
 function createNPCId(): string {
-	const suffix = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-	return suffix;
+	return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 }
 
 function constraintsToRecord(
