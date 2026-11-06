@@ -1,10 +1,8 @@
 // svg parsing utils
 
 const escapeCssId = (s: string) =>
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	(window as any).CSS?.escape
-		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			(window as any).CSS.escape(s)
+	window.CSS?.escape
+		? window.CSS.escape(s)
 		: s.replace(/([#.;:[\]>,+~=*^$(){}|\\])/g, "\\$1");
 
 // Set ALL <text> under <g id="markers"> to the SAME x/y (percent values).

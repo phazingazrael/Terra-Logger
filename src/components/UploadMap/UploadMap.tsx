@@ -35,7 +35,7 @@ import type { TLNPC } from "../../definitions/TerraLogger";
 import { generateAndPersistNPCHistory } from "../NPC/history/generation";
 import type { MapInf } from "../../definitions/TerraLogger";
 import BookLoader from "../Util/bookLoader";
-import mutateData from "./Mutate";
+import mutateData, { type MutateProgressHandler } from "./Mutate";
 import {
 	DEFAULT_SUPPORTING_NPC_CATEGORY_IDS,
 	SUPPORTING_NPC_CATEGORIES,
@@ -64,17 +64,6 @@ import "react-toastify/dist/ReactToastify.css";
 export type MapImportMode =
 	| { kind: "create" }
 	| { kind: "update"; expectedMapId: string };
-
-type UploadProgress = {
-	section: string;
-	item?: string;
-	completed: number;
-	total: number;
-	percent: number;
-	message: string;
-};
-
-type UploadProgressHandler = (progress: UploadProgress) => void;
 
 export type { MapImportSummary } from "./importSummary";
 
@@ -139,7 +128,7 @@ type UploadMapProps = {
 	showDemoButton?: boolean;
  };
 
-function useUploadMapModel({
+function UploadMap({
 	mode = { kind: "create" },
 	onComplete,
 	onImportSummary,
@@ -262,7 +251,7 @@ function useUploadMapModel({
 		uploadToastIdRef.current = null;
 	}
 
-	const reportUploadProgress: UploadProgressHandler = (progress) => {
+	const reportUploadProgress: MutateProgressHandler = (progress) => {
 		updateUploadToast(progress.message, progress.percent);
 	};
 
@@ -400,7 +389,7 @@ function useUploadMapModel({
 		data: MapInfo,
 		VersionString: string,
 		Pack: object,
-		onProgress: UploadProgressHandler | undefined,
+		onProgress: MutateProgressHandler | undefined,
 		mode: MapImportMode,
 		generation: MapUploadGenerationOptions,
 		diagnostics: MapUploadDiagnostics,
@@ -821,11 +810,6 @@ function useUploadMapModel({
 			setLoading(false);
 		}
 	};
-	return { showDemoButton, isLoading, selectedFile, isDraggingFile, importSummary, isCompletingImport, generateNPCs, setGenerateNPCs, downloadLogs, setDownloadLogs, supportingNPCsPerCategory, setSupportingNPCsPerCategory, supportingCategoryIds, afmgMin, currentVersion, fileInputRef, toggleSupportingCategory, closeImportSummary, readMAP, handleDragOver, handleDragLeave, handleFileDrop, uploadSelectedMap, loadDemoMap };
-}
-
-function UploadMapView(model: ReturnType<typeof useUploadMapModel>) {
-	const { showDemoButton, isLoading, selectedFile, isDraggingFile, importSummary, isCompletingImport, generateNPCs, setGenerateNPCs, downloadLogs, setDownloadLogs, supportingNPCsPerCategory, setSupportingNPCsPerCategory, supportingCategoryIds, afmgMin, currentVersion, fileInputRef, toggleSupportingCategory, closeImportSummary, readMAP, handleDragOver, handleDragLeave, handleFileDrop, uploadSelectedMap, loadDemoMap } = model;
 	return (
 		<div className="uploadForm">
 			<div>
@@ -1090,16 +1074,6 @@ function UploadMapView(model: ReturnType<typeof useUploadMapModel>) {
 			</Dialog>
 		</div>
 	);
-}
-
-function UploadMap({
-	mode = { kind: "create" },
-	onComplete,
-	onImportSummary,
-	showDemoButton = true,
-}: UploadMapProps) {
-	const model = useUploadMapModel({ mode, onComplete, onImportSummary, showDemoButton });
-	return <UploadMapView {...model} />;
 }
 
 export default UploadMap;
