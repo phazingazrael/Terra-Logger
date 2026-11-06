@@ -47,28 +47,29 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.1.0
 
-- [x] Additional Exports (Cultures, Notes, more?)
+- [x] Additional Exports (Cultures & Notes)
 - [x] Ability to choose between multiple Markdown Templates.
   - Currently only basic Markdown and the Bag of Tips Inspired Vault.
-- [ ] Customize page sections; Title, Subtitle, Segments, etc.
-  - [ ] "Default".
-  - [ ] "Minimal".
-  - [ ] "Recommended".
-- [ ] Ability to modify data prior to export.
-- [ ] Customize what data is exported.
-- [ ] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
-- [ ] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
+- [x] Customize page sections; Title, Subtitle, Segments, etc.
+- [x] Ability to modify data prior to export.
+- [x] Customize what data is exported.
+- [x] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
+- [x] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
+- [ ] Expand Military notes/Military data into their own top level entity.
+- [ ] Expand Points Of Interest notes into their own top level entity.
+- [ ] Economy Update support.
+- [ ] Labels Update Support.
+- [ ] Journeys Update Support.
+- [ ] Options Update Support.
+- [ ] Omnibar Update Support.
+- [ ] Icon Library Update Support.
+- [ ] Translations Update Support.
+- [ ] AFMG v1.156.0 Update Support.
 
 ### Version 1.2.0
 
 - [ ] Implement [Chris Whong's](https://github.com/chriswhong) [Mapbox Gl Version](https://github.com/chriswhong/mapbox-fantasy-map-generator) of AFMG?
 - [ ] Ability to generate random world history, applying additional details for World Building based off [This](https://www.reddit.com/r/worldbuilding/comments/9ugp4r/hey_squad_so_ive_got_an_idea_for_easy_world/) by [u/Oselic](https://www.reddit.com/user/Osellic/) and [This](https://docs.google.com/spreadsheets/d/1QbuVTfTYSczRJIRbffGPDhv6jEMxoa-RyIgi1ityV8U/edit#gid=560919452) by Lythande.
-#### Internal Improvements
-- [ ] Improve application performance across large maps and Atlas pages.
-- [ ] Expand automated testing and regression coverage.
-- [ ] Modernize legacy browser APIs.
-- [ ] Continue improving application security and input sanitization.
-- [ ] Improve Atlas editor rendering performance and responsiveness.
 
 ## Contributing
 
