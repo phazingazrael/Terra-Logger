@@ -61,8 +61,8 @@ function useCitiesPageModel() {
 				.map((c) => ({
 					name: c.name,
 					_id: c._id,
-					nameFull: (c as TLCountry).nameFull ?? c.name,
-					color: (c as TLCountry).color ?? "#cccccc",
+					nameFull: c.nameFull ?? c.name,
+					color: c.color ?? "#cccccc",
 				}))
 				.sort((a, b) => (a.name > b.name ? 1 : -1)),
 		[countries],

@@ -573,53 +573,48 @@ function NPCsPageView(model: ReturnType<typeof useNPCsPageModel>) {
 					</div>
 
 					<div className="npc-filter-controls">
-						{[
-							{
-								key: "race" as NPCNameFilterKey,
-								label: "Race",
-								values: filterOptions.races,
-								width: 180,
-							},
-							{
-								key: "gender" as NPCNameFilterKey,
-								label: "Gender",
-								values: filterOptions.genders,
-								width: 180,
-							},
-							{
-								key: "profession" as NPCNameFilterKey,
-								label: "Profession",
-								values: filterOptions.professions,
-								width: 210,
-							},
-							{
-								key: "location" as NPCNameFilterKey,
-								label: "Location",
-								values: filterOptions.locations,
-								width: 220,
-							},
-							{
-								key: "group" as NPCNameFilterKey,
-								label: "Group",
-								values: filterOptions.groups,
-								width: 190,
-							},
-							{
-								key: "religion" as NPCNameFilterKey,
-								label: "Religion",
-								values: filterOptions.religions,
-								width: 190,
-							},
-						].map((filter) => (
-							<FilterCombobox
-								key={filter.key}
-								label={filter.label}
-								value={listState[filter.key]}
-								options={filter.values}
-								width={filter.width}
-								onChange={(value) => updateState(filter.key, value)}
-							/>
-						))}
+						<FilterCombobox
+							label="Race"
+							value={listState.race}
+							options={filterOptions.races}
+							width={180}
+							onChange={(value) => updateState("race", value)}
+						/>
+						<FilterCombobox
+							label="Gender"
+							value={listState.gender}
+							options={filterOptions.genders}
+							width={180}
+							onChange={(value) => updateState("gender", value)}
+						/>
+						<FilterCombobox
+							label="Profession"
+							value={listState.profession}
+							options={filterOptions.professions}
+							width={210}
+							onChange={(value) => updateState("profession", value)}
+						/>
+						<FilterCombobox
+							label="Location"
+							value={listState.location}
+							options={filterOptions.locations}
+							width={220}
+							onChange={(value) => updateState("location", value)}
+						/>
+						<FilterCombobox
+							label="Group"
+							value={listState.group}
+							options={filterOptions.groups}
+							width={190}
+							onChange={(value) => updateState("group", value)}
+						/>
+						<FilterCombobox
+							label="Religion"
+							value={listState.religion}
+							options={filterOptions.religions}
+							width={190}
+							onChange={(value) => updateState("religion", value)}
+						/>
 
 						<Box sx={{ m: 1, width: 220, px: 1 }}>
 							<Typography variant="caption" color="text.secondary">
