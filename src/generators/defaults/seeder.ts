@@ -7,6 +7,7 @@ import type {
 import {
 	GENERATOR_CATALOG_DOCUMENT_SCHEMA,
 	generatorCatalogRegistry,
+	type GeneratorCatalogSectionDefinition,
 } from "../catalogs";
 import { defaultCatalogBundleRegistry } from "./registry";
 import type {
@@ -29,7 +30,7 @@ function recordsEqual(left: GeneratorRecord, right: GeneratorRecord): boolean {
 }
 
 function prepareBundle(bundle: DefaultCatalogBundle): {
-	section: ReturnType<typeof generatorCatalogRegistry.requireSection>;
+	section: GeneratorCatalogSectionDefinition;
 	records: GeneratorRecord[];
 } {
 	if (!Number.isInteger(bundle.version) || bundle.version < 1) {

@@ -95,7 +95,13 @@ type GeneratorCatalogSettingsState = {
 
 type GeneratorCatalogSettingsAction =
 	| { type: "patch"; patch: Partial<GeneratorCatalogSettingsState> }
-	| { type: "set"; key: keyof GeneratorCatalogSettingsState; value: SetStateAction<GeneratorCatalogSettingsState[keyof GeneratorCatalogSettingsState]> }
+	| {
+			type: "set";
+			key: keyof GeneratorCatalogSettingsState;
+			value: SetStateAction<
+				GeneratorCatalogSettingsState[keyof GeneratorCatalogSettingsState]
+			>;
+	  }
 	| { type: "reset-editor"; savedCount?: number };
 
 function generatorCatalogSettingsReducer(
@@ -107,9 +113,10 @@ function generatorCatalogSettingsReducer(
 			return { ...state, ...action.patch };
 		case "set": {
 			const current = state[action.key];
-			const value = typeof action.value === "function"
-				? (action.value as (value: typeof current) => typeof current)(current)
-				: action.value;
+			const value =
+				typeof action.value === "function"
+					? (action.value as (value: typeof current) => typeof current)(current)
+					: action.value;
 			return { ...state, [action.key]: value };
 		}
 		case "reset-editor":
@@ -128,7 +135,8 @@ function useGeneratorCatalogSettingsModel() {
 	const generatorTypes = generatorCatalogRegistry.listTypes();
 
 	const initialGeneratorType = generatorTypes[0]?.id ?? "";
-	const initialSections = generatorCatalogRegistry.listSections(initialGeneratorType);
+	const initialSections =
+		generatorCatalogRegistry.listSections(initialGeneratorType);
 	const [state, dispatch] = useReducer(generatorCatalogSettingsReducer, {
 		generatorType: initialGeneratorType,
 		sectionId: initialSections[0]?.id ?? "",
@@ -141,18 +149,46 @@ function useGeneratorCatalogSettingsModel() {
 		error: null,
 		busy: false,
 	});
-	const { generatorType, sectionId, jsonText, saveMode, issues, preview, savedCount, status, error, busy } = state;
+	const {
+		generatorType,
+		sectionId,
+		jsonText,
+		saveMode,
+		issues,
+		preview,
+		savedCount,
+		status,
+		error,
+		busy,
+	} = state;
 	const sections = generatorCatalogRegistry.listSections(generatorType);
 	const section = generatorCatalogRegistry.getSection(sectionId);
-	const setField = <K extends keyof GeneratorCatalogSettingsState>(key: K, value: SetStateAction<GeneratorCatalogSettingsState[K]>) =>
-		dispatch({ type: "set", key, value: value as SetStateAction<GeneratorCatalogSettingsState[keyof GeneratorCatalogSettingsState]> });
-	const setGeneratorType = (value: SetStateAction<string>) => setField("generatorType", value);
-	const setSectionId = (value: SetStateAction<string>) => setField("sectionId", value);
-	const setIssues = (value: SetStateAction<GeneratorCatalogValidationIssue[]>) => setField("issues", value);
-	const setPreview = (value: SetStateAction<UserCatalogChangePreview | null>) => setField("preview", value);
-	const setSavedCount = (value: SetStateAction<number>) => setField("savedCount", value);
-	const setStatus = (value: SetStateAction<string | null>) => setField("status", value);
-	const setError = (value: SetStateAction<string | null>) => setField("error", value);
+	const setField = <K extends keyof GeneratorCatalogSettingsState>(
+		key: K,
+		value: SetStateAction<GeneratorCatalogSettingsState[K]>,
+	) =>
+		dispatch({
+			type: "set",
+			key,
+			value: value as SetStateAction<
+				GeneratorCatalogSettingsState[keyof GeneratorCatalogSettingsState]
+			>,
+		});
+	const setGeneratorType = (value: SetStateAction<string>) =>
+		setField("generatorType", value);
+	const setSectionId = (value: SetStateAction<string>) =>
+		setField("sectionId", value);
+	const setIssues = (
+		value: SetStateAction<GeneratorCatalogValidationIssue[]>,
+	) => setField("issues", value);
+	const setPreview = (value: SetStateAction<UserCatalogChangePreview | null>) =>
+		setField("preview", value);
+	const setSavedCount = (value: SetStateAction<number>) =>
+		setField("savedCount", value);
+	const setStatus = (value: SetStateAction<string | null>) =>
+		setField("status", value);
+	const setError = (value: SetStateAction<string | null>) =>
+		setField("error", value);
 	const setBusy = (value: SetStateAction<boolean>) => setField("busy", value);
 
 	useEffect(() => {
@@ -367,7 +403,9 @@ function useGeneratorCatalogSettingsModel() {
 	};
 }
 
-function GeneratorCatalogSettingsView(model: ReturnType<typeof useGeneratorCatalogSettingsModel>) {
+function GeneratorCatalogSettingsView(
+	model: ReturnType<typeof useGeneratorCatalogSettingsModel>,
+) {
 	const {
 		generatorTypes,
 		generatorType,
