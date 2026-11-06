@@ -32,7 +32,7 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.8",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
-  "commitCount": 68,
+  "commitCount": 70,
   "majorChanges": [
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
@@ -365,6 +365,28 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/c67d105a85056f202b658da75840eeb701cc2cfb"
     },
     {
+      "hash": "39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc",
+      "shortHash": "39ef9ee",
+      "date": "2026-10-31T15:12:14-06:00",
+      "subject": "Update HomePage.tsx",
+      "type": "other",
+      "scope": null,
+      "details": "Update HomePage.tsx",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc"
+    },
+    {
+      "hash": "c10708a3cf812a31ea1f50443f818ffc94ff4a09",
+      "shortHash": "c10708a",
+      "date": "2026-08-16T19:15:42-06:00",
+      "subject": "Update releaseChanges.ts",
+      "type": "other",
+      "scope": null,
+      "details": "Update releaseChanges.ts",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c10708a3cf812a31ea1f50443f818ffc94ff4a09"
+    },
+    {
       "hash": "b4e90b30e250e1e81650d27e5257b8dcb869d6ed",
       "shortHash": "b4e90b3",
       "date": "2026-08-03T20:02:38-06:00",
@@ -676,6 +698,28 @@ export const releaseChanges: ReleaseChanges = {
     "ui"
   ],
   "commits": [
+    {
+      "hash": "39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc",
+      "shortHash": "39ef9ee",
+      "date": "2026-10-31T15:12:14-06:00",
+      "subject": "Update HomePage.tsx",
+      "type": "other",
+      "scope": null,
+      "details": "Update HomePage.tsx",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc"
+    },
+    {
+      "hash": "c10708a3cf812a31ea1f50443f818ffc94ff4a09",
+      "shortHash": "c10708a",
+      "date": "2026-08-16T19:15:42-06:00",
+      "subject": "Update releaseChanges.ts",
+      "type": "other",
+      "scope": null,
+      "details": "Update releaseChanges.ts",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c10708a3cf812a31ea1f50443f818ffc94ff4a09"
+    },
     {
       "hash": "1efee9a0a521c74f26b760413bb06d48da4cb1be",
       "shortHash": "1efee9a",
@@ -1425,5 +1469,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-08-17T01:00:59.249Z"
+  "generatedAt": "2026-11-06T03:06:36.711Z"
 };
