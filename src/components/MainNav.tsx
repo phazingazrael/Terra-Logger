@@ -40,16 +40,7 @@ type NavigationItem = {
 	activePrefixes?: string[];
 };
 
-const ENTITY_ITEMS: NavigationItem[] = [
-	{ label: "Countries", to: "/countries", icon: NotebookIcon, activePrefixes: ["/view_country"] },
-	{ label: "Cities", to: "/cities", icon: NotebookIcon, activePrefixes: ["/view_city"] },
-	{ label: "Religions", to: "/religions", icon: NotebookIcon, activePrefixes: ["/view_religion"] },
-	{ label: "Cultures", to: "/cultures", icon: NotebookIcon, activePrefixes: ["/view_culture"] },
-	{ label: "NPCs", to: "/npcs", icon: NotebookIcon, activePrefixes: ["/view_npc"] },
-	{ label: "Notes", to: "/notes", icon: NotebookIcon, activePrefixes: ["/view_note"] },
-];
-
-function NavigationLink({ item }: { item: NavigationItem }) {
+const NavigationLink = ({ item }: { item: NavigationItem }) => {
 	const theme = useTheme();
 	const Icon = item.icon;
 
@@ -79,9 +70,9 @@ function NavigationLink({ item }: { item: NavigationItem }) {
 			</MenuItem>
 		</NavLink>
 	);
-}
+};
 
-function MapSelector({
+const MapSelector = ({
 	maps,
 	activeMapId,
 	onSelect,
@@ -89,7 +80,7 @@ function MapSelector({
 	maps: MapInf[];
 	activeMapId: string | null;
 	onSelect: (map: MapInf) => void;
-}) {
+}) => {
 	const [expanded, setExpanded] = useState(false);
 	const theme = useTheme();
 	const activeMap = maps.find((map) => map.mapId === activeMapId);
@@ -141,9 +132,9 @@ function MapSelector({
 			)}
 		</MenuItem>
 	);
-}
+};
 
-function MainNav({ mapsList }: { mapsList: MapInf[] }): JSX.Element {
+const MainNav = ({ mapsList }: { mapsList: MapInf[] }): JSX.Element => {
 	const { activeMapId, setActive } = useDB();
 	const mapLoaded = mapsList.some((map) => map.mapId === activeMapId);
 
@@ -163,7 +154,12 @@ function MainNav({ mapsList }: { mapsList: MapInf[] }): JSX.Element {
 			<NavigationLink item={{ label: "Home", to: "/", icon: HouseLineIcon }} />
 			{mapLoaded ? (
 				<div className="subMenu">
-					{ENTITY_ITEMS.map((item) => <NavigationLink key={item.to} item={item} />)}
+					<NavigationLink item={{ label: "Countries", to: "/countries", icon: NotebookIcon, activePrefixes: ["/view_country"] }} />
+					<NavigationLink item={{ label: "Cities", to: "/cities", icon: NotebookIcon, activePrefixes: ["/view_city"] }} />
+					<NavigationLink item={{ label: "Religions", to: "/religions", icon: NotebookIcon, activePrefixes: ["/view_religion"] }} />
+					<NavigationLink item={{ label: "Cultures", to: "/cultures", icon: NotebookIcon, activePrefixes: ["/view_culture"] }} />
+					<NavigationLink item={{ label: "NPCs", to: "/npcs", icon: NotebookIcon, activePrefixes: ["/view_npc"] }} />
+					<NavigationLink item={{ label: "Notes", to: "/notes", icon: NotebookIcon, activePrefixes: ["/view_note"] }} />
 				</div>
 			) : null}
 			<NavigationLink item={{ label: "Settings", to: "/settings", icon: FadersIcon }} />
@@ -173,6 +169,6 @@ function MainNav({ mapsList }: { mapsList: MapInf[] }): JSX.Element {
 			<NavigationLink item={{ label: "About", to: "/about", icon: SealQuestionIcon }} />
 		</MenuList>
 	);
-}
+};
 
 export default MainNav;
