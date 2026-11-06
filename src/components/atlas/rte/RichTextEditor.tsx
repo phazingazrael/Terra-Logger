@@ -2,7 +2,7 @@ import {
 	type ReactNode,
 	useEffect,
 	useLayoutEffect,
-	useMemo,
+	useState,
 	useRef,
 } from "react";
 import DOMPurify from "dompurify";
@@ -38,12 +38,10 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 	const lastExternalValueRef = useRef(value);
 	const lastCommittedValueRef = useRef(value);
 
-	const initialHtml = useMemo(() => {
-		return sanitizeHtml(richTextJsonToHtml(value));
-		// Intentionally initial-only.
-		// React should not control the contentEditable body while typing.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [value]);
+	// Replacing the editable DOM after our own onChange would reset the selection.
+	const [initialHtml] = useState(() =>
+		sanitizeHtml(richTextJsonToHtml(value)),
+	);
 
 	useLayoutEffect(() => {
 		const editor = editorRef.current;
