@@ -4,7 +4,12 @@ import { Button, Container } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useActive, useDB } from "../../db/DataContext";
 
-import type { TLCountry, TLDiplomacy } from "../../definitions/TerraLogger";
+import type {
+	TLCountry,
+	TLCity,
+	TLCulture,
+	TLNote,
+} from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
 
@@ -24,33 +29,18 @@ import { ensureContextualNPCSections } from "../../components/atlas/legacy/conte
 function CountryView() {
 	const countryId = useParams();
 	const { update, add } = useDB();
-	const countries = useActive("countries");
-	const notes = useActive("notes");
-	const cities = useActive("cities");
+	const countries = useActive<TLCountry>("countries");
+	const notes = useActive<TLNote>("notes");
+	const cities = useActive<TLCity>("cities");
 	const tags = useActive<Tag>("tags");
 	const npcs = useActive<TLNPC>("npcs");
 	const country = useMemo(
 		() => countries.find((c) => c._id === countryId?._id),
 		[countries, countryId?._id],
 	);
-	const cultures = useActive("cultures");
-
-	// Group diplomatic relations by status
-	const diplomacyGroups: Record<string, TLDiplomacy[]> = {};
-
-	for (const relation of country?.political.diplomacy ?? []) {
-		if (relation.status !== "-" && relation.status !== "x") {
-			if (!diplomacyGroups[relation.status]) {
-				diplomacyGroups[relation.status] = [];
-			}
-			diplomacyGroups[relation.status].push(relation);
-		}
-	}
+	const cultures = useActive<TLCulture>("cultures");
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
-
-	const [localCountryContent, setLocalCountryContent] =
-		useState<AtlasContent | null>(null);
 
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
@@ -64,7 +54,7 @@ function CountryView() {
 				if (group) group.push(relatedCity);
 				else map.set(countryId, [relatedCity]);
 				return map;
-			}, new Map()),
+			}, new Map<string, TLCity[]>()),
 			countriesByEntityId: new Map(
 				countries.map((entry) => [entry._id, entry]),
 			),
@@ -81,16 +71,12 @@ function CountryView() {
 	const countryContent = useMemo(() => {
 		if (!country) return null;
 
-		if (localCountryContent) {
-			return localCountryContent;
-		}
-
 		if (isAtlasContent(country.content)) {
 			return ensureContextualNPCSections(country.content);
 		}
 
 		return countryAdapter.createDefaultContent(country);
-	}, [country, countryAdapter, localCountryContent]);
+	}, [country, countryAdapter]);
 
 	const atlasContext = useMemo(() => {
 		if (!country) return null;
@@ -148,7 +134,6 @@ function CountryView() {
 					update,
 				});
 
-				setLocalCountryContent(null);
 				setIsEditingAtlas(false);
 			} catch (error) {
 				console.error("Failed to save country Atlas content:", error);
@@ -178,27 +163,13 @@ function CountryView() {
 										<p className="atlas-save-error">{atlasSaveError}</p>
 									) : null}
 									<Button
+										variant="contained"
 										type="button"
 										onClick={() => setIsEditingAtlas((current) => !current)}
 									>
-										{isSavingAtlas
-											? "Saving..."
-											: isEditingAtlas
-												? ""
-												: "Edit Page"}
+										{isSavingAtlas ? "Saving..." : "Edit Country"}
 									</Button>
 
-									{localCountryContent ? (
-										<Button
-											type="button"
-											onClick={() => {
-												setLocalCountryContent(null);
-												setIsEditingAtlas(false);
-											}}
-										>
-											Reset Local Changes
-										</Button>
-									) : null}
 								</div>
 							)}
 

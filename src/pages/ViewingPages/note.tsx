@@ -29,9 +29,6 @@ function NoteView() {
 	const note = useMemo(() => notes.find((r) => r._id === _id), [notes, _id]);
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
-	const [localNoteContent, setLocalNoteContent] = useState<AtlasContent | null>(
-		null,
-	);
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
@@ -40,12 +37,10 @@ function NoteView() {
 	const noteContent = useMemo(() => {
 		if (!note) return null;
 
-		if (localNoteContent) return localNoteContent;
-
 		if (isAtlasContent(note.content)) return note.content;
 
 		return noteAdapter.createDefaultContent(note);
-	}, [note, noteAdapter, localNoteContent]);
+	}, [note, noteAdapter]);
 
 	const atlasContext = useMemo(() => {
 		if (!note) return null;
@@ -93,7 +88,6 @@ function NoteView() {
 					update,
 				});
 
-				setLocalNoteContent(null);
 				setIsEditingAtlas(false);
 			} catch (error) {
 				console.error("Failed to save note Atlas content:", error);
@@ -129,28 +123,14 @@ function NoteView() {
 									) : null}
 
 									<Button
+										variant="contained"
 										type="button"
 										disabled={isSavingAtlas}
 										onClick={() => setIsEditingAtlas((current) => !current)}
 									>
-										{isSavingAtlas
-											? "Saving..."
-											: isEditingAtlas
-												? ""
-												: "Edit Page"}
+										{isSavingAtlas ? "Saving..." : "Edit Note"}
 									</Button>
 
-									{localNoteContent ? (
-										<Button
-											type="button"
-											onClick={() => {
-												setLocalNoteContent(null);
-												setIsEditingAtlas(false);
-											}}
-										>
-											Reset Local Changes
-										</Button>
-									) : null}
 								</div>
 							)}
 

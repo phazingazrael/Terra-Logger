@@ -4,7 +4,12 @@ import { Button, Container } from "@mui/material";
 
 import { useActive, useDB } from "../../db/DataContext";
 
-import type { TLNote, TLReligion } from "../../definitions/TerraLogger";
+import type {
+	TLNote,
+	TLReligion,
+	TLCity,
+	TLCulture,
+} from "../../definitions/TerraLogger";
 
 import "./viewStyles.css";
 import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
@@ -30,14 +35,12 @@ function ReligionView() {
 		[religions, religionId?._id],
 	);
 	const notes = useActive<TLNote>("notes");
-	const cities = useActive("cities");
-	const cultures = useActive("cultures");
+	const cities = useActive<TLCity>("cities");
+	const cultures = useActive<TLCulture>("cultures");
 	const tags = useActive<Tag>("tags");
 	const npcs = useActive<TLNPC>("npcs");
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
-	const [localReligionContent, setLocalReligionContent] =
-		useState<AtlasContent | null>(null);
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
@@ -46,13 +49,11 @@ function ReligionView() {
 	const religionContent = useMemo(() => {
 		if (!religion) return null;
 
-		if (localReligionContent) return localReligionContent;
-
 		if (isAtlasContent(religion.content))
 			return ensureContextualNPCSections(religion.content);
 
 		return religionAdapter.createDefaultContent(religion);
-	}, [religion, religionAdapter, localReligionContent]);
+	}, [religion, religionAdapter]);
 
 	const atlasContext = useMemo(() => {
 		if (!religion) return null;
@@ -104,7 +105,6 @@ function ReligionView() {
 					update,
 				});
 
-				setLocalReligionContent(null);
 				setIsEditingAtlas(false);
 			} catch (error) {
 				console.error("Failed to save religion Atlas content:", error);
@@ -140,28 +140,14 @@ function ReligionView() {
 									) : null}
 
 									<Button
+										variant="contained"
 										type="button"
 										disabled={isSavingAtlas}
 										onClick={() => setIsEditingAtlas((current) => !current)}
 									>
-										{isSavingAtlas
-											? "Saving..."
-											: isEditingAtlas
-												? ""
-												: "Edit Page"}
+										{isSavingAtlas ? "Saving..." : "Edit Religion"}
 									</Button>
 
-									{localReligionContent ? (
-										<Button
-											type="button"
-											onClick={() => {
-												setLocalReligionContent(null);
-												setIsEditingAtlas(false);
-											}}
-										>
-											Reset Local Changes
-										</Button>
-									) : null}
 								</div>
 							)}
 

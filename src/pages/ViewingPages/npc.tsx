@@ -51,7 +51,7 @@ import type {
 } from "../../definitions/TerraLogger";
 import "./viewStyles.css";
 
-function useNPCViewModel() {
+export default function NPCView() {
 	const { _id } = useParams();
 	const navigate = useNavigate();
 	const { activeMapId, add, update, remove, preload, isActiveLoaded } = useDB();
@@ -335,51 +335,7 @@ function useNPCViewModel() {
 		setEditing(false);
 	}
 
-	return {
-		adapter,
-		content,
-		context,
-		deleteBusy,
-		deleteCurrentNPC,
-		deleteOpen,
-		error,
-		generateHistory,
-		genderDescription,
-		historyBusy,
-		leadershipRelationships,
-		loading,
-		name: npc?.fullName || npc?.name || "Unnamed NPC",
-		npc,
-		saveAtlas,
-		saveNPC,
-		setDeleteOpen,
-		setEditing,
-		editing,
-	};
-}
-
-function NPCViewView(model: ReturnType<typeof useNPCViewModel>) {
-	const {
-		adapter,
-		content,
-		context,
-		deleteBusy,
-		deleteCurrentNPC,
-		deleteOpen,
-		error,
-		generateHistory,
-		genderDescription,
-		historyBusy,
-		leadershipRelationships,
-		loading,
-		name,
-		npc,
-		saveAtlas,
-		saveNPC,
-		setDeleteOpen,
-		setEditing,
-		editing,
-	} = model;
+	const name = npc?.fullName || npc?.name || "Unnamed NPC";
 
 	if (loading) {
 		return (
@@ -581,9 +537,4 @@ function NPCViewView(model: ReturnType<typeof useNPCViewModel>) {
 			</Box>
 		</Container>
 	);
-}
-
-export default function NPCView() {
-	const model = useNPCViewModel();
-	return <NPCViewView {...model} />;
 }

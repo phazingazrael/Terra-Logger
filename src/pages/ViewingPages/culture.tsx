@@ -25,7 +25,7 @@ function CultureView() {
 	const cultureId = useParams();
 
 	const { update, add } = useDB();
-	const cultures = useActive("cultures");
+	const cultures = useActive<TLCulture>("cultures");
 	const culture = useMemo(
 		() => cultures.find((c) => c._id === cultureId?._id),
 		[cultures, cultureId?._id],
@@ -35,8 +35,6 @@ function CultureView() {
 	const npcs = useActive<TLNPC>("npcs");
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
-	const [localCultureContent, setLocalCultureContent] =
-		useState<AtlasContent | null>(null);
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
 
@@ -45,13 +43,11 @@ function CultureView() {
 	const cultureContent = useMemo(() => {
 		if (!culture) return null;
 
-		if (localCultureContent) return localCultureContent;
-
 		if (isAtlasContent(culture.content))
 			return ensureContextualNPCSections(culture.content);
 
 		return cultureAdapter.createDefaultContent(culture);
-	}, [culture, cultureAdapter, localCultureContent]);
+	}, [culture, cultureAdapter]);
 
 	const atlasContext = useMemo(() => {
 		if (!culture) return null;
@@ -101,7 +97,6 @@ function CultureView() {
 					update,
 				});
 
-				setLocalCultureContent(null);
 				setIsEditingAtlas(false);
 			} catch (error) {
 				console.error("Failed to save culture Atlas content:", error);
@@ -137,28 +132,14 @@ function CultureView() {
 									) : null}
 
 									<Button
+										variant="contained"
 										type="button"
 										disabled={isSavingAtlas}
 										onClick={() => setIsEditingAtlas((current) => !current)}
 									>
-										{isSavingAtlas
-											? "Saving..."
-											: isEditingAtlas
-												? ""
-												: "Edit Page"}
+										{isSavingAtlas ? "Saving..." : "Edit Culture"}
 									</Button>
 
-									{localCultureContent ? (
-										<Button
-											type="button"
-											onClick={() => {
-												setLocalCultureContent(null);
-												setIsEditingAtlas(false);
-											}}
-										>
-											Reset Local Changes
-										</Button>
-									) : null}
 								</div>
 							)}
 							{cultureContent && atlasContext ? (

@@ -4,7 +4,12 @@ import { useActive, useDB } from "../../db/DataContext";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import type { TLCity, TLNote } from "../../definitions/TerraLogger";
+import type {
+	TLCity,
+	TLCountry,
+	TLCulture,
+	TLNote,
+} from "../../definitions/TerraLogger";
 import type { Tag } from "../../definitions/Common";
 import type { TLNPC } from "../../definitions/TerraLogger";
 import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
@@ -25,8 +30,8 @@ function CityView() {
 	const { update, add } = useDB();
 	const cities = useActive<TLCity>("cities");
 	const notes = useActive<TLNote>("notes");
-	const countries = useActive("countries");
-	const cultures = useActive("cultures");
+	const countries = useActive<TLCountry>("countries");
+	const cultures = useActive<TLCulture>("cultures");
 	const tags = useActive<Tag>("tags");
 	const npcs = useActive<TLNPC>("npcs");
 
@@ -36,10 +41,6 @@ function CityView() {
 	);
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
-
-	const [localCityContent, setLocalCityContent] = useState<AtlasContent | null>(
-		null,
-	);
 
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
 	const [atlasSaveError, setAtlasSaveError] = useState<string | null>(null);
@@ -70,16 +71,12 @@ function CityView() {
 	const cityContent = useMemo(() => {
 		if (!city) return null;
 
-		if (localCityContent) {
-			return localCityContent;
-		}
-
 		if (isAtlasContent(city.content)) {
 			return ensureContextualNPCSections(city.content);
 		}
 
 		return cityAdapter.createDefaultContent(city);
-	}, [city, cityAdapter, localCityContent]);
+	}, [city, cityAdapter]);
 
 	const atlasContext = useMemo(() => {
 		if (!city) return null;
@@ -137,7 +134,6 @@ function CityView() {
 					update,
 				});
 
-				setLocalCityContent(null);
 				setIsEditingAtlas(false);
 			} catch (error) {
 				console.error("Failed to save city Atlas content:", error);
@@ -167,27 +163,13 @@ function CityView() {
 										<p className="atlas-save-error">{atlasSaveError}</p>
 									) : null}
 									<Button
+										variant="contained"
 										type="button"
 										onClick={() => setIsEditingAtlas((current) => !current)}
 									>
-										{isSavingAtlas
-											? "Saving..."
-											: isEditingAtlas
-												? ""
-												: "Edit Page"}
+										{isSavingAtlas ? "Saving..." : "Edit City"}
 									</Button>
 
-									{localCityContent ? (
-										<Button
-											type="button"
-											onClick={() => {
-												setLocalCityContent(null);
-												setIsEditingAtlas(false);
-											}}
-										>
-											Reset Local Changes
-										</Button>
-									) : null}
 								</div>
 							)}
 
