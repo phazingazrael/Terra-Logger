@@ -10,8 +10,7 @@ import type {
 	TLDiplomacy,
 } from "../../../definitions/TerraLogger";
 import { countryAdapter } from "../../atlas/adapters/countryAdapter";
-import { fetchText } from "../fetchText";
-import { validateSvgResponse } from "../svgUtil";
+import { generate } from "../generators/coa/generate";
 
 export const mutateCountries = async (
 	data: MapInfo,
@@ -114,31 +113,20 @@ export const mutateCountries = async (
 				});
 			}
 
-			const randomNumberInRange = (min: number, max: number): number => {
-				return Math.floor(Math.random() * (max - min + 1)) + min;
-			};
-
-			const randomSeed = randomNumberInRange(1000, 1000000);
-
 			if (country.coa) {
 				if ((country.coa as unknown as { custom: boolean }).custom !== true) {
-					// get coa svg from armoria and save to string inside of city data
 					const coa = country.coa;
 					try {
 						// Keep requests sequential to avoid flooding the coat-of-arms service.
-					// react-doctor-disable-next-line react-doctor/async-await-in-loop
-					const svg =
+						// react-doctor-disable-next-line react-doctor/async-await-in-loop
+						const genCoa = generate();
+						const svg =
 							typeof coa === "object" &&
 							coa !== null &&
 							Object.keys(coa).length > 0
 								? await getCOA(String(country.i), coa)
-								: await fetchText(
-										`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
-											String(randomSeed),
-										)}`,
-									);
-
-						newCountry.coaSVG = validateSvgResponse(svg);
+								: await getCOA(String(country.i), genCoa);
+						newCountry.coaSVG = svg;
 					} catch (error) {
 						console.error(
 							`Error fetching the coat of arms for ${country.name}:`,
@@ -169,15 +157,12 @@ export const mutateCountries = async (
 				}
 			} else if (!country.coa) {
 				try {
+					const genCoa = generate();
 					// Keep requests sequential to avoid flooding the coat-of-arms service.
 					// react-doctor-disable-next-line react-doctor/async-await-in-loop
-					const svg = await fetchText(
-						`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
-							String(randomSeed),
-						)}`,
-					);
+					const svg = await getCOA(String(country.i), genCoa);
 
-					newCountry.coaSVG = validateSvgResponse(svg);
+					newCountry.coaSVG = svg;
 				} catch (error) {
 					console.error(
 						`Error fetching the coat of arms for ${country.name}:`,
@@ -185,7 +170,6 @@ export const mutateCountries = async (
 					);
 				}
 			}
-			console.groupEnd();
 
 			const urbanvalue = Math.round(
 				country.urban * Number(populationRate) * Number(urbanization),

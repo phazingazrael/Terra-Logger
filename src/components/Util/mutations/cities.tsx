@@ -7,10 +7,8 @@ import getCOA from "../generators/coa/render";
 
 import type { TLMapInfo, TLCity } from "../../../definitions/TerraLogger";
 
-import { fetchText } from "../fetchText";
-import { validateSvgResponse } from "../svgUtil";
-
 import { cityAdapter } from "../../atlas/adapters/cityAdapter";
+import { generate } from "../generators/coa/generate";
 
 export const mutateCities = async (
 	data: MapInfo,
@@ -62,33 +60,20 @@ export const mutateCities = async (
 				},
 			];
 
-			const randomNumberInRange = (min: number, max: number): number => {
-				return Math.floor(Math.random() * (max - min + 1)) + min;
-			};
-
-			const randomSeed = randomNumberInRange(1000, 1000000);
-
 			if (city.coa) {
 				if ((city.coa as unknown as { custom: boolean }).custom !== true) {
-					// get coa svg from armoria and save to string inside of city data
-
 					const coa = city.coa;
 
 					try {
-						// Keep requests sequential to avoid flooding the coat-of-arms service.
-					// react-doctor-disable-next-line react-doctor/async-await-in-loop
-					const svg =
+						const genCoa = generate();
+						const svg =
 							typeof coa === "object" &&
 							coa !== null &&
 							Object.keys(coa).length > 0
 								? await getCOA(String(city.i), coa)
-								: await fetchText(
-										`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
-											String(randomSeed),
-										)}`,
-									);
+								: await getCOA(String(city.i), genCoa);
 
-						newCity.coaSVG = validateSvgResponse(svg);
+						newCity.coaSVG = svg;
 					} catch (error) {
 						console.error(
 							`Error fetching the coat of arms for ${city.name}:`,
@@ -121,13 +106,10 @@ export const mutateCities = async (
 				try {
 					// Keep requests sequential to avoid flooding the coat-of-arms service.
 					// react-doctor-disable-next-line react-doctor/async-await-in-loop
-					const svg = await fetchText(
-						`https://armoria.herokuapp.com/?size=500&format=svg&seed=${encodeURIComponent(
-							String(randomSeed),
-						)}`,
-					);
+					const genCoa = generate();
+					const svg = await getCOA(String(city.i), genCoa);
 
-					newCity.coaSVG = validateSvgResponse(svg);
+					newCity.coaSVG = svg;
 				} catch (error) {
 					console.error(
 						`Error fetching the coat of arms for ${city.name}:`,

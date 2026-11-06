@@ -242,7 +242,7 @@ export type TLCountry = {
   _id: string;
   aliases?: string[];
   cities: TLCity[];
-  coa?: { t1?: string; division?: { division: string; t: string; line: string; }; charges?: { charge: string; t: string; p: string; size: number; }[]; shield?: string; };
+  coa?: TLCoA;
   coaSVG: string;
   color: string;
   content?: AtlasContent;
