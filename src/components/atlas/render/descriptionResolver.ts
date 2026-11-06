@@ -119,14 +119,16 @@ function getMatchingNoteDescription(
     };
   }
 
-  return (
-    normalizeDescriptionValue(matchingNote.legend) ||
-    normalizeDescriptionValue(matchingNote.description) ||
-    normalizeDescriptionValue(matchingNote.Description) || {
-      value: "",
-      format: "text",
-    }
-  );
+  for (const candidate of [
+    matchingNote.legend,
+    matchingNote.description,
+    matchingNote.Description,
+  ]) {
+    const description = normalizeDescriptionValue(candidate);
+    if (description.value) return description;
+  }
+
+  return { value: "", format: "text" };
 }
 
 function normalizeDescriptionValue(
