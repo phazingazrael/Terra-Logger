@@ -28,11 +28,11 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.8",
+  "version": "1.0.9",
   "previousTag": "1.0.0",
-  "currentTag": "1.0.8",
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.8",
-  "commitCount": 70,
+  "currentTag": "1.0.9",
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.9",
+  "commitCount": 89,
   "majorChanges": [
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
@@ -121,6 +121,105 @@ export const releaseChanges: ReleaseChanges = {
       "details": "✨ Replace JSONUI functionality",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/811a72b59e38de49ab59849c244d968d4bd8aa24"
+    },
+    {
+      "hash": "038be52d75d520de66c90c021a6c92805ffb9c9f",
+      "shortHash": "038be52",
+      "date": "2026-11-05T21:34:09-07:00",
+      "subject": "refactor(export): ♻️ simplify Markdown rendering helpers",
+      "type": "refactor",
+      "scope": "export",
+      "details": "♻️ simplify Markdown rendering helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/038be52d75d520de66c90c021a6c92805ffb9c9f"
+    },
+    {
+      "hash": "701345ab53a9add0d240b26891cf7fa7d182cde7",
+      "shortHash": "701345a",
+      "date": "2026-11-05T21:31:08-07:00",
+      "subject": "refactor(atlas): ♻️ use domain types in render plugins",
+      "type": "refactor",
+      "scope": "atlas",
+      "details": "♻️ use domain types in render plugins",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/701345ab53a9add0d240b26891cf7fa7d182cde7"
+    },
+    {
+      "hash": "97fdb28998520e422a12a2016998631169286787",
+      "shortHash": "97fdb28",
+      "date": "2026-11-05T21:29:48-07:00",
+      "subject": "refactor(atlas): ♻️ simplify conversion and editor helpers",
+      "type": "refactor",
+      "scope": "atlas",
+      "details": "♻️ simplify conversion and editor helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/97fdb28998520e422a12a2016998631169286787"
+    },
+    {
+      "hash": "d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6",
+      "shortHash": "d55f3fc",
+      "date": "2026-11-05T21:27:49-07:00",
+      "subject": "refactor(views): ♻️ simplify entity page state and edit controls",
+      "type": "refactor",
+      "scope": "views",
+      "details": "♻️ simplify entity page state and edit controls",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6"
+    },
+    {
+      "hash": "358936f4b912036471e3c0657ae8159ac4f06afc",
+      "shortHash": "358936f",
+      "date": "2026-11-05T21:26:44-07:00",
+      "subject": "refactor(lists): ♻️ simplify NPC filters and country access",
+      "type": "refactor",
+      "scope": "lists",
+      "details": "♻️ simplify NPC filters and country access",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/358936f4b912036471e3c0657ae8159ac4f06afc"
+    },
+    {
+      "hash": "8cf312ec2acbf1ed86a3a8add49d6ebc37aa4244",
+      "shortHash": "8cf312e",
+      "date": "2026-11-05T21:25:38-07:00",
+      "subject": "refactor(catalogs): ♻️ clarify settings state and section types",
+      "type": "refactor",
+      "scope": "catalogs",
+      "details": "♻️ clarify settings state and section types",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8cf312ec2acbf1ed86a3a8add49d6ebc37aa4244"
+    },
+    {
+      "hash": "0a349245fddc5bd37dda2982f56c2a1b97d3cecd",
+      "shortHash": "0a34924",
+      "date": "2026-11-05T21:24:22-07:00",
+      "subject": "refactor(npc): ♻️ simplify npc creation and generation helpers",
+      "type": "refactor",
+      "scope": "npc",
+      "details": "♻️ simplify npc creation and generation helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0a349245fddc5bd37dda2982f56c2a1b97d3cecd"
+    },
+    {
+      "hash": "0294bdde74345eb2127a2d6603046659f806588d",
+      "shortHash": "0294bdd",
+      "date": "2026-11-05T21:23:12-07:00",
+      "subject": "refactor(import): ♻️ simplify the map upload component",
+      "type": "refactor",
+      "scope": "import",
+      "details": "♻️ simplify the map upload component",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0294bdde74345eb2127a2d6603046659f806588d"
+    },
+    {
+      "hash": "0e6f27ee8f8e0866ace4344eb26e1a6a55a06e23",
+      "shortHash": "0e6f27e",
+      "date": "2026-11-05T21:21:56-07:00",
+      "subject": "refactor(navigation): ♻️ render fixed entity links directly",
+      "type": "refactor",
+      "scope": "navigation",
+      "details": "♻️ render fixed entity links directly",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e6f27ee8f8e0866ace4344eb26e1a6a55a06e23"
     },
     {
       "hash": "544ab5d4d21f149f15d22a7498ccb34b82eb3b54",
@@ -233,6 +332,17 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c"
     },
     {
+      "hash": "0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9",
+      "shortHash": "0b359ae",
+      "date": "2026-11-05T21:44:57-07:00",
+      "subject": "docs: 📝 update completed features and roadmap items",
+      "type": "docs",
+      "scope": null,
+      "details": "📝 update completed features and roadmap items",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9"
+    },
+    {
       "hash": "e72786d4ef964b147dc13da8ac543a604926b56f",
       "shortHash": "e72786d",
       "date": "2026-08-03T20:04:50-06:00",
@@ -266,6 +376,17 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ef535bf69db1e295f45b9d97a3bf7082aded0a5"
     },
     {
+      "hash": "432cd1ede2dd50960660786ef8abd9958d14f262",
+      "shortHash": "432cd1e",
+      "date": "2026-11-05T21:43:50-07:00",
+      "subject": "style: 🎨 tidy source comments and formatting",
+      "type": "style",
+      "scope": null,
+      "details": "🎨 tidy source comments and formatting",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/432cd1ede2dd50960660786ef8abd9958d14f262"
+    },
+    {
       "hash": "9694852440677e647054c9185360d4f12301ac8a",
       "shortHash": "9694852",
       "date": "2026-07-18T16:49:08-06:00",
@@ -275,6 +396,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "🎨 Switch from React-Icons to Phosphor-Icons",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/9694852440677e647054c9185360d4f12301ac8a"
+    },
+    {
+      "hash": "1286cec226ef9f077ba747c0a09c2c25b3fed34f",
+      "shortHash": "1286cec",
+      "date": "2026-11-05T21:46:15-07:00",
+      "subject": "chore(release): 📝 refresh generated change metadata",
+      "type": "chore",
+      "scope": "release",
+      "details": "📝 refresh generated change metadata",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/1286cec226ef9f077ba747c0a09c2c25b3fed34f"
     },
     {
       "hash": "14a2f740524525b5598083cae6dc75ab38e16601",
@@ -687,17 +819,231 @@ export const releaseChanges: ReleaseChanges = {
     "Atlas Doc System",
     "NPC Generation",
     "atlas",
+    "catalogs",
     "cleanup",
+    "coa",
     "db",
     "export",
     "generators",
     "import",
+    "lists",
+    "navigation",
     "npc",
     "react",
     "release",
-    "ui"
+    "ui",
+    "views"
   ],
   "commits": [
+    {
+      "hash": "1286cec226ef9f077ba747c0a09c2c25b3fed34f",
+      "shortHash": "1286cec",
+      "date": "2026-11-05T21:46:15-07:00",
+      "subject": "chore(release): 📝 refresh generated change metadata",
+      "type": "chore",
+      "scope": "release",
+      "details": "📝 refresh generated change metadata",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/1286cec226ef9f077ba747c0a09c2c25b3fed34f"
+    },
+    {
+      "hash": "0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9",
+      "shortHash": "0b359ae",
+      "date": "2026-11-05T21:44:57-07:00",
+      "subject": "docs: 📝 update completed features and roadmap items",
+      "type": "docs",
+      "scope": null,
+      "details": "📝 update completed features and roadmap items",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9"
+    },
+    {
+      "hash": "432cd1ede2dd50960660786ef8abd9958d14f262",
+      "shortHash": "432cd1e",
+      "date": "2026-11-05T21:43:50-07:00",
+      "subject": "style: 🎨 tidy source comments and formatting",
+      "type": "style",
+      "scope": null,
+      "details": "🎨 tidy source comments and formatting",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/432cd1ede2dd50960660786ef8abd9958d14f262"
+    },
+    {
+      "hash": "cacbfe52f654533c15a387aa79170b575b5bce37",
+      "shortHash": "cacbfe5",
+      "date": "2026-11-05T21:42:41-07:00",
+      "subject": "fix(ui): 💄 adjust list spacing and hide duplicate tag labels",
+      "type": "fix",
+      "scope": "ui",
+      "details": "💄 adjust list spacing and hide duplicate tag labels",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/cacbfe52f654533c15a387aa79170b575b5bce37"
+    },
+    {
+      "hash": "6468868ac5ff8411b1f889ca2f9a00eddfd26693",
+      "shortHash": "6468868",
+      "date": "2026-11-05T21:40:47-07:00",
+      "subject": "fix(atlas): 🩹 avoid rewriting rich text after editor updates",
+      "type": "fix",
+      "scope": "atlas",
+      "details": "🩹 avoid rewriting rich text after editor updates",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6468868ac5ff8411b1f889ca2f9a00eddfd26693"
+    },
+    {
+      "hash": "d2bde129e1ab8636dff2d0fc811de4c45a322e2c",
+      "shortHash": "d2bde12",
+      "date": "2026-11-05T21:39:32-07:00",
+      "subject": "fix(atlas): 🩹 use populated matching-note description fields",
+      "type": "fix",
+      "scope": "atlas",
+      "details": "🩹 use populated matching-note description fields",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d2bde129e1ab8636dff2d0fc811de4c45a322e2c"
+    },
+    {
+      "hash": "622a10de674a8dc7497a92e2e26ef2b954d169e1",
+      "shortHash": "622a10d",
+      "date": "2026-11-05T21:37:48-07:00",
+      "subject": "fix(export): 🩹 keep the BotI note fallback as a block array",
+      "type": "fix",
+      "scope": "export",
+      "details": "🩹 keep the BotI note fallback as a block array",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/622a10de674a8dc7497a92e2e26ef2b954d169e1"
+    },
+    {
+      "hash": "810bde18cf534f207d47ea76885c3bbd4b03631c",
+      "shortHash": "810bde1",
+      "date": "2026-11-05T21:36:44-07:00",
+      "subject": "fix(export): 🩹 preserve the SVG root when adding namespaces",
+      "type": "fix",
+      "scope": "export",
+      "details": "🩹 preserve the SVG root when adding namespaces",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/810bde18cf534f207d47ea76885c3bbd4b03631c"
+    },
+    {
+      "hash": "15d11ddd85a849c52c69c49a710978ef86e1646a",
+      "shortHash": "15d11dd",
+      "date": "2026-11-05T21:35:46-07:00",
+      "subject": "fix(export): 🩹 resolve NPC folders and portraits from final paths",
+      "type": "fix",
+      "scope": "export",
+      "details": "🩹 resolve NPC folders and portraits from final paths",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/15d11ddd85a849c52c69c49a710978ef86e1646a"
+    },
+    {
+      "hash": "038be52d75d520de66c90c021a6c92805ffb9c9f",
+      "shortHash": "038be52",
+      "date": "2026-11-05T21:34:09-07:00",
+      "subject": "refactor(export): ♻️ simplify Markdown rendering helpers",
+      "type": "refactor",
+      "scope": "export",
+      "details": "♻️ simplify Markdown rendering helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/038be52d75d520de66c90c021a6c92805ffb9c9f"
+    },
+    {
+      "hash": "701345ab53a9add0d240b26891cf7fa7d182cde7",
+      "shortHash": "701345a",
+      "date": "2026-11-05T21:31:08-07:00",
+      "subject": "refactor(atlas): ♻️ use domain types in render plugins",
+      "type": "refactor",
+      "scope": "atlas",
+      "details": "♻️ use domain types in render plugins",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/701345ab53a9add0d240b26891cf7fa7d182cde7"
+    },
+    {
+      "hash": "97fdb28998520e422a12a2016998631169286787",
+      "shortHash": "97fdb28",
+      "date": "2026-11-05T21:29:48-07:00",
+      "subject": "refactor(atlas): ♻️ simplify conversion and editor helpers",
+      "type": "refactor",
+      "scope": "atlas",
+      "details": "♻️ simplify conversion and editor helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/97fdb28998520e422a12a2016998631169286787"
+    },
+    {
+      "hash": "d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6",
+      "shortHash": "d55f3fc",
+      "date": "2026-11-05T21:27:49-07:00",
+      "subject": "refactor(views): ♻️ simplify entity page state and edit controls",
+      "type": "refactor",
+      "scope": "views",
+      "details": "♻️ simplify entity page state and edit controls",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6"
+    },
+    {
+      "hash": "358936f4b912036471e3c0657ae8159ac4f06afc",
+      "shortHash": "358936f",
+      "date": "2026-11-05T21:26:44-07:00",
+      "subject": "refactor(lists): ♻️ simplify NPC filters and country access",
+      "type": "refactor",
+      "scope": "lists",
+      "details": "♻️ simplify NPC filters and country access",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/358936f4b912036471e3c0657ae8159ac4f06afc"
+    },
+    {
+      "hash": "8cf312ec2acbf1ed86a3a8add49d6ebc37aa4244",
+      "shortHash": "8cf312e",
+      "date": "2026-11-05T21:25:38-07:00",
+      "subject": "refactor(catalogs): ♻️ clarify settings state and section types",
+      "type": "refactor",
+      "scope": "catalogs",
+      "details": "♻️ clarify settings state and section types",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8cf312ec2acbf1ed86a3a8add49d6ebc37aa4244"
+    },
+    {
+      "hash": "0a349245fddc5bd37dda2982f56c2a1b97d3cecd",
+      "shortHash": "0a34924",
+      "date": "2026-11-05T21:24:22-07:00",
+      "subject": "refactor(npc): ♻️ simplify npc creation and generation helpers",
+      "type": "refactor",
+      "scope": "npc",
+      "details": "♻️ simplify npc creation and generation helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0a349245fddc5bd37dda2982f56c2a1b97d3cecd"
+    },
+    {
+      "hash": "0294bdde74345eb2127a2d6603046659f806588d",
+      "shortHash": "0294bdd",
+      "date": "2026-11-05T21:23:12-07:00",
+      "subject": "refactor(import): ♻️ simplify the map upload component",
+      "type": "refactor",
+      "scope": "import",
+      "details": "♻️ simplify the map upload component",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0294bdde74345eb2127a2d6603046659f806588d"
+    },
+    {
+      "hash": "0e6f27ee8f8e0866ace4344eb26e1a6a55a06e23",
+      "shortHash": "0e6f27e",
+      "date": "2026-11-05T21:21:56-07:00",
+      "subject": "refactor(navigation): ♻️ render fixed entity links directly",
+      "type": "refactor",
+      "scope": "navigation",
+      "details": "♻️ render fixed entity links directly",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e6f27ee8f8e0866ace4344eb26e1a6a55a06e23"
+    },
+    {
+      "hash": "e0b8cc4c66dcdbb1823c20c45b40fd49606b53a1",
+      "shortHash": "e0b8cc4",
+      "date": "2026-11-05T21:20:24-07:00",
+      "subject": "fix(coa): ✨ generate missing coats of arms locally",
+      "type": "fix",
+      "scope": "coa",
+      "details": "✨ generate missing coats of arms locally",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e0b8cc4c66dcdbb1823c20c45b40fd49606b53a1"
+    },
     {
       "hash": "39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc",
       "shortHash": "39ef9ee",
@@ -1469,5 +1815,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-06T03:06:36.711Z"
+  "generatedAt": "2026-11-06T04:49:03.716Z"
 };

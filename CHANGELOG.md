@@ -1,18 +1,197 @@
 # Terra-Logger Changelog
 
-There have been 40 commits since last release.
+There have been 89 commits since last release.
 
 Major Changes since last release:
+- fix(ui): :lipstick: adjust list spacing and hide duplicate tag labels [`cacbfe5`](https://github.com/phazingazrael/Terra-Logger/commit/cacbfe52f654533c15a387aa79170b575b5bce37)
+- fix(atlas): :adhesive_bandage: avoid rewriting rich text after editor updates [`6468868`](https://github.com/phazingazrael/Terra-Logger/commit/6468868ac5ff8411b1f889ca2f9a00eddfd26693)
+- fix(atlas): :adhesive_bandage: use populated matching-note description fields [`d2bde12`](https://github.com/phazingazrael/Terra-Logger/commit/d2bde129e1ab8636dff2d0fc811de4c45a322e2c)
+- fix(export): :adhesive_bandage: keep the BotI note fallback as a block array [`622a10d`](https://github.com/phazingazrael/Terra-Logger/commit/622a10de674a8dc7497a92e2e26ef2b954d169e1)
+- fix(export): :adhesive_bandage: preserve the SVG root when adding namespaces [`810bde1`](https://github.com/phazingazrael/Terra-Logger/commit/810bde18cf534f207d47ea76885c3bbd4b03631c)
+- fix(export): :adhesive_bandage: resolve NPC folders and portraits from final paths [`15d11dd`](https://github.com/phazingazrael/Terra-Logger/commit/15d11ddd85a849c52c69c49a710978ef86e1646a)
+- refactor(export): :recycle: simplify Markdown rendering helpers [`038be52`](https://github.com/phazingazrael/Terra-Logger/commit/038be52d75d520de66c90c021a6c92805ffb9c9f)
+- refactor(atlas): :recycle: use domain types in render plugins [`701345a`](https://github.com/phazingazrael/Terra-Logger/commit/701345ab53a9add0d240b26891cf7fa7d182cde7)
+- refactor(atlas): :recycle: simplify conversion and editor helpers [`97fdb28`](https://github.com/phazingazrael/Terra-Logger/commit/97fdb28998520e422a12a2016998631169286787)
+- refactor(views): :recycle: simplify entity page state and edit controls [`d55f3fc`](https://github.com/phazingazrael/Terra-Logger/commit/d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6)
+
+## 1.0.9
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.9)
+
+5 November 2026
+
+November 5, 2026
+
+- chore(release): :memo: refresh generated change metadata [`1286cec`](https://github.com/phazingazrael/Terra-Logger/commit/1286cec226ef9f077ba747c0a09c2c25b3fed34f)
+- docs: :memo: update completed features and roadmap items [`0b359ae`](https://github.com/phazingazrael/Terra-Logger/commit/0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9)
+- style: :art: tidy source comments and formatting [`432cd1e`](https://github.com/phazingazrael/Terra-Logger/commit/432cd1ede2dd50960660786ef8abd9958d14f262)
+- fix(ui): :lipstick: adjust list spacing and hide duplicate tag labels [`cacbfe5`](https://github.com/phazingazrael/Terra-Logger/commit/cacbfe52f654533c15a387aa79170b575b5bce37)
+- fix(atlas): :adhesive_bandage: avoid rewriting rich text after editor updates [`6468868`](https://github.com/phazingazrael/Terra-Logger/commit/6468868ac5ff8411b1f889ca2f9a00eddfd26693)
+- fix(atlas): :adhesive_bandage: use populated matching-note description fields [`d2bde12`](https://github.com/phazingazrael/Terra-Logger/commit/d2bde129e1ab8636dff2d0fc811de4c45a322e2c)
+- fix(export): :adhesive_bandage: keep the BotI note fallback as a block array [`622a10d`](https://github.com/phazingazrael/Terra-Logger/commit/622a10de674a8dc7497a92e2e26ef2b954d169e1)
+- fix(export): :adhesive_bandage: preserve the SVG root when adding namespaces [`810bde1`](https://github.com/phazingazrael/Terra-Logger/commit/810bde18cf534f207d47ea76885c3bbd4b03631c)
+- fix(export): :adhesive_bandage: resolve NPC folders and portraits from final paths [`15d11dd`](https://github.com/phazingazrael/Terra-Logger/commit/15d11ddd85a849c52c69c49a710978ef86e1646a)
+- refactor(export): :recycle: simplify Markdown rendering helpers [`038be52`](https://github.com/phazingazrael/Terra-Logger/commit/038be52d75d520de66c90c021a6c92805ffb9c9f)
+- refactor(atlas): :recycle: use domain types in render plugins [`701345a`](https://github.com/phazingazrael/Terra-Logger/commit/701345ab53a9add0d240b26891cf7fa7d182cde7)
+- refactor(atlas): :recycle: simplify conversion and editor helpers [`97fdb28`](https://github.com/phazingazrael/Terra-Logger/commit/97fdb28998520e422a12a2016998631169286787)
+- refactor(views): :recycle: simplify entity page state and edit controls [`d55f3fc`](https://github.com/phazingazrael/Terra-Logger/commit/d55f3fcdb4a356cf0586a8a8d04eeb70599a0aa6)
+- refactor(lists): :recycle: simplify NPC filters and country access [`358936f`](https://github.com/phazingazrael/Terra-Logger/commit/358936f4b912036471e3c0657ae8159ac4f06afc)
+- refactor(catalogs): :recycle: clarify settings state and section types [`8cf312e`](https://github.com/phazingazrael/Terra-Logger/commit/8cf312ec2acbf1ed86a3a8add49d6ebc37aa4244)
+- refactor(npc): :recycle: simplify npc creation and generation helpers [`0a34924`](https://github.com/phazingazrael/Terra-Logger/commit/0a349245fddc5bd37dda2982f56c2a1b97d3cecd)
+- refactor(import): :recycle: simplify the map upload component [`0294bdd`](https://github.com/phazingazrael/Terra-Logger/commit/0294bdde74345eb2127a2d6603046659f806588d)
+- refactor(navigation): :recycle: render fixed entity links directly [`0e6f27e`](https://github.com/phazingazrael/Terra-Logger/commit/0e6f27ee8f8e0866ace4344eb26e1a6a55a06e23)
+- fix(coa): :sparkles: generate missing coats of arms locally [`e0b8cc4`](https://github.com/phazingazrael/Terra-Logger/commit/e0b8cc4c66dcdbb1823c20c45b40fd49606b53a1)
+
+October 31, 2026
+
+- Update HomePage.tsx [`39ef9ee`](https://github.com/phazingazrael/Terra-Logger/commit/39ef9ee12e28ce9a0e15e8bc82e8832ddd513ffc)
+
+August 16, 2026
+
+- Update releaseChanges.ts [`c10708a`](https://github.com/phazingazrael/Terra-Logger/commit/c10708a3cf812a31ea1f50443f818ffc94ff4a09)
+
+August 16, 2026
+
+- fix: :zap: temp fix for svg map and scrolling lag [`1efee9a`](https://github.com/phazingazrael/Terra-Logger/commit/1efee9a0a521c74f26b760413bb06d48da4cb1be)
+
+August 3, 2026
+
+- docs: update what's new [`e72786d`](https://github.com/phazingazrael/Terra-Logger/commit/e72786d4ef964b147dc13da8ac543a604926b56f)
+- ♻️ refactor(virtualization): isolate NPC virtualization behavior from shared card grids [`b4e90b3`](https://github.com/phazingazrael/Terra-Logger/commit/b4e90b30e250e1e81650d27e5257b8dcb869d6ed)
+- fix: :bug: fix 'whats new' to properly select highlighted commit [`7015145`](https://github.com/phazingazrael/Terra-Logger/commit/7015145495293be1abc485b50e7f191df8a8c999)
+- fix: :bug: ensure nav trail for npcs renders properly. [`8b2e717`](https://github.com/phazingazrael/Terra-Logger/commit/8b2e7179a4c9a4fc1d808a28748beae07fb8667f)
+- ⚡ perf(npc): simplify NPC card rendering [`d779038`](https://github.com/phazingazrael/Terra-Logger/commit/d779038f7e18adbd95b40e392ce9c88798c8db5d)
+- ⚡ perf(npc): stabilize virtualized NPC scrolling [`a32236c`](https://github.com/phazingazrael/Terra-Logger/commit/a32236c46ad5446a79fb496bc628364f975af345)
+- ⚡ perf(npc): improve NPC filtering and page state [`d862cf4`](https://github.com/phazingazrael/Terra-Logger/commit/d862cf4d1edf8a03f386ea6eb89451749b8b9f1f)
+- ✨ feat(npc): associate generated NPCs with religions [`372d5e0`](https://github.com/phazingazrael/Terra-Logger/commit/372d5e0bf83000dc658de485bcd1b0d8b101b914)
+
+August 2, 2026
+
+- fix: :fire: Remove unused import preventing build [`3f4da8f`](https://github.com/phazingazrael/Terra-Logger/commit/3f4da8f112995c70a8288490fb265e7d0a8dc807)
+- chore(release): prepare version 1.0.8 [`14a2f74`](https://github.com/phazingazrael/Terra-Logger/commit/14a2f740524525b5598083cae6dc75ab38e16601)
+- docs: update Terra-Logger roadmap and feature status [`7fe724b`](https://github.com/phazingazrael/Terra-Logger/commit/7fe724b7ef8aabbed14a8405861548c975143aa4)
+- refactor(react): remove dead code and apply component cleanup [`544ab5d`](https://github.com/phazingazrael/Terra-Logger/commit/544ab5d4d21f149f15d22a7498ccb34b82eb3b54)
+- feat(ui): add NPC pages, routes, and navigation [`ccfb93c`](https://github.com/phazingazrael/Terra-Logger/commit/ccfb93c4500cd0428736822432dc94aaa43637e1)
+- feat(import): add NPC population and import diagnostics [`749b1b0`](https://github.com/phazingazrael/Terra-Logger/commit/749b1b0970e3cbe7620d68ce83859f2e6b4942fb)
+- feat(export): add NPC exports and improve Markdown Builder [`b1cbccd`](https://github.com/phazingazrael/Terra-Logger/commit/b1cbccd19e4e38e00bc8026b637cd86ef86e4373)
+- feat(atlas): expand document editing and add NPC support [`3b20c81`](https://github.com/phazingazrael/Terra-Logger/commit/3b20c8178efe4e018cdb7a142a151b35dcc7db48)
+- feat(npc): implement NPC generation and management [`1668437`](https://github.com/phazingazrael/Terra-Logger/commit/16684376869ee052a2b6779990b132f7800e3066)
+- feat(generators): add configurable NPC generation catalogs [`ff2dbee`](https://github.com/phazingazrael/Terra-Logger/commit/ff2dbee6930656af7da0b40154d685b977533fcf)
+- refactor(db): add NPC persistence and split database services [`1195435`](https://github.com/phazingazrael/Terra-Logger/commit/1195435bbfef0987acadb6ab4f1df675f218b405)
+
+July 27, 2026
+
+- Update App.css [`ede9ab6`](https://github.com/phazingazrael/Terra-Logger/commit/ede9ab6bc941c48ece98c745dd2b6accb09cceca)
+
+July 25, 2026
+
+- Fix Demonkin naming [`ed551cd`](https://github.com/phazingazrael/Terra-Logger/commit/ed551cd9b292c879bef5949d48a4c640b01b356e)
+
+July 21, 2026
+
+- refactor(NPC Generation): :memo: Refactor SSNG to be more inline with Terra-Logger standards [`d34f9ef`](https://github.com/phazingazrael/Terra-Logger/commit/d34f9ef8eadf56f436b10fd86b0eff08b545709a)
+- Update Export to use UUIDV7 instead of V4. [`f8ffb5e`](https://github.com/phazingazrael/Terra-Logger/commit/f8ffb5e813cfdd3400d3187d055935ff0b5e9035)
+
+July 20, 2026
+
+- perf: :zap: improve rendering performance, virtualize lists, and harden map import [`c94893c`](https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c)
+
+July 20, 2026
+
+- Update analytics.tsx [`7b7b1c1`](https://github.com/phazingazrael/Terra-Logger/commit/7b7b1c1672067475f87b5434dcb6cf3048a4b8be)
+- Update analytics.tsx [`dc7aa87`](https://github.com/phazingazrael/Terra-Logger/commit/dc7aa87f52b1dac44f1edc9d7b1668315f1f2d46)
+- refactor: :memo: Rewrite Home and About pages. [`b096b9b`](https://github.com/phazingazrael/Terra-Logger/commit/b096b9b41bb1a9a36366f354d7af4d4af5ddebc1)
+- Update package.json [`e341f76`](https://github.com/phazingazrael/Terra-Logger/commit/e341f76de08e59c2676332255b110393864c2c99)
+- docs: update changelog for 1.0.7 [`6ef535b`](https://github.com/phazingazrael/Terra-Logger/commit/6ef535bf69db1e295f45b9d97a3bf7082aded0a5)
+- Merge branch 'main' of https://github.com/phazingazrael/Terra-Logger [`deea201`](https://github.com/phazingazrael/Terra-Logger/commit/deea201cbc0c0c84748767063f9a1da19ee0660c)
 - fix(Atlas Doc System): :ambulance: Add missing data from Alas Content [`47834cc`](https://github.com/phazingazrael/Terra-Logger/commit/47834cc2d7b0d59597df35ba1cf74b207e12811f)
+- Code Cleanup [`f89c9e0`](https://github.com/phazingazrael/Terra-Logger/commit/f89c9e0a6ef38eb5bebf3907cef39e489ab676c0)
+
+July 18, 2026
+
 - refactor: :zap: Move Map Uploading to Web Workers for performance [`39b0c9f`](https://github.com/phazingazrael/Terra-Logger/commit/39b0c9fad22424c38811ba9297ca1f082c0f7c30)
 - fix: :bug: Fix export file names [`5e76df0`](https://github.com/phazingazrael/Terra-Logger/commit/5e76df0f791580a6a6f56ab1204c179cee9e6d5d)
+
+July 18, 2026
+
 - refactor(Atlas Doc System): :zap: Move Export function to Web Worker for performance [`0e78b7f`](https://github.com/phazingazrael/Terra-Logger/commit/0e78b7f28e21283a07ce976c27bc1ddc9c402c64)
+- style: :art: Switch from React-Icons to Phosphor-Icons [`9694852`](https://github.com/phazingazrael/Terra-Logger/commit/9694852440677e647054c9185360d4f12301ac8a)
 - refactor(Atlas Doc System): :construction: fix BOTI Template exporting to use Atlas Doc data [`3141c90`](https://github.com/phazingazrael/Terra-Logger/commit/3141c90c3e3635fefeedc36a3407ba1e547990d0)
+- correct template typo [`cffc11c`](https://github.com/phazingazrael/Terra-Logger/commit/cffc11c7d75dfb5ba6a64bc36f4c1b03eb0271c6)
+
+July 15, 2026
+
 - refactor(Atlas Doc System): :construction: Fix 'default' template exporting to use Atlas Doc data. [`f6ab853`](https://github.com/phazingazrael/Terra-Logger/commit/f6ab853be8ca6696dabd39e813851b13a10c32e5)
+
+July 15, 2026
+
+- chore: :arrow_up: Upgrade to typescript 7 [`e757d2c`](https://github.com/phazingazrael/Terra-Logger/commit/e757d2c534db677d52f642b0bca174a4429ec544)
 - fix: :bug: Fix bug in map upload that broke finding a religion's origin. [`f20b2e8`](https://github.com/phazingazrael/Terra-Logger/commit/f20b2e8a3752d2308c24eb50e735b4b3ac925689)
 - fix(Atlas Doc System): :bug: Fix auto focus bug in split lists. [`e99b1d7`](https://github.com/phazingazrael/Terra-Logger/commit/e99b1d7e1c2eb80cb52391b37b8812dbfa4367c6)
+
+June 22, 2026
+
+- Delete .vscode directory [`d84a9d5`](https://github.com/phazingazrael/Terra-Logger/commit/d84a9d50c8cb7694edf9f4fb46c674de9f6252b9)
+- Update .gitignore [`dea52d2`](https://github.com/phazingazrael/Terra-Logger/commit/dea52d2c66d3112c1e93b57e51f7100eccbd6ecd)
+- Code Cleanup [`90460e8`](https://github.com/phazingazrael/Terra-Logger/commit/90460e814264db1d561c75aabcbae9fe4c04022d)
+- chore: :fire: Code Cleanup, Remove unneeded files and dependencies [`0ef3e6e`](https://github.com/phazingazrael/Terra-Logger/commit/0ef3e6ee86e9535971d966e4e87ca9a7dff0df0d)
 - feat(atlas): complete entity editing workflow [`ed11a68`](https://github.com/phazingazrael/Terra-Logger/commit/ed11a68ecdf6facbcec98ed59c0787f9ff9ece86)
+
+June 17, 2026
+
+- Minor fixes to allow Vercel Build [`2a13d54`](https://github.com/phazingazrael/Terra-Logger/commit/2a13d544c794707e5160ed1f89ae4f488e66cb95)
+- chore: :memo: Update homepage to clarify AFMG 1.124.3 specifics. [`9c06417`](https://github.com/phazingazrael/Terra-Logger/commit/9c06417205fee27b9ca92e6c93d6c588d262fd3b)
+
+June 15, 2026
+
+- chore: :wastebasket: Code Cleanup, Remove unused css and dependencies. [`2ffd3a7`](https://github.com/phazingazrael/Terra-Logger/commit/2ffd3a75979c3eec21a1f35a2aa22a6dc0dea924)
+- Update .gitignore [`0a168a7`](https://github.com/phazingazrael/Terra-Logger/commit/0a168a7623ec2a2dba87cf068ad0b8043812f123)
+- Update .gitignore [`d1e8bfb`](https://github.com/phazingazrael/Terra-Logger/commit/d1e8bfb69e513148cab6f16c566308844e94ba9a)
+
+June 9, 2026
+
 - feat(Atlas Doc System): :sparkles: Replace JSONUI functionality [`811a72b`](https://github.com/phazingazrael/Terra-Logger/commit/811a72b59e38de49ab59849c244d968d4bd8aa24)
+
+June 8, 2026
+
+- Update Religion Terms [`5468941`](https://github.com/phazingazrael/Terra-Logger/commit/5468941f26a6963664fd5c62b328e513d767b3a8)
+
+June 5, 2026
+
+- attempt to fix vercel 404 on direct page navigation [`0e41f80`](https://github.com/phazingazrael/Terra-Logger/commit/0e41f80c3823c676d2fbfdd6501ec4079119da5f)
+
+June 3, 2026
+
+- chore: :bug: Fix version reading to properly display active version. [`df37764`](https://github.com/phazingazrael/Terra-Logger/commit/df3776449fd84080d0f7db96bd8a844c9c81e92e)
+
+May 31, 2026
+
+- fix: :bug: Fix build after move to Vite8 [`a106e3e`](https://github.com/phazingazrael/Terra-Logger/commit/a106e3ede652493a36c27d85ed5993cabf8fcf89)
+
+April 11, 2026
+
+- chore(cleanup): :art: Miscelaneous Cleanup of code and files. [`c7ee55c`](https://github.com/phazingazrael/Terra-Logger/commit/c7ee55cc456d4333ffcb3394196e40fc64c9feb4)
+
+April 2, 2026
+
+- Update generate.ts [`dba6138`](https://github.com/phazingazrael/Terra-Logger/commit/dba61385ca73c6a5c3d8f3b6150c4b4d40d7f9b3)
+
+March 21, 2026
+
+- chore: Update Dependencies [`c67d105`](https://github.com/phazingazrael/Terra-Logger/commit/c67d105a85056f202b658da75840eeb701cc2cfb)
+- fix: :zap: Improve Cities Loading speed [`9fc22c5`](https://github.com/phazingazrael/Terra-Logger/commit/9fc22c5e1e072914db5a0e7e9a62092364f882f4)
+- refactor: :heavy_plus_sign: Add City Card Skeleton [`d6ff318`](https://github.com/phazingazrael/Terra-Logger/commit/d6ff318f501ac3f4b3df7dd7080cc21d741d5096)
+- fix: :bug: fix invalid children elements that result in hydration errors [`5e2f859`](https://github.com/phazingazrael/Terra-Logger/commit/5e2f859f72f96ddc36c77927413d573d58e716e1)
+- update .vscode\\settings.json [`d571587`](https://github.com/phazingazrael/Terra-Logger/commit/d571587b09554b857bcb4be0f6a09fd93cf15bc6)
+- fix: :bug: Reset scroll on page change [`1cba846`](https://github.com/phazingazrael/Terra-Logger/commit/1cba84674778a37038ca8c53c26995c12a3dd228)
+
+March 21, 2026
+
+- fix: :bug: Fix Hydration fallback error [`9163502`](https://github.com/phazingazrael/Terra-Logger/commit/9163502914aae875c098135dc66ce50c18f0f508)
+
+March 20, 2026
+
+- Update CHANGELOG.md [`1c73ad0`](https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9)
 
 ## 1.0.7
 
