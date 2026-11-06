@@ -19,13 +19,18 @@ function decodeDataUrl(dataUrl: string): Uint8Array | null {
   return bytes;
 }
 
-export function getNPCExportPortraitPath(npc: TLNPC): string {
+export function getNPCExportPortraitPath(npc: TLNPC, documentPath = "npcs/npc.md"): string {
   if (npc.portrait.kind === "url") return npc.portrait.value;
+  // Portrait assets stay at the archive root even when NPC documents move into subfolders.
+  const folders = documentPath.replace(/\\/g, "/").split("/").slice(0, -1);
+  const depth = folders.reduce((depth, folder) =>
+    !folder || folder === "." ? depth : folder === ".." ? Math.max(0, depth - 1) : depth + 1, 0);
+  const root = "../".repeat(depth);
   if (npc.portrait.kind === "uploaded") {
     const extension = extensionByMimeType[npc.portrait.mimeType] ?? "bin";
-    return `../assets/npc/portraits/${safeId(npc._id)}.${extension}`;
+    return `${root}assets/npc/portraits/${safeId(npc._id)}.${extension}`;
   }
-  return `../${NPC_PLACEHOLDER_EXPORT_PATH}`;
+  return `${root}${NPC_PLACEHOLDER_EXPORT_PATH}`;
 }
 
 export function createNPCPortraitExportFiles(npcs: readonly TLNPC[]): FileSpec[] {

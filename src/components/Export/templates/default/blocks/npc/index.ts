@@ -60,9 +60,9 @@ const profile: MarkdownBlock = {
   ].join("\n")
 };
 const portrait: MarkdownBlock = {
-  id: "default.npc.portrait", render: ({ entity }) => {
+  id: "default.npc.portrait", render: ({ entity, documentPath }) => {
     const npc = entity as unknown as TLNPC;
-    return [`## Portrait`, `![${stringValue(entity.name, "NPC portrait")}](${getNPCExportPortraitPath(npc)})`].join("\n\n");
+    return [`## Portrait`, `![${stringValue(entity.name, "NPC portrait")}](${getNPCExportPortraitPath(npc, documentPath)})`].join("\n\n");
   }
 };
 const relationships: MarkdownBlock = {

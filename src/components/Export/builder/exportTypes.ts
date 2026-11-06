@@ -18,6 +18,7 @@ export type ExportContext = {
   templateId: ExportTemplateId;
   sourceType: ExportSourceType;
   entity: ExportEntity;
+  documentPath?: string;
 };
 
 export type MarkdownBlock = {

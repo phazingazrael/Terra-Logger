@@ -7,8 +7,8 @@ import type { TLNPC } from "../../../../../../definitions/TerraLogger";
 const name = (value: unknown) => typeof value === "string" ? value : String((value as { name?: unknown })?.name ?? "—");
 
 export const botiNPCInfoboxBlock: MarkdownBlock = {
-  id: "boti.npc.infobox", render: ({ entity }) => {
-    const image = getNPCExportPortraitPath(entity as unknown as TLNPC);
+  id: "boti.npc.infobox", render: ({ entity, documentPath }) => {
+    const image = getNPCExportPortraitPath(entity as unknown as TLNPC, documentPath);
     return [
       `# ${String(entity.fullName ?? entity.name ?? "Unnamed NPC")}`,
       `> [!infobox]`,

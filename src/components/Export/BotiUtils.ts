@@ -13,23 +13,27 @@ import type { TLNote } from "../../definitions/TerraLogger";
  * This is a pure function returning a new array.
  */
 export function remapPathsForBOTI(files: FileSpec[]): FileSpec[] {
-  return files.map((f) => {
-    let p = f.path;
+  return files.map((f) => ({ ...f, path: getBotiExportPath(f.path) }));
+}
 
-    // Move core collections into BOTI folders
-    if (p.startsWith("cities/"))
-      p = p.replace(/^cities\//, `World/06. Cities/`);
-    else if (p.startsWith("countries/"))
-      p = p.replace(/^countries\//, `World/04. Countries/`);
-    else if (p.startsWith("notes/"))
-      p = p.replace(/^notes\//, `World/16. Notes/`);
-    else if (p.startsWith("cultures/"))
-      p = p.replace(/^cultures\//, `World/12. Groups/Cultures/`);
-    else if (p.startsWith("religions/"))
-      p = p.replace(/^religions\//, `World/12. Groups/Religions/`);
+export function getBotiExportPath(path: string): string {
+  let file_path = path;
 
-    return { ...f, path: p };
-  });
+  // Move core collections into BOTI folders
+  if (file_path.startsWith("cities/"))
+    file_path = file_path.replace(/^cities\//, `World/06. Cities/`);
+  else if (file_path.startsWith("countries/"))
+    file_path = file_path.replace(/^countries\//, `World/04. Countries/`);
+  else if (file_path.startsWith("notes/"))
+    file_path = file_path.replace(/^notes\//, `World/16. Notes/`);
+  else if (file_path.startsWith("cultures/"))
+    file_path = file_path.replace(/^cultures\//, `World/12. Groups/Cultures/`);
+  else if (file_path.startsWith("religions/"))
+    file_path = file_path.replace(/^religions\//, `World/12. Groups/Religions/`);
+  else if (file_path.startsWith("npcs/"))
+    file_path = file_path.replace(/^npcs\//, `World/13. NPCs/`);
+
+  return file_path;
 }
 
 /**
@@ -70,7 +74,7 @@ export function makeZipName(
   const safeMapName = sanitizeFilenamePart(mapName || "Terra Logger Export");
 
   if (isBotiTemplate(templateName)) {
-    return `${safeMapName} Vault ${timestamp}.zip`;
+    return `${safeMapName}_Boti_Vault_${timestamp}.zip`;
   }
 
   const explicitName = String(zipName ?? "").trim();
@@ -79,7 +83,7 @@ export function makeZipName(
     return explicitName.endsWith(".zip") ? explicitName : `${explicitName}.zip`;
   }
 
-  return `${safeMapName} ${timestamp}.zip`;
+  return `${safeMapName}_${timestamp}.zip`;
 }
 
 function formatExportTimestamp(date: Date): string {
