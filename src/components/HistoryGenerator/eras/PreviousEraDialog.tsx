@@ -25,8 +25,7 @@ import {
 type EraFormState = {
 	name: string;
 	shortName: string;
-	firstYear: string;
-	finalYear: string;
+	duration: string;
 	description: string;
 };
 
@@ -39,22 +38,12 @@ function validate(form: EraFormState): {
 	const errors: EraFormErrors = {};
 	const name = form.name.trim();
 	const shortName = form.shortName.trim();
-	const firstYear = Number(form.firstYear);
-	const finalYear = Number(form.finalYear);
+	const duration = Number(form.duration);
 
 	if (!name) errors.name = "Era name is required.";
-	if (!shortName)
-		errors.shortName = "A short name or abbreviation is required.";
-	if (!Number.isInteger(firstYear))
-		errors.firstYear = "First year must be a whole number.";
-	if (!Number.isInteger(finalYear))
-		errors.finalYear = "Final year must be a whole number.";
-	if (
-		Number.isInteger(firstYear) &&
-		Number.isInteger(finalYear) &&
-		finalYear < firstYear
-	) {
-		errors.finalYear = "Final year cannot be earlier than the first year.";
+	if (!shortName) errors.shortName = "A short name or abbreviation is required.";
+	if (!Number.isSafeInteger(duration) || duration < 1) {
+		errors.duration = "Duration must be a positive whole number of years.";
 	}
 
 	if (Object.keys(errors).length) return { errors };
@@ -63,8 +52,8 @@ function validate(form: EraFormState): {
 		input: {
 			name,
 			shortName,
-			firstYear,
-			finalYear,
+			firstYear: 1,
+			finalYear: duration,
 			description: form.description.trim() || undefined,
 		},
 	};
@@ -112,7 +101,7 @@ const AffectedNPCList = memo(function AffectedNPCList({
 					Age
 				</Typography>
 				<Typography variant="caption" fontWeight={700} textAlign="right">
-					Birth year
+					Years before
 				</Typography>
 			</Box>
 			<Box
@@ -173,7 +162,7 @@ const AffectedNPCList = memo(function AffectedNPCList({
 									color="text.secondary"
 									textAlign="right"
 								>
-									{draft.birthTimelineYear}
+									{draft.yearsBeforeCurrentEra}
 								</Typography>
 							</Box>
 						);
@@ -192,8 +181,7 @@ export function PreviousEraDialog() {
 	const formKey = request?.id ?? "closed";
 	const nameRef = useRef<HTMLInputElement>(null);
 	const shortNameRef = useRef<HTMLInputElement>(null);
-	const firstYearRef = useRef<HTMLInputElement>(null);
-	const finalYearRef = useRef<HTMLInputElement>(null);
+	const durationRef = useRef<HTMLInputElement>(null);
 	const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
 	useEffect(
@@ -212,14 +200,14 @@ export function PreviousEraDialog() {
 		[],
 	);
 
-	const birthYearRange = useMemo(() => {
+	const birthOffsetRange = useMemo(() => {
 		if (!request?.drafts.length) return undefined;
 
 		let oldest = Number.POSITIVE_INFINITY;
 		let newest = Number.NEGATIVE_INFINITY;
 		for (const draft of request.drafts) {
-			oldest = Math.min(oldest, draft.birthTimelineYear);
-			newest = Math.max(newest, draft.birthTimelineYear);
+			oldest = Math.min(oldest, draft.yearsBeforeCurrentEra);
+			newest = Math.max(newest, draft.yearsBeforeCurrentEra);
 		}
 
 		return { oldest, newest };
@@ -238,8 +226,7 @@ export function PreviousEraDialog() {
 		const form: EraFormState = {
 			name: nameRef.current?.value ?? "",
 			shortName: shortNameRef.current?.value ?? "",
-			firstYear: firstYearRef.current?.value ?? "",
-			finalYear: finalYearRef.current?.value ?? "",
+			duration: durationRef.current?.value ?? "",
 			description: descriptionRef.current?.value ?? "",
 		};
 		const result = validate(form);
@@ -297,13 +284,13 @@ export function PreviousEraDialog() {
 							</Stack>
 							<AffectedNPCList request={request} />
 						</Box>
-						{birthYearRange ? (
+						{birthOffsetRange ? (
 							<Typography variant="body2" color="text.secondary">
-								Unresolved births span absolute timeline year{" "}
-								{birthYearRange.oldest}
-								{birthYearRange.oldest === birthYearRange.newest
-									? "."
-									: ` through ${birthYearRange.newest}.`}
+								Unresolved births occurred{" "}
+								{birthOffsetRange.oldest}
+								{birthOffsetRange.oldest === birthOffsetRange.newest
+									? " years before the current era."
+									: ` to ${birthOffsetRange.newest} years before the current era.`}
 							</Typography>
 						) : null}
 						<Divider />
@@ -331,24 +318,14 @@ export function PreviousEraDialog() {
 						/>
 						<Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
 							<TextField
-								inputRef={firstYearRef}
-								label="First year"
+								inputRef={durationRef}
+								label="Duration (years)"
 								type="number"
-								defaultValue={request.defaultFirstYear}
-								error={Boolean(errors.firstYear)}
-								helperText={errors.firstYear}
-								required
-								fullWidth
-							/>
-							<TextField
-								inputRef={finalYearRef}
-								label="Final year"
-								type="number"
-								defaultValue={request.defaultFinalYear}
-								error={Boolean(errors.finalYear)}
+								defaultValue={request.defaultDuration}
+								error={Boolean(errors.duration)}
 								helperText={
-									errors.finalYear ??
-									"Era length is calculated from this range."
+									errors.duration ??
+									"Years in this era, counted from 1."
 								}
 								required
 								fullWidth

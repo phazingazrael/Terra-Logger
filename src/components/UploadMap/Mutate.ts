@@ -13,6 +13,7 @@ import type { TLMapInfo } from "../../definitions/TerraLogger";
 import { generateNPCPopulation } from "../NPC/population/generatePopulation"
 import type { MapUploadDiagnostics, MapUploadGenerationOptions } from "./diagnostics";
 import { addUploadIssue } from "./diagnostics";
+import { applyImportedEconomy } from "./normalizeEconomy";
 
 export type MutateProgress = {
 	section: string;
@@ -35,6 +36,7 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 export type MutateDataOptions = {
 	generation: MapUploadGenerationOptions;
 	diagnostics: MapUploadDiagnostics;
+	prepareEntities?: (map: TLMapInfo) => void;
 };
 
 const mutateData = async (
@@ -238,6 +240,17 @@ const mutateData = async (
 	reportMutationProgress("SVG");
 
 	// The active-map layout owns background SVG rendering. Import only stores it.
+
+	options.prepareEntities?.(tempMap);
+
+	applyImportedEconomy(tempMap, data, Pack, (message) => {
+		addUploadIssue(options.diagnostics, {
+			severity: "warning",
+			phase: "Economy",
+			message,
+			continued: true,
+		});
+	});
 
 	tempMap.cities = tempMap.cities.map(
 		(city) => ensureAtlasContentForEntity("city", city).entity,

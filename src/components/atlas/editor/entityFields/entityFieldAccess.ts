@@ -78,6 +78,7 @@ export function createDefaultValueForField(
       return false;
 
     case "stringList":
+    case "tradeList":
     case "tagList":
     case "referenceList":
     case "objectList":

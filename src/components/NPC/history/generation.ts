@@ -1,3 +1,4 @@
+import { getMapEras, reflowMapEras } from "../../HistoryGenerator/eras/mapEras";
 import { queryDataFromStore } from "../../../db/interactions";
 import { initMapsDatabase } from "../../../db/connections/mapsDatabase";
 import type { TLNPC } from "../../../definitions/TerraLogger";
@@ -44,8 +45,9 @@ export async function buildNPCHistoryMapContext(mapId: string, npcs?: readonly T
 		listMapRows<TLNote>("notes", mapId),
 		npcs ? Promise.resolve([...npcs]) : listMapRows<TLNPC>("npcs", mapId),
 	]);
+	const map = mapRows[0] ? reflowMapEras(mapRows[0]) : undefined;
 	return {
-		map: mapRows[0],
+		map,
 		cities,
 		countries,
 		cultures,
@@ -53,15 +55,16 @@ export async function buildNPCHistoryMapContext(mapId: string, npcs?: readonly T
 		notes,
 		notesByNPCId: matchNotesToNPCs(loadedNPCs, notes),
 		lastGeneratedYearByNPCId: new Map(),
-		previousEras: mapRows[0]?.historyGenerator?.previousEras ?? [],
-		currentEraMinimumYear: mapRows[0]?.historyGenerator?.currentEraMinimumYear ?? 0,
+		previousEras: map?.historyGenerator?.previousEras ?? [],
+		currentEraMinimumYear: map?.historyGenerator?.currentEraMinimumYear ?? 0,
 	};
 }
 
 
 async function resolvePreviousErasForNPCs(mapId: string, npcs: readonly TLNPC[]): Promise<NPCHistoryMapContext> {
 	let context = await buildNPCHistoryMapContext(mapId);
-	const currentYear = Number.isFinite(context.map?.settings.options.year) ? Math.floor(context.map!.settings.options.year) : 0;
+	const year = context.map?.settings.options.year;
+	const currentYear = year !== undefined && Number.isFinite(year) ? Math.floor(year) : 0;
 	let drafts = collectPreviousEraDrafts(npcs, currentYear, context.currentEraMinimumYear, context.previousEras);
 	while (drafts.length) {
 		await promptForPreviousEra(mapId, drafts);
@@ -86,7 +89,7 @@ export async function generateNPCHistoryForRecords(
 		yieldEvery: options.yieldEvery,
 		mapContext: context,
 	});
-	applyEraMetadataToNPCs(npcs, context.previousEras);
+	applyEraMetadataToNPCs(npcs, context.map ? getMapEras(context.map) : context.previousEras);
 	return diagnostics;
 }
 
@@ -105,7 +108,7 @@ export async function generateAndPersistNPCHistory(mapId: string, options: Persi
 		mapContext: context,
 	});
 
-	applyEraMetadataToNPCs(selected, context.previousEras);
+	applyEraMetadataToNPCs(selected, context.map ? getMapEras(context.map) : context.previousEras);
 
 	if (!selected.length) return diagnostics;
 	const db = await initMapsDatabase();

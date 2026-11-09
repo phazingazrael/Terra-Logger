@@ -1,4 +1,6 @@
 import { Button } from "@mui/material";
+import { EntityFieldEditor } from "../entityFields/EntityFieldEditor";
+import { getEntityFieldSchema } from "../entityFields/entityFieldCatalog";
 import type {
 	AtlasBlock,
 	AtlasEditorContext,
@@ -25,13 +27,13 @@ export function SplitListBlockEditor({
 }: {
 	block: AtlasBlock;
 	context: AtlasEditorContext;
-	onChange: (block: AtlasBlock) => void;
+	onChange?: (block: AtlasBlock) => void;
 }) {
 	const groups = getGroups(block);
 	const isEntityBacked = block.dataMode === "entity";
 
 	function setGroups(nextGroups: SplitListGroup[]) {
-		onChange({
+		onChange?.({
 			...block,
 			props: {
 				...block.props,
@@ -99,15 +101,16 @@ export function SplitListBlockEditor({
 						context={context}
 						group={group}
 						groupIndex={groupIndex}
+						editableGroups={onChange !== undefined}
 						onChange={(nextGroup) => updateGroup(groupIndex, nextGroup)}
 						onRemove={() => removeGroup(groupIndex)}
 					/>
 				))}
 			</div>
 
-			<Button variant="outlined" type="button" onClick={addGroup}>
+			{onChange ? <Button variant="outlined" type="button" onClick={addGroup}>
 				Add sub-list
-			</Button>
+			</Button> : null}
 		</div>
 	);
 }
@@ -117,6 +120,7 @@ function SplitListGroupEditor({
 	context,
 	group,
 	groupIndex,
+	editableGroups,
 	onChange,
 	onRemove,
 }: {
@@ -124,6 +128,7 @@ function SplitListGroupEditor({
 	context: AtlasEditorContext;
 	group: SplitListGroup;
 	groupIndex: number;
+	editableGroups: boolean;
 	onChange: (group: SplitListGroup) => void;
 	onRemove: () => void;
 }) {
@@ -151,18 +156,18 @@ function SplitListGroupEditor({
 			<header className="atlas-split-list-group-editor__header">
 				<strong>{displayName || `Sub-list ${groupIndex + 1}`}</strong>
 
-				<Button variant="outlined" type="button" onClick={onRemove}>
+				{editableGroups ? <Button variant="outlined" type="button" onClick={onRemove}>
 					Remove sub-list
-				</Button>
+				</Button> : null}
 			</header>
 
-			<label>
+			{editableGroups ? <label>
 				Sub-list name
 				<input
 					value={displayName}
 					onChange={(event) => updateDisplayName(event.target.value)}
 				/>
-			</label>
+			</label> : null}
 
 			{isEntityBacked ? (
 				<EntityBackedSplitListGroupEditor context={context} group={group} />
@@ -246,6 +251,22 @@ function EntityBackedSplitListGroupEditor({
 				This sub-list is not connected to editable data. Remove it and add a new
 				sub-list.
 			</p>
+		);
+	}
+
+	const schema = getEntityFieldSchema(context.sourceType, entityPath);
+	if (schema?.editor === "tradeList") {
+		return (
+			<EntityFieldEditor
+				sourceType={context.sourceType}
+				entity={context.entity}
+				related={context.related}
+				economy={context.economy}
+				onRelatedUpdate={context.onRelatedUpdate}
+				schema={schema}
+				value={getValueAtPath(context.entity, entityPath)}
+				onChange={(value) => context.onEntityFieldChange({ path: entityPath, value })}
+			/>
 		);
 	}
 

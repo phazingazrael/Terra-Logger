@@ -83,5 +83,3 @@ self.onmessage = async (event: MessageEvent<ExportArchiveRequest>) => {
     });
   }
 };
-
-export { };

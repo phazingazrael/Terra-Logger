@@ -1,3 +1,5 @@
+import type { AtlasContent } from "./Atlas";
+
 export type TLHistoryEra = {
   id: string;
   name: string;
@@ -8,8 +10,20 @@ export type TLHistoryEra = {
   timelineStartYear: number;
   timelineEndYear: number;
   description?: string;
+  content?: AtlasContent;
   createdAt: string;
+  updatedAt?: string;
 };
+
+export type TLMapEra = Omit<TLHistoryEra, "createdAt"> & {
+  _id: string;
+  mapId: string;
+  status: "current" | "previous";
+  createdAt?: string;
+};
+
+export type TLCurrentHistoryEra = Pick<TLHistoryEra,
+  "id" | "description" | "content" | "updatedAt"> & { createdAt?: string };
 
 export type TLHistoryEraReference = {
   id: string;
@@ -20,5 +34,6 @@ export type TLHistoryEraReference = {
 
 export type TLMapHistoryConfiguration = {
   currentEraMinimumYear: number;
+  currentEra?: TLCurrentHistoryEra;
   previousEras: TLHistoryEra[];
 };

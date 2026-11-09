@@ -1,11 +1,23 @@
 import type { ExportSourceType } from "./exportTypes";
 import {
+  formatTradeEntry,
+  isEconomyTradePath,
+  normalizeTradeEntries,
+  resolveTradeGood,
+} from "../../Util/economy";
+import type { TLMapEconomy } from "../../../definitions/Economy";
+import {
   markdownHeading,
   markdownList,
   markdownTable,
   readPath,
   readString,
 } from "./markdownUtils";
+
+type AtlasExportData = {
+  Notes?: unknown[];
+  MapInfo?: { economy?: TLMapEconomy };
+};
 
 type AtlasExportContent = {
   sections?: AtlasExportSection[];
@@ -68,9 +80,7 @@ export function renderAtlasSectionByLabelToMarkdown({
 }: {
   entity: Record<string, unknown>;
   sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
+  data?: AtlasExportData;
   labels: string[];
   headingLevel?: number;
 }): string {
@@ -114,9 +124,7 @@ export function renderEntityDescriptionBodyToMarkdown({
 }: {
   entity: Record<string, unknown>;
   sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
+  data?: AtlasExportData;
 }): string {
   const body = renderEntityDescriptionBlock(entity, sourceType, data).trim();
 
@@ -178,11 +186,29 @@ function renderAtlasSectionToMarkdown({
   section: AtlasExportSection;
   entity: Record<string, unknown>;
   sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
+  data?: AtlasExportData;
   headingLevel: number;
 }): string {
+  const economy = entity.economy;
+  if ((sourceType === "city" || sourceType === "country") &&
+    economy && typeof economy === "object" && !Array.isArray(economy)) {
+    const source = economy as Record<string, unknown>;
+    const goods = data?.MapInfo?.economy?.goods;
+
+    // Format a copy so every bound export path sees the same catalog labels.
+    // Stored references and the caller's entity remain unchanged.
+    entity = {
+      ...entity,
+      economy: {
+        ...source,
+        imports: normalizeTradeEntries(source.imports).map((entry) =>
+          formatTradeEntry(entry, resolveTradeGood(entry, goods))),
+        exports: normalizeTradeEntries(source.exports).map((entry) =>
+          formatTradeEntry(entry, resolveTradeGood(entry, goods))),
+      },
+    };
+  }
+
   const title = section.label?.trim() || section.title?.trim() || "";
   const blocks = Array.isArray(section.blocks) ? section.blocks : [];
 
@@ -214,9 +240,7 @@ function renderGenericAtlasBlockToMarkdown({
   block: AtlasExportBlock;
   entity: Record<string, unknown>;
   sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
+  data?: AtlasExportData;
 }): string {
   if (isDescriptionBlock(block)) {
     return renderEntityDescriptionBlock(entity, sourceType, data);
@@ -326,7 +350,7 @@ function renderPotentialBoundBlock(
 
   if (!path) return "";
 
-  const value = readPath(entity, path);
+  const value = readAtlasEntityValue(entity, path);
 
   return renderBoundValueToMarkdown({
     label: block.label,
@@ -464,9 +488,7 @@ function normalizeEditorNotesBody(value: unknown): string {
 function renderEntityDescriptionBlock(
   entity: Record<string, unknown>,
   sourceType: ExportSourceType,
-  data?: {
-    Notes?: unknown[];
-  },
+  data?: AtlasExportData,
 ): string {
   if (sourceType === "note") {
     return normalizeBodyToMarkdown(
@@ -618,6 +640,16 @@ function getRowLabel(row: Record<string, unknown>): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function readAtlasEntityValue(
+  entity: Record<string, unknown>,
+  path: string,
+): unknown {
+  const value = readPath(entity, path);
+  return isEconomyTradePath(path)
+    ? normalizeTradeEntries(value).map((entry) => formatTradeEntry(entry))
+    : value;
+}
+
 function getAtlasRowValue(
   row: Record<string, unknown>,
   entity: Record<string, unknown>,
@@ -625,7 +657,7 @@ function getAtlasRowValue(
   const valueMode = String(row.valueMode ?? "");
 
   if (valueMode === "entity" && typeof row.value === "string") {
-    return readPath(entity, row.value);
+    return readAtlasEntityValue(entity, row.value);
   }
 
   if (valueMode === "static") {
@@ -633,19 +665,19 @@ function getAtlasRowValue(
   }
 
   if (typeof row.path === "string") {
-    return readPath(entity, row.path);
+    return readAtlasEntityValue(entity, row.path);
   }
 
   if (typeof row.entityPath === "string") {
-    return readPath(entity, row.entityPath);
+    return readAtlasEntityValue(entity, row.entityPath);
   }
 
   if (typeof row.valuePath === "string") {
-    return readPath(entity, row.valuePath);
+    return readAtlasEntityValue(entity, row.valuePath);
   }
 
   if (typeof row.value === "string" && valueMode === "path") {
-    return readPath(entity, row.value);
+    return readAtlasEntityValue(entity, row.value);
   }
 
   return row.value;
@@ -672,11 +704,14 @@ function renderAtlasGroup(
 
   const rows = renderPotentialRowsValue(rawRows, entity);
 
-  const rawChildren = getFirstPresentValue([
-    record.children,
-    record.items,
-    record.values,
-  ]);
+  const rawChildren = typeof record.entityPath === "string" &&
+    isEconomyTradePath(record.entityPath)
+    ? readAtlasEntityValue(entity, record.entityPath)
+    : getFirstPresentValue([
+      record.children,
+      record.items,
+      record.values,
+    ]);
 
   const children = renderPotentialListValue(rawChildren, entity);
 
@@ -782,11 +817,11 @@ function formatAtlasListItem(
     if (direct) return direct;
 
     if (typeof record.path === "string") {
-      return formatExportValue(readPath(entity, record.path));
+      return formatExportValue(readAtlasEntityValue(entity, record.path));
     }
 
     if (typeof record.entityPath === "string") {
-      return formatExportValue(readPath(entity, record.entityPath));
+      return formatExportValue(readAtlasEntityValue(entity, record.entityPath));
     }
 
     return formatExportObject(record);
@@ -1372,9 +1407,7 @@ export function renderUnhandledAtlasSectionsToMarkdown({
 }: {
   entity: Record<string, unknown>;
   sourceType: ExportSourceType;
-  data?: {
-    Notes?: unknown[];
-  };
+  data?: AtlasExportData;
   handledSectionLabels: string[];
   handledSectionClassNames?: string[];
   headingLevel?: number;

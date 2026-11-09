@@ -1,3 +1,8 @@
+import { useMemo } from "react";
+import { useActiveMap } from "../../../db/DataContext";
+import type { MapInf } from "../../../definitions/TerraLogger";
+import { getMapEras } from "../../HistoryGenerator/eras/mapEras";
+import { resolveHistoryEra } from "../../HistoryGenerator/eras/model";
 import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
 import type { NPCHistoryEntry } from "../../../definitions/TerraLogger";
 import { toFormalCase } from "../relationships/registry";
@@ -5,12 +10,20 @@ import { toFormalCase } from "../relationships/registry";
 type Props = { entries: readonly NPCHistoryEntry[]; embedded?: boolean };
 
 export function NPCHistoryTimeline({ entries, embedded = false }: Props) {
+	const map = useActiveMap<MapInf>();
+	const eras = useMemo(() => map ? getMapEras(map) : undefined, [map]);
 	const ordered = [...entries].sort((a, b) => {
 		const yearDelta =
 			(a.year ?? Number.MAX_SAFE_INTEGER) - (b.year ?? Number.MAX_SAFE_INTEGER);
 		if (yearDelta !== 0) return yearDelta;
 		return a.createdAt.localeCompare(b.createdAt);
 	});
+
+	function formatEntryYear(entry: NPCHistoryEntry): string {
+		if (entry.year === undefined) return "Year: Unknown";
+		const era = eras ? resolveHistoryEra(entry.year, eras) : entry.era;
+		return era ? `Year: ${era.year} ${era.shortName}` : `Year: ${entry.year}`;
+	}
 
 	if (!ordered.length) return null;
 
@@ -29,13 +42,7 @@ export function NPCHistoryTimeline({ entries, embedded = false }: Props) {
 						<Chip
 							size="small"
 							color="primary"
-							label={
-								entry.year === undefined
-									? "Year: Unknown"
-									: entry.era
-										? `Year: ${entry.era.year} ${entry.era.shortName}`
-										: `Year: ${entry.year}`
-							}
+							label={formatEntryYear(entry)}
 						/>
 						{entry.category ? (
 							<Chip size="small" label={toFormalCase(entry.category)} />

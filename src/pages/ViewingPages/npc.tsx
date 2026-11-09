@@ -1,3 +1,4 @@
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 import {
 	Alert,
 	Avatar,
@@ -19,9 +20,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-	AtlasRenderer,
 	PageEditor,
-	ensureNPCAtlasSystemSections,
 	getAtlasAdapter,
 	isAtlasContent,
 } from "../../components/atlas";
@@ -117,12 +116,9 @@ export default function NPCView() {
 	const content = useMemo<AtlasContent | null>(
 		() =>
 			npc
-				? ensureNPCAtlasSystemSections(
-						isAtlasContent(npc.content)
-							? npc.content
-							: adapter.createDefaultContent(npc),
-						npc,
-					)
+				? isAtlasContent(npc.content)
+					? npc.content
+					: adapter.createDefaultContent(npc)
 				: null,
 		[adapter, npc],
 	);
@@ -532,7 +528,7 @@ export default function NPCView() {
 						</Box>
 					</Stack>
 					<Divider sx={{ my: 3 }} />
-					<AtlasRenderer content={content} context={context} />
+					<AtlasView content={content} context={context} />
 				</Box>
 			</Box>
 		</Container>

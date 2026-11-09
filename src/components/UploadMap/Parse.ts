@@ -29,7 +29,7 @@ export const parseLoadedData = (data: string[]) => {
   let biomes: string[];
 
   // biome-ignore lint/style/useConst: Pack will possibly be modified in future updates.
-  let Pack = {
+  let Pack: Pack = {
     burgs: [], // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
     cells: {
       area: [], // number[] - cells area in pixels. Uint16Array
@@ -327,6 +327,38 @@ export const parseLoadedData = (data: string[]) => {
   // zones
   if (data[38]) {
     Pack.zones = JSON.parse(data[38]);
+  }
+
+  if (data[40]) {
+    Pack.cells.good = data[40].split(",").map(Number);
+  }
+
+  if (data[41]) {
+    const goods: unknown = JSON.parse(data[41]);
+    if (!Array.isArray(goods)) {
+      throw new Error("Invalid AFMG goods section: expected a list.");
+    }
+    Pack.goods = goods;
+  }
+
+  if (data[42]) {
+    const markets: unknown = JSON.parse(data[42]);
+    if (!Array.isArray(markets)) {
+      throw new Error("Invalid AFMG markets section: expected a list.");
+    }
+    Pack.markets = markets;
+  }
+
+  if (data[43]) {
+    const deals: unknown = JSON.parse(data[43]);
+    if (!Array.isArray(deals)) {
+      throw new Error("Invalid AFMG deals section: expected a list.");
+    }
+    Pack.deals = deals;
+  }
+
+  if (data[44]) {
+    Pack.cells.market = data[44].split(",").map(Number);
   }
 
   // "Serialized SVG", do this last

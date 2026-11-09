@@ -185,6 +185,7 @@ function DetailsRowValueEditor({
 				sourceType={context.sourceType}
 				entity={context.entity}
 				related={context.related}
+				economy={context.economy}
 				schema={schema}
 				value={resolvedValue}
 				onChange={(value) =>

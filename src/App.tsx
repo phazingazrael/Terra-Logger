@@ -95,6 +95,14 @@ const router = createBrowserRouter([
 						Component: m.default,
 					})),
 			},
+			{
+				path: "eras",
+				lazy: () => import("./pages/ErasPage/ErasPage").then((m) => ({ Component: m.default })),
+			},
+			{
+				path: "view_era/:_id",
+				lazy: () => import("./pages/ViewingPages/era").then((m) => ({ Component: m.default })),
+			},
 			// Viewing Pages
 			{
 				path: "view_city/:_id",

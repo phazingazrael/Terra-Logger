@@ -1,3 +1,5 @@
+import { findEconomyTradeBlock } from "../core/ensureEconomySummary";
+import { EconomyBlockEditor } from "./blockEditors/EconomyBlockEditor";
 import { type ReactNode, type SetStateAction, useEffect, useMemo, useReducer, useRef } from "react";
 import type {
 	AtlasAdapter,
@@ -16,6 +18,7 @@ import {
 	moveSection,
 	removeSection as removeSectionFromDocument,
 	replaceSection,
+	replaceBlock,
 } from "../core/documentTree";
 import { setValueAtPath } from "./entityFields/entityFieldAccess";
 import { SectionEditor } from "./SectionEditor";
@@ -107,7 +110,7 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 	context,
 	onSave,
 	onClose,
-	inlineSections = EMPTY_INLINE_SECTIONS,
+	inlineSections: providedInlineSections = EMPTY_INLINE_SECTIONS,
 	renderToolbarActions,
 }: Readonly<PageEditorProps<TSource>>) {
 	const activePanelBodyRef = useRef<HTMLDivElement | null>(null);
@@ -116,7 +119,7 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 		contentDraft: structuredClone(content),
 		entityDraft: structuredClone(context.entity),
 		relatedUpdates: [],
-		activeSectionId: inlineSections[0]?.id ?? content.sections[0]?.id ?? null,
+		activeSectionId: providedInlineSections[0]?.id ?? content.sections[0]?.id ?? null,
 		selectedSectionPresetIndex: "",
 	});
 
@@ -132,8 +135,6 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 
 	const sections = contentDraft.sections ?? EMPTY_SECTIONS;
 
-	const activeInlineSection =
-		inlineSections.find((section) => section.id === activeSectionId) ?? null;
 
 	const activeSection =
 		sections.find((section) => section.id === activeSectionId) ?? null;
@@ -150,22 +151,44 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 		() => ({
 			...context,
 			entity: entityDraft,
+			economy: relatedUpdates.find((update) => update.store === "maps")?.value ?? context.economy,
+			related: {
+				...context.related,
+				cities: context.related?.cities?.map((city) => {
+					if (context.sourceType === "city" && city._id === entityDraft._id) return entityDraft as typeof city;
+					const update = relatedUpdates.find((update) => update.store === "cities" && update.key === city._id);
+					return update?.store === "cities" ? update.value : city;
+				}),
+			},
 		}),
-		[context, entityDraft],
+		[context, entityDraft, relatedUpdates],
 	);
 
 	const editorContext: AtlasEditorContext<TSource> = useMemo(
 		() => ({
 			...previewContext,
 			onEntityFieldChange: ({ path, value }) => {
-				setEntityDraft((current) => setValueAtPath(current, path, value));
+				dispatch({ type: "set-entity", value: (current) => setValueAtPath(current, path, value) });
 			},
 			onRelatedUpdate: (update) => {
-				setRelatedUpdates((current) => upsertRelatedUpdate(current, update));
+				dispatch({ type: "set-related-updates", value: (current) => upsertRelatedUpdate(current, update) });
 			},
 		}),
 		[previewContext],
 	);
+
+	const economySection = context.sourceType === "country" ? contentDraft.sections.find((section) =>
+		section.blocks.some((block) => block.type === "economySummary") && findEconomyTradeBlock(section)) : undefined;
+	const inlineSections: readonly AtlasInlineEditorSection[] =
+		context.sourceType === "city" || context.sourceType === "country"
+			? [...providedInlineSections, { id: "economy-trade-fields", title: "Economy & Trade",
+				render: <EconomyBlockEditor context={{ ...editorContext, section: economySection }}
+				onTradeBlockChange={(block) => setContentDraft((current) => ({
+					...current, sections: current.sections.map((section) =>
+						section.blocks.some((item) => item.id === block.id) ? replaceBlock(section, block) : section),
+				}))} /> }]
+			: providedInlineSections;
+	const activeInlineSection = inlineSections.find((section) => section.id === activeSectionId) ?? null;
 
 	const dirty =
 		JSON.stringify(contentDraft) !== JSON.stringify(content) ||
@@ -181,7 +204,7 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 		);
 
 		if (!activeSectionId || (!validInline && !validAtlas)) {
-			setActiveSectionId(inlineSections[0]?.id ?? sections[0]?.id ?? null);
+			dispatch({ type: "set-active-section", value: inlineSections[0]?.id ?? sections[0]?.id ?? null });
 		}
 	}, [sections, inlineSections, activeSectionId]);
 

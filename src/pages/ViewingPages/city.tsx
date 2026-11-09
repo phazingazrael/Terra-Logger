@@ -1,10 +1,12 @@
+import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Button, Container } from "@mui/material";
-import { useActive, useDB } from "../../db/DataContext";
+import { useActive, useActiveMap, useDB } from "../../db/DataContext";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import type {
+	MapInf,
 	TLCity,
 	TLCountry,
 	TLCulture,
@@ -23,9 +25,10 @@ import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
-import { AtlasRenderer } from "../../components/atlas/render/Renderer";
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 
 function CityView() {
+	const map = useActiveMap<MapInf>();
 	const cityId = useParams();
 	const { update, add } = useDB();
 	const cities = useActive<TLCity>("cities");
@@ -72,7 +75,7 @@ function CityView() {
 		if (!city) return null;
 
 		if (isAtlasContent(city.content)) {
-			return ensureContextualNPCSections(city.content);
+			return ensureEconomySummary(ensureContextualNPCSections(city.content));
 		}
 
 		return cityAdapter.createDefaultContent(city);
@@ -82,6 +85,7 @@ function CityView() {
 		if (!city) return null;
 
 		return {
+			economy: map?.economy,
 			sourceType: "city" as const,
 			entity: city,
 			related: {
@@ -94,7 +98,17 @@ function CityView() {
 			},
 			relatedLookups,
 		};
-	}, [city, notes, cities, countries, cultures, tags, npcs, relatedLookups]);
+	}, [
+		city,
+		notes,
+		cities,
+		countries,
+		cultures,
+		tags,
+		npcs,
+		relatedLookups,
+		map?.economy,
+	]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");
@@ -125,9 +139,18 @@ function CityView() {
 					content: contentToSave,
 				};
 
-				await update("cities", String(updatedCity._id), updatedCity);
+				await update("cities", String(updatedCity._id), updatedCity, {
+					shared: payload.relatedUpdates?.find(
+						(update) => update.store === "maps",
+					)?.value,
+					cities: payload.relatedUpdates?.flatMap((update) =>
+						update.store === "cities" ? [update.value] : [],
+					),
+				});
 				await saveAtlasRelatedUpdates({
-					updates: payload.relatedUpdates,
+					updates: payload.relatedUpdates?.filter(
+						(update) => update.store !== "maps" && update.store !== "cities",
+					),
 					entity: updatedCity,
 					existingTags: tags,
 					add,
@@ -169,7 +192,6 @@ function CityView() {
 									>
 										{isSavingAtlas ? "Saving..." : "Edit City"}
 									</Button>
-
 								</div>
 							)}
 
@@ -184,7 +206,7 @@ function CityView() {
 										onClose={() => setIsEditingAtlas(false)}
 									/>
 								) : (
-									<AtlasRenderer content={cityContent} context={atlasContext} />
+									<AtlasView content={cityContent} context={atlasContext} />
 								)
 							) : (
 								<p>City content is not available.</p>

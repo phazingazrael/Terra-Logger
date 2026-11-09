@@ -15,7 +15,7 @@ import "./viewStyles.css";
 import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
-import { AtlasRenderer } from "../../components/atlas/render/Renderer";
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 import type {
 	AtlasContent,
 	AtlasPageEditorSavePayload,
@@ -162,7 +162,7 @@ function ReligionView() {
 										onClose={() => setIsEditingAtlas(false)}
 									/>
 								) : (
-									<AtlasRenderer
+									<AtlasView
 										content={religionContent}
 										context={atlasContext}
 									/>

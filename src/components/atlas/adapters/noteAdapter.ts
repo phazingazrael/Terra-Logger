@@ -24,6 +24,9 @@ export const noteAdapter: AtlasAdapter<"note"> = {
   sourceType: "note",
   label: "Note",
   defaultLayout: "stack",
+  resizableSectionClasses: [
+    "editor-notes", "freeform",
+  ],
   getEntityId: (entity) => entity._id,
   getEntityTitle: (entity) => entity.name,
   createDefaultContent: createNoteContent,

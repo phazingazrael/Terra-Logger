@@ -5,7 +5,9 @@ import {
 	Typography,
 	Divider,
 } from "@mui/material";
-import { useActive } from "../db/DataContext";
+import { useActive, useActiveMap } from "../db/DataContext";
+import { getMapEras } from "./HistoryGenerator/eras/mapEras";
+import type { MapInf } from "../definitions/TerraLogger";
 
 type LabelMap = Record<string, string>;
 import type {
@@ -38,6 +40,7 @@ function BreadcrumbsNav({
 	const notes = useActive<TLNote>("notes");
 	const cultures = useActive<TLCulture>("cultures");
 	const npcs = useActive<TLNPC>("npcs");
+	const map = useActiveMap<MapInf>();
 
 	const crumbs = [
 		{ to: rootTo, label: rootLabel },
@@ -50,7 +53,12 @@ function BreadcrumbsNav({
 			if (seg === "view_note") return { to: "/notes", label: "Notes" };
 			if (seg === "view_culture") return { to: "/cultures", label: "Cultures" };
 			if (seg === "view_npc") return { to: "/npcs", label: "NPCs" };
+			if (seg === "eras" || seg === "view_era") return { to: "/eras", label: "Eras" };
 			const prevSeg = segments[i - 1];
+			if (prevSeg === "view_era") {
+				const era = map ? getMapEras(map).find((item) => item.id === seg || encodeURIComponent(item.id) === seg) : undefined;
+				return { to, label: era?.name ?? "Era" };
+			}
 			if (prevSeg === "view_religion") {
 				const religion = religions.find((r) => r._id === seg);
 				return { to, label: religion?.name ?? "" };

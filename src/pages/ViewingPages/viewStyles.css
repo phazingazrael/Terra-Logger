@@ -256,13 +256,6 @@
   }
 }
 
-@media (min-width: 600px) {
-  [class*="-MuiContainer-root"] {
-    padding-left: 0dvw !important;
-    padding-right: 0dvw !important;
-  }
-}
-
 /*
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -462,5 +455,96 @@
   .npc-relationship-graph .MuiChip-root,
   .npc-history .MuiChip-root {
     max-width: 100%;
+  }
+}
+
+/* Section widths are saved per page; adapters decide which controls are available. */
+.atlas-view-container {
+  container-type: inline-size;
+}
+
+.ViewPage .wiki .atlas-view {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+}
+
+.ViewPage .wiki .atlas-view>.atlas-section {
+  min-width: 0;
+  position: relative;
+}
+
+.ViewPage .wiki .atlas-view:not(.content-grid)>.atlas-section,
+.ViewPage .wiki .atlas-view>.atlas-section[data-grid-span="full"] {
+  grid-column: 1 / -1;
+}
+
+.ViewPage .wiki .atlas-view>.atlas-section[data-grid-span="single"] {
+  grid-column: span 1;
+}
+
+.atlas-section__resize-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: 24px;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  opacity: 0.45;
+  z-index: 2;
+}
+
+.atlas-section__resize-handle--left {
+  left: 0;
+}
+
+.atlas-section__resize-handle--right {
+  right: 0;
+}
+
+.atlas-section__resize-handle:hover,
+.atlas-section__resize-handle:focus-visible {
+  opacity: 1;
+}
+
+.atlas-section__resize-handle:focus-visible {
+  outline: 2px solid currentColor;
+}
+
+.atlas-section__resize-handle:disabled {
+  cursor: wait;
+}
+
+@container (min-width: 600px) {
+  .ViewPage .wiki .atlas-view {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ViewPage .wiki .atlas-view>.atlas-section[data-grid-span="wide"] {
+    grid-column: span 2;
+  }
+}
+
+@container (min-width: 950px) {
+  .ViewPage .wiki .atlas-view {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (width < 600px) {
+  .atlas-section__resize-handle {
+    display: none;
+  }
+
+  .ViewPage .wiki .atlas-view>.atlas-section {
+    grid-column: 1 / -1;
   }
 }

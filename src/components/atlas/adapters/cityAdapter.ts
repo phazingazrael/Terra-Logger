@@ -1,7 +1,7 @@
 import type { TLCity } from "../../../definitions/TerraLogger";
 import type { AtlasAdapter, AtlasContent } from "../../../definitions/Atlas";
 import { commonBlockPresets, commonSectionPresets } from "./shared";
-import { clear, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, richTextBlock, sectionPreset } from "../core/presets";
+import { clear, economySummary, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, richTextBlock, sectionPreset } from "../core/presets";
 
 function createCityContent(entity: TLCity): AtlasContent {
   return createContentShell({
@@ -19,22 +19,14 @@ function createCityContent(entity: TLCity): AtlasContent {
       entitySection("Features", "section featuresList", [entityChipListBlock("Features", "features")]),
       entitySection("Notable NPCs", "section notable-npcs", [computedBlock("relatedNPCList", "Notable NPCs", "npc.relationships", { roleTitles: ["Notable NPC"], emptyText: "No notable NPCs." })]),
       entitySection("Map", "section map-link", [computedBlock("cityMapLink", "Map Link", "city.mapLink", { text: "🗺️ View City Map" })]),
-      sectionPreset("History", "section history", [detailsListBlock([
-        { label: "Notable Founding Myths/Legends", value: "[Ancient tales about how the city was formed or its divine/magical origins.]" },
-        { label: "Major Wars & Conflicts", value: "[Significant wars, galactic conflicts, magical wars, or civil uprisings.]" },
-        { label: "Epochs & Eras", value: "[Different historical periods, dynasties, or interstellar ages.]" },
-        { label: "Notable Leaders & Rulers", value: "[Kings, Emperors, Warlords, AI Governors, etc.]" }
-      ]), richTextBlock("Add city history here.")]),
-      sectionPreset("Economy & Trade", "section economy-trade", [
+      sectionPreset("History", "section history", [
         detailsListBlock([
-          { label: "Major Industries & Exports", value: "[Alchemy, soul-forging, mecha production, space mining, etc.]" },
-          { label: "Currency & Trade", value: "[Gold coins, credits, mana crystals, barter system, etc.]" },
-          { label: "Notable Guilds & Corporations", value: "[Merchant houses, cybernetic megacorps, thieves guilds, etc.]" },
-          { label: "Imports & Exports", value: "[What does the city rely on, and what does it supply to others?]" },
-          { label: "Black Market & Illicit Trade", value: "[Contraband, smugglers, underground syndicates.]" },
+          { label: "Notable Founding Myths/Legends", value: "[Ancient tales about how the city was formed or its divine/magical origins.]" },
+          { label: "Major Wars & Conflicts", value: "[Significant wars, galactic conflicts, magical wars, or civil uprisings.]" },
+          { label: "Epochs & Eras", value: "[Different historical periods, dynasties, or interstellar ages.]" },
+          { label: "Notable Leaders & Rulers", value: "[Kings, Emperors, Warlords, AI Governors, etc.]" }
         ]),
-        richTextBlock("Add economy and trade details here."),
-      ]),
+        richTextBlock("Add city history here.")]),
       sectionPreset("Geography & Environment", "section geography-environment", [
         detailsListBlock([
           { label: "Location", value: "[Describe location within the world, dimension, or space sector.]" },
@@ -44,6 +36,17 @@ function createCityContent(entity: TLCity): AtlasContent {
           { label: "Unique Natural Features", value: "[Magical ley lines, sentient forests, shifting deserts, etc.]" },
         ]),
         richTextBlock("Add geography and environment details here."),
+      ]),
+      sectionPreset("Economy & Trade", "section economy", [
+        detailsListBlock([
+          { label: "Major Industries & Exports", value: "[Alchemy, soul-forging, mecha production, space mining, etc.]" },
+          { label: "Currency & Trade", value: "[Gold coins, credits, mana crystals, barter system, etc.]" },
+          { label: "Notable Guilds & Corporations", value: "[Merchant houses, cybernetic megacorps, thieves guilds, etc.]" },
+          { label: "Imports & Exports", value: "[What does the city rely on, and what does it supply to others?]" },
+          { label: "Black Market & Illicit Trade", value: "[Contraband, smugglers, underground syndicates.]" },
+        ]),
+        economySummary(),
+        richTextBlock("Add economy and trade details here."),
       ]),
       sectionPreset("Government & Power Structure", "section government-power", [
         detailsListBlock([
@@ -193,6 +196,31 @@ export const cityAdapter: AtlasAdapter<"city"> = {
   sourceType: "city",
   label: "City",
   defaultLayout: "content-grid",
+  resizableSectionClasses: [
+    "adventurers-mercenaries",
+    "crime-underworld",
+    "culture-arts",
+    "demographics-society",
+    "economy",
+    "education-knowledge",
+    "geography-environment",
+    "government-power",
+    "history",
+    "magic-technology",
+    "map-link",
+    "military-defense",
+    "notable-figures",
+    "notable-locations",
+    "notable-npcs",
+    "plot-hooks",
+    "religion-mythology",
+    "sister-cities",
+    "sports-games",
+    "transportation-infrastructure",
+    "hidden-details",
+    "general-notes",
+    "freeform",
+  ],
   getEntityId: (entity) => entity._id,
   getEntityTitle: (entity) => entity.name,
   createDefaultContent: createCityContent,

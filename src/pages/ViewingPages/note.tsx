@@ -7,7 +7,7 @@ import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
-import { AtlasRenderer } from "../../components/atlas/render/Renderer";
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 
 import type { TLNote } from "../../definitions/TerraLogger";
 import type {
@@ -145,7 +145,7 @@ function NoteView() {
 										onClose={() => setIsEditingAtlas(false)}
 									/>
 								) : (
-									<AtlasRenderer content={noteContent} context={atlasContext} />
+									<AtlasView content={noteContent} context={atlasContext} />
 								)
 							) : (
 								<p>Note content is not available.</p>

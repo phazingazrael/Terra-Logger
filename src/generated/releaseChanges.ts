@@ -32,7 +32,7 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.9",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.9",
-  "commitCount": 89,
+  "commitCount": 90,
   "majorChanges": [
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
@@ -396,6 +396,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "🎨 Switch from React-Icons to Phosphor-Icons",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/9694852440677e647054c9185360d4f12301ac8a"
+    },
+    {
+      "hash": "4f1b489c8bfd85f735360b97c8e0113910d9aae9",
+      "shortHash": "4f1b489",
+      "date": "2026-11-05T21:51:14-07:00",
+      "subject": "chore(update): 🔖 prepare version 1.0.9",
+      "type": "chore",
+      "scope": "update",
+      "details": "🔖 prepare version 1.0.9",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/4f1b489c8bfd85f735360b97c8e0113910d9aae9"
     },
     {
       "hash": "1286cec226ef9f077ba747c0a09c2c25b3fed34f",
@@ -832,9 +843,21 @@ export const releaseChanges: ReleaseChanges = {
     "react",
     "release",
     "ui",
+    "update",
     "views"
   ],
   "commits": [
+    {
+      "hash": "4f1b489c8bfd85f735360b97c8e0113910d9aae9",
+      "shortHash": "4f1b489",
+      "date": "2026-11-05T21:51:14-07:00",
+      "subject": "chore(update): 🔖 prepare version 1.0.9",
+      "type": "chore",
+      "scope": "update",
+      "details": "🔖 prepare version 1.0.9",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/4f1b489c8bfd85f735360b97c8e0113910d9aae9"
+    },
     {
       "hash": "1286cec226ef9f077ba747c0a09c2c25b3fed34f",
       "shortHash": "1286cec",
@@ -1815,5 +1838,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-06T04:49:03.716Z"
+  "generatedAt": "2026-11-09T00:36:54.374Z"
 };

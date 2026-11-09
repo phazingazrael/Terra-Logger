@@ -1,3 +1,4 @@
+import { findEconomyTradeBlock } from "../core/ensureEconomySummary";
 import { Button } from "@mui/material";
 import type {
 	AtlasBlock,
@@ -26,12 +27,16 @@ export function BlockList({
 	onRemove: (id: string) => void;
 	onMove: (from: number, to: number) => void;
 }) {
+	const nestedTradeBlock = (context.sourceType === "country" || context.sourceType === "city") &&
+		context.section?.blocks.some((block) => block.type === "economySummary")
+		? findEconomyTradeBlock(context.section) : undefined;
 	return (
 		<div className="atlas-block-list">
 			<BlockPresetMenu presets={blockPresets} onAdd={onAdd} />
 
 
 			{blocks.map((block, index) => {
+				if (block.id === nestedTradeBlock?.id) return null;
 				const hasMultipleBlocks = blocks.length > 1;
 				const isComputedBlock = block.dataMode === "computed";
 

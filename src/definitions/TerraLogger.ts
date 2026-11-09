@@ -1,4 +1,10 @@
 import type { TLMapHistoryConfiguration } from "./History";
+import type {
+  TLCityProduction,
+  TLCountryProduction,
+  TLMapEconomy,
+  TLTradeEntry,
+} from "./Economy";
 // src/definitions/TerraLogger.ts //
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // visual effects only for eslint-disable //
@@ -217,8 +223,12 @@ export type TLCity = {
   description: string;
   economy?: {
     description: string;
-    exports?: string[];
-    imports?: string[];
+    exports?: TLTradeEntry[];
+    imports?: TLTradeEntry[];
+    production?: TLCityProduction[];
+    marketId?: number;
+    treasury?: number;
+    product?: number;
   };
   features: string[];
   id: number;
@@ -248,7 +258,15 @@ export type TLCountry = {
   content?: AtlasContent;
   culture: { _id: string; id: string; };
   description: string;
-  economy: { description: string; exports: string[]; imports: string[]; };
+  economy: {
+    description: string;
+    exports: TLTradeEntry[];
+    imports: TLTradeEntry[];
+    production?: TLCountryProduction;
+    treasury?: number;
+    salesTax?: number;
+    pollTax?: number;
+  };
   history: { details: string; events: string[]; };
   id: number;
   languages: string[];
@@ -383,6 +401,7 @@ export type TLNPC = {
 
 
 export interface TLMapInfo {
+  economy?: TLMapEconomy;
   cities: TLCity[];
   countries: TLCountry[];
   cultures: TLCulture[];
@@ -438,6 +457,7 @@ export interface TLMapInfo {
 }
 
 export interface MapInf {
+  economy?: TLMapEconomy;
   id: string;
   info: {
     name: string;

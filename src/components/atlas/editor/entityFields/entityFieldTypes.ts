@@ -4,6 +4,7 @@ import type {
   AtlasRelatedUpdateHandler,
   AtlasSourceType,
 } from "../../../../definitions/Atlas";
+import type { TLMapEconomy } from "../../../../definitions/Economy";
 
 export type AtlasEntityFieldEditorType =
   | "text"
@@ -12,6 +13,7 @@ export type AtlasEntityFieldEditorType =
   | "boolean"
   | "select"
   | "stringList"
+  | "tradeList"
   | "tagList"
   | "reference"
   | "referenceList"
@@ -71,6 +73,7 @@ export type AtlasComputedFieldMap = Partial<
 export type AtlasEntityFieldEditorProps<
   TSource extends AtlasSourceType = AtlasSourceType,
 > = {
+  economy?: TLMapEconomy;
   sourceType: TSource;
   entity: AtlasEntityBySource[TSource];
   related?: AtlasRelatedEntities;

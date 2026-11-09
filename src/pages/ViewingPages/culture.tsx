@@ -8,7 +8,7 @@ import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
-import { AtlasRenderer } from "../../components/atlas/render/Renderer";
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 
 import type { TLCulture, TLNote } from "../../definitions/TerraLogger";
 import type {
@@ -153,7 +153,7 @@ function CultureView() {
 										onClose={() => setIsEditingAtlas(false)}
 									/>
 								) : (
-									<AtlasRenderer
+									<AtlasView
 										content={cultureContent}
 										context={atlasContext}
 									/>

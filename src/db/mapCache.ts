@@ -61,10 +61,10 @@ export function updateCachedRecord(
 	if (!cached) return;
 
 	cached.byId.set(String(record._id), record);
-	const index = cached.rows.findIndex(
-		(row) => String(row._id) === String(record._id),
+	// Readers memoize entity lookups by the rows array. Publish a new array on update.
+	cached.rows = cached.rows.map((row) =>
+		String(row._id) === String(record._id) ? record : row,
 	);
-	if (index >= 0) cached.rows[index] = record;
 }
 
 export function deleteCachedRecord(

@@ -475,7 +475,16 @@ const patterns = {
 };
 
 const getCOA = async (id: string, coa: TLCoA) => {
-	const { shield, division, ordinaries, charges } = coa;
+	const { division, ordinaries } = coa;
+	const shield = coa.shield && shieldPaths[coa.shield] && shieldPositions[coa.shield]
+		? coa.shield
+		: "heater";
+	// Normalize imported charge names before fetching or referencing their symbols.
+	const charges = coa.charges?.map((charge) =>
+		charge.charge === "eagleTwoHeards"
+			? { ...charge, charge: "eagleTwoHeads" }
+			: charge,
+	);
 	const ordinariesRegular = ordinaries?.filter((o) => !o.above);
 	const ordinariesAboveCharges = ordinaries?.filter((o) => o.above);
 	const shieldPath = (shield && shieldPaths[shield]) || shieldPaths.heater;
@@ -496,7 +505,7 @@ const getCOA = async (id: string, coa: TLCoA) => {
 	const divisionClip = division
 		? `<clipPath id="divisionClip_${id}">${getTemplate(division.division ?? "", division.line as string)}</clipPath>`
 		: "";
-	const loadedCharges = await getCharges(coa, id, shieldPath);
+	const loadedCharges = await getCharges({ ...coa, charges }, id, shieldPath);
 	const loadedPatterns = getPatterns(coa, id);
 	const blacklight = `<radialGradient id="backlight_${id}" cx="100%" cy="100%" r="150%"><stop stop-color="#fff" stop-opacity=".3" offset="0"/><stop stop-color="#fff" stop-opacity=".15" offset=".25"/><stop stop-color="#000" stop-opacity="0" offset="1"/></radialGradient>`;
 	const field = `<rect x="0" y="0" width="200" height="200" fill="${clr(coa.t1 as string)}"/>`;
@@ -592,11 +601,6 @@ const getCOA = async (id: string, coa: TLCoA) => {
 		}
 
 		if (charges) {
-			for (const charge of charges) {
-				if (charge.charge === "eagleTwoHeards") {
-					charge.charge = "eagleTwoHeads";
-				}
-			}
 			for (const charge of charges.filter((o) => !o.divided)) {
 				svg += templateCharge(charge, charge.t as string);
 			}
@@ -617,7 +621,7 @@ const getCOA = async (id: string, coa: TLCoA) => {
 		if (ordinary.ordinary === "bordure")
 			svg += `<path d="${shieldPath}" fill="none" stroke="${fill}" stroke-width="16.7%"/>`;
 		else if (ordinary.ordinary === "orle")
-			svg += `<path d="${shieldPath}" fill="none" stroke="${fill}" stroke-width="5%" transform="scale(.85)" transform-origin="center">`;
+			svg += `<path d="${shieldPath}" fill="none" stroke="${fill}" stroke-width="5%" transform="scale(.85)" transform-origin="center"/>`;
 		else
 			svg += getTemplate(ordinary.ordinary as string, ordinary.line as string);
 		svg += "</g>";
@@ -631,8 +635,8 @@ const getCOA = async (id: string, coa: TLCoA) => {
 		tertiaryTincture?: string,
 	) {
 		const primary = clr(tincture);
-		const secondary = clr(secondaryTincture ?? tincture);
-		const tertiary = clr(tertiaryTincture ?? tincture);
+		const secondary = clr(secondaryTincture ?? charge.t2 ?? tincture);
+		const tertiary = clr(tertiaryTincture ?? charge.t3 ?? tincture);
 		const stroke = charge.stroke ?? "#000";
 
 		const chargePositions = [...new Set(charge.p)].filter(
@@ -663,15 +667,17 @@ const getCOA = async (id: string, coa: TLCoA) => {
 
 async function getCharges(coa: TLCoA, id: string, shieldPath: string) {
 	const charges = coa.charges ? coa.charges.map((charge) => charge.charge) : []; // add charges
-	if (semy(coa.t1 as string)) {
-		const semyCharge = semy(coa.t1 as string);
-		if (semyCharge !== false) {
-			charges.push(semyCharge);
-		}
+	// Pattern symbols can be used by the field, division, ordinaries, or charge colours.
+	const tinctures = [
+		coa.t1,
+		coa.division?.t,
+		...(coa.ordinaries ?? []).map((ordinary) => ordinary.t),
+		...(coa.charges ?? []).flatMap((charge) => [charge.t, charge.t2, charge.t3]),
+	];
+	for (const tincture of tinctures) {
+		const semyCharge = semy(tincture ?? "");
+		if (semyCharge) charges.push(semyCharge);
 	}
-	if (semy(coa.division?.t as string)) {
-		charges.push(semy(coa.division?.t as string) as string);
-	} // add division semy charge
 
 	const uniqueCharges = [...new Set(charges)];
 	const fetchedCharges = await Promise.all(
@@ -722,10 +728,11 @@ function getPatterns(coa: TLCoA, id: string) {
 	// add ordinaries pattern
 
 	if (coa.charges)
-		for (const charge of coa.charges.filter((charge) =>
-			isPattern(charge.t as string),
-		)) {
-			patternsToAdd.push(charge.t); // add charges pattern
+		for (const charge of coa.charges) {
+			// Secondary and tertiary colours can reference patterns too.
+			for (const tincture of [charge.t, charge.t2, charge.t3]) {
+				if (tincture && isPattern(tincture)) patternsToAdd.push(tincture);
+			}
 		}
 
 	if (!patternsToAdd.length) return "";

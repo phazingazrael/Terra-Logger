@@ -19,6 +19,8 @@ export const mutateCountries = async (
 	urbanization: string,
 	mapSVG: string,
 ) => {
+	let customEmblems: Element | null = null;
+
 	for (const country of data.countries) {
 		if (country.name !== "Unknown" && country.removed !== true) {
 			// define new country object
@@ -134,26 +136,26 @@ export const mutateCountries = async (
 						);
 					}
 				} else {
-					const start = mapSVG.indexOf('<g id="defs-emblems">');
-					if (start === -1) {
-						throw new Error('Error: could not find <g id="defs-emblems">');
+					if (!customEmblems) {
+						const svgDocument = new DOMParser().parseFromString(mapSVG, "image/svg+xml");
+						if (svgDocument.querySelector("parsererror")) {
+							throw new Error("Error: could not parse map SVG for custom country coats of arms.");
+						}
+						customEmblems = svgDocument.querySelector('g[id="defs-emblems"]');
+						if (!customEmblems) {
+							throw new Error('Error: could not find <g id="defs-emblems">');
+						}
 					}
-					const end = mapSVG.indexOf("</g>", start);
-					if (end === -1) {
-						throw new Error("Error: could not find </g>");
-					}
-					const emblems = mapSVG
-						.slice(start, end)
-						.match(/<svg.*?<\/svg>/gs) as string[];
-					const stateCOA = emblems.find((svg) =>
-						svg.includes(`<svg id="stateCOA${country.i}"`),
+					// Select the complete emblem, including any nested groups or SVG elements.
+					const stateCOA = customEmblems.querySelector(
+						`svg[id="stateCOA${country.i}"]`,
 					);
 					if (!stateCOA) {
 						throw new Error(
 							`Error: could not find <svg id="stateCOA${country.i}" in mapSVG`,
 						);
 					}
-					newCountry.coaSVG = stateCOA;
+					newCountry.coaSVG = new XMLSerializer().serializeToString(stateCOA);
 				}
 			} else if (!country.coa) {
 				try {

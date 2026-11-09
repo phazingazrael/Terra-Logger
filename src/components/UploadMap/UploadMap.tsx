@@ -25,13 +25,14 @@ import {
 } from "../../db/connections/mapsDatabase";
 import { useDB } from "../../db/DataContext";
 import {
-	addDataToStore,
-	deleteEntireMapData,
 	queryDataFromStore,
+	saveImportedMapRecords,
 } from "../../db/interactions";
 import type { AppInfo } from "../../definitions/AppInfo";
 import type { Context } from "../../definitions/Common";
 import type { TLNPC } from "../../definitions/TerraLogger";
+import type { TLMapInfo } from "../../definitions/TerraLogger";
+import { mergeMapEntities, type ReimportEntities } from "./mergeMapEntities";
 import { generateAndPersistNPCHistory } from "../NPC/history/generation";
 import type { MapInf } from "../../definitions/TerraLogger";
 import BookLoader from "../Util/bookLoader";
@@ -126,7 +127,7 @@ type UploadMapProps = {
 	onComplete?: () => void | Promise<void>;
 	onImportSummary?: (summary: MapImportSummary) => void | Promise<void>;
 	showDemoButton?: boolean;
- };
+};
 
 function UploadMap({
 	mode = { kind: "create" },
@@ -397,16 +398,79 @@ function UploadMap({
 		setUploadStatus("Converting to Terra-Logger data...");
 		setUploadPercent(30);
 
+		let previousEntities: ReimportEntities | undefined;
+		if (mode.kind === "update") {
+			const incomingMapId = `${data.info.name.trim()}-${data.info.ID.trim()}`;
+			if (incomingMapId !== mode.expectedMapId) {
+				throw new Error(
+					`Selected map does not match uploaded .map file. Expected ${mode.expectedMapId}, got ${incomingMapId}.`,
+				);
+			}
+
+			const [cities, countries, cultures, religions, notes, nameBases] =
+				await Promise.all([
+					queryDataFromStore<TLMapInfo["cities"][number]>(
+						"cities",
+						"mapIdIndex",
+						incomingMapId,
+					),
+					queryDataFromStore<TLMapInfo["countries"][number]>(
+						"countries",
+						"mapIdIndex",
+						incomingMapId,
+					),
+					queryDataFromStore<TLMapInfo["cultures"][number]>(
+						"cultures",
+						"mapIdIndex",
+						incomingMapId,
+					),
+					queryDataFromStore<TLMapInfo["religions"][number]>(
+						"religions",
+						"mapIdIndex",
+						incomingMapId,
+					),
+					queryDataFromStore<TLMapInfo["notes"][number]>(
+						"notes",
+						"mapIdIndex",
+						incomingMapId,
+					),
+					queryDataFromStore<TLMapInfo["nameBases"][number]>(
+						"nameBases",
+						"mapIdIndex",
+						incomingMapId,
+					),
+				]);
+			previousEntities = {
+				cities,
+				countries,
+				cultures,
+				religions,
+				notes,
+				nameBases,
+			};
+		}
+
 		const mutatedMapData = await mutateData(
 			data as unknown as MapInfo,
 			Pack as unknown as Pack,
 			onProgress,
-			{ generation, diagnostics },
+			{
+				generation,
+				diagnostics,
+				prepareEntities: (map) => {
+					Object.assign(map, trimImportedStrings(map));
+					if (previousEntities) mergeMapEntities(map, previousEntities);
+				},
+			},
 		);
 
-		const mapData = trimImportedStrings(mutatedMapData);
+		const mapData = {
+			...mutatedMapData,
+			npcs: trimImportedStrings(mutatedMapData.npcs),
+		};
 
 		const {
+			economy,
 			cities = [],
 			countries = [],
 			cultures = [],
@@ -465,19 +529,8 @@ function UploadMap({
 			);
 		}
 
-		if (mode.kind === "update") {
-			onProgress?.({
-				section: "Updating",
-				completed: 0,
-				total: 1,
-				percent: 60,
-				message: "Clearing existing map data...",
-			});
-
-			await deleteEntireMapData(mapId);
-		}
-
 		const MapInf: MapInf = {
+			economy,
 			id: mapId,
 			mapId: mapId,
 			historyGenerator: existingHistoryGenerator ?? {
@@ -556,15 +609,21 @@ function UploadMap({
 			});
 		};
 
+		const records: {
+			storeName: MapDatabaseStore;
+			section: string;
+			itemName: string | undefined;
+			value: unknown;
+		}[] = [];
+
 		const writeRecord = async (
 			storeName: MapDatabaseStore,
 			section: string,
 			itemName: string | undefined,
 			value: unknown,
 		) => {
-			emitProgress(section, itemName);
-			await addDataToStore(storeName, value);
-			completed += 1;
+			// Prepare records before opening the replacement transaction.
+			records.push({ storeName, section, itemName, value });
 		};
 
 		await writeRecord("maps", "Map Info", info.name, MapInf);
@@ -651,6 +710,17 @@ function UploadMap({
 				},
 			);
 		}
+
+		await saveImportedMapRecords(
+			mapId,
+			mode.kind === "update",
+			records,
+			(index) => {
+				completed += 1;
+				const record = records[index];
+				emitProgress(record.section, record.itemName);
+			},
+		);
 
 		if (generation.generateNPCs && retainedGenerated.length > 0) {
 			const generatedIds = retainedGenerated.map((npc) => npc._id);
@@ -832,191 +902,189 @@ function UploadMap({
 						</h5>
 					</div>
 					<div>
-						<div className="file-grid">
-							<div className="file-input">
-								<Stack sx={{ width: "100%" }} spacing={2}>
-									<Alert severity="success" className="UploadBox">
-										<AlertTitle>Upload your .map File</AlertTitle>
+						<div className="file-input">
+							<Alert severity="success" className="UploadBox">
+								<AlertTitle>Upload your .map File</AlertTitle>
 
-										<FormGroup sx={{ marginBottom: 2 }}>
-											<FormControlLabel
-												control={
-													<Checkbox
-														checked={generateNPCs}
-														onChange={(event) =>
-															setGenerateNPCs(event.target.checked)
-														}
-													/>
+								<FormGroup sx={{ marginBottom: 2 }}>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={generateNPCs}
+												onChange={(event) =>
+													setGenerateNPCs(event.target.checked)
 												}
-												label="Generate NPCs"
+											/>
+										}
+										label="Generate NPCs"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={downloadLogs}
+												onChange={(event) =>
+													setDownloadLogs(event.target.checked)
+												}
+											/>
+										}
+										label="Download Map Upload Logs"
+									/>
+								</FormGroup>
+								<Collapse in={generateNPCs}>
+									<Stack
+										spacing={1.5}
+										sx={{
+											marginBottom: 2,
+											padding: 1.5,
+											border: "1px solid",
+											borderColor: "divider",
+											borderRadius: 1,
+										}}
+									>
+										<Typography variant="subtitle2">
+											Required leadership generation
+										</Typography>
+										<Typography variant="body2" color="text.secondary">
+											Leadership NPCs are always generated when NPC generation
+											is enabled.
+										</Typography>
+										<FormGroup row>
+											<FormControlLabel
+												disabled
+												control={<Checkbox checked />}
+												label="Country government roles"
 											/>
 											<FormControlLabel
-												control={
-													<Checkbox
-														checked={downloadLogs}
-														onChange={(event) =>
-															setDownloadLogs(event.target.checked)
-														}
-													/>
-												}
-												label="Download Map Upload Logs"
+												disabled
+												control={<Checkbox checked />}
+												label="City leadership roles"
+											/>
+											<FormControlLabel
+												disabled
+												control={<Checkbox checked />}
+												label="Religion leadership roles"
+											/>
+											<FormControlLabel
+												disabled
+												control={<Checkbox checked />}
+												label="Culture elder roles"
 											/>
 										</FormGroup>
-										<Collapse in={generateNPCs}>
-											<Stack
-												spacing={1.5}
-												sx={{
-													marginBottom: 2,
-													padding: 1.5,
-													border: "1px solid",
-													borderColor: "divider",
-													borderRadius: 1,
-												}}
-											>
-												<Typography variant="subtitle2">
-													Required leadership generation
-												</Typography>
-												<Typography variant="body2" color="text.secondary">
-													Leadership NPCs are always generated when NPC
-													generation is enabled.
-												</Typography>
-												<FormGroup row>
-													<FormControlLabel
-														disabled
-														control={<Checkbox checked />}
-														label="Country government roles"
-													/>
-													<FormControlLabel
-														disabled
-														control={<Checkbox checked />}
-														label="City leadership roles"
-													/>
-													<FormControlLabel
-														disabled
-														control={<Checkbox checked />}
-														label="Religion leadership roles"
-													/>
-													<FormControlLabel
-														disabled
-														control={<Checkbox checked />}
-														label="Culture elder roles"
-													/>
-												</FormGroup>
 
-												<Divider />
-												<Typography variant="subtitle2">
-													Optional supporting NPC generation
-												</Typography>
-												<TextField
-													type="number"
-													size="small"
-													label="NPCs per supporting category"
-													value={supportingNPCsPerCategory}
-													onChange={(event) =>
-														setSupportingNPCsPerCategory(
-															Number(event.target.value),
-														)
-													}
-													slotProps={{
-														htmlInput: { min: 0, max: 100, step: 1 },
-													}}
-												/>
-												<FormGroup row>
-													{SUPPORTING_NPC_CATEGORIES.map((category) => (
-														<FormControlLabel
-															key={category.id}
-															control={
-																<Checkbox
-																	checked={supportingCategoryIds.includes(
-																		category.id,
-																	)}
-																	onChange={() =>
-																		toggleSupportingCategory(category.id)
-																	}
-																/>
-															}
-															label={category.label}
-														/>
-													))}
-												</FormGroup>
-											</Stack>
-										</Collapse>
-										<label htmlFor="map-file-upload">Select a MAP file</label>
-										{/** biome-ignore lint/a11y/noStaticElementInteractions: why */}
-										<div
-											className={`map-file-drop-zone${isDraggingFile ? " is-dragging" : ""}${selectedFile ? " has-file" : ""}`}
-											onDragOver={handleDragOver}
-											onDragLeave={handleDragLeave}
-											onDrop={handleFileDrop}
-										>
-											<input
-												ref={fileInputRef}
-												id="map-file-upload"
-												type="file"
-												name="map-file-upload"
-												accept=".map"
-												onChange={readMAP}
-												disabled={isLoading}
-											/>
-											<Typography
-												variant="body2"
-												className="map-file-selection-status"
-											>
-												{selectedFile
-													? `Selected: ${selectedFile.name}`
-													: "Choose a .map file or drag and drop one here. Selection does not start the upload."}
-											</Typography>
-										</div>
-
-										<div className="map-upload-actions">
-											{showDemoButton ? (
-												<Button
-													variant="outlined"
-													onClick={loadDemoMap}
-													disabled={isLoading}
-													title={`Loads ${DEMO_MAP_PATH} from public/`}
-												>
-													Load Demo Map
-												</Button>
-											) : (
-												<span />
-											)}
-											<Button
-												variant="contained"
-												onClick={uploadSelectedMap}
-												disabled={isLoading || !selectedFile}
-											>
-												{isLoading ? "Uploading..." : "Upload"}
-											</Button>
-										</div>
-									</Alert>
-									<Alert severity="info">
-										<AlertTitle>Notice</AlertTitle>
-										<p>
-											Please note, This will only work with maps exported from
-											versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin}
-											&nbsp; and Newer.
-											<br />
-											The current maximum version supported by this program is V
-											{currentVersion}.
-										</p>
-										<Divider
-											sx={{
-												marginTop: "5px",
-												marginBottom: "5px",
-												borderBottomWidth: "thick",
+										<Divider />
+										<Typography variant="subtitle2">
+											Optional supporting NPC generation
+										</Typography>
+										<TextField
+											type="number"
+											size="small"
+											label="NPCs per supporting category"
+											value={supportingNPCsPerCategory}
+											onChange={(event) =>
+												setSupportingNPCsPerCategory(Number(event.target.value))
+											}
+											slotProps={{
+												htmlInput: { min: 0, max: 100, step: 1 },
 											}}
 										/>
-										<p>
-											<strong>
-												Please note: This is a one-way process, any changes made
-												to exported files will not sync to your map.
-											</strong>
-										</p>
-									</Alert>
-								</Stack>
-							</div>
-							<div className="file-input">
+										<FormGroup row>
+											{SUPPORTING_NPC_CATEGORIES.map((category) => (
+												<FormControlLabel
+													key={category.id}
+													control={
+														<Checkbox
+															checked={supportingCategoryIds.includes(
+																category.id,
+															)}
+															onChange={() =>
+																toggleSupportingCategory(category.id)
+															}
+														/>
+													}
+													label={category.label}
+												/>
+											))}
+										</FormGroup>
+									</Stack>
+								</Collapse>
+								<label htmlFor="map-file-upload">Select a MAP file</label>
+								{/** biome-ignore lint/a11y/noStaticElementInteractions: why */}
+								<div
+									className={`map-file-drop-zone${isDraggingFile ? " is-dragging" : ""}${selectedFile ? " has-file" : ""}`}
+									onDragOver={handleDragOver}
+									onDragLeave={handleDragLeave}
+									onDrop={handleFileDrop}
+								>
+									<input
+										ref={fileInputRef}
+										id="map-file-upload"
+										type="file"
+										name="map-file-upload"
+										accept=".map"
+										onChange={readMAP}
+										disabled={isLoading}
+									/>
+									<Typography
+										variant="body2"
+										className="map-file-selection-status"
+									>
+										{selectedFile
+											? `Selected: ${selectedFile.name}`
+											: "Choose a .map file or drag and drop one here. Selection does not start the upload."}
+									</Typography>
+								</div>
+
+								<div className="map-upload-actions">
+									{showDemoButton ? (
+										<Button
+											variant="outlined"
+											onClick={loadDemoMap}
+											disabled={isLoading}
+											title={`Loads ${DEMO_MAP_PATH} from public/`}
+										>
+											Load Demo Map
+										</Button>
+									) : (
+										<span />
+									)}
+									<Button
+										variant="contained"
+										onClick={uploadSelectedMap}
+										disabled={isLoading || !selectedFile}
+									>
+										{isLoading ? "Uploading..." : "Upload"}
+									</Button>
+								</div>
+							</Alert>
+							<Stack
+								direction="row"
+								sx={{ marginTop: "16px", width: "100%" }}
+								spacing={2}
+							>
+								<Alert severity="info">
+									<AlertTitle>Notice</AlertTitle>
+									<p>
+										Please note, This will only work with maps exported from
+										versions of Azgaar&apos;s Fantasy Map Generator V{afmgMin}
+										&nbsp; and Newer.
+										<br />
+										The current maximum version supported by this program is V
+										{currentVersion}.
+									</p>
+									<Divider
+										sx={{
+											marginTop: "5px",
+											marginBottom: "5px",
+											borderBottomWidth: "thick",
+										}}
+									/>
+									<p>
+										<strong>
+											Please note: This is a one-way process, any changes made
+											to exported files will not sync to your map.
+										</strong>
+									</p>
+								</Alert>
 								<Alert severity="info" className="uploadBox-desc">
 									<AlertTitle>
 										Why use the .map file instead of exported .json?
@@ -1039,7 +1107,7 @@ function UploadMap({
 										generate accurate data for other details of the map.
 									</p>
 								</Alert>
-							</div>
+							</Stack>
 						</div>
 					</div>
 				</div>

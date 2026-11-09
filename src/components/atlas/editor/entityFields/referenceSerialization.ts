@@ -103,8 +103,6 @@ export function serializeReferenceValue(
         _id: selectedEntity._id,
         name: selectedEntity.name ?? "",
       };
-
-    case "raw":
     default:
       return structuredClone(selectedEntity);
   }

@@ -27,14 +27,19 @@ const diplomacyStatusOptions = toOptions([
 ]);
 
 export const entityFieldCatalog: AtlasEntityFieldCatalog = {
+  era: [
+    { path: "name", label: "Era Name", editor: "text" },
+    { path: "shortName", label: "Abbreviation", editor: "text" },
+    { path: "description", label: "Description", editor: "textarea" },
+  ],
   country: [
     { path: "aliases", label: "Aliases", editor: "stringList", itemLabel: "Alias" },
     { path: "color", label: "Color", editor: "text" },
     { path: "culture", label: "Culture", editor: "reference", referenceCollection: "cultures", referenceSerializer: "countryCultureRef", },
     { path: "description", label: "Description", editor: "textarea" },
     { path: "economy.description", label: "Economic Description", editor: "textarea", },
-    { path: "economy.exports", label: "Exports", editor: "stringList", itemLabel: "Export", },
-    { path: "economy.imports", label: "Imports", editor: "stringList", itemLabel: "Import", },
+    { path: "economy.exports", label: "Exports", editor: "tradeList", itemLabel: "Export", },
+    { path: "economy.imports", label: "Imports", editor: "tradeList", itemLabel: "Import", },
     { path: "history.details", label: "Historical Overview", editor: "textarea", },
     { path: "history.events", label: "Historical Events", editor: "stringList", itemLabel: "Event", },
     { path: "languages", label: "Languages", editor: "stringList", itemLabel: "Language", },
@@ -69,8 +74,8 @@ export const entityFieldCatalog: AtlasEntityFieldCatalog = {
     { path: "defenses", label: "Defenses", editor: "textarea" },
     { path: "description", label: "Description", editor: "textarea" },
     { path: "economy.description", label: "Economic Description", editor: "textarea", },
-    { path: "economy.exports", label: "Exports", editor: "stringList", itemLabel: "Export", },
-    { path: "economy.imports", label: "Imports", editor: "stringList", itemLabel: "Import", },
+    { path: "economy.exports", label: "Exports", editor: "tradeList", itemLabel: "Export", },
+    { path: "economy.imports", label: "Imports", editor: "tradeList", itemLabel: "Import", },
     { path: "features", label: "Features", editor: "stringList", itemLabel: "Feature", options: toOptions(CITY_FEATURE_OPTIONS), },
     { path: "leaders", label: "Leaders", editor: "stringList", itemLabel: "Leader" },
     { path: "mapLink", label: "Map Link", editor: "text" },
@@ -174,6 +179,7 @@ export const entityFieldCatalog: AtlasEntityFieldCatalog = {
 };
 
 export const computedBlockEditableFields: AtlasComputedFieldMap = {
+  era: { eraHeader: ["name", "shortName"] },
   country: {
     countryHeader: [
       "name",

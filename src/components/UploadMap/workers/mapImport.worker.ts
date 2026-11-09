@@ -203,29 +203,30 @@ function repairMultilineMapSections(parts: string[]): string[] {
 }
 
 function repairNameBasesLineBreakSplit(parts: string[]): string[] {
-  const expectedSectionCount = 39;
   const nameBasesIndex = 31;
-  const trailingSectionCount = expectedSectionCount - (nameBasesIndex + 1);
 
-  if (parts.length <= expectedSectionCount) {
-    return parts;
+  // Name bases may contain literal line breaks. Economy files append ice,
+  // cell goods, goods, markets, deals, and cell markets after zones, so rivers
+  // must be located relative to the matching file ending.
+  for (const expectedSectionCount of [45, 39]) {
+    if (parts.length <= expectedSectionCount) continue;
+
+    const trailingSectionCount = expectedSectionCount - (nameBasesIndex + 1);
+    const riversIndex = parts.length - trailingSectionCount;
+    const possibleRivers = parts[riversIndex] ?? "";
+
+    if (!/^\s*\[\s*\{[\s\S]*"source"\s*:/i.test(possibleRivers)) {
+      continue;
+    }
+
+    return [
+      ...parts.slice(0, nameBasesIndex),
+      parts.slice(nameBasesIndex, riversIndex).join("\n"),
+      ...parts.slice(riversIndex),
+    ];
   }
 
-  const riversIndex = parts.length - trailingSectionCount;
-  const possibleRivers = parts[riversIndex] ?? "";
-
-  // Modern FMG files end with rivers, rulers, fonts, markers, cell routes,
-  // routes, and zones. Custom name bases may contain literal line breaks,
-  // causing the single names section at index 31 to be split into many lines.
-  if (!/^\s*\[\s*\{[\s\S]*\"source\"\s*:/i.test(possibleRivers)) {
-    return parts;
-  }
-
-  return [
-    ...parts.slice(0, nameBasesIndex),
-    parts.slice(nameBasesIndex, riversIndex).join("\n"),
-    ...parts.slice(riversIndex),
-  ];
+  return parts;
 }
 
 function repairSvgLineBreakSplit(parts: string[]): string[] {

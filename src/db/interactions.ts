@@ -1,3 +1,6 @@
+import type { AtlasEconomySave } from "../definitions/Atlas";
+import { aggregateEconomyTrade, normalizeTradeEntries } from "../components/Util/economy";
+import { cityEconomyField, countryEconomyField, sharedEconomyField, validateEconomyValue } from "../components/atlas/core/economyFields";
 import {
 	initMapsDatabase,
 	type MapDatabaseStore,
@@ -6,6 +9,8 @@ import {
 	mapScopedStores,
 } from "./connections/mapsDatabase";
 import { clearMapCache } from "./mapCache";
+import type { MapInf, TLCity, TLCountry } from "../definitions/TerraLogger";
+import { refreshCountryEconomies } from "../components/Util/economy";
 
 // biome-ignore lint/suspicious/noExplicitAny: Store determines the record shape.
 export async function addDataToStore(storeName: MapDatabaseStore, data: any) {
@@ -86,4 +91,178 @@ export async function deleteEntireMapData(mapId: string): Promise<void> {
 
 	await tx.done;
 	clearMapCache(mapId);
+}
+
+export async function saveImportedMapRecords(
+  mapId: string,
+  replace: boolean,
+  records: readonly { storeName: MapDatabaseStore; value: unknown }[],
+  onWritten: (index: number) => void,
+): Promise<void> {
+  for (const record of records) {
+    const value = record.value;
+    if (!value || typeof value !== "object" ||
+      !("mapId" in value) || value.mapId !== mapId) {
+      throw new Error("Imported records must belong to the selected map.");
+    }
+    if (record.storeName === "tags") {
+      throw new Error("Map import does not replace authored tags.");
+    }
+  }
+
+  const db = await initMapsDatabase();
+  const tx = db.transaction(mapDatabaseStores, "readwrite");
+
+  // Observe transaction failure immediately, including synchronous clone errors.
+  const done = tx.done;
+  void done.catch(() => {});
+
+  try {
+    if (replace) {
+      for (const storeName of mapScopedStores) {
+        if (storeName === "tags") continue;
+        await deleteIndexedMapRecords(tx, storeName, mapId);
+      }
+
+      const maps = tx.objectStore("maps");
+      const keys = await maps.index("mapIdIndex").getAllKeys(mapId);
+      for (const key of keys) await maps.delete(key);
+      // Support legacy map rows whose primary key is the map ID.
+      await maps.delete(mapId);
+    }
+
+    for (let index = 0; index < records.length; index += 1) {
+      const record = records[index];
+      // add rejects ID collisions instead of overwriting another map's record.
+      await tx.objectStore(record.storeName).add(record.value);
+      onWritten(index);
+    }
+
+    await done;
+  } catch (error) {
+    try {
+      tx.abort();
+    } catch {
+      // A failed IndexedDB request may already have aborted the transaction.
+    }
+    await done.catch(() => {});
+    throw error;
+  }
+
+  clearMapCache(mapId);
+}
+
+export async function updateEntityAndEconomies(
+  storeName: "cities" | "countries",
+  key: string,
+  updated: TLCity | TLCountry,
+  changes?: AtlasEconomySave,
+): Promise<{ cities: TLCity[]; countries: TLCountry[]; map: MapInf }> {
+  const mapId = updated.mapId;
+  if (!mapId || updated._id !== key) {
+    throw new Error("Economy updates require a matching entity ID and map ID.");
+  }
+  const db = await initMapsDatabase();
+  const tx = db.transaction(["maps", "cities", "countries"], "readwrite");
+  const done = tx.done;
+  void done.catch(() => {});
+
+  try {
+    const store = tx.objectStore(storeName);
+    const previous = await store.get(key);
+    if (previous && previous.mapId !== mapId) {
+      throw new Error("The saved entity belongs to another map.");
+    }
+    if (updated.economy) {
+      validateEconomyValue(updated.economy, storeName === "cities" ? cityEconomyField : countryEconomyField, "Economy");
+      normalizeTradeEntries(updated.economy.imports);
+      normalizeTradeEntries(updated.economy.exports);
+    }
+    await store.put(updated);
+    for (const city of changes?.cities ?? []) {
+      const previousCity = await tx.objectStore("cities").get(city._id) as TLCity | undefined;
+      if (!previousCity || previousCity.mapId !== mapId || city.mapId !== mapId) {
+        throw new Error("Related City economy edits must belong to this map.");
+      }
+      if (city.economy) {
+        validateEconomyValue(city.economy, cityEconomyField, `City ${city.name}`);
+        normalizeTradeEntries(city.economy.imports);
+        normalizeTradeEntries(city.economy.exports);
+      }
+      await tx.objectStore("cities").put(city);
+    }
+
+    const [cities, countries, rows] = await Promise.all([
+      tx.objectStore("cities").index("mapIdIndex").getAll(mapId) as Promise<TLCity[]>,
+      tx.objectStore("countries").index("mapIdIndex").getAll(mapId) as Promise<TLCountry[]>,
+      tx.objectStore("maps").index("mapIdIndex").getAll(mapId) as Promise<MapInf[]>,
+    ]);
+    if (rows.length === 0) {
+      const legacy = await tx.objectStore("maps").get(mapId) as MapInf | undefined;
+      if (legacy) rows.push(legacy);
+    }
+    if (rows.length !== 1) {
+      throw new Error("Cannot resolve a unique map record for economy summaries.");
+    }
+
+    const currentMap: MapInf = changes?.shared === undefined ? rows[0] : { ...rows[0], economy: changes.shared };
+    if (changes?.shared !== undefined) {
+      validateEconomyValue(changes.shared, sharedEconomyField, "Shared economy");
+      function checkIds(records: readonly { id: number }[], label: string) {
+        if (new Set(records.map((item) => item.id)).size !== records.length) throw new Error(`Duplicate ${label} IDs.`);
+      }
+      const cells = changes.shared.cells;
+      const previousCount = rows[0].economy?.cells.country.length;
+      if ((previousCount !== undefined && cells.country.length !== previousCount) ||
+        (cells.good !== undefined && cells.good.length !== cells.country.length) ||
+        (cells.market !== undefined && cells.market.length !== cells.country.length)) {
+        throw new Error("Cell assignment lists must retain the map's cell count.");
+      }
+      checkIds(changes.shared.goods ?? [], "good");
+      checkIds(changes.shared.markets ?? [], "market");
+      checkIds(changes.shared.deals ?? [], "deal");
+      for (const market of changes.shared.markets ?? []) {
+        checkIds(market.goods.map((good) => ({ id: good.goodId })), "market good");
+      }
+    }
+    const retainedDealIds = new Set((currentMap.economy?.deals ?? []).map((deal) => deal.id));
+    const deletedDealIds = new Set(changes?.shared === undefined ? [] :
+      (rows[0].economy?.deals ?? []).filter((deal) => !retainedDealIds.has(deal.id)).map((deal) => deal.id));
+    const trade = currentMap.economy ? aggregateEconomyTrade(cities, countries, currentMap.economy) : undefined;
+    const refreshedCities = trade || deletedDealIds.size > 0 ? cities.map((city) => {
+      const totals = trade?.cities.get(city.id);
+      return { ...city, economy: {
+        ...city.economy, description: city.economy?.description ?? "",
+        production: city.economy?.production?.filter((entry) => entry.type !== "deal" || !deletedDealIds.has(entry.dealId)),
+        imports: [...normalizeTradeEntries(city.economy?.imports).filter((item) => item.source !== "afmg"), ...(totals?.imports ?? [])],
+        exports: [...normalizeTradeEntries(city.economy?.exports).filter((item) => item.source !== "afmg"), ...(totals?.exports ?? [])],
+      } };
+    }) : cities;
+    const refreshed = refreshCountryEconomies(refreshedCities, countries, currentMap.economy);
+    const map: MapInf = currentMap.economy ? {
+      ...currentMap,
+      economy: {
+        ...currentMap.economy,
+        unresolvedDealIds: refreshed.unresolvedDealIds,
+        unresolvedDealIssues: refreshed.unresolvedDealIssues,
+        tradeAttribution: refreshed.tradeAttribution,
+      },
+    } : currentMap;
+
+    for (const city of refreshedCities) await tx.objectStore("cities").put(city);
+    for (const country of refreshed.countries) {
+      await tx.objectStore("countries").put(country);
+    }
+    if (currentMap.economy) await tx.objectStore("maps").put(map);
+    await done;
+    return { cities: refreshedCities, countries: refreshed.countries, map };
+  } catch (error) {
+    try {
+      tx.abort();
+    } catch {
+      // A failed IndexedDB request may already have aborted the transaction.
+    }
+    await done.catch(() => {});
+    throw error;
+  }
 }

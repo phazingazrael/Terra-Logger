@@ -1,4 +1,11 @@
 import type { Tag } from "../../../../definitions/Common";
+import type { TLTradeEntry } from "../../../../definitions/Economy";
+import {
+	formatTradeEntry,
+	editImportedTradeDeals,
+	normalizeTradeEntries,
+	resolveTradeGood,
+} from "../../../Util/economy";
 import type { AtlasSourceType } from "../../../../definitions/Atlas";
 import {
 	coerceValueForField,
@@ -38,12 +45,14 @@ import {
 } from "@mui/material";
 
 export function EntityFieldEditor<TSource extends AtlasSourceType>({
+	economy,
 	sourceType,
 	entity,
 	related,
 	schema,
 	value,
 	onChange,
+	onRelatedUpdate,
 }: AtlasEntityFieldEditorProps<TSource>) {
 	if (schema) {
 		if (schema.label && schema.label === "Short Name") schema.label = "Name";
@@ -57,12 +66,14 @@ export function EntityFieldEditor<TSource extends AtlasSourceType>({
 			</div>
 
 			{renderFieldEditor({
+				economy,
 				sourceType,
 				entity,
 				related,
 				schema,
 				value,
 				onChange,
+				onRelatedUpdate,
 			})}
 		</div>
 	);
@@ -116,6 +127,9 @@ function renderFieldEditor<TSource extends AtlasSourceType>(
 				<StringListEditor schema={schema} value={value} onChange={onChange} />
 			);
 
+		case "tradeList":
+			return <TradeListEditor {...props} />;
+
 		case "tagList":
 			return <TagListEditor {...props} />;
 
@@ -145,6 +159,234 @@ function renderFieldEditor<TSource extends AtlasSourceType>(
 				/>
 			);
 	}
+}
+
+function TradeListEditor<TSource extends AtlasSourceType>({
+	economy,
+	entity,
+	onRelatedUpdate,
+	schema,
+	value,
+	onChange,
+}: AtlasEntityFieldEditorProps<TSource>) {
+	const [tradeError, setTradeError] = useState<string | null>(null);
+	let items: TLTradeEntry[];
+	try {
+		items = normalizeTradeEntries(value);
+	} catch (error) {
+		return (
+			<p role="alert">
+				{error instanceof Error
+					? error.message
+					: "Unable to read trade entries."}
+			</p>
+		);
+	}
+
+	function editImported(
+		entry: Extract<TLTradeEntry, { source: "afmg" }>,
+		index: number,
+		change:
+			| { type: "remove" }
+			| { type: "update"; goodId?: number; units?: number },
+	) {
+		try {
+			const mapId = "mapId" in entity ? entity.mapId : undefined;
+			if (!economy || !mapId || !onRelatedUpdate)
+				throw new Error("Shared economy editing is unavailable.");
+			const shared = editImportedTradeDeals(economy, entry, change);
+			onRelatedUpdate({
+				action: "update",
+				store: "maps",
+				key: mapId,
+				value: shared,
+			});
+			onChange(
+				change.type === "remove"
+					? removeArrayItem(items, index)
+					: updateArrayItem(items, index, {
+							...entry,
+							good: { goodId: change.goodId ?? entry.good.goodId },
+							units: change.units ?? entry.units,
+						}),
+			);
+			setTradeError(null);
+		} catch (error) {
+			setTradeError(
+				error instanceof Error
+					? error.message
+					: "Unable to edit imported trade.",
+			);
+		}
+	}
+	return (
+		<div className="atlas-entity-list-editor">
+			{tradeError ? <p role="alert">{tradeError}</p> : null}
+			{items.map((item, index) => (
+				<div
+					// biome-ignore lint/suspicious/noArrayIndexKey: Trade entries have no persistent identity.
+					key={`${schema.path}-${index}`}
+					className="atlas-entity-object-card"
+				>
+					<header className="atlas-entity-object-card__header">
+						<strong>
+							{schema.itemLabel ?? "Item"} {index + 1}
+						</strong>
+						<Button
+							variant="outlined"
+							type="button"
+							onClick={() =>
+								item.source === "afmg"
+									? editImported(item, index, { type: "remove" })
+									: onChange(removeArrayItem(items, index))
+							}
+						>
+							Remove
+						</Button>
+					</header>
+
+					{item.source === "afmg" ? (
+						<>
+							<small>Imported entry</small>
+							<Autocomplete
+								options={economy?.goods ?? []}
+								value={resolveTradeGood(item, economy?.goods) ?? null}
+								getOptionLabel={(good) => `${good.name} (#${good.id})`}
+								isOptionEqualToValue={(option, value) => option.id === value.id}
+								onChange={(_, good) => {
+									if (good)
+										editImported(item, index, {
+											type: "update",
+											goodId: good.id,
+										});
+								}}
+								renderInput={(params) => (
+									<TextField {...params} label="Catalog good" />
+								)}
+							/>
+							<TextField
+								label="Good ID"
+								type="number"
+								value={item.good.goodId}
+								slotProps={{ htmlInput: { min: 0, step: 1 } }}
+								onChange={(event) => {
+									const id = Number(event.target.value);
+									if (
+										event.target.value !== "" &&
+										Number.isInteger(id) &&
+										id >= 0
+									)
+										editImported(item, index, { type: "update", goodId: id });
+								}}
+							/>
+							<TextField
+								label="Quantity"
+								type="number"
+								value={item.units}
+								slotProps={{ htmlInput: { min: 0, step: "any" } }}
+								onChange={(event) => {
+									const units = Number(event.target.value);
+									if (
+										event.target.value !== "" &&
+										Number.isFinite(units) &&
+										units >= 0
+									)
+										editImported(item, index, { type: "update", units });
+								}}
+							/>
+						</>
+					) : (
+						<>
+							<small>
+								{item.source === "legacy" ? "Legacy entry" : "Manual entry"}
+							</small>
+							<Autocomplete
+								options={economy?.goods ?? []}
+								value={resolveTradeGood(item, economy?.goods) ?? null}
+								getOptionLabel={(good) => `${good.name} (#${good.id})`}
+								isOptionEqualToValue={(option, value) => option.id === value.id}
+								onChange={(_event, good) => {
+									const currentGood = resolveTradeGood(item, economy?.goods);
+									onChange(
+										updateArrayItem(items, index, {
+											...item,
+											source: "manual",
+											good: good
+												? { goodId: good.id }
+												: {
+														name:
+															"name" in item.good
+																? item.good.name
+																: (currentGood?.name ?? ""),
+													},
+										}),
+									);
+								}}
+								renderInput={(params) => (
+									<TextField {...params} label="Catalog good" />
+								)}
+							/>
+							{"name" in item.good ? (
+								<TextField
+									label="Good"
+									value={item.good.name}
+									onChange={(event) =>
+										onChange(
+											updateArrayItem(items, index, {
+												...item,
+												source: "manual",
+												good: { name: event.target.value },
+											}),
+										)
+									}
+								/>
+							) : (
+								<p>
+									{formatTradeEntry(
+										{ ...item, units: undefined },
+										resolveTradeGood(item, economy?.goods),
+									)}
+								</p>
+							)}
+							<TextField
+								label="Quantity"
+								type="number"
+								value={item.units ?? ""}
+								slotProps={{ htmlInput: { min: 0, step: "any" } }}
+								onChange={(event) => {
+									const raw = event.target.value;
+									const units = raw === "" ? undefined : Number(raw);
+									if (
+										units !== undefined &&
+										(!Number.isFinite(units) || units < 0)
+									) {
+										return;
+									}
+
+									onChange(
+										updateArrayItem(items, index, {
+											...item,
+											source: "manual",
+											units,
+										}),
+									);
+								}}
+							/>
+						</>
+					)}
+				</div>
+			))}
+			<Button
+				variant="outlined"
+				type="button"
+				onClick={() =>
+					onChange([...items, { source: "manual", good: { name: "" } }])
+				}
+			>
+				Add {schema.itemLabel ?? "item"}
+			</Button>
+		</div>
+	);
 }
 
 function StringListEditor({
@@ -688,6 +930,8 @@ function ObjectEditor<TSource extends AtlasSourceType>(
 					sourceType={props.sourceType}
 					entity={props.entity}
 					related={props.related}
+					economy={props.economy}
+					onRelatedUpdate={props.onRelatedUpdate}
 					schema={field}
 					value={getValueAtPath(objectValue, field.path)}
 					onChange={(nextValue) =>
@@ -736,6 +980,8 @@ function ObjectListEditor<TSource extends AtlasSourceType>(
 								sourceType={props.sourceType}
 								entity={props.entity}
 								related={props.related}
+								economy={props.economy}
+								onRelatedUpdate={props.onRelatedUpdate}
 								schema={field}
 								value={getValueAtPath(objectItem, field.path)}
 								onChange={(nextValue) =>

@@ -194,7 +194,7 @@ function useGeneratorCatalogSettingsModel() {
 	useEffect(() => {
 		const firstSection = sections[0];
 		if (!sections.some((candidate) => candidate.id === sectionId)) {
-			setSectionId(firstSection?.id ?? "");
+			dispatch({ type: "set", key: "sectionId", value: firstSection?.id ?? "" });
 		}
 	}, [sectionId, sections]);
 

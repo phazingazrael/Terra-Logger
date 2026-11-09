@@ -2,13 +2,14 @@ import { type IDBPDatabase, openDB } from "idb";
 import { migrateNPCsToPersistentEntity } from "../migrations/persistentNPC";
 import { migrateNPCIdentityAndPortrait } from "../migrations/npcIdentityAndPortrait";
 import { migrateNPCAgeAndHistory } from "../migrations/npcAgeAndHistory";
+import { migrateEconomy } from "../migrations/economy";
 import {
 	migrateAtlasContentToV3,
 	migrateAtlasContentToV4,
 } from "../migrations/atlasContent";
 import { TERRA_LOGGER_MAPS_DB_NAME } from "./databaseNames";
 
-const TERRA_LOGGER_MAPS_DB_VERSION = 5;
+const TERRA_LOGGER_MAPS_DB_VERSION = 6;
 
 export const mapScopedStores = [
 	"cities",
@@ -31,7 +32,7 @@ export type MapDatabaseStore = (typeof mapDatabaseStores)[number];
 let mapsDatabasePromise: Promise<IDBPDatabase<any>> | null = null;
 
 /**
- * Opens the existing map database without changing its schema or moving data.
+ * Opens the map database and applies pending migrations.
  */
 export function initMapsDatabase() {
 	mapsDatabasePromise ??= (async () => {
@@ -82,6 +83,10 @@ export function initMapsDatabase() {
 						await migrateNPCsToPersistentEntity(db, tx);
 						await migrateNPCIdentityAndPortrait(db, tx);
 						await migrateNPCAgeAndHistory(db, tx);
+					}
+
+					if (oldVersion < 6) {
+						await migrateEconomy(db, tx);
 					}
 				},
 			},

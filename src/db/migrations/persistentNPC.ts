@@ -1,8 +1,8 @@
 import type { IDBPDatabase, IDBPTransaction } from "idb";
 import { isPersistentNPC, normalizePersistentNPC } from "../../components/NPC/persistence/normalize";
 
-// biome-ignore lint/suspicious/noExplicitAny: Migration must support the existing untyped database.
 export async function migrateNPCsToPersistentEntity(
+	// biome-ignore lint/suspicious/noExplicitAny: Migration must support the existing untyped database.
 	db: IDBPDatabase<any>,
 	// biome-ignore lint/suspicious/noExplicitAny: Upgrade transaction spans the existing schema.
 	tx: IDBPTransaction<any, any, "versionchange">,

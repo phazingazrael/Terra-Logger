@@ -1,7 +1,7 @@
 import type { TLCountry } from "../../../definitions/TerraLogger";
 import type { AtlasAdapter, AtlasContent } from "../../../definitions/Atlas";
 import { commonBlockPresets, commonSectionPresets } from "./shared";
-import { clear, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, entitySplitListBlock, richTextBlock, sectionPreset } from "../core/presets";
+import { clear, economySummary, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, entitySplitListBlock, richTextBlock, sectionPreset } from "../core/presets";
 
 function createCountryContent(entity: TLCountry): AtlasContent {
   return createContentShell({
@@ -49,6 +49,7 @@ function createCountryContent(entity: TLCountry): AtlasContent {
           { label: "Notable Guilds & Corporations", value: "[Merchant houses, cybernetic megacorps, thieves’ guilds, etc.]" },
           { label: "Black Market & Illicit Trade", value: "[Contraband, smugglers, underground syndicates, etc.]" }
         ]),
+        economySummary(),
         richTextBlock("Add economic details here."),
       ]),
       entitySection("Diplomacy", "section diplomacy", [computedBlock("countryDiplomacy", "Diplomacy", "country.political.diplomacy")]),
@@ -242,6 +243,32 @@ export const countryAdapter: AtlasAdapter<"country"> = {
   sourceType: "country",
   label: "Country",
   defaultLayout: "content-grid",
+  resizableSectionClasses: [
+    "adventurers-mercenaries",
+    "crime-underworld",
+    "culture-arts",
+    "current-events",
+    "demographics",
+    "diplomacy",
+    "economy",
+    "education-knowledge",
+    "general-notes",
+    "geography-environment",
+    "hidden-details",
+    "history",
+    "magic-technology",
+    "military-defense",
+    "notable-figures",
+    "notable-locations",
+    "plot-hooks",
+    "political-info",
+    "politics-relationships",
+    "religion-mythology",
+    "sports-games",
+    "tags",
+    "transportation-infrastructure",
+    "freeform"
+  ],
   getEntityId: (entity) => entity._id,
   getEntityTitle: (entity) => entity.nameFull || entity.name,
   createDefaultContent: createCountryContent,

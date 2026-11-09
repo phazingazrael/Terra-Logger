@@ -1,5 +1,6 @@
-// src/db/DataContext.tsx
 /** biome-ignore-all lint/suspicious/noExplicitAny: Database functions accept several record types. */
+import type { AtlasEconomySave } from "../definitions/Atlas";
+// src/db/DataContext.tsx
 
 import type React from "react";
 import {
@@ -24,6 +25,7 @@ import {
 	updateAndCache,
 } from "./client";
 import type { MapScopedStore } from "./connections/mapsDatabase";
+import { subscribeToEraChanges } from "./eras";
 
 type DatabaseContextValue = {
 	activeMapId: string | null;
@@ -50,7 +52,7 @@ type DatabaseContextValue = {
 	 */
 	add: (store: MapScopedStore, data: any) => Promise<void>;
 
-	update: (store: MapScopedStore, key: string, updated: any) => Promise<void>;
+	update: (store: MapScopedStore, key: string, updated: any, economy?: AtlasEconomySave) => Promise<void>;
 
 	remove: (store: MapScopedStore, key: string) => Promise<void>;
 
@@ -173,6 +175,8 @@ export function DBProvider({ children }: React.PropsWithChildren) {
 	 */
 	const [version, bumpVersion] = useReducer((value: number) => value + 1, 0);
 
+	useEffect(() => subscribeToEraChanges(() => bumpVersion()), []);
+
 	/**
 	 * Restores the previous active map when the application starts.
 	 */
@@ -215,8 +219,8 @@ export function DBProvider({ children }: React.PropsWithChildren) {
 	);
 
 	const update = useCallback(
-		async (store: MapScopedStore, key: string, updated: any): Promise<void> => {
-			await updateAndCache(store, key, updated, activeMapId);
+		async (store: MapScopedStore, key: string, updated: any, economy?: AtlasEconomySave): Promise<void> => {
+			await updateAndCache(store, key, updated, activeMapId, economy);
 
 			bumpVersion();
 		},

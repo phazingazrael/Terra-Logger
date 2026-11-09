@@ -56,6 +56,7 @@ export function EntityBlockEditor({
 						sourceType={context.sourceType}
 						entity={context.entity}
 						related={context.related}
+						economy={context.economy}
 						schema={schema}
 						value={getValueAtPath(context.entity, schema.path)}
 						onChange={(value) =>

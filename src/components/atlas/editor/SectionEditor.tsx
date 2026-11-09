@@ -77,7 +77,7 @@ export function SectionEditor({
 			<BlockList
 				blocks={section.blocks}
 				blockPresets={blockPresets}
-				context={context}
+				context={{ ...context, section }}
 				onAdd={(preset) =>
 					onChange(addBlock(section, preset.create(context.entity as never)))
 				}

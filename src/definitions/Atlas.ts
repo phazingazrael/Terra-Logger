@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { TLMapEra } from "./History";
+import type { TLMapEconomy } from "./Economy";
 import type {
 	TLCity,
 	TLCountry,
@@ -18,9 +20,10 @@ export type AtlasSourceType =
 	| "culture"
 	| "religion"
 	| "note"
-	| "npc";
+	| "npc"
+	| "era";
 
-export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote | TLNPC;
+export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote | TLNPC | TLMapEra;
 
 export type AtlasEntityBySource = {
 	city: TLCity;
@@ -29,6 +32,7 @@ export type AtlasEntityBySource = {
 	religion: TLReligion;
 	note: TLNote;
 	npc: TLNPC;
+	era: TLMapEra;
 };
 
 export type AtlasRelatedEntities = Partial<{
@@ -38,12 +42,13 @@ export type AtlasRelatedEntities = Partial<{
 	religions: TLReligion[];
 	notes: TLNote[];
 	npcs: TLNPC[];
+	eras: TLMapEra[];
 	tags: Tag[];
 }>;
 
 export type AtlasLayoutPreset = "content-grid" | "stack" | "sidebar";
 export type AtlasDensity = "comfortable" | "compact";
-export type AtlasGridSpan = "auto" | "wide" | "full";
+export type AtlasGridSpan = "auto" | "single" | "wide" | "full";
 
 export type AtlasContent = {
 	schema: typeof ATLAS_CONTENT_SCHEMA;
@@ -129,6 +134,8 @@ export type AtlasRelatedLookups = {
 export type AtlasRenderContext<
 	TSource extends AtlasSourceType = AtlasSourceType,
 > = {
+	economy?: TLMapEconomy;
+	section?: AtlasSection;
 	sourceType: TSource;
 	entity: AtlasEntityBySource[TSource];
 	related?: AtlasRelatedEntities;
@@ -140,7 +147,13 @@ export type AtlasEntityFieldChange = {
 	value: unknown;
 };
 
+export type AtlasEconomySave = {
+	shared?: TLMapEconomy;
+	cities?: TLCity[];
+};
+
 export type AtlasRelatedUpdate =
+	| { action: "update"; store: "maps"; key: string; value: TLMapEconomy }
 	| {
 		action: "add";
 		store: "tags";
@@ -221,6 +234,7 @@ export type AtlasAdapter<TSource extends AtlasSourceType = AtlasSourceType> = {
 	sourceType: TSource;
 	label: string;
 	defaultLayout: AtlasLayoutPreset;
+	resizableSectionClasses?: readonly string[];
 	getEntityId: (entity: AtlasEntityBySource[TSource]) => string;
 	getEntityTitle: (entity: AtlasEntityBySource[TSource]) => string;
 	createDefaultContent: (entity: AtlasEntityBySource[TSource]) => AtlasContent;

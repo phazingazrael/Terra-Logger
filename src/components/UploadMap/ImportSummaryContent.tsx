@@ -1,4 +1,14 @@
-import { Alert, AlertTitle, Grid, Stack, Typography } from "@mui/material";
+import {
+	Accordion,
+	AccordionDetails,
+	AccordionSummary,
+	Alert,
+	AlertTitle,
+	Grid,
+	Stack,
+	Typography,
+} from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import type { MapImportSummary } from "./importSummary";
 
 type ImportSummaryContentProps = {
@@ -67,28 +77,40 @@ export default function ImportSummaryContent({
 					<Typography variant="h6" component="h2">
 						Upload Issues
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
-						The map was imported, but Terra-Logger encountered the following
-						recoverable issues.
-					</Typography>
-					{summary.issues.map((issue) => (
-						<Alert
-							key={`${issue.severity}-${issue.label}`}
-							severity={issue.severity}
-							variant="outlined"
+
+					<Accordion>
+						<AccordionSummary
+							expandIcon={<ArrowDropDownIcon />}
+							aria-controls="panel2-content"
+							id="panel2-header"
 						>
-							<AlertTitle>
-								{issue.count.toLocaleString()}{" "}
-								{issue.count === 1 ? "occurrence" : "occurrences"}
-							</AlertTitle>
-							{issue.label}
-							{issue.examples.length > 0 ? (
-								<Typography variant="body2" sx={{ mt: 0.5 }}>
-									Examples: {issue.examples.join(", ")}
-								</Typography>
-							) : null}
-						</Alert>
-					))}
+							<Typography component="span">Upload Issue Details</Typography>
+						</AccordionSummary>
+						<AccordionDetails>
+							<Typography variant="body2" color="text.secondary">
+								The map was imported, but Terra-Logger encountered the following
+								recoverable issues.
+							</Typography>
+							{summary.issues.map((issue) => (
+								<Alert
+									key={`${issue.severity}-${issue.label}`}
+									severity={issue.severity}
+									variant="outlined"
+								>
+									<AlertTitle>
+										{issue.count.toLocaleString()}{" "}
+										{issue.count === 1 ? "occurrence" : "occurrences"}
+									</AlertTitle>
+									{issue.label}
+									{issue.examples.length > 0 ? (
+										<Typography variant="body2" sx={{ mt: 0.5 }}>
+											Examples: {issue.examples.join(", ")}
+										</Typography>
+									) : null}
+								</Alert>
+							))}
+						</AccordionDetails>
+					</Accordion>
 				</Stack>
 			) : null}
 		</>

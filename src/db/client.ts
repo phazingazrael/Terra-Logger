@@ -1,5 +1,6 @@
-// src/db/client.ts
 /** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
+import type { AtlasEconomySave } from "../definitions/Atlas";
+// src/db/client.ts
 import { ensurePersistentNPCFields } from "../components/NPC/persistence/normalize";
 import type { TLNPC } from "../definitions/TerraLogger";
 import type { TLMapInfo } from "../definitions/TerraLogger";
@@ -14,6 +15,7 @@ import {
 	deleteDataFromStore,
 	queryDataFromStore,
 	updateDataInStore,
+	updateEntityAndEconomies,
 } from "./interactions";
 import {
 	addCachedRecord,
@@ -130,8 +132,19 @@ export async function updateAndCache(
 	key: string,
 	updated: any,
 	activeMapId: string | null,
+	economy?: AtlasEconomySave,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(updated as TLNPC) : updated;
+	if ((store === "cities" || store === "countries") &&
+		typeof prepared.mapId === "string" && prepared.mapId) {
+		const refreshed = await updateEntityAndEconomies(store, key, prepared, economy);
+		if (activeMapId && activeMapId === prepared.mapId) {
+			setCachedStore(activeMapId, "cities", refreshed.cities);
+			setCachedStore(activeMapId, "countries", refreshed.countries);
+			setCachedMap(activeMapId, refreshed.map);
+		}
+		return;
+	}
 	await updateDataInStore(store, key, prepared);
 	if (activeMapId && prepared.mapId === activeMapId) {
 		updateCachedRecord(activeMapId, store, prepared);

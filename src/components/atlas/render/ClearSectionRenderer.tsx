@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Typography } from "@mui/material";
 import { BlockRenderer } from "./BlockRenderer";
 import type {
@@ -8,14 +9,20 @@ import type {
 export function ClearSectionRenderer({
 	section,
 	context,
+	children,
+	controls,
 }: Readonly<{
 	section: AtlasSection;
 	context: AtlasRenderContext;
+	children?: ReactNode;
+	controls?: ReactNode;
 }>) {
 	return (
 		<div
+			data-grid-span={section.wrapper.gridSpan ?? "auto"}
 			className={`atlas-section clear ${section.wrapper.className ?? ""}`.trim()}
 		>
+			{controls}
 			<section data-section-id={section.id}>
 				<div className="atlas-section__header">
 					<Typography color="text.secondary" variant="h2">
@@ -26,6 +33,7 @@ export function ClearSectionRenderer({
 					{section.blocks.map((block) => (
 						<BlockRenderer key={block.id} block={block} context={context} />
 					))}
+					{children}
 				</div>
 			</section>
 		</div>

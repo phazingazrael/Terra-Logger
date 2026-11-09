@@ -98,8 +98,8 @@ export const npcBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			);
 		},
 	},
-	"npc-current-location": {
-		type: "npc-current-location",
+	"current-location": {
+		type: "current-location",
 		label: "Current Location",
 		shouldRender: ({ context }) =>
 			context.sourceType === "npc" &&
@@ -132,8 +132,8 @@ export const npcBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			);
 		},
 	},
-	"npc-relationship-graph": {
-		type: "npc-relationship-graph",
+	"relationship-graph": {
+		type: "relationship-graph",
 		label: "Relationship Graph",
 		shouldRender: ({ context }) =>
 			context.sourceType === "npc" &&
@@ -151,8 +151,8 @@ export const npcBlockPlugins: Record<string, AtlasBlockPlugin> = {
 			return <NPCRelationshipGraph npc={npc} context={context} embedded />;
 		},
 	},
-	"npc-history-timeline": {
-		type: "npc-history-timeline",
+	"history-timeline": {
+		type: "history-timeline",
 		label: "History Timeline",
 		shouldRender: ({ context }) =>
 			context.sourceType === "npc" &&

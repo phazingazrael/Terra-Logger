@@ -135,5 +135,5 @@ export type ZipEntry = {
   path: string;
   name: string;
   content: string | Uint8Array;
-  zipOptions?: any;
+  zipOptions?: import("jszip").JSZipFileOptions;
 };

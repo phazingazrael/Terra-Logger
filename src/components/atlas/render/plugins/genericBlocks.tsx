@@ -1,3 +1,4 @@
+import { EconomySummary } from "../EconomySummary";
 import type {
 	AtlasBlock,
 	AtlasBlockPlugin,
@@ -9,6 +10,12 @@ import {
 	richTextJsonToHtml,
 } from "../../core/richText";
 import { formatValue, getEntityValue } from "../pluginUtils";
+import {
+  formatTradeEntry,
+  isEconomyTradePath,
+  normalizeTradeEntries,
+  resolveTradeGood,
+} from "../../../Util/economy";
 import {
 	Box,
 	Card,
@@ -157,7 +164,12 @@ function resolveEntitySplitListGroup(
 		return null;
 	}
 
-	const childrenValue = getEntityValue(context, path);
+	const sourceValue = getEntityValue(context, path);
+	const childrenValue = isEconomyTradePath(path) &&
+		(context.sourceType === "city" || context.sourceType === "country")
+		? normalizeTradeEntries(sourceValue).map((entry) =>
+			formatTradeEntry(entry, resolveTradeGood(entry, context.economy?.goods)))
+		: sourceValue;
 
 	const name =
 		typeof group.label === "string"
@@ -282,6 +294,12 @@ function relationshipMatchesRelatedNPCBlock(
 }
 
 export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
+	economySummary: {
+		type: "economySummary",
+		label: "Economy Summary",
+		Render: ({ context }) => context.section
+			? <EconomySummary context={context} section={context.section} /> : null,
+	},
 	heading: {
 		type: "heading",
 		label: "Heading",
@@ -484,6 +502,11 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "entityChipList",
 		label: "Entity Chip List",
 		shouldRender: ({ block, context }) => {
+			if (context.sourceType === "npc" &&
+				(block.binding?.entityPath === "groups" || block.binding?.entityPath === "tags")) {
+				return true;
+			}
+
 			if (block.binding?.entityPath === "cities") {
 				const country = context.entity as TLCountry;
 				const lookupCities = context.relatedLookups?.citiesByCountryId?.get(
@@ -623,9 +646,9 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	largeTags: {
 		type: "largeTags",
 		label: "Large Tags",
-		shouldRender: ({ context }) => context.entity.tags.length > 0,
+		shouldRender: ({ context }) => "tags" in context.entity && context.entity.tags.length > 0,
 		Render: ({ context }) => {
-			const Tags = context.entity.tags;
+			const Tags = "tags" in context.entity ? context.entity.tags : [];
 			const theme = useTheme();
 			const gridSize =
 				Tags.length > 1 && Tags.length < 3 ? 6 : Tags.length > 2 ? 4 : 12;

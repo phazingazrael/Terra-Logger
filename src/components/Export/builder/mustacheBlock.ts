@@ -1,6 +1,7 @@
 import Mustache from "mustache";
 import type { ExportContext, MarkdownBlock } from "./exportTypes";
 import { renderEntityDescriptionBodyToMarkdown } from "./atlasContentMarkdown";
+import { renderEconomySection } from "./economyMarkdown";
 
 type MustacheContext = Record<string, unknown>;
 
@@ -55,6 +56,11 @@ function createMustacheContext(context: ExportContext): MustacheContext {
     ...entity,
     [singular]: entity,
   };
+
+  if (context.templateId === "boti" &&
+    (context.sourceType === "city" || context.sourceType === "country")) {
+    result.economySectionMarkdown = renderEconomySection(context, { calloutBody: true });
+  }
 
   mustacheContextCache.set(context, result);
 

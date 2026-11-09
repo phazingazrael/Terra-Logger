@@ -1,5 +1,79 @@
 // Interfaces for AFMG imported Data
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#burgs
+// AFMG economy source schema: 15853d2ab92aa1f3caf7ee65bfd6d9f90bdce18e.
+type AFMGDemandCategory = "food" | "utilities" | "construction" | "military" | "luxury";
+
+type AFMGCultureType = "Generic" | "Hunting" | "Highland" | "River" | "Lake" | "Naval" | "Nomadic";
+
+type AFMGGood = {
+  i: number;
+  name: string;
+  tags: string[];
+  value: number;
+  unit: string;
+  icon: string;
+  color: string;
+  chance?: number;
+  distribution?: string;
+  biomeOutput?: Partial<Record<number, number>>;
+  recipes?: Record<number, number>[];
+  multipliers?: {
+    cultureType?: Partial<Record<AFMGCultureType, number>>;
+    culture?: Partial<Record<number, number>>;
+    state?: Partial<Record<number, number>>;
+    religion?: Partial<Record<number, number>>;
+    biome?: Partial<Record<number, number>>;
+  };
+  demandCoverage?: Partial<Record<AFMGDemandCategory, number>>;
+};
+
+type AFMGMarket = {
+  i: number;
+  centerBurgId: number;
+  color: string;
+  goods: Record<number, { stock: number; price: number }>;
+};
+
+type AFMGDeal = {
+  i: number;
+  seller: number;
+  sellerType: "burg" | "market";
+  buyer: number;
+  buyerType: "burg" | "market";
+  good: number;
+  units: number;
+  price: number;
+  tax: number;
+};
+
+type AFMGProductionCandidate = {
+  goodId: number;
+  units: number;
+  sellPrice: number;
+  ingredientCost: number;
+  cultureModifier: number;
+  demandCategory: AFMGDemandCategory | null;
+  demandMultiplier: number;
+  score: number;
+  ingredients: readonly { goodId: number; amount: number }[];
+  goalGoodId?: number;
+  isPreparation?: boolean;
+  gainPerWorker?: number;
+  workersNeeded?: number;
+};
+
+type AFMGProductionRecord =
+  | { dealId: number }
+  | {
+      goodId: number;
+      units: number;
+      recipe: { goodId: number; units: number }[];
+      // This source field stores the combined multiplier, not only culture.
+      cultureModifier?: number;
+      candidates?: readonly AFMGProductionCandidate[];
+    }
+  | { goodId: number; units: number };
+
 type City = {
   capital: number; //if burg is a capital, 0 if not (each state has only 1 capital)
   cell: number; // burg cell id. One cell can have only one burg
@@ -29,6 +103,10 @@ type City = {
   name: string; // burg name
   plaza: number; //if burg has a marketplace, 0 if not. Used for MFCG
   population: number; // burg population in population points
+  market?: number;
+  production?: AFMGProductionRecord[];
+  treasury?: number;
+  product?: number;
   port: number; //if burg is not a port, then 0, otherwise feature id of the water body the burg stands on
   removed: boolean; //if burg is removed
   shanty: number; //if burg has a shanty town, 0 if not. Used for MFCG
@@ -104,6 +182,9 @@ type Country = {
   provinces: number[]; // ids of state provinces
   removed: boolean; // true if state is removed
   rural: number; // rural (non-burg) population of state cells. In population points
+  salesTax?: number;
+  pollTax?: number;
+  treasury?: number;
   type: string; // state type, see [culture types](https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Culture types)
   urban: number; // urban (burg) population of state cells. In population points
 };
@@ -148,7 +229,7 @@ type Note = {
 };
 
 // // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#provinces
-type Province = {
+declare type Province = {
   i: number; // province id, always equal to the array index
   area: number; // province area in pixels
   burg: number; // id of province capital burg if any
@@ -206,7 +287,7 @@ type Religion = {
 };
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#rivers
-type Rivers = {
+declare type Rivers = {
   i: number; // river id
   name: string; // river name
   type: string; // river type, used to get river full name only
@@ -223,7 +304,7 @@ type Rivers = {
 };
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#markers
-type Markers = {
+declare type Markers = {
   cell: number; // cell id, used to prevent multiple markers generation in the same cell
   dx: number; // icon x shift percent. Optional, default is 50 (50%, center)
   dy: number; // icon y shift percent. Optional, default s 50 (50%, center)
@@ -256,7 +337,7 @@ type NameBase = {
 
 // Inferred combination of data into 1 object following the data model below
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
-interface MapInfo {
+declare interface MapInfo {
   cities: City[];
   countries: Country[];
   cultures: Culture[];
@@ -317,6 +398,8 @@ interface MapInfo {
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
 
 interface CellData {
+  good?: number[];
+  market?: number[];
   // number[] - cells area in pixels. Uint16Array
   area: number[];
   // number[] - indicator whether the cell borders the map edge, 1 if true, 0 if false. Integers, not Boolean
@@ -378,6 +461,10 @@ interface BurgData {
   culture: number, // number - burg culture id
   state: number, // number - burg state id
   population: number, // number - burg population in population points
+  market?: number,
+  production?: AFMGProductionRecord[],
+  treasury?: number,
+  product?: number,
   feature: number, // number - burg feature id (id of a landmass)
   type: string, // string - burg type, see culture types
   coa: object, // object - emblem object, data model is the same as in Armoria and covered in API documentation. The only additional fields are optional size: number, x: number and y: number that controls the emblem position on the map (if it's not default). If emblem is loaded by user, then the value is { custom: true } and cannot be displayed in Armoria
@@ -394,7 +481,10 @@ interface BurgData {
   removed: boolean, // boolean - true if burg is removed
 }
 
-interface Pack {
+declare interface Pack {
+  goods?: AFMGGood[];
+  markets?: AFMGMarket[];
+  deals?: AFMGDeal[];
   // Burgs (settlements) data is stored as an array of objects with strict element order. Element 0 is an empty object.
   burgs: BurgData[];
   // Cell data

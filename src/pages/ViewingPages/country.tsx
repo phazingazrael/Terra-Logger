@@ -1,10 +1,12 @@
+import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Container } from "@mui/material";
 
 import { useParams } from "react-router-dom";
-import { useActive, useDB } from "../../db/DataContext";
+import { useActive, useActiveMap, useDB } from "../../db/DataContext";
 
 import type {
+	MapInf,
 	TLCountry,
 	TLCity,
 	TLCulture,
@@ -17,7 +19,7 @@ import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
-import { AtlasRenderer } from "../../components/atlas/render/Renderer";
+import { AtlasView } from "../../components/atlas/render/AtlasView";
 import type {
 	AtlasContent,
 	AtlasPageEditorSavePayload,
@@ -27,6 +29,7 @@ import type { TLNPC } from "../../definitions/TerraLogger";
 import { ensureContextualNPCSections } from "../../components/atlas/legacy/contextualNPCSections";
 
 function CountryView() {
+	const map = useActiveMap<MapInf>();
 	const countryId = useParams();
 	const { update, add } = useDB();
 	const countries = useActive<TLCountry>("countries");
@@ -72,7 +75,7 @@ function CountryView() {
 		if (!country) return null;
 
 		if (isAtlasContent(country.content)) {
-			return ensureContextualNPCSections(country.content);
+			return ensureEconomySummary(ensureContextualNPCSections(country.content));
 		}
 
 		return countryAdapter.createDefaultContent(country);
@@ -82,6 +85,7 @@ function CountryView() {
 		if (!country) return null;
 
 		return {
+			economy: map?.economy,
 			sourceType: "country" as const,
 			entity: country,
 			related: {
@@ -94,7 +98,7 @@ function CountryView() {
 			},
 			relatedLookups,
 		};
-	}, [country, notes, cities, countries, cultures, tags, npcs, relatedLookups]);
+	}, [country, notes, cities, countries, cultures, tags, npcs, relatedLookups, map?.economy]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");
@@ -125,9 +129,12 @@ function CountryView() {
 					content: contentToSave,
 				};
 
-				await update("countries", String(updatedCountry._id), updatedCountry);
+				await update("countries", String(updatedCountry._id), updatedCountry, {
+					shared: payload.relatedUpdates?.find((update) => update.store === "maps")?.value,
+					cities: payload.relatedUpdates?.flatMap((update) => update.store === "cities" ? [update.value] : []),
+				});
 				await saveAtlasRelatedUpdates({
-					updates: payload.relatedUpdates,
+					updates: payload.relatedUpdates?.filter((update) => update.store !== "maps" && update.store !== "cities"),
 					entity: updatedCountry,
 					existingTags: tags,
 					add,
@@ -184,7 +191,7 @@ function CountryView() {
 										onClose={() => setIsEditingAtlas(false)}
 									/>
 								) : (
-									<AtlasRenderer
+									<AtlasView
 										content={countryContent}
 										context={atlasContext}
 									/>

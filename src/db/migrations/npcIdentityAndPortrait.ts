@@ -8,8 +8,8 @@ function replaceReferences(value: unknown, replacements: ReadonlyMap<string, str
   return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [key, replaceReferences(item, replacements)]));
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Migration spans existing untyped map stores.
 export async function migrateNPCIdentityAndPortrait(
+  // biome-ignore lint/suspicious/noExplicitAny: Migration spans existing untyped map stores.
   db: IDBPDatabase<any>,
   // biome-ignore lint/suspicious/noExplicitAny: Upgrade transaction spans the existing schema.
   tx: IDBPTransaction<any, any, "versionchange">,

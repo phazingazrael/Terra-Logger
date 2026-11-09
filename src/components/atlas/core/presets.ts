@@ -144,7 +144,7 @@ export function npcCurrentLocationBlock(label = "Current Location"): AtlasBlock 
   return {
     id: createAtlasId("block"),
     kind: "block",
-    type: "npc-current-location",
+    type: "current-location",
     label,
     dataMode: "entity",
     binding: { entityPath: "currentLocation" },
@@ -162,7 +162,7 @@ export function npcRelationshipGraphBlock(label = "Relationship Graph"): AtlasBl
   return {
     id: createAtlasId("block"),
     kind: "block",
-    type: "npc-relationship-graph",
+    type: "relationship-graph",
     label,
     dataMode: "computed",
     binding: { entityPath: "relationships" },
@@ -180,7 +180,7 @@ export function npcHistoryTimelineBlock(label = "History"): AtlasBlock {
   return {
     id: createAtlasId("block"),
     kind: "block",
-    type: "npc-history-timeline",
+    type: "history-timeline",
     label,
     dataMode: "entity",
     binding: { entityPath: "history" },
@@ -359,6 +359,10 @@ export function entityChipListBlock(label: string, entityPath: string): AtlasBlo
     },
     props: { label, emptyText: `No ${label.toLowerCase()} listed.` },
   };
+}
+
+export function economySummary(): AtlasBlock {
+  return computedBlock("economySummary", "Economy Summary", "economy.summary");
 }
 
 export function computedBlock(type: string, label: string, resolver: string, props: Record<string, unknown> = {}): AtlasBlock {
