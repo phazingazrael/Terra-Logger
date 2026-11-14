@@ -35,6 +35,16 @@
   - [ ] Expand reusable section presets.
 - [x] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
   - [ ] Expand NPC generation for Atlas entities.
+- [x] AFMG v1.124.0 (Economy) Update support.
+- [ ] AFMG v1.140.0 (Labels) Update Support.
+- [ ] AFMG v1.150.0 (Journeys) Update Support.
+- [ ] AFMG v1.152.1 (Options) Update Support.
+- [ ] AFMG v1.153.0 (Omnibar) Update Support.
+- [ ] AFMG v1.154.0 (Icon Library) Update Support.
+- [ ] AFMG v1.155.0 (Translations) Update Support.
+- [ ] AFMG v1.156.0 Update Support.
+- [ ] AFMG v1.157.0 (Economy Rework) Update Support.
+- [ ] AFMG v1.158.0 Update Support.
 
 **Version 1.2.0**
 
