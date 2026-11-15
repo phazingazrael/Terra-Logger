@@ -1,5 +1,5 @@
-import type { TLNPC } from "../../definitions/TerraLogger";
-import { SUPPORTING_NPC_CATEGORIES } from "../NPC/population/supportingCategories";
+import type { TLNPC } from "../../../definitions/TerraLogger";
+import { SUPPORTING_NPC_CATEGORIES } from "../../NPC/population/supportingCategories";
 import type { MapUploadIssue } from "./diagnostics";
 
 export type ImportSummaryEntry = {

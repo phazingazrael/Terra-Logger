@@ -7,8 +7,10 @@ import type {
   TLMapEconomy,
   TLMarket,
   TLTradeEntry,
-} from "../../definitions/Economy";
-import type { TLCity, TLCountry } from "../../definitions/TerraLogger";
+  TLCity,
+  TLCountry,
+} from "../../definitions/TerraLogger";
+
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);

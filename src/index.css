@@ -81,18 +81,36 @@ svg#map {
 }
 
 /* hide map elements */
-/* TODO(Phaze): Replace this with 'settings>layer visibility on canvas map rewrite */
+/* TODO(Phaze): Replace this with 'settings>display settings>layer visibility on canvas map rewrite */
+g#anchors,
+g#armies,
+g#biomes,
+g#cells,
+g#compass,
+g#coordinates,
+g#cults,
+g#emblems,
+g#goods,
+g#gridOverlay,
+g#markets,
+g#population,
+g#prec,
+g#provs,
+g#relig,
 g#roads,
-g#trails,
+g#scaleBar,
 g#searoutes,
-g#icons,
+g#temperature,
 g#terrain,
+g#terrs,
+g#texture,
+g#trails,
+g#vignette,
+g#zones,
 [id^="stateLabel"],
 [id^="burgLabel"],
 [id^="marker"],
-[id^="label"],
-g#scaleBar,
-g#vignette {
+[id^="label"] {
   display: none;
 }
 

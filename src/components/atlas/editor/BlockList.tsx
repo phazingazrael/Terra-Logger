@@ -1,4 +1,4 @@
-import { findEconomyTradeBlock } from "../core/ensureEconomySummary";
+import { findEconomyTradeBlock } from "../core/presets";
 import { Button } from "@mui/material";
 import type {
 	AtlasBlock,

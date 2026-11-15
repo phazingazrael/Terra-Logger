@@ -1,5 +1,5 @@
 import type { Tag } from "../../../../definitions/Common";
-import type { TLTradeEntry } from "../../../../definitions/Economy";
+import type { TLTradeEntry } from "../../../../definitions/TerraLogger";
 import {
 	formatTradeEntry,
 	editImportedTradeDeals,

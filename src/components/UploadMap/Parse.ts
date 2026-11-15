@@ -2,15 +2,20 @@
 // https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/io/load.js
 
 import NameBases from "./json/NameBases.json";
-import { parseBiomes } from "./parseBiomes";
 import svgDefs from "./json/svgDefs.json";
 import b64Imgs from "./json/b64Img.json";
 
 import {
+  parseBiomes,
+  parseRenderingSource,
+  restoreSvgLayers,
+  restoreSvgFonts,
+  readStoredSvgStyles,
+  restoreSvgStyles,
   setAllMarkerTextsToPercent,
   ensureDefsHasBatch,
   inlinePatternImages,
-} from "./util";
+} from "./utils";
 
 import type { SettingsOpts } from "../../definitions/TerraLogger";
 

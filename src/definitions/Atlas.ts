@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import type { TLMapEra } from "./History";
-import type { TLMapEconomy } from "./Economy";
 import type {
-	MapInf,
-	TLCity,
-	TLCountry,
-	TLCulture,
-	TLNote,
-	TLReligion,
-	TLNPC
+  TLMapEconomy,
+  MapInf,
+  TLCity,
+  TLCountry,
+  TLCulture,
+  TLNote,
+  TLReligion,
+  TLNPC,
 } from "./TerraLogger";
+
 import type { Tag } from "./Common";
 
 export const ATLAS_CONTENT_SCHEMA = "atlas/content/v1" as const;

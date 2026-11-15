@@ -9,7 +9,7 @@ import {
 	Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import type { MapImportSummary } from "./importSummary";
+import type { MapImportSummary } from "./utils";
 
 type ImportSummaryContentProps = {
 	summary: MapImportSummary | null;

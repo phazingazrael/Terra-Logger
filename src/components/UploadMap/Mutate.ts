@@ -12,10 +12,14 @@ import { ensureAtlasContentForEntity } from "../atlas/legacy/enrichAtlasContent"
 
 import type { TLMapInfo } from "../../definitions/TerraLogger";
 import { generateNPCPopulation } from "../NPC/population/generatePopulation"
-import type { MapUploadDiagnostics, MapUploadGenerationOptions } from "./diagnostics";
-import { addUploadIssue } from "./diagnostics";
-import { applyImportedEconomy } from "./normalizeEconomy";
-import { applyImportedGeography } from "./importGeography";
+import {
+  addUploadIssue,
+  applyImportedEconomy,
+  applyImportedGeography,
+  restoreSvgEmblems,
+  type MapUploadDiagnostics,
+  type MapUploadGenerationOptions,
+} from "./utils";
 
 export type MutateProgress = {
 	section: string;

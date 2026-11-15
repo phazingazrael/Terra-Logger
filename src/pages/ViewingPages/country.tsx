@@ -1,5 +1,4 @@
-import { ensureGeographySummary } from "../../components/atlas/core/ensureGeographySummary";
-import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
+import { ensureGeographySummary, ensureEconomySummary } from "../../components/atlas/core/presets";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Container } from "@mui/material";
 

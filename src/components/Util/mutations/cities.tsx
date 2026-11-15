@@ -38,6 +38,7 @@ export const mutateCities = async (
 			newCity.economy = { description: "", imports: [], exports: [] };
 			newCity.id = city.i; // set city id
 			newCity.leaders = [];
+			// TODO(Phaze): replace mapLink with barrulus' settlemaker
 			newCity.mapLink = city.link; // set map link
 			newCity.mapSeed = city.MFCG as unknown as string; // set map seed
 			newCity.name = city.name; // set city name
@@ -84,9 +85,14 @@ export const mutateCities = async (
 					}
 				} else {
 					if (!customEmblems) {
-						const svgDocument = new DOMParser().parseFromString(mapSVG, "image/svg+xml");
+						const svgDocument = new DOMParser().parseFromString(
+							mapSVG,
+							"image/svg+xml",
+						);
 						if (svgDocument.querySelector("parsererror")) {
-							throw new Error("Error: could not parse map SVG for custom city coats of arms.");
+							throw new Error(
+								"Error: could not parse map SVG for custom city coats of arms.",
+							);
 						}
 						customEmblems = svgDocument.querySelector('g[id="defs-emblems"]');
 						if (!customEmblems) {

@@ -5,7 +5,7 @@ import {
   normalizeTradeEntries,
   resolveTradeGood,
 } from "../../Util/economy";
-import type { TLMapEconomy } from "../../../definitions/Economy";
+import type { TLMapEconomy } from "../../../definitions/TerraLogger";
 import {
   markdownHeading,
   markdownList,

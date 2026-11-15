@@ -7,14 +7,15 @@ import type {
   TLMapEconomy,
   TLMarket,
   TLProductionCandidate,
-} from "../../definitions/Economy";
-import type { TLMapInfo } from "../../definitions/TerraLogger";
+  TLMapInfo,
+} from "../../../definitions/TerraLogger";
+
 import {
   aggregateCountryProduction,
   aggregateEconomyTrade,
   formatDealAttributionIssue,
   normalizeTradeEntries,
-} from "../Util/economy";
+} from "../../Util/economy";
 
 function readRecord(value: unknown, label: string): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) {

@@ -1,5 +1,5 @@
-import { errorDetails, type ErrorDetails } from "../Util/errorDetails";
-import type { SupportingNPCCategoryId } from "../NPC/population/supportingCategories";
+import { errorDetails, type ErrorDetails } from "../../Util/errorDetails";
+import type { SupportingNPCCategoryId } from "../../NPC/population/supportingCategories";
 
 export type MapUploadIssueSeverity = "warning" | "error";
 

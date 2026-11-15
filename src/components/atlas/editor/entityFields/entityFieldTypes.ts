@@ -4,7 +4,7 @@ import type {
   AtlasRelatedUpdateHandler,
   AtlasSourceType,
 } from "../../../../definitions/Atlas";
-import type { TLMapEconomy } from "../../../../definitions/Economy";
+import type { TLMapEconomy } from "../../../../definitions/TerraLogger";
 
 export type AtlasEntityFieldEditorType =
   | "text"

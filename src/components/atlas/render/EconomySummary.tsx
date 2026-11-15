@@ -17,11 +17,13 @@ import type {
 	AtlasRenderContext,
 	AtlasSection,
 } from "../../../definitions/Atlas";
-import type { TLCity, TLCountry } from "../../../definitions/TerraLogger";
 import type {
-	TLEconomyParty,
-	TLTradeEntry,
-} from "../../../definitions/Economy";
+  TLCity,
+  TLCountry,
+  TLEconomyParty,
+  TLTradeEntry,
+} from "../../../definitions/TerraLogger";
+
 import {
 	formatDealAttributionIssue,
 	formatEconomyNumber,

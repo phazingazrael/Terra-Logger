@@ -1,4 +1,4 @@
-import type { TLMapGeography, TLMapInfo } from "../../definitions/TerraLogger";
+import type { TLMapGeography, TLMapInfo } from "../../../definitions/TerraLogger";
 
 export function applyImportedGeography(
   map: TLMapInfo,

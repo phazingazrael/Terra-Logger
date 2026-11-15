@@ -1,5 +1,4 @@
-import { ensureGeographySummary } from "../../components/atlas/core/ensureGeographySummary";
-import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
+import { ensureGeographySummary, ensureEconomySummary } from "../../components/atlas/core/presets";
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Button, Container } from "@mui/material";
 import { useActive, useActiveMap, useDB } from "../../db/DataContext";

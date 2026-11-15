@@ -32,7 +32,7 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.10",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.10",
-  "commitCount": 95,
+  "commitCount": 97,
   "majorChanges": [
     {
       "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
@@ -451,6 +451,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "🎨 Switch from React-Icons to Phosphor-Icons",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/9694852440677e647054c9185360d4f12301ac8a"
+    },
+    {
+      "hash": "be7df36522b22515b3b45c487e98e2a53d496d8b",
+      "shortHash": "be7df36",
+      "date": "2026-11-14T18:11:17-07:00",
+      "subject": "chore(release): 🚀 prepare 1.0.10 and tidy application presentation",
+      "type": "chore",
+      "scope": "release",
+      "details": "🚀 prepare 1.0.10 and tidy application presentation",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/be7df36522b22515b3b45c487e98e2a53d496d8b"
     },
     {
       "hash": "4f1b489c8bfd85f735360b97c8e0113910d9aae9",
@@ -890,6 +901,7 @@ export const releaseChanges: ReleaseChanges = {
     "cleanup",
     "coa",
     "db",
+    "deals",
     "diagnostics",
     "eras",
     "export",
@@ -905,6 +917,28 @@ export const releaseChanges: ReleaseChanges = {
     "views"
   ],
   "commits": [
+    {
+      "hash": "ed59301f328a57c738b4ead10b3eeeb4c8ae66e8",
+      "shortHash": "ed59301",
+      "date": "2026-11-14T20:46:32-07:00",
+      "subject": "fix(deals): 🐛 neutral countries now properly associate with trade deals and markets.",
+      "type": "fix",
+      "scope": "deals",
+      "details": "🐛 neutral countries now properly associate with trade deals and markets.",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ed59301f328a57c738b4ead10b3eeeb4c8ae66e8"
+    },
+    {
+      "hash": "be7df36522b22515b3b45c487e98e2a53d496d8b",
+      "shortHash": "be7df36",
+      "date": "2026-11-14T18:11:17-07:00",
+      "subject": "chore(release): 🚀 prepare 1.0.10 and tidy application presentation",
+      "type": "chore",
+      "scope": "release",
+      "details": "🚀 prepare 1.0.10 and tidy application presentation",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/be7df36522b22515b3b45c487e98e2a53d496d8b"
+    },
     {
       "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
       "shortHash": "49a688b",
@@ -1951,5 +1985,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-15T01:10:27.761Z"
+  "generatedAt": "2026-11-15T16:45:39.330Z"
 };

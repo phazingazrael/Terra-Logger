@@ -1,4 +1,4 @@
-import type { TLMapInfo } from "../../definitions/TerraLogger";
+import type { TLMapInfo } from "../../../definitions/TerraLogger";
 
 export type ReimportEntities = Pick<
   TLMapInfo,
@@ -77,10 +77,22 @@ export function mergeMapEntities(
     "religion", map.religions, previous.religions, (religion) => religion.i,
     ["i", "center", "code", "culture", "deity", "form", "members", "name", "origins", "type"],
   );
+  const incomingNotes = new Map(map.notes.map((note) => [note.id, note]));
   map.notes = mergeEntities(
     "note", map.notes, previous.notes, (note) => note.id,
     ["id", "type"],
   );
+  for (const note of map.notes) {
+    const incoming = incomingNotes.get(note.id);
+    if (!incoming?.importedTravel) continue;
+    // The baseline is the last imported text, not a copy of authored edits.
+    // Refresh only fields that still match that baseline.
+    if (note.importedTravel) {
+      if (note.name === note.importedTravel.name) note.name = incoming.name;
+      if (note.legend === note.importedTravel.legend) note.legend = incoming.legend;
+    }
+    note.importedTravel = incoming.importedTravel;
+  }
 
   // Cultures refer to name bases by position; name matching cannot repair a reorder.
   for (let index = 0; index < previous.nameBases.length; index += 1) {

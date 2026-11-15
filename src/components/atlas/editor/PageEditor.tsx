@@ -1,4 +1,4 @@
-import { findEconomyTradeBlock } from "../core/ensureEconomySummary";
+import { findEconomyTradeBlock } from "../core/presets";
 import { EconomyBlockEditor } from "./blockEditors/EconomyBlockEditor";
 import { type ReactNode, type SetStateAction, useEffect, useMemo, useReducer, useRef } from "react";
 import type {
