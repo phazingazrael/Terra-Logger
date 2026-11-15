@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
+import { saveMapEra } from "./eras";
+import type { TLMapEra } from "../definitions/History";
 import type { AtlasMapSave } from "../definitions/Atlas";
 // src/db/client.ts
 import { ensurePersistentNPCFields } from "../components/NPC/persistence/normalize";
@@ -121,6 +123,10 @@ export async function addAndCache(
 	activeMapId: string | null,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(data as TLNPC) : data;
+	if (store === "eras") {
+		await saveMapEra(prepared.mapId, prepared as TLMapEra, null);
+		return;
+	}
 	await addDataToStore(store, prepared);
 	if (activeMapId && prepared.mapId === activeMapId) {
 		addCachedRecord(activeMapId, store, prepared);
@@ -135,6 +141,11 @@ export async function updateAndCache(
 	economy?: AtlasMapSave,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(updated as TLNPC) : updated;
+	if (store === "eras") {
+		if (prepared._id !== key) throw new Error("Era identity does not match the saved record.");
+		await saveMapEra(prepared.mapId, prepared as TLMapEra);
+		return;
+	}
 	if ((store === "cities" || store === "countries") &&
 		typeof prepared.mapId === "string" && prepared.mapId) {
 		const refreshed = await updateEntityAndEconomies(store, key, prepared, economy);

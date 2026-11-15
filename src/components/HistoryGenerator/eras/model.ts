@@ -1,3 +1,4 @@
+import { v7 as uuidv7 } from "uuid";
 import type { TLHistoryEra, TLHistoryEraReference } from "../../../definitions/History";
 import type { TLNPC } from "../../../definitions/TerraLogger";
 
@@ -26,7 +27,7 @@ export function createPreviousEra(input: PreviousEraInput, timelineEndYear: numb
   const finalYear = Math.max(firstYear, Math.floor(input.finalYear));
   const length = historyEraLength(firstYear, finalYear);
   return {
-    id: `era:${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`}`,
+    id: uuidv7(),
     name: input.name.trim(),
     shortName: input.shortName.trim(),
     firstYear,

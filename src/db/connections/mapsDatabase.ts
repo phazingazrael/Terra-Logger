@@ -2,6 +2,7 @@ import { type IDBPDatabase, openDB } from "idb";
 import { migrateNPCsToPersistentEntity } from "../migrations/persistentNPC";
 import { migrateNPCIdentityAndPortrait } from "../migrations/npcIdentityAndPortrait";
 import { migrateNPCAgeAndHistory } from "../migrations/npcAgeAndHistory";
+import { migrateEras } from "../migrations/eras";
 import { migrateEconomy } from "../migrations/economy";
 import {
 	migrateAtlasContentToV3,
@@ -9,9 +10,10 @@ import {
 } from "../migrations/atlasContent";
 import { TERRA_LOGGER_MAPS_DB_NAME } from "./databaseNames";
 
-const TERRA_LOGGER_MAPS_DB_VERSION = 6;
+const TERRA_LOGGER_MAPS_DB_VERSION = 7;
 
 export const mapScopedStores = [
+	"eras",
 	"cities",
 	"countries",
 	"cultures",
@@ -87,6 +89,10 @@ export function initMapsDatabase() {
 
 					if (oldVersion < 6) {
 						await migrateEconomy(db, tx);
+					}
+
+					if (oldVersion < 7) {
+						await migrateEras(db, tx);
 					}
 				},
 			},

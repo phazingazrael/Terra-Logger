@@ -9,7 +9,8 @@ export type ExportSourceType =
   | "culture"
   | "religion"
   | "note"
-  | "npc";
+  | "npc"
+  | "era";
 
 export type ExportEntity = Record<string, unknown>;
 

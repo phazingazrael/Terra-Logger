@@ -1,5 +1,14 @@
 import type { AtlasContent } from "./Atlas";
 
+export type TLEraEvent = {
+  id: string;
+  name: string;
+  year: number;
+  dateText?: string;
+  description: string;
+  npcHistory?: Array<{ npcId: string; entryId: string }>;
+};
+
 export type TLHistoryEra = {
   id: string;
   name: string;
@@ -9,6 +18,7 @@ export type TLHistoryEra = {
   length: number;
   timelineStartYear: number;
   timelineEndYear: number;
+  events?: TLEraEvent[];
   description?: string;
   content?: AtlasContent;
   createdAt: string;
@@ -23,7 +33,7 @@ export type TLMapEra = Omit<TLHistoryEra, "createdAt"> & {
 };
 
 export type TLCurrentHistoryEra = Pick<TLHistoryEra,
-  "id" | "description" | "content" | "updatedAt"> & { createdAt?: string };
+  "id" | "events" | "description" | "content" | "updatedAt"> & { createdAt?: string };
 
 export type TLHistoryEraReference = {
   id: string;

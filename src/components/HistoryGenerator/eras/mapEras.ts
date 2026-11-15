@@ -1,3 +1,5 @@
+import { validateEraEvents } from "./eraEvents";
+import { v7 as uuidv7 } from "uuid";
 import type { TLMapEra, TLHistoryEraReference } from "../../../definitions/History";
 import type { MapInf, TLNPC } from "../../../definitions/TerraLogger";
 import { reflowPreviousEras, resolveHistoryEra } from "./model";
@@ -12,7 +14,7 @@ export function reflowMapEras(map: MapInf): MapInf {
 }
 
 export function currentMapEraId(map: MapInf): string {
-  return map.historyGenerator?.currentEra?.id ?? `era:current:${map.mapId}`;
+  return map.historyGenerator?.currentEra?.id ?? uuidv7();
 }
 
 export function getMapEras(source: MapInf): TLMapEra[] {
@@ -32,7 +34,7 @@ export function getMapEras(source: MapInf): TLMapEra[] {
       firstYear: minimumYear, finalYear: currentYear,
       length: currentYear - minimumYear + 1,
       timelineStartYear: minimumYear, timelineEndYear: currentYear,
-      description: current?.description, content: current?.content,
+      events: current?.events, description: current?.description, content: current?.content,
       createdAt: current?.createdAt, updatedAt: current?.updatedAt,
     },
   ];
@@ -64,6 +66,7 @@ export function validateMapEras(eras: readonly TLMapEra[], mapId: string): void 
       era.timelineEndYear - era.timelineStartYear + 1 !== length) {
       throw new Error("Era local years, timeline years, and length must describe the same positive duration.");
     }
+    validateEraEvents(era);
     if (era.status === "current" &&
       (era.firstYear !== era.timelineStartYear || era.finalYear !== era.timelineEndYear)) {
       throw new Error("The current era uses the map's existing year numbering.");
@@ -96,4 +99,47 @@ export function refreshNPCEraReferences(npcs: readonly TLNPC[], eras: readonly T
     });
     return changed ? { ...npc, history } : npc;
   });
+}
+
+// The generation helpers use a temporary map projection; era records are stored separately.
+export function mapWithEraRecords(map: MapInf, eras: readonly TLMapEra[]): MapInf {
+  validateMapEras(eras, map.mapId);
+  const current = eras.find((era) => era.status === "current");
+  if (!current) throw new Error("The map has no current era.");
+  return { ...map, settings: { ...map.settings, options: { ...map.settings.options,
+    era: current.name, eraShort: current.shortName,
+  } }, historyGenerator: {
+    currentEraMinimumYear: current.firstYear,
+    currentEra: { id: current._id, events: current.events, description: current.description, content: current.content,
+      createdAt: current.createdAt, updatedAt: current.updatedAt },
+    previousEras: eras.filter((era) => era.status === "previous").map((era) => ({
+      ...era, createdAt: era.createdAt ?? new Date().toISOString(),
+    })),
+  } };
+}
+
+export function mapWithoutEraRecords(map: MapInf): MapInf {
+  const result = { ...map };
+  delete result.historyGenerator;
+  return result;
+}
+
+// Used once when importing a new map or migrating embedded era documents.
+export function createMapEraRecords(map: MapInf): {
+  eras: TLMapEra[];
+  ids: Map<string, string>;
+} {
+  const ids = new Map<string, string>();
+  const eras = getMapEras(map).map((era) => {
+    const id = uuidv7();
+    ids.set(era.id, id);
+    if (era.status === "current") ids.set(`era:current:${map.mapId}`, id);
+    return { ...era, id, _id: id, createdAt: era.createdAt ?? new Date().toISOString(),
+      content: era.content ? { ...era.content,
+        source: { ...era.content.source, type: "era" as const, entityId: id, mapId: map.mapId },
+      } : undefined,
+    };
+  });
+  validateMapEras(eras, map.mapId);
+  return { eras, ids };
 }

@@ -90,6 +90,8 @@ function getSourceTypeFromSingular(
 			return "note";
 		case "NPC":
 			return "npc";
+		case "Era":
+			return "era";
 		default:
 			return null;
 	}
@@ -136,7 +138,7 @@ export function renderMarkdownFiles(
 
 		return (
 			(template.id === "default" || template.id === "boti") &&
-			["note", "culture", "religion", "city", "country", "map", "npc"].includes(
+			["note", "culture", "religion", "city", "country", "map", "npc", "era"].includes(
 				sourceType,
 			)
 		);
@@ -393,6 +395,25 @@ export function renderMarkdownFiles(
 			opt.filenameFields.NPCs ?? ["name", "_id"],
 		);
 		files.push(...createNPCPortraitExportFiles(data.NPCs ?? []));
+	}
+
+	if (exports?.includes("Eras")) {
+		const usedNames = new Set<string>();
+		const eras = [...(data.Eras ?? [])].sort((a, b) =>
+			a.timelineStartYear - b.timelineStartYear || a._id.localeCompare(b._id));
+		for (const era of eras) {
+			onRendering?.(`Era ${era.name} (${era._id})`);
+			const eraName = filenameFrom(era, opt.filenameFields.Eras ?? ["name", "_id"], "era");
+			const base = isBotiTemplate(opt.templateName) && era.status === "current"
+				? `current-${eraName}`
+				: eraName;
+			let name = withExt(base, opt.extension);
+			let suffix = 2;
+			while (usedNames.has(name)) name = withExt(`${base}-${suffix++}`, opt.extension);
+			usedNames.add(name);
+			const path = `history/${name}`;
+			files.push({ path, name, content: renderBuilderContent("era", era, path) });
+		}
 	}
 
 	return files;

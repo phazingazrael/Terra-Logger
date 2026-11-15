@@ -1,20 +1,23 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Box, Button, Container, Typography } from "@mui/material";
-import { Link as RouterLink, useParams } from "react-router-dom";
-import { useActiveMap } from "../../db/DataContext";
-import { saveMapEra } from "../../db/eras";
+import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
+import { useActive, useActiveMap, useDB } from "../../db/DataContext";
+import type { TLNPC } from "../../definitions/TerraLogger";
 import type { MapInf } from "../../definitions/TerraLogger";
 import type { TLMapEra } from "../../definitions/History";
 import type { AtlasPageEditorSavePayload } from "../../definitions/Atlas";
-import { getMapEras } from "../../components/HistoryGenerator/eras/mapEras";
-import { eraAdapter } from "../../components/atlas/adapters/eraAdapter";
+import { eraAdapter, ensureEraTimeline } from "../../components/atlas/adapters/eraAdapter";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { AtlasView } from "../../components/atlas/render/AtlasView";
 import "./viewStyles.css";
 
 function EraPage({ map, eraId }: { map: MapInf; eraId: string }) {
-  const era = useMemo(() => getMapEras(map).find((item) => item.id === eraId), [map, eraId]);
+  const eras = useActive<TLMapEra>("eras");
+  const { update } = useDB();
+  const npcs = useActive<TLNPC>("npcs");
+  const { hash } = useLocation();
+  const era = useMemo(() => eras.find((item) => item._id === eraId), [eras, eraId]);
   const [editingEra, setEditingEra] = useState<TLMapEra | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -22,9 +25,14 @@ function EraPage({ map, eraId }: { map: MapInf; eraId: string }) {
   const source = editingEra ?? era;
   const content = useMemo(() => {
     if (!source) return null;
-    return isAtlasContent(source.content) ? source.content : eraAdapter.createDefaultContent(source);
+    return isAtlasContent(source.content) ? ensureEraTimeline(source.content) : eraAdapter.createDefaultContent(source);
   }, [source]);
-  const context = useMemo(() => source ? { sourceType: "era" as const, entity: source } : null, [source]);
+  const context = useMemo(() => source ? { sourceType: "era" as const, entity: source, related: { npcs } } : null, [source, npcs]);
+  useEffect(() => {
+    if (!era || !hash) return;
+    const frame = requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" }));
+    return () => cancelAnimationFrame(frame);
+  }, [era, hash]);
 
   async function save(payload: AtlasPageEditorSavePayload<"era">) {
     if (!editingEra || pending.current) return;
@@ -33,14 +41,14 @@ function EraPage({ map, eraId }: { map: MapInf; eraId: string }) {
     setError(null);
     try {
       if (payload.relatedUpdates?.length) throw new Error("Related-record changes are not supported by the era editor.");
-      await saveMapEra(map.mapId, {
+      await update("eras", editingEra._id, {
         ...payload.entity,
         content: {
           ...payload.content,
-          source: { type: "era", entityId: editingEra.id, mapId: map.mapId },
+          source: { type: "era", entityId: editingEra._id, mapId: map.mapId },
           meta: { ...payload.content.meta, title: payload.entity.name, updatedAt: new Date().toISOString() },
         },
-      }, editingEra);
+      });
       setEditingEra(null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Failed to save this era.");

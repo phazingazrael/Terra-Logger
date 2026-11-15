@@ -1,3 +1,4 @@
+import { EraTimeline } from "../EraTimeline";
 import { Box, Chip, Typography } from "@mui/material";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
 import type { TLMapEra } from "../../../../definitions/History";
@@ -14,6 +15,11 @@ export const eraBlockPlugins: Record<string, AtlasBlockPlugin> = {
         <Chip size="small" label={era.status === "current" ? "Current era" : "Previous era"} />
       </div></div>;
     },
+  },
+  eraTimeline: {
+    type: "eraTimeline", label: "Notable Events",
+    Render: ({ context }) => context.sourceType === "era"
+      ? <EraTimeline era={context.entity as TLMapEra} npcs={context.related?.npcs ?? []} /> : null,
   },
   eraChronology: {
     type: "eraChronology", label: "Chronology",

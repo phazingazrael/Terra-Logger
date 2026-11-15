@@ -54,6 +54,7 @@ const defaultExports: Array<string> = [
 	"Notes",
 	"Religions",
 	"NPCs",
+	"Eras",
 ];
 
 function useMarkdownExportPanelModel(props: {
@@ -136,11 +137,6 @@ function useMarkdownExportPanelModel(props: {
 		if (el) el.scrollTo({ top: el.scrollHeight });
 	}, [logs]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: we want to reset this when tplIndex changes
-	useEffect(() => {
-		setHideBotiWarning(false);
-	}, [tplId]);
-
 	const log = (type: string, line: string) =>
 		setLogs((l) => [
 			...l,
@@ -165,14 +161,17 @@ function useMarkdownExportPanelModel(props: {
 			notes: data.Notes?.length,
 			religions: data.Religions?.length,
 			npcs: data.NPCs?.length,
+			eras: data.Eras?.length,
 		};
 
 		try {
+			lastZipNameRef.current = makeZipName(isBOTI ? "" : zipName, isBOTI ? "boti" : tplName, data.MapInfo.info.name, new Date());
+			log("INFO", `Map: ${data.MapInfo.mapId}; selections: ${defaultexports.join(", ")}; archive: ${lastZipNameRef.current}`);
 			log("INFO", "▶ export started");
 			log("INFO", `• Selected Template: ${tplName}`);
 			log(
 				"INFO",
-				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}, ` : ""}${defaultexports.includes("NPCs") ? `npcs=${counts.npcs}` : ""}`,
+				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}, ` : ""}${defaultexports.includes("NPCs") ? `npcs=${counts.npcs}, ` : ""}${defaultexports.includes("Eras") ? `eras=${counts.eras}` : ""}`,
 			);
 
 			setStatus("Preparing templates…");
@@ -212,12 +211,7 @@ function useMarkdownExportPanelModel(props: {
 				},
 			});
 
-			const finalZipName = makeZipName(
-				isBOTI ? "" : zipName,
-				isBOTI ? "boti" : tplName,
-				data.MapInfo.info.name,
-				new Date(),
-			);
+			const finalZipName = result.finalZipName;
 
 			lastZipNameRef.current = finalZipName;
 
@@ -266,7 +260,7 @@ function useMarkdownExportPanelModel(props: {
 }
 
 function MarkdownExportPanelView(model: ReturnType<typeof useMarkdownExportPanelModel>) {
-	const { className, showExportOptions, setShowExportOptions, defaultexports, status, percent, logs, exportingRef, exported, zipDownloaded, hideBotiWarning, setHideBotiWarning, termRef, markdownTemplates, tplId, setTplId, isBOTI, allDefaultsSelected, someDefaultsSelected, handleSelectAllDefaults, handleSelectDefault, run, downloadLogs } = model;
+	const { className, showExportOptions, setShowExportOptions, defaultexports, status, percent, logs, exportingRef, exported, hideBotiWarning, setHideBotiWarning, termRef, markdownTemplates, tplId, setTplId, isBOTI, allDefaultsSelected, someDefaultsSelected, handleSelectAllDefaults, handleSelectDefault, run, downloadLogs } = model;
 	return (
 		<div className={className ?? "p-2 border rounded"}>
 			<FormControl size="small" sx={{ minWidth: 240, mr: 2 }}>
@@ -275,9 +269,12 @@ function MarkdownExportPanelView(model: ReturnType<typeof useMarkdownExportPanel
 					labelId="tpl-label"
 					label="Template"
 					value={tplId}
-					onChange={(event: SelectChangeEvent<string>) =>
-						setTplId(event.target.value)
-					}
+					disabled={exportingRef.current}
+					onChange={(event: SelectChangeEvent<string>) => {
+						exported.current = false;
+						setHideBotiWarning(false);
+						setTplId(event.target.value);
+					}}
 				>
 					{markdownTemplates.map((template) => (
 						<MenuItem key={template.id} value={template.id}>
@@ -416,11 +413,12 @@ function MarkdownExportPanelView(model: ReturnType<typeof useMarkdownExportPanel
 					</Alert>
 				)}
 
-			{zipDownloaded && (
+			{logs.length > 0 && (
 				<Button
 					type="button"
 					color="secondary"
 					variant="contained"
+					disabled={exportingRef.current}
 					onClick={downloadLogs}
 					style={{ float: "right" }}
 				>

@@ -1,17 +1,18 @@
 import { useMemo } from "react";
-import { useActiveMap } from "../../../db/DataContext";
-import type { MapInf } from "../../../definitions/TerraLogger";
-import { getMapEras } from "../../HistoryGenerator/eras/mapEras";
+import { Link as RouterLink } from "react-router-dom";
+import { npcEraEventLinks } from "../../HistoryGenerator/eras/eraEvents";
+import { useActive } from "../../../db/DataContext";
+import type { TLMapEra } from "../../../definitions/History";
 import { resolveHistoryEra } from "../../HistoryGenerator/eras/model";
-import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import { Box, Chip, Link, Paper, Stack, Typography } from "@mui/material";
 import type { NPCHistoryEntry } from "../../../definitions/TerraLogger";
 import { toFormalCase } from "../relationships/registry";
 
-type Props = { entries: readonly NPCHistoryEntry[]; embedded?: boolean };
+type Props = { npcId: string; entries: readonly NPCHistoryEntry[]; embedded?: boolean };
 
-export function NPCHistoryTimeline({ entries, embedded = false }: Props) {
-	const map = useActiveMap<MapInf>();
-	const eras = useMemo(() => map ? getMapEras(map) : undefined, [map]);
+export function NPCHistoryTimeline({ npcId, entries, embedded = false }: Props) {
+	const eras = useActive<TLMapEra>("eras");
+	const eventLinks = useMemo(() => npcEraEventLinks(eras, npcId), [eras, npcId]);
 	const ordered = [...entries].sort((a, b) => {
 		const yearDelta =
 			(a.year ?? Number.MAX_SAFE_INTEGER) - (b.year ?? Number.MAX_SAFE_INTEGER);
@@ -21,7 +22,7 @@ export function NPCHistoryTimeline({ entries, embedded = false }: Props) {
 
 	function formatEntryYear(entry: NPCHistoryEntry): string {
 		if (entry.year === undefined) return "Year: Unknown";
-		const era = eras ? resolveHistoryEra(entry.year, eras) : entry.era;
+		const era = eras.length ? resolveHistoryEra(entry.year, eras) : entry.era;
 		return era ? `Year: ${era.year} ${era.shortName}` : `Year: ${entry.year}`;
 	}
 
@@ -64,6 +65,10 @@ export function NPCHistoryTimeline({ entries, embedded = false }: Props) {
 					>
 						{entry.description}
 					</Typography>
+					{(eventLinks.get(entry.id) ?? []).map((link) => <Link key={`${link.eraId}:${link.eventId}`}
+						component={RouterLink} to={`/view_era/${link.eraId}#era-event-${link.eventId}`} sx={{ display: "block", mt: 1 }}>
+						Related Era event: {link.name}
+					</Link>)}
 				</Paper>
 			))}
 		</Stack>

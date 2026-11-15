@@ -167,7 +167,7 @@ export const npcBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					</Typography>
 				);
 			}
-			return <NPCHistoryTimeline entries={npc.history ?? []} embedded />;
+			return <NPCHistoryTimeline npcId={npc._id} entries={npc.history ?? []} embedded />;
 		},
 	},
 };

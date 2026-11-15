@@ -19,9 +19,8 @@ import {
 import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { type Id, toast } from "react-toastify";
-import {
-	initMapsDatabase,
-	type MapDatabaseStore,
+import type {
+	MapDatabaseStore,
 } from "../../db/connections/mapsDatabase";
 import { useDB } from "../../db/DataContext";
 import {
@@ -31,6 +30,7 @@ import {
 import type { AppInfo } from "../../definitions/AppInfo";
 import type { Context } from "../../definitions/Common";
 import type { TLNPC } from "../../definitions/TerraLogger";
+import type { TLMapEra } from "../../definitions/History";
 import type { TLMapInfo } from "../../definitions/TerraLogger";
 import { mergeMapEntities, type ReimportEntities } from "./mergeMapEntities";
 import { generateAndPersistNPCHistory } from "../NPC/history/generation";
@@ -542,10 +542,6 @@ function UploadMap({
 			economy,
 			id: mapId,
 			mapId: mapId,
-			historyGenerator: existingHistoryGenerator ?? {
-				currentEraMinimumYear: 0,
-				previousEras: [],
-			},
 			info: { ...info, ver: VersionString },
 			settings: settings,
 			SVG: SVG,

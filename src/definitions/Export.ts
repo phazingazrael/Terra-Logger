@@ -1,3 +1,4 @@
+import type { TLMapEra } from "./History";
 import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf, TLNPC } from "./TerraLogger";
 
 
@@ -19,6 +20,7 @@ export type DataSets = {
   Notes: TLNote[];
   Religions: TLReligion[];
   NPCs: TLNPC[];
+  Eras: TLMapEra[];
 };
 
 /**

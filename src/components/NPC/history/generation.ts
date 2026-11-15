@@ -1,6 +1,7 @@
-import { getMapEras, reflowMapEras } from "../../HistoryGenerator/eras/mapEras";
+import { getMapEras, mapWithEraRecords, reflowMapEras } from "../../HistoryGenerator/eras/mapEras";
 import { queryDataFromStore } from "../../../db/interactions";
 import { initMapsDatabase } from "../../../db/connections/mapsDatabase";
+import type { TLMapEra } from "../../../definitions/History";
 import type { TLNPC } from "../../../definitions/TerraLogger";
 import type { MapInf, TLCity, TLCountry, TLCulture, TLNote, TLReligion } from "../../../definitions/TerraLogger";
 import type { HistoryRunDiagnostics } from "../../HistoryGenerator/core/types";
@@ -36,7 +37,7 @@ export type NPCHistoryEraRequirement = {
 
 export async function buildNPCHistoryMapContext(mapId: string, npcs?: readonly TLNPC[]): Promise<NPCHistoryMapContext> {
 	const db = await initMapsDatabase();
-	const [mapRows, cities, countries, cultures, religions, notes, loadedNPCs] = await Promise.all([
+	const [mapRows, cities, countries, cultures, religions, notes, loadedNPCs, eras] = await Promise.all([
 		db.getAllFromIndex("maps", "mapIdIndex", mapId) as Promise<MapInf[]>,
 		listMapRows<TLCity>("cities", mapId),
 		listMapRows<TLCountry>("countries", mapId),
@@ -44,8 +45,9 @@ export async function buildNPCHistoryMapContext(mapId: string, npcs?: readonly T
 		listMapRows<TLReligion>("religions", mapId),
 		listMapRows<TLNote>("notes", mapId),
 		npcs ? Promise.resolve([...npcs]) : listMapRows<TLNPC>("npcs", mapId),
+		db.getAllFromIndex("eras", "mapIdIndex", mapId) as Promise<TLMapEra[]>,
 	]);
-	const map = mapRows[0] ? reflowMapEras(mapRows[0]) : undefined;
+	const map = mapRows[0] ? reflowMapEras(mapWithEraRecords(mapRows[0], eras)) : undefined;
 	return {
 		map,
 		cities,

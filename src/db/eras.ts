@@ -1,6 +1,6 @@
 import type { TLHistoryEra, TLMapEra } from "../definitions/History";
 import type { MapInf, TLNPC } from "../definitions/TerraLogger";
-import { getMapEras, reflowMapEras, refreshNPCEraReferences, validateMapEras } from "../components/HistoryGenerator/eras/mapEras";
+import { getMapEras, mapWithEraRecords, mapWithoutEraRecords, reflowMapEras, refreshNPCEraReferences, validateMapEras } from "../components/HistoryGenerator/eras/mapEras";
 import { createPreviousEra, nextPreviousEraTimelineEnd, orderPreviousEras, type PreviousEraInput } from "../components/HistoryGenerator/eras/model";
 import { initMapsDatabase } from "./connections/mapsDatabase";
 import { setCachedMap, setCachedStore } from "./mapCache";
@@ -17,11 +17,12 @@ async function changeMapEras<T extends TLHistoryEra | TLMapEra>(
   change: (map: MapInf) => { map: MapInf; result: T },
 ): Promise<T> {
   const db = await initMapsDatabase();
-  const tx = db.transaction(["maps", "npcs"], "readwrite");
+  const tx = db.transaction(["maps", "npcs", "eras"], "readwrite");
   const done = tx.done;
   void done.catch(() => {});
   let saved: { map: MapInf; result: T };
   let refreshed: TLNPC[];
+  let savedEras: TLMapEra[];
   try {
     const rows = await tx.objectStore("maps").index("mapIdIndex").getAll(mapId) as MapInf[];
     if (rows.length === 0) {
@@ -29,12 +30,14 @@ async function changeMapEras<T extends TLHistoryEra | TLMapEra>(
       if (legacy?.mapId === mapId) rows.push(legacy);
     }
     if (rows.length !== 1) throw new Error("Cannot resolve a unique map for era changes.");
-    saved = change(reflowMapEras(rows[0]));
+    const records = await tx.objectStore("eras").index("mapIdIndex").getAll(mapId) as TLMapEra[];
+    saved = change(reflowMapEras(mapWithEraRecords(rows[0], records)));
     saved.map = reflowMapEras(saved.map);
     if (saved.map.id !== rows[0].id || saved.map.mapId !== mapId) {
       throw new Error("Era changes must retain the map's identity.");
     }
     const eras = getMapEras(saved.map);
+    savedEras = eras;
     validateMapEras(eras, mapId);
     const resolved = eras.find((era) => era.id === saved.result.id);
     if (!resolved) throw new Error("The saved era could not be resolved.");
@@ -44,6 +47,12 @@ async function changeMapEras<T extends TLHistoryEra | TLMapEra>(
     };
     const npcs = await tx.objectStore("npcs").index("mapIdIndex").getAll(mapId) as TLNPC[];
     refreshed = refreshNPCEraReferences(npcs, eras);
+    for (const era of eras) {
+      const existing = await tx.objectStore("eras").get(era._id) as TLMapEra | undefined;
+      if (existing && existing.mapId !== mapId) throw new Error("This era ID belongs to another map.");
+      await tx.objectStore("eras").put(era);
+    }
+    saved.map = mapWithoutEraRecords(saved.map);
     await tx.objectStore("maps").put(saved.map);
     for (let index = 0; index < refreshed.length; index++) {
       if (refreshed[index] !== npcs[index]) await tx.objectStore("npcs").put(refreshed[index]);
@@ -56,6 +65,7 @@ async function changeMapEras<T extends TLHistoryEra | TLMapEra>(
   }
   // Publish both caches only after the transaction has committed.
   setCachedMap(mapId, saved.map);
+  setCachedStore(mapId, "eras", savedEras);
   setCachedStore(mapId, "npcs", refreshed);
   for (const listener of listeners) listener();
   return saved.result;
@@ -97,12 +107,13 @@ export function appendPreviousMapEra(
 }
 
 // An expected snapshot prevents a stale Atlas editor from overwriting a newer era.
-export function saveMapEra(mapId: string, era: TLMapEra, expected: TLMapEra | null): Promise<TLMapEra> {
+export function saveMapEra(mapId: string, era: TLMapEra, expected?: TLMapEra | null): Promise<TLMapEra> {
   return changeMapEras(mapId, (map) => {
     const current = getMapEras(map).find((item) => item.id === era.id);
     if (era.mapId !== mapId || era._id !== era.id ||
       (expected && (expected.id !== era.id || JSON.stringify(current) !== JSON.stringify(expected))) ||
-      (!expected && current)) {
+      (expected === null && current) ||
+      (expected === undefined && (!current || current.updatedAt !== era.updatedAt))) {
       throw new Error("This era has changed or its identity does not match. Reload it before saving.");
     }
     if ((current && current.status !== era.status) || (!current && era.status !== "previous")) {
@@ -128,7 +139,7 @@ export function saveMapEra(mapId: string, era: TLMapEra, expected: TLMapEra | nu
         historyGenerator: {
           ...history, currentEraMinimumYear: savedEra.firstYear,
           currentEra: {
-            id: savedEra.id, description: savedEra.description, content: savedEra.content,
+            id: savedEra.id, events: savedEra.events, description: savedEra.description, content: savedEra.content,
             createdAt: savedEra.createdAt, updatedAt: now,
           },
         },
@@ -139,7 +150,7 @@ export function saveMapEra(mapId: string, era: TLMapEra, expected: TLMapEra | nu
         firstYear: 1, finalYear: savedEra.length, length: savedEra.length,
         timelineStartYear: current?.timelineStartYear ?? savedEra.timelineStartYear,
         timelineEndYear: current?.timelineEndYear ?? savedEra.timelineEndYear,
-        description: savedEra.description, content: savedEra.content,
+        events: savedEra.events, description: savedEra.description, content: savedEra.content,
         createdAt: savedEra.createdAt ?? now, updatedAt: now,
       };
       updated = { ...map, historyGenerator: {

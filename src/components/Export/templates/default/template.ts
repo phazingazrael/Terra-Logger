@@ -1,3 +1,4 @@
+import { getDefaultEraBlocks } from "./blocks/era";
 import type {
   ExportSourceType,
   MarkdownBlock,
@@ -31,6 +32,8 @@ export const defaultTemplate: MarkdownDocumentTemplate = {
         return getDefaultReligionBlocks();
       case "map":
         return getDefaultMapBlocks();
+      case "era":
+        return getDefaultEraBlocks();
       case "npc":
         return getDefaultNPCBlocks();
 

@@ -1,3 +1,5 @@
+import { createMapEraRecords, getMapEras, mapWithEraRecords, mapWithoutEraRecords, refreshNPCEraReferences, validateMapEras } from "../components/HistoryGenerator/eras/mapEras";
+import type { TLMapEra } from "../definitions/History";
 import { applyGeographyChanges } from "../components/atlas/core/geography";
 import type { AtlasMapSave } from "../definitions/Atlas";
 import { aggregateEconomyTrade, normalizeTradeEntries } from "../components/Util/economy";
@@ -10,7 +12,7 @@ import {
 	mapScopedStores,
 } from "./connections/mapsDatabase";
 import { clearMapCache } from "./mapCache";
-import type { MapInf, TLCity, TLCountry } from "../definitions/TerraLogger";
+import type { MapInf, TLCity, TLCountry, TLNPC } from "../definitions/TerraLogger";
 import { refreshCountryEconomies } from "../components/Util/economy";
 
 // biome-ignore lint/suspicious/noExplicitAny: Store determines the record shape.
@@ -99,15 +101,15 @@ export async function saveImportedMapRecords(
   replace: boolean,
   records: readonly { storeName: MapDatabaseStore; value: unknown }[],
   onWritten: (index: number) => void,
-): Promise<void> {
+): Promise<{ erasCreated: number; erasPreserved: number }> {
   for (const record of records) {
     const value = record.value;
     if (!value || typeof value !== "object" ||
       !("mapId" in value) || value.mapId !== mapId) {
       throw new Error("Imported records must belong to the selected map.");
     }
-    if (record.storeName === "tags") {
-      throw new Error("Map import does not replace authored tags.");
+    if (record.storeName === "tags" || record.storeName === "eras") {
+      throw new Error("Map import does not directly replace authored tags or eras.");
     }
   }
 
@@ -118,10 +120,13 @@ export async function saveImportedMapRecords(
   const done = tx.done;
   void done.catch(() => {});
 
+  let erasCreated = 0;
+  let erasPreserved = 0;
+  let context = "Replacing existing map records";
   try {
     if (replace) {
       for (const storeName of mapScopedStores) {
-        if (storeName === "tags") continue;
+        if (storeName === "tags" || storeName === "eras") continue;
         await deleteIndexedMapRecords(tx, storeName, mapId);
       }
 
@@ -135,10 +140,26 @@ export async function saveImportedMapRecords(
     for (let index = 0; index < records.length; index += 1) {
       const record = records[index];
       // add rejects ID collisions instead of overwriting another map's record.
+      context = `Writing ${record.storeName} record ${index + 1} of ${records.length}`;
       await tx.objectStore(record.storeName).add(record.value);
       onWritten(index);
     }
 
+    context = "Saving eras and refreshing NPC era references";
+    const maps = await tx.objectStore("maps").index("mapIdIndex").getAll(mapId) as MapInf[];
+    if (maps.length !== 1) throw new Error("Imported eras require a unique map record.");
+    const existingEras = await tx.objectStore("eras").index("mapIdIndex").getAll(mapId) as TLMapEra[];
+    const initialEras = existingEras.length ? existingEras : createMapEraRecords(maps[0]).eras;
+    const projected = mapWithEraRecords(maps[0], initialEras);
+    const eras = getMapEras(projected);
+    validateMapEras(eras, mapId);
+    erasCreated = existingEras.length ? 0 : eras.length;
+    erasPreserved = existingEras.length;
+    for (const era of eras) await tx.objectStore("eras").put(era);
+    await tx.objectStore("maps").put(mapWithoutEraRecords(projected));
+    const npcs = await tx.objectStore("npcs").index("mapIdIndex").getAll(mapId) as TLNPC[];
+    for (const npc of refreshNPCEraReferences(npcs, eras)) await tx.objectStore("npcs").put(npc);
+    context = "Committing map transaction";
     await done;
   } catch (error) {
     try {
@@ -147,10 +168,11 @@ export async function saveImportedMapRecords(
       // A failed IndexedDB request may already have aborted the transaction.
     }
     await done.catch(() => {});
-    throw error;
+    throw Object.assign(new Error(`${context} for map ${mapId}; main import transaction rolled back.`), { cause: error });
   }
 
   clearMapCache(mapId);
+  return { erasCreated, erasPreserved };
 }
 
 export async function updateEntityAndEconomies(

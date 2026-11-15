@@ -242,6 +242,10 @@ function renderGenericAtlasBlockToMarkdown({
   sourceType: ExportSourceType;
   data?: AtlasExportData;
 }): string {
+  if (sourceType === "era" &&
+    (block.binding?.resolver === "era.header" || block.binding?.resolver === "era.chronology" ||
+      block.binding?.resolver === "era.events")) return "";
+
   if (isDescriptionBlock(block)) {
     return renderEntityDescriptionBlock(entity, sourceType, data);
   }
@@ -502,6 +506,8 @@ function renderEntityDescriptionBlock(
     readString(entity, "description") ||
     readString(entity, "legend") ||
     readString(entity, "body");
+
+  if (sourceType === "era") return normalizeBodyToMarkdown(directDescription);
 
   if (directDescription) {
     return normalizeBodyToMarkdown(directDescription);

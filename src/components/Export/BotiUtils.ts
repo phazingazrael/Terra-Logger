@@ -20,7 +20,9 @@ export function getBotiExportPath(path: string): string {
   let file_path = path;
 
   // Move core collections into BOTI folders
-  if (file_path.startsWith("cities/"))
+  if (file_path.startsWith("history/"))
+    file_path = file_path.replace(/^history\//, "World/01. Lore/Eras/");
+  else if (file_path.startsWith("cities/"))
     file_path = file_path.replace(/^cities\//, `World/06. Cities/`);
   else if (file_path.startsWith("countries/"))
     file_path = file_path.replace(/^countries\//, `World/04. Countries/`);
