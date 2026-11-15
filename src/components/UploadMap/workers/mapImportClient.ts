@@ -1,3 +1,4 @@
+import { restoreError } from "../../Util/errorDetails";
 import type {
   MapImportProgress,
   MapImportWorkerMessage,
@@ -62,7 +63,7 @@ export async function runMapImportWorker(
 
       if (message.type === "ERROR") {
         cleanup();
-        reject(new Error(message.error.message));
+        reject(restoreError(message.error));
       }
     };
 
@@ -70,7 +71,7 @@ export async function runMapImportWorker(
       cleanup();
       reject(
         new Error(
-          event.message || "Map import worker failed with an unknown error.",
+          `${event.message || "Map import worker failed"} (${event.filename}:${event.lineno}:${event.colno})`,
         ),
       );
     };
@@ -91,6 +92,15 @@ export async function runMapImportWorker(
       oldestSupportedVersion: options.oldestSupportedVersion,
     };
 
-    worker.postMessage(request, [buffer]);
+    worker.onmessageerror = () => {
+      cleanup();
+      reject(new Error("Could not deserialize map import worker response."));
+    };
+    try {
+      worker.postMessage(request, [buffer]);
+    } catch (error) {
+      cleanup();
+      reject(error);
+    }
   });
 }

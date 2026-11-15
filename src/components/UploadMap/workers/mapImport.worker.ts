@@ -1,5 +1,7 @@
 /// <reference lib="webworker" />
 
+import { errorDetails } from "../../Util/errorDetails";
+
 import type {
   MapImportProgress,
   MapImportValidationResult,
@@ -23,10 +25,7 @@ function postError(requestId: string, error: unknown) {
   const message: MapImportWorkerMessage = {
     type: "ERROR",
     requestId,
-    error: {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    },
+    error: errorDetails(error),
   };
 
   ctx.postMessage(message);

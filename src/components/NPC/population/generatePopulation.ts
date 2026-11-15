@@ -1,3 +1,4 @@
+import { errorDetails, type ErrorDetails } from "../../Util/errorDetails";
 import type { TLNPC, NPCEntityType, NPCRelationship, NPCDisplayReference } from "../../../definitions/TerraLogger";
 import type { TLMapInfo, TLCity, TLCountry, TLCulture, TLReligion } from "../../../definitions/TerraLogger";
 import { generateNPCDraft } from "../generator/engine/generate";
@@ -12,7 +13,7 @@ import { getSupportingNPCCategory, type SupportingNPCCategoryId } from "./suppor
 
 export type NPCPopulationPhase = "countries" | "cities" | "religions" | "cultures" | "supporting";
 export type NPCPopulationProgress = { phase: NPCPopulationPhase; completed: number; total: number; message: string };
-export type NPCPopulationIssue = { severity: "warning" | "error"; phase: NPCPopulationPhase; message: string; entityType?: string; entityId?: string; entityName?: string; continued: boolean };
+export type NPCPopulationIssue = { severity: "warning" | "error"; phase: NPCPopulationPhase; message: string; entityType?: string; entityId?: string; entityName?: string; continued: boolean; error?: ErrorDetails };
 export type NPCPopulationOptions = {
   random?: () => number;
   onProgress?: (progress: NPCPopulationProgress) => void;
@@ -239,7 +240,7 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
           // Country generation is sequential for deterministic progress and seeded random output.
           // react-doctor-disable-next-line react-doctor/async-await-in-loop
           const created = await generateCountryPopulation(map, mapId, country, options.random); npcs.push(...created); addCount("Country leadership NPCs", created.length);
-        } catch (error) { issue({ severity: "error", phase: "countries", message: error instanceof Error ? error.message : String(error), entityType: "country", entityId: country._id, entityName: country.name, continued: true }); }
+        } catch (error) { issue({ severity: "error", phase: "countries", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), entityType: "country", entityId: country._id, entityName: country.name, continued: true }); }
       }
       if ((index + 1) % yieldEvery === 0) {
         // Yield points intentionally serialize long-running generation.
@@ -255,7 +256,7 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
         // City generation is sequential for deterministic progress and seeded random output.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
         const created = await generateCityLeadership(map, mapId, city, options.random); npcs.push(...created); addCount("City leadership NPCs", created.length);
-      } catch (error) { issue({ severity: "error", phase: "cities", message: error instanceof Error ? error.message : String(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
+      } catch (error) { issue({ severity: "error", phase: "cities", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
       if ((index + 1) % yieldEvery === 0) {
         // Yield points intentionally serialize long-running generation.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
@@ -301,7 +302,7 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
         }
         npcs.push(...created);
         addCount("Religion leadership NPCs", created.length);
-      } catch (error) { issue({ severity: "error", phase: "religions", message: error instanceof Error ? error.message : String(error), entityType: "religion", entityId: religion._id, entityName: religion.name, continued: true }); }
+      } catch (error) { issue({ severity: "error", phase: "religions", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), entityType: "religion", entityId: religion._id, entityName: religion.name, continued: true }); }
     }
     report("religions", map.religions.length, map.religions.length, "Religion leadership processed.");
 
@@ -314,7 +315,7 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
         // Context generation is sequential for deterministic progress and seeded random output.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
         const created = await generateSimpleContextPopulation(mapId, "culture", culture, cultureCount, "represents", "Cultural Elder", options.random); npcs.push(...created); addCount("Culture elder NPCs", created.length);
-      } catch (error) { issue({ severity: "error", phase: "cultures", message: error instanceof Error ? error.message : String(error), entityType: "culture", entityId: culture._id, entityName: culture.name, continued: true }); }
+      } catch (error) { issue({ severity: "error", phase: "cultures", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), entityType: "culture", entityId: culture._id, entityName: culture.name, continued: true }); }
     }
     report("cultures", map.cultures.length, map.cultures.length, "Culture elders processed.");
 
@@ -337,7 +338,7 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
           : await generateSimpleContextPopulation(mapId, "city", city, count, category.relationshipType, category.roleTitle, options.random, professionName ? { professionName } : undefined);
         npcs.push(...created);
         addCount(`${category.label} NPCs`, created.length);
-      } catch (error) { issue({ severity: "error", phase: "supporting", message: error instanceof Error ? error.message : String(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
+      } catch (error) { issue({ severity: "error", phase: "supporting", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), entityType: "city", entityId: city._id, entityName: city.name, continued: true }); }
       supportingCompleted += 1;
       if (supportingCompleted % yieldEvery === 0) {
         // Yield points intentionally serialize long-running generation.

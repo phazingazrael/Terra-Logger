@@ -1,3 +1,4 @@
+import { restoreError } from "../../Util/errorDetails";
 import type {
   DataSets,
   RenderOptions,
@@ -20,6 +21,7 @@ type RunExportArchiveWorkerArgs = {
     message: string;
     percent?: number;
     currentFile?: string;
+    details?: string[];
   }) => void;
 };
 
@@ -56,6 +58,7 @@ export function runExportArchiveWorker({
           message: message.message,
           percent: message.percent,
           currentFile: message.currentFile,
+          details: message.details,
         });
         return;
       }
@@ -73,13 +76,13 @@ export function runExportArchiveWorker({
 
       if (message.type === "error") {
         worker.terminate();
-        reject(new Error(message.error));
+        reject(restoreError(message.error));
       }
     };
 
     worker.onerror = (event) => {
       worker.terminate();
-      reject(new Error(event.message));
+      reject(new Error(`${event.message} (${event.filename}:${event.lineno}:${event.colno})`));
     };
 
     const request: ExportArchiveRequest = {
@@ -94,6 +97,15 @@ export function runExportArchiveWorker({
       botiBaseZipPath,
     };
 
-    worker.postMessage(request);
+    worker.onmessageerror = () => {
+      worker.terminate();
+      reject(new Error("Could not deserialize export archive worker response."));
+    };
+    try {
+      worker.postMessage(request);
+    } catch (error) {
+      worker.terminate();
+      reject(error);
+    }
   });
 }

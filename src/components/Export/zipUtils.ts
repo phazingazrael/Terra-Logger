@@ -17,10 +17,12 @@ export async function createMergedZipBlob(
   publicZipRelPath: string,
   entries: ReadonlyArray<ZipEntry>,
   onProgress?: (percent: number, currentFile?: string) => void,
+  onDetail?: (message: string) => void,
 ): Promise<Blob> {
   const { default: JSZip } = await import("jszip");
 
   const url = withBase(publicZipRelPath);
+  onDetail?.(`Fetching base vault ZIP: ${url}`);
   const res = await fetch(url, { cache: "no-cache" });
 
   if (!res.ok) {
@@ -28,7 +30,9 @@ export async function createMergedZipBlob(
   }
 
   const ab = await res.arrayBuffer();
+  onDetail?.(`Reading base vault ZIP (${ab.byteLength} bytes)`);
   const baseZip = await JSZip.loadAsync(ab);
+  onDetail?.(`Loaded ${Object.keys(baseZip.files).length} base ZIP entries, including directories`);
 
   const protectedPrefixes = [".obsidian/"];
 
@@ -40,6 +44,7 @@ export async function createMergedZipBlob(
         pathInZip.toLowerCase().startsWith(prefix),
       )
     ) {
+      onDetail?.(`WARNING: Protected vault path skipped: ${pathInZip}`);
       continue;
     }
 
@@ -47,9 +52,11 @@ export async function createMergedZipBlob(
       entry.zipOptions ??
       (entry.content instanceof Uint8Array ? { binary: true } : undefined);
 
+    if (baseZip.file(pathInZip)) onDetail?.(`Replacing base vault file: ${pathInZip}`);
     baseZip.file(pathInZip, entry.content, opts);
   }
 
+  onDetail?.(`Compressing merged vault: ${Object.keys(baseZip.files).length} ZIP entries, including directories`);
   return baseZip.generateAsync(
     {
       type: "blob",

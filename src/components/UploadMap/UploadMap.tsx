@@ -46,6 +46,8 @@ import {
 	createMapUploadDiagnostics,
 	downloadMapUploadDiagnostics,
 	finishMapUploadDiagnostics,
+	recordUploadError,
+	uploadPhase,
 	type MapUploadDiagnostics,
 	type MapUploadGenerationOptions,
 } from "./diagnostics";
@@ -146,6 +148,7 @@ function UploadMap({
 	const [isCompletingImport, setCompletingImport] = useState(false);
 	const [generateNPCs, setGenerateNPCs] = useState(false);
 	const [downloadLogs, setDownloadLogs] = useState(false);
+	const [lastDiagnostics, setLastDiagnostics] = useState<MapUploadDiagnostics | null>(null);
 	const [supportingNPCsPerCategory, setSupportingNPCsPerCategory] = useState(1);
 	const [supportingCategoryIds, setSupportingCategoryIds] = useState<
 		SupportingNPCCategoryId[]
@@ -206,19 +209,20 @@ function UploadMap({
 		});
 	}
 
-	function finishUploadToast(message = "Map upload complete.") {
+	function finishUploadToast(message = "Map upload complete.", type: "success" | "warning" = "success") {
 		const existingId = uploadToastIdRef.current;
 
 		if (existingId === null || !toast.isActive(existingId)) {
-			uploadToastIdRef.current = toast.success(message, {
-				autoClose: 60000,
+			uploadToastIdRef.current = toast(message, {
+				type,
+				autoClose: 30000,
 			});
 			return;
 		}
 
 		toast.update(existingId, {
 			render: message,
-			type: "success",
+			type,
 			isLoading: false,
 			autoClose: 60000,
 			closeOnClick: true,
@@ -279,43 +283,61 @@ function UploadMap({
 	type ImportMapFileOptions = {
 		mode?: MapImportMode;
 		initialMessage?: string;
+		diagnostics?: MapUploadDiagnostics;
 	};
 
 	async function importMapFile(file: File, options: ImportMapFileOptions = {}) {
 		const importMode = options.mode ?? mode;
 		const generation = currentGenerationOptions();
-		const diagnostics = createMapUploadDiagnostics({
+		const diagnostics = options.diagnostics ?? createMapUploadDiagnostics({
 			fileName: file.name,
 			mode: importMode.kind,
 			options: generation,
 		});
 
-		startUploadToast(options.initialMessage ?? `Reading ${file.name}...`);
+		diagnostics.fileSize = file.size;
+		uploadPhase(diagnostics, "Reading map");
+		try {
+			startUploadToast(options.initialMessage ?? `Reading ${file.name}...`);
 
-		const result = await runMapImportWorker(file, {
-			currentVersion,
-			oldestSupportedVersion: OLDEST_SUPPORTED_VERSION,
-			onProgress: (progress) => {
-				updateUploadToast(
-					progress.message,
-					progress.percent == null
-						? undefined
-						: Math.min(20, Math.round(progress.percent * 0.2)),
-				);
-			},
-		});
+			const result = await runMapImportWorker(file, {
+				currentVersion,
+				oldestSupportedVersion: OLDEST_SUPPORTED_VERSION,
+				onProgress: (progress) => {
+					uploadPhase(diagnostics, `Worker: ${progress.phase}`, progress.message);
+					updateUploadToast(
+						progress.message,
+						progress.percent == null
+							? undefined
+							: Math.min(20, Math.round(progress.percent * 0.2)),
+					);
+				},
+			});
 
-		if (
-			importMode.kind === "update" &&
-			result.identity.mapId !== importMode.expectedMapId
-		) {
-			failUploadToast(
-				`Wrong map file selected. Expected ${importMode.expectedMapId}, got ${result.identity.mapId}.`,
-			);
-			return;
+			diagnostics.version = result.version;
+			diagnostics.mapId = result.identity.mapId;
+			diagnostics.counts["Map sections"] = result.mapFile.length;
+			uploadPhase(diagnostics, "Validating map identity");
+			if (
+				importMode.kind === "update" &&
+				result.identity.mapId !== importMode.expectedMapId
+			) {
+				throw new Error(`Wrong map file selected. Expected ${importMode.expectedMapId}, got ${result.identity.mapId}.`);
+			}
+
+			await handleLoadedWorkerResult(result, importMode, generation, diagnostics);
+		} catch (error) {
+			recordUploadError(diagnostics, error);
+			throw error;
+		} finally {
+			finishMapUploadDiagnostics(diagnostics);
+			setLastDiagnostics(diagnostics);
+			console.info("Map upload diagnostics", diagnostics);
+			if (generation.downloadLogs) {
+				try { downloadMapUploadDiagnostics(diagnostics); }
+				catch (error) { console.error("Could not download upload diagnostics", error); }
+			}
 		}
-
-		await handleLoadedWorkerResult(result, importMode, generation, diagnostics);
 	}
 
 	async function handleLoadedWorkerResult(
@@ -327,25 +349,22 @@ function UploadMap({
 		const { mapFile, mapVersion, versionString, validation } = result;
 		const { isUpdated, isNewer, isInvalid, isAncient, isOutdated } = validation;
 
+		uploadPhase(diagnostics, "Validating map version");
 		if (isInvalid) {
-			failUploadToast("Invalid map file. Please upload a valid map file.");
-			return;
+			throw new Error("Invalid map file. Please upload a valid map file.");
 		}
 
 		if (isAncient) {
-			failUploadToast(
-				`The map version you are trying to load (${mapVersion}) is too old. Please upload a newer map file.`,
-			);
-			return;
+			throw new Error(`The map version you are trying to load (${mapVersion}) is too old. Please upload a newer map file.`);
 		}
 
 		if (!(isNewer || isUpdated || isOutdated)) {
-			failUploadToast("Map version could not be validated.");
-			return;
+			throw new Error("Map version could not be validated.");
 		}
 
 		updateUploadToast("Parsing map data...", 25);
 
+		uploadPhase(diagnostics, "Parsing map sections");
 		const parsedMap = parseLoadedData(mapFile);
 
 		const summary = await saveMapData(
@@ -358,8 +377,7 @@ function UploadMap({
 			diagnostics,
 		);
 
-		finishMapUploadDiagnostics(diagnostics);
-		if (generation.downloadLogs) downloadMapUploadDiagnostics(diagnostics);
+		uploadPhase(diagnostics, "Presenting import summary");
 		if (diagnostics.issues.length > 0) {
 			const errors = diagnostics.issues.filter(
 				(issue) => issue.severity === "error",
@@ -370,12 +388,6 @@ function UploadMap({
 			);
 		}
 
-		finishUploadToast(
-			importMode.kind === "update"
-				? "Map update complete. The map is ready."
-				: "Map upload complete. The map is ready.",
-		);
-
 		// MapManager can own the completion summary so it survives this upload
 		// component being unmounted when the maps list refreshes. Standalone uses
 		// retain the local dialog as a fallback.
@@ -384,6 +396,12 @@ function UploadMap({
 		} else {
 			setImportSummary(summary);
 		}
+		finishUploadToast(
+			importMode.kind === "update"
+				? "Map update complete. The map is ready."
+				: "Map upload complete. The map is ready.",
+			diagnostics.issues.length ? "warning" : "success",
+		);
 	}
 
 	async function saveMapData(
@@ -395,6 +413,13 @@ function UploadMap({
 		generation: MapUploadGenerationOptions,
 		diagnostics: MapUploadDiagnostics,
 	): Promise<MapImportSummary> {
+		const forwardProgress = onProgress;
+		let stage = "Converting";
+		onProgress = (progress) => {
+			uploadPhase(diagnostics, `${stage}: ${progress.section}`, progress.item ?? progress.message);
+			forwardProgress?.(progress);
+		};
+		uploadPhase(diagnostics, "Loading existing map data");
 		setUploadStatus("Converting to Terra-Logger data...");
 		setUploadPercent(30);
 
@@ -498,16 +523,6 @@ function UploadMap({
 			mode.kind === "update"
 				? await queryDataFromStore<TLNPC>("npcs", "mapIdIndex", mapId)
 				: [];
-		const existingMapRows =
-			mode.kind === "update"
-				? await initMapsDatabase().then(
-						(database) =>
-							database.getAllFromIndex("maps", "mapIdIndex", mapId) as Promise<
-								MapInf[]
-							>,
-					)
-				: [];
-		const existingHistoryGenerator = existingMapRows[0]?.historyGenerator;
 		const existingSignatures = new Set(
 			existingNPCs.flatMap((npc) =>
 				(npc.relationships ?? []).map(
@@ -557,6 +572,12 @@ function UploadMap({
 			MapInf.svgMod = new XMLSerializer().serializeToString(svgElement);
 		}
 
+		diagnostics.counts["Name Bases"] = nameBases.length;
+		diagnostics.counts.Biomes = biomes?.length ?? 0;
+		diagnostics.counts.Goods = economy?.goods?.length ?? 0;
+		diagnostics.counts.Markets = economy?.markets?.length ?? 0;
+		diagnostics.counts.Deals = economy?.deals?.length ?? 0;
+		diagnostics.counts["Unresolved deals"] = economy?.unresolvedDealIds?.length ?? 0;
 		diagnostics.counts.Cities = cities.length;
 		diagnostics.counts.Countries = countries.length;
 		diagnostics.counts.Cultures = cultures.length;
@@ -579,6 +600,8 @@ function UploadMap({
 			issues: summarizeUploadIssues(diagnostics.issues),
 		};
 
+		stage = "Preparing";
+		uploadPhase(diagnostics, "Preparing database records");
 		const totalRecords =
 			1 +
 			cities.length +
@@ -716,7 +739,9 @@ function UploadMap({
 			);
 		}
 
-		await saveImportedMapRecords(
+		stage = "Saving";
+		uploadPhase(diagnostics, "Saving map transaction");
+		const saved = await saveImportedMapRecords(
 			mapId,
 			mode.kind === "update",
 			records,
@@ -727,6 +752,12 @@ function UploadMap({
 			},
 		);
 
+		diagnostics.committed = true;
+		diagnostics.counts["Committed import records"] = records.length;
+		diagnostics.counts["Eras created by import"] = saved.erasCreated;
+		diagnostics.counts["Eras preserved"] = saved.erasPreserved;
+		diagnostics.notes.push("Main map transaction committed. Subsequent history generation uses separate transactions.");
+		stage = "Finalizing";
 		if (generation.generateNPCs && retainedGenerated.length > 0) {
 			const generatedIds = retainedGenerated.map((npc) => npc._id);
 			onProgress?.({
@@ -752,6 +783,7 @@ function UploadMap({
 				historyDiagnostics.accepted;
 			diagnostics.counts["NPC history entries rejected"] =
 				historyDiagnostics.rejected;
+			diagnostics.notes.push(`NPC history diagnostics: ${JSON.stringify(historyDiagnostics)}`);
 		}
 
 		onProgress?.({
@@ -762,6 +794,16 @@ function UploadMap({
 			message: "Refreshing maps list...",
 		});
 
+		uploadPhase(diagnostics, "Reading final Era records");
+		const eras = await queryDataFromStore<TLMapEra>("eras", "mapIdIndex", mapId);
+		diagnostics.counts.Eras = eras.length;
+		diagnostics.counts["Current eras"] = eras.filter((era) => era.status === "current").length;
+		diagnostics.counts["Previous eras"] = eras.filter((era) => era.status === "previous").length;
+		diagnostics.counts["Era notable events"] = eras.reduce((sum, era) => sum + (era.events?.length ?? 0), 0);
+		diagnostics.counts["Era NPC history links"] = eras.reduce((sum, era) => sum + (era.events ?? []).reduce((count, event) => count + (event.npcHistory?.length ?? 0), 0), 0);
+		importSummary.imported.push({ label: "Eras", count: eras.length });
+		importSummary.issues = summarizeUploadIssues(diagnostics.issues);
+		uploadPhase(diagnostics, "Refreshing maps list");
 		await reloadMapsList();
 
 		onProgress?.({
@@ -860,6 +902,8 @@ function UploadMap({
 	const loadDemoMap = async () => {
 		setLoading(true);
 		startUploadToast("Fetching demo map...");
+		const diagnostics = createMapUploadDiagnostics({ fileName: "demo.map", mode: mode.kind, options: currentGenerationOptions() });
+		uploadPhase(diagnostics, "Fetching demo map", DEMO_MAP_PATH);
 
 		try {
 			const res = await fetch(withBase(DEMO_MAP_PATH), { cache: "no-cache" });
@@ -874,10 +918,17 @@ function UploadMap({
 				type: "application/octet-stream",
 			});
 
-			await importMapFile(demoFile);
+			await importMapFile(demoFile, { diagnostics });
 			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (err: any) {
 			console.error(err);
+			if (!diagnostics.completedAt) {
+				recordUploadError(diagnostics, err);
+				finishMapUploadDiagnostics(diagnostics);
+				setLastDiagnostics(diagnostics);
+				console.error("Demo upload diagnostics", diagnostics);
+				if (diagnostics.options.downloadLogs) downloadMapUploadDiagnostics(diagnostics);
+			}
 			failUploadToast(
 				`Failed to load demo map: ${err?.message ?? String(err)}`,
 			);
@@ -1040,6 +1091,11 @@ function UploadMap({
 								</div>
 
 								<div className="map-upload-actions">
+									{lastDiagnostics && (
+										<Button variant="outlined" disabled={isLoading} onClick={() => downloadMapUploadDiagnostics(lastDiagnostics)}>
+											Download upload logs ({lastDiagnostics.status})
+										</Button>
+									)}
 									{showDemoButton ? (
 										<Button
 											variant="outlined"

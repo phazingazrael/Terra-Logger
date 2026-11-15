@@ -1,3 +1,4 @@
+import { errorDetails } from "../Util/errorDetails";
 import {
 	Alert,
 	AlertTitle,
@@ -151,6 +152,18 @@ function useMarkdownExportPanelModel(props: {
 		exported.current = false;
 		setPercent(0);
 		setLogs([]);
+		setZipDownloaded(false);
+		const startedAt = Date.now();
+		let phase = "Preparing templates";
+		let phaseStartedAt = startedAt;
+		let warningCount = 0;
+		const reportPhase = (next: string) => {
+			if (phase === next) return;
+			log("PHASE", `${phase}: completed in ${Date.now() - phaseStartedAt} ms`);
+			phase = next;
+			phaseStartedAt = Date.now();
+			log("PHASE", `${phase}: started`);
+		};
 		lastPctRef.current = 0;
 		lastFileRef.current = undefined;
 
@@ -184,6 +197,7 @@ function useMarkdownExportPanelModel(props: {
 			});
 			log("INFO", `✔ templates ready (${tplCfg?.Name ?? "Defaults"})`);
 
+			reportPhase("Starting export worker");
 			setStatus("Starting export worker…");
 
 			const result = await runExportArchiveWorker({
@@ -194,10 +208,15 @@ function useMarkdownExportPanelModel(props: {
 				},
 				selectedExports: defaultexports,
 				isBOTI,
-				finalZipName: "pending.zip",
+				finalZipName: lastZipNameRef.current,
 				botiBaseZipPath: BOTI_BASE_ZIP,
 
-				onProgress: ({ message, percent, currentFile }) => {
+				onProgress: ({ message, percent, currentFile, details }) => {
+					reportPhase(message);
+					if (details) {
+						warningCount += details.filter((line) => line.startsWith("WARNING:")).length;
+						log("REPORT", details.join("\n"));
+					}
 					setStatus(percent != null ? `${message} ${percent}%` : message);
 
 					if (percent != null) {
@@ -222,7 +241,10 @@ function useMarkdownExportPanelModel(props: {
 				`• Filename debug: id="${selectedMarkdownTemplate?.id}", label="${selectedMarkdownTemplate?.label}", tplName="${tplName}", isBOTI=${String(isBOTI)}, propZipName="${zipName}", finalZipName="${finalZipName}"`,
 			);
 
+			reportPhase("Triggering archive download");
 			downloadBlob(result.blob, finalZipName);
+			reportPhase("Complete");
+			log(warningCount ? "WARNING" : "SUCCESS", `Export ${warningCount ? "completed with warnings" : "succeeded"}; ${warningCount} warnings; ${Date.now() - startedAt} ms. Browser download triggered; saving to disk is controlled by the browser.`);
 
 			log(
 				"INFO",
@@ -237,7 +259,7 @@ function useMarkdownExportPanelModel(props: {
 			// biome-ignore lint/suspicious/noExplicitAny: error could be of any type
 		} catch (e: any) {
 			const msg = e?.message ?? String(e);
-			log("ERROR", `✖ error: ${msg}`);
+			log("ERROR", `FAILED during ${phase} after ${Date.now() - startedAt} ms. No successful download was confirmed.\n${JSON.stringify(errorDetails(e), null, 2)}`);
 			setStatus(`Error: ${msg}`);
 		} finally {
 			exportingRef.current = false;

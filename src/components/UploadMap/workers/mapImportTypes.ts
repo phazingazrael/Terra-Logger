@@ -1,3 +1,4 @@
+import type { ErrorDetails } from "../../Util/errorDetails";
 export type MapImportProgressPhase =
   | "reading"
   | "parsing"
@@ -57,10 +58,7 @@ export type MapImportWorkerSuccessMessage = {
 export type MapImportWorkerErrorMessage = {
   type: "ERROR";
   requestId: string;
-  error: {
-    message: string;
-    stack?: string;
-  };
+  error: ErrorDetails;
 };
 
 export type MapImportWorkerMessage =

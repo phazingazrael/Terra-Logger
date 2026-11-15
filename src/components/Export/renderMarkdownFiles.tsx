@@ -102,6 +102,7 @@ export function renderMarkdownFiles(
 	templates: TemplateMap,
 	options?: RenderOptions,
 	exports?: string[],
+	onRendering?: (context: string) => void,
 ): FileSpec[] {
 	const opt = {
 		...DEFAULT_RENDER_OPTIONS,
@@ -145,6 +146,7 @@ export function renderMarkdownFiles(
 	};
 
 	if (exports?.includes("Map")) {
+		onRendering?.(`Map ${data.MapInfo.mapId}`);
 		const newSvg = injectSvgStyle(data.MapInfo.SVG, opt.css);
 
 		if (newSvg) {
@@ -198,6 +200,7 @@ export function renderMarkdownFiles(
 		const prefix = `${dir}/`;
 
 		arr.forEach((item, i) => {
+			onRendering?.(`${singular} ${item.name ?? item.title ?? ""} (${item._id ?? item.id ?? i})`);
 			const base = filenameFrom(item, fields, `${dir}-${i + 1}`);
 			const name = withExt(base, opt.extension);
 			const sourceType = getSourceTypeFromSingular(singular);
@@ -394,6 +397,7 @@ export function renderMarkdownFiles(
 			templates.NPC ?? "",
 			opt.filenameFields.NPCs ?? ["name", "_id"],
 		);
+		onRendering?.("NPC portrait assets");
 		files.push(...createNPCPortraitExportFiles(data.NPCs ?? []));
 	}
 

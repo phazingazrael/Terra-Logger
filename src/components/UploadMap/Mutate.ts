@@ -1,3 +1,4 @@
+import { errorDetails } from "../Util/errorDetails";
 import { createTerraLoggerMap } from "../Util/mkEmpty/tlMap";
 
 import { mutateCities } from "../Util/mutations/cities";
@@ -93,7 +94,7 @@ const mutateData = async (
 		reportMutationProgress("Map Info", data.info?.name);
 		assignMapInfo(tempMap, data);
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Map Info", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Map Info", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -107,7 +108,7 @@ const mutateData = async (
 
 		tempMap.cultures = Cultures;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cultures", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cultures", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -123,7 +124,7 @@ const mutateData = async (
 
 		tempMap.cities = Cities;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cities", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Cities", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -138,7 +139,7 @@ const mutateData = async (
 
 		tempMap.countries = Countries;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Countries", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Countries", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -147,7 +148,7 @@ const mutateData = async (
 
 		tempMap.nameBases = NameBases;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Name Bases", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Name Bases", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -156,7 +157,7 @@ const mutateData = async (
 
 		tempMap.notes = Notes;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Notes", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Notes", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	try {
@@ -171,7 +172,7 @@ const mutateData = async (
 
 		tempMap.religions = Religions;
 	} catch (error) {
-		addUploadIssue(options.diagnostics, { severity: "error", phase: "Religions", message: error instanceof Error ? error.message : String(error), continued: true });
+		addUploadIssue(options.diagnostics, { severity: "error", phase: "Religions", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}
 
 	reportMutationProgress("Relationships");

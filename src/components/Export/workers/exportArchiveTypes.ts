@@ -1,3 +1,4 @@
+import type { ErrorDetails } from "../../Util/errorDetails";
 import type {
   DataSets,
   RenderOptions,
@@ -22,6 +23,7 @@ export type ExportArchiveProgress = {
   message: string;
   percent?: number;
   currentFile?: string;
+  details?: string[];
 };
 
 export type ExportArchiveSuccess = {
@@ -35,7 +37,7 @@ export type ExportArchiveSuccess = {
 export type ExportArchiveError = {
   id: string;
   type: "error";
-  error: string;
+  error: ErrorDetails;
 };
 
 export type ExportArchiveResponse =
