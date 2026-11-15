@@ -296,6 +296,9 @@ export const parseLoadedData = (data: string[]) => {
     Pack.cells.market = data[44].split(",").map(Number);
   }
 
+  const renderingSource = parseRenderingSource(data);
+  const renderingIssues: string[] = [];
+
   // "Serialized SVG", do this last
   // data[5]
   let SVG = "";
@@ -306,6 +309,11 @@ export const parseLoadedData = (data: string[]) => {
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
     const svgElement = svgDoc.documentElement;
+    if (svgDoc.querySelector("parsererror") ||
+      svgElement.localName !== "svg" ||
+      svgElement.namespaceURI !== "http://www.w3.org/2000/svg") {
+      throw new Error("Invalid AFMG serialized SVG section (5): expected valid SVG XML.");
+    }
 
     setAllMarkerTextsToPercent(
       svgElement as unknown as SVGSVGElement,
@@ -325,8 +333,22 @@ export const parseLoadedData = (data: string[]) => {
     // - defs-hatching
     ensureDefsHasBatch(svgElement as unknown as SVGSVGElement, svgDefs);
 
+    renderingIssues.push(...restoreSvgStyles(
+      svgElement as unknown as SVGSVGElement,
+      readStoredSvgStyles(renderingSource.sections[48], renderingSource.version),
+    ));
+
     // Replace <image> hrefs inside <pattern id="oceanic"> with provided base64 payloads
     inlinePatternImages(svgElement as unknown as SVGSVGElement, b64Imgs);
+
+    renderingIssues.push(...restoreSvgLayers(
+      svgElement as unknown as SVGSVGElement,
+      renderingSource,
+    ));
+    renderingIssues.push(...restoreSvgFonts(
+      svgElement as unknown as SVGSVGElement,
+      renderingSource,
+    ));
 
     // Replace the original SVG string with the modified one
     SVG = new XMLSerializer().serializeToString(svgElement);
@@ -335,6 +357,7 @@ export const parseLoadedData = (data: string[]) => {
   // define parsed map here.
   const createParsedMap = (): MapInfo => {
     return {
+      renderingSource,
       biomes,
       cities: Cities,
       countries: Countries,
@@ -385,7 +408,7 @@ export const parseLoadedData = (data: string[]) => {
 
   const parsedMap: MapInfo = createParsedMap();
 
-  return { parsedMap, Pack };
+  return { parsedMap, Pack, renderingIssues };
 };
 
 

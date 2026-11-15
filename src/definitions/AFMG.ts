@@ -351,6 +351,60 @@ type NameBase = {
 
 // Inferred combination of data into 1 object following the data model below
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
+type AFMGRenderingSource = {
+  version: string;
+  sections: Partial<Record<number, string>>;
+};
+
+declare interface AFMGReliefIcon {
+  icon: string;
+  x: number;
+  y: number;
+  s: number;
+}
+
+declare interface AFMGLayersState {
+  order: string[];
+  active: string[];
+}
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/356f1c8088aba49bd41d837be4732d765a574728/src/types/emblems.ts
+declare interface AFMGEmblem {
+  custom?: boolean;
+  size?: number;
+  x?: number;
+  y?: number;
+  shield?: string;
+  t1?: string;
+  division?: { division: string; t: string; line?: string };
+  ordinaries?: {
+    ordinary: string;
+    t: string;
+    line?: string;
+    divided?: string;
+    above?: boolean;
+  }[];
+  charges?: {
+    charge: string;
+    t: string;
+    p: string;
+    t2?: string;
+    t3?: string;
+    stroke?: string;
+    size?: number;
+    sinister?: number | boolean;
+    reversed?: number | boolean;
+    divided?: string;
+  }[];
+}
+
+declare interface AFMGMapEmblemRecord {
+  i: number;
+  removed?: boolean;
+  x?: number;
+  y?: number;
+  pole?: number[];
+  coa?: AFMGEmblem;
+}
 declare interface MapInfo {
   biomes: AFMGBiome[];
   cities: City[];

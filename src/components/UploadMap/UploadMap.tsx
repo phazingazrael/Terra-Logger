@@ -32,7 +32,6 @@ import type { Context } from "../../definitions/Common";
 import type { TLNPC } from "../../definitions/TerraLogger";
 import type { TLMapEra } from "../../definitions/History";
 import type { TLMapInfo } from "../../definitions/TerraLogger";
-import { mergeMapEntities, type ReimportEntities } from "./mergeMapEntities";
 import { generateAndPersistNPCHistory } from "../NPC/history/generation";
 import type { MapInf } from "../../definitions/TerraLogger";
 import BookLoader from "../Util/bookLoader";
@@ -43,23 +42,24 @@ import {
 	type SupportingNPCCategoryId,
 } from "../NPC/population/supportingCategories";
 import {
+	addUploadIssue,
 	createMapUploadDiagnostics,
 	downloadMapUploadDiagnostics,
 	finishMapUploadDiagnostics,
+	mergeMapEntities,
 	recordUploadError,
+	summarizeGeneratedNPCs,
+	summarizeUploadIssues,
 	uploadPhase,
+	type MapImportSummary,
 	type MapUploadDiagnostics,
 	type MapUploadGenerationOptions,
-} from "./diagnostics";
+	type ReimportEntities,
+} from "./utils";
 import { parseLoadedData } from "./Parse";
 import { runMapImportWorker } from "./workers/mapImportClient";
 import type { MapImportWorkerResult } from "./workers/mapImportTypes";
 import ImportSummaryContent from "./ImportSummaryContent";
-import {
-	summarizeGeneratedNPCs,
-	summarizeUploadIssues,
-	type MapImportSummary,
-} from "./importSummary";
 
 import "./UploadMap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -68,7 +68,7 @@ export type MapImportMode =
 	| { kind: "create" }
 	| { kind: "update"; expectedMapId: string };
 
-export type { MapImportSummary } from "./importSummary";
+export type { MapImportSummary } from "./utils";
 
 function withBase(pathLike: string) {
 	const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
@@ -366,6 +366,14 @@ function UploadMap({
 
 		uploadPhase(diagnostics, "Parsing map sections");
 		const parsedMap = parseLoadedData(mapFile);
+		for (const message of parsedMap.renderingIssues) {
+			addUploadIssue(diagnostics, {
+				severity: "warning",
+				phase: "SVG restoration",
+				message,
+				continued: true,
+			});
+		}
 
 		const summary = await saveMapData(
 			parsedMap.parsedMap,
@@ -500,6 +508,7 @@ function UploadMap({
 		};
 
 		const {
+			renderingSource,
 			biomes,
 			geography,
 			economy,
@@ -552,6 +561,7 @@ function UploadMap({
 		}
 
 		const MapInf: MapInf = {
+			renderingSource,
 			biomes,
 			geography,
 			economy,

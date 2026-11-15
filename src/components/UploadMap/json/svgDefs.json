@@ -1,5 +1,13 @@
 [
   {
+    "id": "journey-start",
+    "snippet": "<marker id=\"journey-start\" viewBox=\"0 0 10 10\" refX=\"5\" refY=\"5\" markerWidth=\"2.4\" markerHeight=\"2.4\"><circle cx=\"5\" cy=\"5\" r=\"4\" fill=\"context-stroke\" stroke=\"#fff\" stroke-width=\"1\" /></marker>"
+  },
+  {
+    "id": "journey-arrow",
+    "snippet": "<marker id=\"journey-arrow\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"3\" markerHeight=\"3\" orient=\"auto-start-reverse\"><path d=\"M 0 0 L 10 5 L 0 10 z\" fill=\"context-stroke\" /></marker>"
+  },
+  {
     "id": "end-arrow",
     "snippet": "<marker id=\"end-arrow\" viewBox=\"0 -5 10 10\" refX=\"6\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto\"><path d=\"M0,-5L10,0L0,5\" fill=\"#000\"></path></marker>"
   },

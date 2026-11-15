@@ -403,7 +403,27 @@ export type TLMapGeography = {
   };
 };
 
+// Original AFMG rendering inputs, kept separate from editable Atlas entities.
+// Keys are zero-based .map section indexes; values retain their source encoding.
+export type TLMapRenderingSource = {
+  version: string;
+  sections: Partial<Record<number, string>>;
+};
+
+// Render-ready placement, constructed independently from AFMG source types.
+export type TLMapEmblem = {
+  id: string;
+  entityId: number;
+  type: "burg" | "province" | "state";
+  x: number;
+  y: number;
+  size: number;
+  fx?: number;
+  fy?: number;
+};
+
 export interface TLMapInfo {
+  renderingSource?: TLMapRenderingSource;
   biomes?: AFMGBiome[];
   geography?: TLMapGeography;
   economy?: TLMapEconomy;
@@ -463,6 +483,7 @@ export interface TLMapInfo {
 }
 
 export interface MapInf {
+  renderingSource?: TLMapRenderingSource;
   biomes?: AFMGBiome[];
   geography?: TLMapGeography;
   economy?: TLMapEconomy;

@@ -34,6 +34,12 @@ export type MutateProgressHandler = (progress: MutateProgress) => void;
 
 const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 	// add map info that doesn't need mutating.
+	tempMap.renderingSource = data.renderingSource
+		? {
+				version: data.renderingSource.version,
+				sections: { ...data.renderingSource.sections },
+			}
+		: undefined;
 	tempMap.biomes = data.biomes;
 	tempMap.info = data.info;
 	tempMap.settings = data.settings;
@@ -245,6 +251,22 @@ const mutateData = async (
 	}
 
 	reportMutationProgress("SVG");
+	try {
+		const restored = await restoreSvgEmblems(tempMap);
+		tempMap.SVG = restored.svg;
+		options.diagnostics.counts["Map emblems restored"] = restored.restored;
+		for (const message of restored.issues) {
+			addUploadIssue(options.diagnostics, {
+				severity: "warning", phase: "SVG emblems", message, continued: true,
+			});
+		}
+	} catch (error) {
+		addUploadIssue(options.diagnostics, {
+			severity: "error", phase: "SVG emblems",
+			message: error instanceof Error ? error.message : String(error),
+			error: errorDetails(error), continued: true,
+		});
+	}
 
 	// The active-map layout owns background SVG rendering. Import only stores it.
 
