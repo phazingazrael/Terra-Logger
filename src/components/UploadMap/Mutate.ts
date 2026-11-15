@@ -166,6 +166,12 @@ const mutateData = async (
 		const Notes = await mutateNotes(data, tempMap);
 
 		tempMap.notes = Notes;
+		options.diagnostics.counts["Journey Notes"] = Notes.filter(
+			(note) => note.importedTravel && /^journey\d+$/.test(note.id),
+		).length;
+		options.diagnostics.counts["Route Notes"] = Notes.filter(
+			(note) => note.importedTravel && /^route(?:Label)?\d+$/.test(note.id),
+		).length;
 	} catch (error) {
 		addUploadIssue(options.diagnostics, { severity: "error", phase: "Notes", message: error instanceof Error ? error.message : String(error), error: errorDetails(error), continued: true });
 	}

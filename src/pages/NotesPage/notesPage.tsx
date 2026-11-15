@@ -1,4 +1,6 @@
 import { AppBar, Button, Chip, Container, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { getNoteCategory } from "../../components/atlas/adapters/noteAdapter";
 import {
 	lazy,
 	Suspense,
@@ -22,21 +24,8 @@ type NoteTypeOption = {
 	id: string;
 	label: string;
 	count: number;
+	color?: string;
 };
-
-function getNoteType(note: TLNote): string {
-	return note.id.replace(/\d+|-/g, "") || note.type || "other";
-}
-
-function formatNoteType(type: string): string {
-	if (type === "burg") return "City";
-	if (type === "state" || type === "stateLabel") return "Country";
-
-	return type
-		.replace(/([a-z])([A-Z])/g, "$1 $2")
-		.replace(/[_-]+/g, " ")
-		.replace(/^./, (character) => character.toUpperCase());
-}
 
 function NotesPage() {
 	const { activeMapId } = useDB();
@@ -48,23 +37,22 @@ function NotesPage() {
 	const filterKey = `${activeMapId ?? "no-map"}:${selectedType ?? "all"}:${deferredQuery}`;
 
 	const noteTypes = useMemo<NoteTypeOption[]>(() => {
-		const counts = new Map<string, number>();
+		const counts = new Map<string, NoteTypeOption>();
 
 		for (const note of notes) {
-			const type = getNoteType(note);
-			counts.set(type, (counts.get(type) ?? 0) + 1);
+			const category = getNoteCategory(note);
+			const existing = counts.get(category.id);
+			if (existing) existing.count += 1;
+			else counts.set(category.id, { ...category, count: 1 });
 		}
 
-		return Array.from(counts, ([id, count]) => ({
-			id,
-			label: formatNoteType(id),
-			count,
-		})).sort((a, b) => a.label.localeCompare(b.label));
+		return Array.from(counts.values())
+			.sort((a, b) => a.label.localeCompare(b.label));
 	}, [notes]);
 
 	const filteredNotes = useMemo(() => {
 		return notes.filter((note) => {
-			if (selectedType && getNoteType(note) !== selectedType) return false;
+			if (selectedType && getNoteCategory(note).id !== selectedType) return false;
 
 			if (deferredQuery) {
 				const searchableText =
@@ -128,6 +116,10 @@ function NotesPage() {
 									clickable
 									key={type.id}
 									className={selectedType === type.id ? "selected" : ""}
+									style={type.color ? {
+										backgroundColor: selectedType === type.id
+											? type.color : alpha(type.color, 0.25),
+									} : undefined}
 									label={`${type.label} (${type.count})`}
 									onClick={() =>
 										setSelectedType((current) =>

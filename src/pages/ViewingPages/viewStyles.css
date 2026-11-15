@@ -107,6 +107,11 @@
 }
 
 /* note cards styling */
+.ViewPage.Notes .atlas-description--text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .ViewPage.Notes {
   .wiki {
     .noteBody {
@@ -114,6 +119,87 @@
       text-wrap: auto;
     }
   }
+}
+
+.ViewPage ol.journey-segments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  align-items: start;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ViewPage.travel-note .note-legend {
+  border-top: 3px solid var(--travel-accent, #6a1b9a);
+}
+
+.ViewPage :is(.journey-segment, .travel-route-card) {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-inline-start: 3px solid var(--travel-accent, #6a1b9a);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--travel-accent, #6a1b9a) 6%, transparent);
+}
+
+.ViewPage .journey-segment-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+}
+
+.ViewPage .journey-segment-header :is(h2, h3) {
+  margin: 0;
+}
+
+.ViewPage .journey-segment-number {
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--travel-accent, #6a1b9a) 15%, transparent);
+  border: 1px solid var(--travel-accent, #6a1b9a);
+  color: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ViewPage .journey-segment-route {
+  margin: 0.4rem 0;
+}
+
+.ViewPage .journey-segment-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 0.25rem 0.75rem;
+}
+
+.ViewPage :is(.journey-segment, .travel-route-card, .travel-overview) p {
+  margin: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.ViewPage p.journey-segment-route {
+  margin: 0.4rem 0;
+}
+
+.ViewPage .travel-overview {
+  margin-bottom: 0.75rem;
+}
+
+.ViewPage :is(.journey-segment, .travel-route-card) details {
+  margin-top: 0.5rem;
+}
+
+.ViewPage :is(.journey-segment, .travel-route-card) details .journey-segment-details {
+  margin-top: 0.35rem;
+}
+
+.ViewPage :is(.journey-segment, .travel-route-card) summary {
+  cursor: pointer;
+  font-weight: 600;
 }
 
 /* City Page */
@@ -391,6 +477,10 @@
 .ViewPage.Notes .atlas-section.note-legend,
 .ViewPage.Notes .atlas-section.editor-notes {
   margin-bottom: 5dvh;
+}
+
+.ViewPage.Notes.travel-note .atlas-section.note-legend {
+  margin-bottom: 0.75rem;
 }
 
 /* Hide Headers */

@@ -367,6 +367,48 @@ declare interface AFMGLayersState {
   order: string[];
   active: string[];
 }
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/types/Journey.ts
+declare interface AFMGJourneySegment {
+  i: number;
+  name: string;
+  color?: string;
+  from?: number;
+  to?: number;
+  transport: string;
+  speed: number;
+  distance: number;
+  points: [number, number, number][];
+  avoidRoads?: boolean;
+  duration?: number;
+  custom?: boolean;
+  visible?: boolean;
+}
+
+declare interface AFMGJourney {
+  i: number;
+  name: string;
+  type: string;
+  color: string;
+  segments: AFMGJourneySegment[];
+  visible?: boolean;
+  lock?: boolean;
+}
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/generators/routes-generator.ts
+declare interface AFMGTravelRoute {
+  i: number;
+  name?: string;
+  group: string;
+  feature: number;
+  points: number[][];
+  cells?: number[];
+  merged?: boolean;
+  length?: number;
+  lock?: boolean;
+  label?: AFMGLabel;
+}
+
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/356f1c8088aba49bd41d837be4732d765a574728/src/types/emblems.ts
 declare interface AFMGEmblem {
   custom?: boolean;
@@ -405,7 +447,21 @@ declare interface AFMGMapEmblemRecord {
   pole?: number[];
   coa?: AFMGEmblem;
 }
+
+declare interface AFMGLabel {
+  text?: string;
+  group?: string;
+  hidden?: boolean;
+  dx?: number;
+  dy?: number;
+  fontSize?: number;
+  letterSpacing?: number;
+  pathPoints?: [number, number][];
+  startOffset?: number;
+}
+
 declare interface MapInfo {
+  renderingSource?: AFMGRenderingSource;
   biomes: AFMGBiome[];
   cities: City[];
   countries: Country[];

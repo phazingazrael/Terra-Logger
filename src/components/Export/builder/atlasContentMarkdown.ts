@@ -1214,7 +1214,23 @@ function renderDomNodeToMarkdown(node: ChildNode): string {
       return renderListElement(element, false);
 
     case "ol":
+      if (element.classList.contains("journey-segments")) {
+        return `${Array.from(element.children)
+          .filter((child) => child.tagName.toLowerCase() === "li")
+          .map((child) => renderDomChildrenToMarkdown(child))
+          .join("\n\n")}\n\n`;
+      }
       return renderListElement(element, true);
+
+    case "summary":
+      return inner ? `**${inner}**\n\n` : "";
+
+    case "details":
+      return inner ? `${inner}\n\n` : "";
+
+    case "span":
+      return element.classList.contains("journey-segment-number")
+        ? `**${inner}**\n\n` : inner;
 
     case "li":
       return inner;

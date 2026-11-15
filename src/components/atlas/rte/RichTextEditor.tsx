@@ -11,6 +11,7 @@ import { htmlToRichTextJson, richTextJsonToHtml } from "../core/richText";
 type RichTextEditorProps = {
 	value: string;
 	onChange: (json: string) => void;
+	format?: "json" | "html";
 };
 
 const SANITIZE_CONFIG = {
@@ -32,7 +33,7 @@ function isSafeLinkHref(value: string): boolean {
 	);
 }
 
-export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, format = "json" }: RichTextEditorProps) {
 	const editorRef = useRef<HTMLDivElement | null>(null);
 	const isFocusedRef = useRef(false);
 	const lastExternalValueRef = useRef(value);
@@ -40,7 +41,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 
 	// Replacing the editable DOM after our own onChange would reset the selection.
 	const [initialHtml] = useState(() =>
-		sanitizeHtml(richTextJsonToHtml(value)),
+		sanitizeHtml(format === "html" ? value : richTextJsonToHtml(value)),
 	);
 
 	useLayoutEffect(() => {
@@ -67,9 +68,9 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 
 		// Safe sink: generated HTML is sanitized before assignment.
 		// react-doctor-disable-next-line react-doctor/dangerous-html-sink
-		editor.innerHTML = sanitizeHtml(richTextJsonToHtml(value));
+		editor.innerHTML = sanitizeHtml(format === "html" ? value : richTextJsonToHtml(value));
 		lastCommittedValueRef.current = value;
-	}, [value]);
+	}, [value, format]);
 
 	function commitChange() {
 		const editor = editorRef.current;
@@ -83,7 +84,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 			editor.innerHTML = sanitizedHtml;
 		}
 
-		const nextJson = htmlToRichTextJson(sanitizedHtml);
+		const nextJson = format === "html" ? sanitizedHtml : htmlToRichTextJson(sanitizedHtml);
 
 		if (nextJson === lastCommittedValueRef.current) return;
 

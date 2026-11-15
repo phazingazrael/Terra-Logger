@@ -14,6 +14,7 @@ import { RichTextEditor } from "../../rte/RichTextEditor";
 type DescriptionSource = {
 	key: string;
 	json: string;
+	format?: "html";
 	matchedNote: TLNote | null;
 	entityPath: "description" | "legend";
 };
@@ -40,7 +41,9 @@ function DescriptionEditor({
 	function handleChange(json: string) {
 		const plainText = readPlainTextFromRichTextValue(json).trim();
 
-		const html = plainText ? richTextJsonToHtml(json).trim() : "";
+		const html = source.format === "html"
+			? json.trim()
+			: plainText ? richTextJsonToHtml(json).trim() : "";
 
 		context.onEntityFieldChange({
 			path: source.entityPath,
@@ -68,7 +71,7 @@ function DescriptionEditor({
 				</p>
 			) : null}
 
-			<RichTextEditor value={source.json} onChange={handleChange} />
+			<RichTextEditor value={source.json} format={source.format} onChange={handleChange} />
 		</div>
 	);
 }
@@ -85,9 +88,16 @@ function resolveDescriptionEditorSource(
 	const sourceKey = getDescriptionSourceKey(context, matchedNote);
 
 	if (context.sourceType === "note") {
+		const isTravelNote = /^(?:journey|route(?:Label)?)\d+$/i.test(
+			(context.entity as TLNote).id,
+		);
+		const json = normalizeDescriptionToRichTextJson(entityDescription);
 		return {
 			key: sourceKey,
-			json: normalizeDescriptionToRichTextJson(entityDescription),
+			json: isTravelNote
+				? looksLikeHtml(entityDescription) ? entityDescription : richTextJsonToHtml(json)
+				: json,
+			format: isTravelNote ? "html" : undefined,
 			matchedNote: null,
 			entityPath,
 		};

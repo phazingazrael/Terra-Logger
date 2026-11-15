@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import { Button, Container } from "@mui/material";
 
 import { useParams } from "react-router-dom";
 
 import { getAtlasAdapter } from "../../components/atlas/adapters/registry";
+import { getNoteCategory } from "../../components/atlas/adapters/noteAdapter";
 import { isAtlasContent } from "../../components/atlas/core/validators";
 import { PageEditor } from "../../components/atlas/editor/PageEditor";
 import { saveAtlasRelatedUpdates } from "../../components/atlas/editor/entityFields/saveRelatedUpdates";
@@ -27,6 +29,12 @@ function NoteView() {
 	const notes = useActive<TLNote>("notes");
 	const tags = useActive<Tag>("tags");
 	const note = useMemo(() => notes.find((r) => r._id === _id), [notes, _id]);
+	const category = note ? getNoteCategory(note) : undefined;
+	const isTravelNote = category?.id === "journey" ||
+		category?.id === "route" || category?.id.startsWith("route:");
+	const sourceColor = note?.importedTravel?.color;
+	const accent = sourceColor && CSS.supports("color", sourceColor)
+		? sourceColor : category?.color;
 
 	const [isEditingAtlas, setIsEditingAtlas] = useState(false);
 	const [isSavingAtlas, setIsSavingAtlas] = useState(false);
@@ -109,7 +117,11 @@ function NoteView() {
 	}, []);
 
 	return (
-		<Container className="ViewPage Notes">
+		<Container
+			className={`ViewPage Notes${isTravelNote ? " travel-note" : ""}`}
+			style={isTravelNote && accent
+				? { "--travel-accent": accent } as CSSProperties : undefined}
+		>
 			<div className="contentSubBody">
 				<div className="flex-container">
 					<div className={`wiki ${isEditingAtlas ? "editing" : ""}`}>

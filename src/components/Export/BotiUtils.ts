@@ -50,6 +50,18 @@ export function botiNoteFolder(note: TLNote): string {
   const root = id.match(/^[a-zA-Z]+/)?.[0] || "";
   const base = `World/16. Notes`;
 
+  if (root === "journey") return `${base}/Journeys/`;
+  if (root === "route" || root === "routelabel") {
+    switch (note.type) {
+      case "roads": return `${base}/Routes/Roads/`;
+      case "trails": return `${base}/Routes/Trails/`;
+      case "searoutes": return `${base}/Routes/Sea Routes/`;
+      case "route":
+      case "routeLabel": return `${base}/Routes/`;
+      default: return `${base}/Routes/Custom/`;
+    }
+  }
+
   if (["reg", "regiment", "mil", "military"].includes(root))
     return `${base}/Military/`;
   if (["marker", "poi", "pin"].includes(root))

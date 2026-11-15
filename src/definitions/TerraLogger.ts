@@ -125,6 +125,11 @@ export type TLMilitary = {
 };
 export type TLNote = {
   _id: string;
+  importedTravel?: {
+    name: string;
+    legend: string;
+    color?: string;
+  };
   content?: AtlasContent;
   id: string;
   legend: string;

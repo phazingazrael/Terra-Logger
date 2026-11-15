@@ -136,6 +136,16 @@ export function pickNoteTemplateKey(note: TLNote): string {
   const id = String(note?.id || "").toLowerCase();
   const root = id.match(/^[a-zA-Z]+/)?.[0] || "";
 
+  if (root === "journey") return "Note-Journey";
+  if (root === "route" || root === "routelabel") {
+    switch (note.type) {
+      case "roads": return "Note-Road";
+      case "trails": return "Note-Trail";
+      case "searoutes": return "Note-SeaRoute";
+      default: return "Note-Route";
+    }
+  }
+
   if (["burg", "city"].includes(root)) return "Note-City";
   if (["country", "state", "statelabel"].includes(root)) return "Note-Country";
   if (["label"].includes(root)) return "Note-Label";
