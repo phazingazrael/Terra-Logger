@@ -38,13 +38,6 @@ To use Terra-Logger, follow these steps:
 
 We have exciting plans for future versions of Terra-Logger:
 
-### Version 1.0 (Release)
-
-- [x] Importing .map file from Azgaar's Fantasy Map Generator.
-- [x] Automatically include relevant Emblems or Coat of Arms as an SVG file.
-- [x] Use the included SVG from the .map file to render the actual map as the program's background.
-- [x] Exporting of simple markdown and SVG files where relevant.
-
 ### Version 1.1.0
 
 - [x] Additional Exports (Cultures & Notes)
@@ -58,7 +51,7 @@ We have exciting plans for future versions of Terra-Logger:
 - [ ] Expand Military notes/Military data into their own top level entity.
 - [ ] Expand Points Of Interest notes into their own top level entity.
 - [x] AFMG v1.124.0 (Economy) Update support.
-- [ ] AFMG v1.140.0 (Labels) Update Support.
+- [x] AFMG v1.140.0 (Labels) Update Support.
 - [ ] AFMG v1.150.0 (Journeys) Update Support.
 - [ ] AFMG v1.152.1 (Options) Update Support.
 - [ ] AFMG v1.153.0 (Omnibar) Update Support.

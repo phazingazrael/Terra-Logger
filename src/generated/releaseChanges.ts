@@ -28,12 +28,56 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.9",
+  "version": "1.0.10",
   "previousTag": "1.0.0",
-  "currentTag": "1.0.9",
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.9",
-  "commitCount": 90,
+  "currentTag": "1.0.10",
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.10",
+  "commitCount": 95,
   "majorChanges": [
+    {
+      "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
+      "shortHash": "49a688b",
+      "date": "2026-11-14T18:08:40-07:00",
+      "subject": "feat(diagnostics): ✨ report complete upload and export outcomes",
+      "type": "feat",
+      "scope": "diagnostics",
+      "details": "✨ report complete upload and export outcomes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/49a688be736180f2d54acc7c301572e17f2d1e8b"
+    },
+    {
+      "hash": "53ee74b7aa4a2ae680d51ae2340c913a48b12257",
+      "shortHash": "53ee74b",
+      "date": "2026-11-14T18:04:45-07:00",
+      "subject": "feat(eras): ✨ persist Atlas eras and export linked timelines",
+      "type": "feat",
+      "scope": "eras",
+      "details": "✨ persist Atlas eras and export linked timelines",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/53ee74b7aa4a2ae680d51ae2340c913a48b12257"
+    },
+    {
+      "hash": "13edb268e17ad3060a3a70e9d8304954d502582a",
+      "shortHash": "13edb26",
+      "date": "2026-11-14T17:51:46-07:00",
+      "subject": "feat(afmg): ✨ support 1.140 maps and editable biome geography",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.140 maps and editable biome geography",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/13edb268e17ad3060a3a70e9d8304954d502582a"
+    },
+    {
+      "hash": "630a319ca71f94b033dab8d02003d845821fbc36",
+      "shortHash": "630a319",
+      "date": "2026-11-08T17:58:09-07:00",
+      "subject": "feat: ✨ Integrate AFMG Economy data and add Era Management",
+      "type": "feat",
+      "scope": null,
+      "details": "✨ Integrate AFMG Economy data and add Era Management",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/630a319ca71f94b033dab8d02003d845821fbc36"
+    },
     {
       "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
       "shortHash": "ccfb93c",
@@ -330,6 +374,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "⚡️ improve rendering performance, virtualize lists, and harden map import",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/c94893cce51106d540c1ef753f35d1fff0d0688c"
+    },
+    {
+      "hash": "995ae6a1e4abba713fa4752857d87fe5b71bc3cf",
+      "shortHash": "995ae6a",
+      "date": "2026-11-14T09:22:28-07:00",
+      "subject": "docs: 📝 Update \"TODO\" Parity",
+      "type": "docs",
+      "scope": null,
+      "details": "📝 Update \"TODO\" Parity",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/995ae6a1e4abba713fa4752857d87fe5b71bc3cf"
     },
     {
       "hash": "0b359ae9f5a94bf8c9eb2cbbf2153d620b3168a9",
@@ -806,15 +861,15 @@ export const releaseChanges: ReleaseChanges = {
     }
   ],
   "highlightedChange": {
-    "hash": "ccfb93c4500cd0428736822432dc94aaa43637e1",
-    "shortHash": "ccfb93c",
-    "date": "2026-08-02T19:23:11-06:00",
-    "subject": "feat(ui): add NPC pages, routes, and navigation",
+    "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
+    "shortHash": "49a688b",
+    "date": "2026-11-14T18:08:40-07:00",
+    "subject": "feat(diagnostics): ✨ report complete upload and export outcomes",
     "type": "feat",
-    "scope": "ui",
-    "details": "add NPC pages, routes, and navigation",
+    "scope": "diagnostics",
+    "details": "✨ report complete upload and export outcomes",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/ccfb93c4500cd0428736822432dc94aaa43637e1"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/49a688be736180f2d54acc7c301572e17f2d1e8b"
   },
   "typeOptions": [
     "chore",
@@ -829,11 +884,14 @@ export const releaseChanges: ReleaseChanges = {
   "scopeOptions": [
     "Atlas Doc System",
     "NPC Generation",
+    "afmg",
     "atlas",
     "catalogs",
     "cleanup",
     "coa",
     "db",
+    "diagnostics",
+    "eras",
     "export",
     "generators",
     "import",
@@ -847,6 +905,61 @@ export const releaseChanges: ReleaseChanges = {
     "views"
   ],
   "commits": [
+    {
+      "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
+      "shortHash": "49a688b",
+      "date": "2026-11-14T18:08:40-07:00",
+      "subject": "feat(diagnostics): ✨ report complete upload and export outcomes",
+      "type": "feat",
+      "scope": "diagnostics",
+      "details": "✨ report complete upload and export outcomes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/49a688be736180f2d54acc7c301572e17f2d1e8b"
+    },
+    {
+      "hash": "53ee74b7aa4a2ae680d51ae2340c913a48b12257",
+      "shortHash": "53ee74b",
+      "date": "2026-11-14T18:04:45-07:00",
+      "subject": "feat(eras): ✨ persist Atlas eras and export linked timelines",
+      "type": "feat",
+      "scope": "eras",
+      "details": "✨ persist Atlas eras and export linked timelines",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/53ee74b7aa4a2ae680d51ae2340c913a48b12257"
+    },
+    {
+      "hash": "13edb268e17ad3060a3a70e9d8304954d502582a",
+      "shortHash": "13edb26",
+      "date": "2026-11-14T17:51:46-07:00",
+      "subject": "feat(afmg): ✨ support 1.140 maps and editable biome geography",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.140 maps and editable biome geography",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/13edb268e17ad3060a3a70e9d8304954d502582a"
+    },
+    {
+      "hash": "995ae6a1e4abba713fa4752857d87fe5b71bc3cf",
+      "shortHash": "995ae6a",
+      "date": "2026-11-14T09:22:28-07:00",
+      "subject": "docs: 📝 Update \"TODO\" Parity",
+      "type": "docs",
+      "scope": null,
+      "details": "📝 Update \"TODO\" Parity",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/995ae6a1e4abba713fa4752857d87fe5b71bc3cf"
+    },
+    {
+      "hash": "630a319ca71f94b033dab8d02003d845821fbc36",
+      "shortHash": "630a319",
+      "date": "2026-11-08T17:58:09-07:00",
+      "subject": "feat: ✨ Integrate AFMG Economy data and add Era Management",
+      "type": "feat",
+      "scope": null,
+      "details": "✨ Integrate AFMG Economy data and add Era Management",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/630a319ca71f94b033dab8d02003d845821fbc36"
+    },
     {
       "hash": "4f1b489c8bfd85f735360b97c8e0113910d9aae9",
       "shortHash": "4f1b489",
@@ -1838,5 +1951,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-09T00:36:54.374Z"
+  "generatedAt": "2026-11-15T01:10:27.761Z"
 };

@@ -151,10 +151,10 @@ const AboutPage = () => {
 								>
 									Shuggaloaf&apos;s System Agnostic RPG NPC Generator
 								</Link>{" "}
-								for future NPC generation direction.
+								for NPC generation direction and basis.
 							</li>
-
-							<li>
+							{/* TODO(Phaze): Uncomment credits as they become relevant */}
+							{/* <li>
 								<Link
 									target="_blank"
 									rel="noreferrer"
@@ -167,7 +167,7 @@ const AboutPage = () => {
 
 							<li>
 								Lythande&apos;s shared worldbuilding spreadsheet resources.
-							</li>
+							</li> */}
 						</ul>
 					</CardContent>
 				</Card>

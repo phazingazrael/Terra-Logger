@@ -36,7 +36,7 @@
 - [x] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
   - [ ] Expand NPC generation for Atlas entities.
 - [x] AFMG v1.124.0 (Economy) Update support.
-- [ ] AFMG v1.140.0 (Labels) Update Support.
+- [x] AFMG v1.140.0 (Labels) Update Support.
 - [ ] AFMG v1.150.0 (Journeys) Update Support.
 - [ ] AFMG v1.152.1 (Options) Update Support.
 - [ ] AFMG v1.153.0 (Omnibar) Update Support.

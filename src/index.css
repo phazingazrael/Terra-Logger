@@ -80,9 +80,17 @@ svg#map {
   background: none;
 }
 
+/* hide map elements */
+/* TODO(Phaze): Replace this with 'settings>layer visibility on canvas map rewrite */
+g#roads,
+g#trails,
+g#searoutes,
 g#icons,
-g#burgLabels,
+g#terrain,
 [id^="stateLabel"],
+[id^="burgLabel"],
+[id^="marker"],
+[id^="label"],
 g#scaleBar,
 g#vignette {
   display: none;

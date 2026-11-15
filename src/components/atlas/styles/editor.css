@@ -2,11 +2,9 @@
 .atlas-editor-shell {
   --atlas-editor-panel-width: clamp(320px, 34vw, 420px);
   --atlas-editor-gap: 1rem;
-
   display: flex;
   align-items: flex-start;
   gap: var(--atlas-editor-gap);
-
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -36,18 +34,19 @@
   width: var(--atlas-editor-panel-width);
   min-width: 0;
   max-width: var(--atlas-editor-panel-width);
-
   position: sticky;
   top: 1rem;
   z-index: 5;
-
   padding: 1rem;
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.2);
-
   max-height: calc(100vh - 2rem);
   overflow: auto;
+}
+
+.atlas-block-editor-card__toolbar {
+  margin-bottom: 15px;
 }
 
 .atlas-editor-panel__header,
@@ -83,7 +82,7 @@
 }
 
 /* Editor preview should use a stable single-column layout */
-.atlas-editor-preview > .content-grid {
+.atlas-editor-preview>.content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) !important;
   gap: 30px;
@@ -92,7 +91,7 @@
   min-width: 0;
 }
 
-.atlas-editor-preview > .content-grid > .atlas-section {
+.atlas-editor-preview>.content-grid>.atlas-section {
   grid-column: 1 / -1 !important;
 
   width: 100%;
@@ -699,6 +698,7 @@
     grid-template-columns: 1fr;
   }
 }
+
 .atlas-military-editor--focused {
   gap: 0.85rem;
 }
@@ -714,7 +714,7 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-.atlas-military-focused-header > div:first-child {
+.atlas-military-focused-header>div:first-child {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -771,6 +771,7 @@
 }
 
 @media (max-width: 760px) {
+
   .atlas-military-focused-header,
   .atlas-military-focused-unit-editor__header {
     align-items: stretch;
@@ -817,8 +818,8 @@
   gap: 1rem;
 }
 
-.atlas-diplomacy-editor__header > div,
-.atlas-diplomacy-relation-editor__header > div {
+.atlas-diplomacy-editor__header>div,
+.atlas-diplomacy-relation-editor__header>div {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -884,6 +885,7 @@
     opacity: 0.78;
     font-size: 0.85rem;
   }
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -891,6 +893,7 @@
 }
 
 @media (max-width: 760px) {
+
   .atlas-diplomacy-add-panel__fields,
   .atlas-diplomacy-relation-editor__fields {
     grid-template-columns: 1fr;
@@ -931,7 +934,7 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-.atlas-country-cities-editor__header > div {
+.atlas-country-cities-editor__header>div {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -981,7 +984,7 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.atlas-country-city-row > div {
+.atlas-country-city-row>div {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -1000,6 +1003,7 @@
 }
 
 @media (max-width: 760px) {
+
   .atlas-country-cities-add__controls,
   .atlas-country-city-row {
     grid-template-columns: 1fr;
@@ -1228,6 +1232,7 @@
     padding: 0px !important;
     margin-right: 3px !important;
   }
+
   .MuiAlert-message {
     padding: 0px !important;
   }
