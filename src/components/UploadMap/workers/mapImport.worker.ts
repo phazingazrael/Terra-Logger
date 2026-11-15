@@ -205,17 +205,28 @@ function repairMultilineMapSections(parts: string[]): string[] {
 function repairNameBasesLineBreakSplit(parts: string[]): string[] {
   const nameBasesIndex = 31;
 
-  // Name bases may contain literal line breaks. Economy files append ice,
-  // cell goods, goods, markets, deals, and cell markets after zones, so rivers
-  // must be located relative to the matching file ending.
-  for (const expectedSectionCount of [45, 39]) {
+  // Newer files append custom icons, measurers, labels, and styles. Locate
+  // rivers against each supported ending before rejoining split name bases.
+  for (const expectedSectionCount of [49, 48, 47, 46, 45, 40, 39]) {
     if (parts.length <= expectedSectionCount) continue;
 
     const trailingSectionCount = expectedSectionCount - (nameBasesIndex + 1);
     const riversIndex = parts.length - trailingSectionCount;
-    const possibleRivers = parts[riversIndex] ?? "";
-
-    if (!/^\s*\[\s*\{[\s\S]*"source"\s*:/i.test(possibleRivers)) {
+    try {
+      const rivers: unknown = JSON.parse(parts[riversIndex] ?? "");
+      const cellRoutes: unknown = JSON.parse(parts[riversIndex + 4] ?? "");
+      const routes: unknown = JSON.parse(parts[riversIndex + 5] ?? "");
+      // Empty river lists are valid. Adjacent route sections distinguish them
+      // from unrelated empty lists elsewhere in the file.
+      if (!Array.isArray(rivers) || !rivers.every((river) =>
+        river && typeof river === "object" &&
+        typeof river.source === "number" && Array.isArray(river.cells)) ||
+        !cellRoutes || typeof cellRoutes !== "object" || Array.isArray(cellRoutes) ||
+        !Array.isArray(routes) || !routes.every((route) =>
+          route && typeof route === "object" && Array.isArray(route.points))) {
+        continue;
+      }
+    } catch {
       continue;
     }
 

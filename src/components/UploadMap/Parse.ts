@@ -2,6 +2,7 @@
 // https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/modules/io/load.js
 
 import NameBases from "./json/NameBases.json";
+import { parseBiomes } from "./parseBiomes";
 import svgDefs from "./json/svgDefs.json";
 import b64Imgs from "./json/b64Img.json";
 
@@ -25,8 +26,6 @@ export const parseLoadedData = (data: string[]) => {
   let Cities: City[];
   let Religions: Religion[];
   let nameBases: NameBase[];
-
-  let biomes: string[];
 
   // biome-ignore lint/style/useConst: Pack will possibly be modified in future updates.
   let Pack: Pack = {
@@ -77,89 +76,20 @@ export const parseLoadedData = (data: string[]) => {
   // settings
   if (data[1]) {
     settings = data[1].split("|");
-    SetOpt = JSON.parse(settings[19]) as SettingsOpts;
+    let options: unknown;
+    try {
+      options = JSON.parse(settings[19]);
+    } catch {
+      throw new Error("Invalid AFMG settings options (settings[19]): malformed JSON.");
+    }
+    if (!options || typeof options !== "object" || Array.isArray(options)) {
+      throw new Error("Invalid AFMG settings options (settings[19]): expected an object.");
+    }
+    SetOpt = options as SettingsOpts;
   }
 
-  // biomes
-  if (data[3]) {
-    biomes = data[3].split("|");
-    const biomesData = {
-      names: [
-        "Marine",
-        "Hot desert",
-        "Cold desert",
-        "Savanna",
-        "Grassland",
-        "Tropical seasonal forest",
-        "Temperate deciduous forest",
-        "Tropical rainforest",
-        "Temperate rainforest",
-        "Taiga",
-        "Tundra",
-        "Glacier",
-        "Wetland",
-      ],
-      color: [
-        "#466eab",
-        "#fbe79f",
-        "#b5b887",
-        "#d2d082",
-        "#c8d68f",
-        "#b6d95d",
-        "#29bc56",
-        "#7dcb35",
-        "#409c43",
-        "#4b6b32",
-        "#96784b",
-        "#d5e7eb",
-        "#0b9131",
-      ],
-      habitability: [0, 4, 10, 22, 30, 50, 100, 80, 90, 12, 4, 0, 12],
-      iconsDensity: [0, 3, 2, 120, 120, 120, 120, 150, 150, 100, 5, 0, 250],
-      icons: [
-        {},
-        { dune: 3, cactus: 6, deadTree: 1 },
-        { dune: 9, deadTree: 1 },
-        { acacia: 1, grass: 9 },
-        { grass: 1 },
-        { acacia: 8, palm: 1 },
-        { deciduous: 1 },
-        { acacia: 5, palm: 3, deciduous: 1, swamp: 1 },
-        { deciduous: 6, swamp: 1 },
-        { conifer: 1 },
-        { grass: 1 },
-        {},
-        { swamp: 1 },
-      ],
-      cost: [10, 200, 150, 60, 50, 70, 70, 80, 90, 200, 1000, 5000, 150], // biome movement cost
-      biomesMartix: [
-        // hot ↔ cold [>19°C; <-4°C]; dry ↕ wet
-        new Uint8Array([
-          1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-          2, 2, 10,
-        ]),
-        new Uint8Array([
-          3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 9, 9, 9, 9,
-          10, 10, 10,
-        ]),
-        new Uint8Array([
-          5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 9, 9, 9, 9, 9,
-          10, 10, 10,
-        ]),
-        new Uint8Array([
-          5, 6, 6, 6, 6, 6, 6, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9,
-          10, 10, 10,
-        ]),
-        new Uint8Array([
-          7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9,
-          9, 10, 10,
-        ]),
-      ],
-    };
-    biomesData.color = biomes[0].split(",");
-    biomesData.habitability = biomes[1].split(",").map((h) => +h);
-    biomesData.names = biomes[2].split(",");
-  }
+  const biomes = parseBiomes(data[3]);
+  Pack.biomes = biomes;
 
   // notes
   if (data[4]) {
@@ -400,6 +330,7 @@ export const parseLoadedData = (data: string[]) => {
   // define parsed map here.
   const createParsedMap = (): MapInfo => {
     return {
+      biomes,
       cities: Cities,
       countries: Countries,
       cultures: Cultures,
@@ -430,19 +361,11 @@ export const parseLoadedData = (data: string[]) => {
         barPosY: settings[11],
         populationRate: Number.parseInt(settings[12], 10),
         urbanization: settings[13],
-        mapSize: settings[14],
-        latitude0: settings[15],
-        prec: settings[18],
+        mapSize: settings[14] || String(SetOpt.mapSize ?? 100),
+        latitude0: settings[15] || String(SetOpt.latitude ?? 50),
+        prec: settings[18] || String(SetOpt.prec ?? 100),
         options: {
-          pinNotes: SetOpt.pinNotes,
-          winds: SetOpt.winds,
-          temperatureEquator: SetOpt.temperatureEquator,
-          temperatureNorthPole: SetOpt.temperatureNorthPole,
-          temperatureSouthPole: SetOpt.temperatureSouthPole,
-          stateLabelsMode: SetOpt.stateLabelsMode,
-          year: SetOpt.year,
-          era: SetOpt.era,
-          eraShort: SetOpt.eraShort,
+          ...SetOpt,
           militaryTypes: SetOpt.military as MilitaryType[],
         },
         hideLabels: +settings[21],

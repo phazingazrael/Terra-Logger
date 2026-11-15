@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { TLMapEra } from "./History";
 import type { TLMapEconomy } from "./Economy";
 import type {
+	MapInf,
 	TLCity,
 	TLCountry,
 	TLCulture,
@@ -135,6 +136,7 @@ export type AtlasRenderContext<
 	TSource extends AtlasSourceType = AtlasSourceType,
 > = {
 	economy?: TLMapEconomy;
+	mapGeography?: AtlasGeographyData;
 	section?: AtlasSection;
 	sourceType: TSource;
 	entity: AtlasEntityBySource[TSource];
@@ -147,13 +149,23 @@ export type AtlasEntityFieldChange = {
 	value: unknown;
 };
 
-export type AtlasEconomySave = {
+export type AtlasGeographyData = Pick<MapInf, "biomes" | "geography">;
+
+export type AtlasGeographySave = {
+	mapId: string;
+	before: AtlasGeographyData;
+	after: AtlasGeographyData;
+};
+
+export type AtlasMapSave = {
 	shared?: TLMapEconomy;
+	geography?: AtlasGeographySave;
 	cities?: TLCity[];
 };
 
 export type AtlasRelatedUpdate =
-	| { action: "update"; store: "maps"; key: string; value: TLMapEconomy }
+	| { action: "update"; store: "maps"; field?: "economy"; key: string; value: TLMapEconomy }
+	| { action: "update"; store: "maps"; field: "geography"; key: string; value: AtlasGeographySave }
 	| {
 		action: "add";
 		store: "tags";

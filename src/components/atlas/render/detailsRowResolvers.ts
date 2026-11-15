@@ -1,3 +1,4 @@
+import { biomeGeographyText } from "../core/geography";
 import type { AtlasRenderContext } from "../../../definitions/Atlas";
 import type { TLCountry } from "../../../definitions/TerraLogger";
 
@@ -26,6 +27,8 @@ function relatedLeaderNames(context: AtlasRenderContext): string[] {
 }
 
 export const detailsRowResolvers: Record<string, DetailsRowResolver> = {
+  "geography.climate": (context) => biomeGeographyText(context, "climate"),
+  "geography.terrain": (context) => biomeGeographyText(context, "terrain"),
   "country.capitalCityName": (context) => {
     const entity = context.entity as TLCountry;
 

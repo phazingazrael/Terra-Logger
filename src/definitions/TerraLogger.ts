@@ -188,6 +188,7 @@ export type TLNameBase = {
 
 export type TLCity = {
   _id: string;
+  cellId?: number;
   aliases?: string[];
   capital: boolean;
   coa: {
@@ -400,7 +401,17 @@ export type TLNPC = {
 };
 
 
+// Cell assignments share the map biome catalog; country IDs are AFMG source IDs.
+export type TLMapGeography = {
+  cells: {
+    biome: number[];
+    country: number[];
+  };
+};
+
 export interface TLMapInfo {
+  biomes?: AFMGBiome[];
+  geography?: TLMapGeography;
   economy?: TLMapEconomy;
   cities: TLCity[];
   countries: TLCountry[];
@@ -436,12 +447,13 @@ export interface TLMapInfo {
     latitude0: string;
     prec: string;
     options: {
+      [option: string]: unknown;
       pinNotes: boolean;
       winds: Array<number>;
       temperatureEquator: number;
       temperatureNorthPole: number;
       temperatureSouthPole: number;
-      stateLabelsMode: string;
+      stateLabelsMode?: string;
       year: number;
       era: string;
       eraShort: string;
@@ -457,6 +469,8 @@ export interface TLMapInfo {
 }
 
 export interface MapInf {
+  biomes?: AFMGBiome[];
+  geography?: TLMapGeography;
   economy?: TLMapEconomy;
   id: string;
   info: {
@@ -488,12 +502,13 @@ export interface MapInf {
     latitude0: string;
     prec: string;
     options: {
+      [option: string]: unknown;
       pinNotes: boolean;
       winds: Array<number>;
       temperatureEquator: number;
       temperatureNorthPole: number;
       temperatureSouthPole: number;
-      stateLabelsMode: string;
+      stateLabelsMode?: string;
       year: number;
       era: string;
       eraShort: string;
@@ -509,12 +524,16 @@ export interface MapInf {
 }
 
 export interface SettingsOpts {
+  [option: string]: unknown;
+  mapSize?: number;
+  latitude?: number;
+  prec?: number;
   pinNotes: boolean;
   winds: number[];
   temperatureEquator: number;
   temperatureNorthPole: number;
   temperatureSouthPole: number;
-  stateLabelsMode: string;
+  stateLabelsMode?: string;
   year: number;
   era: string;
   eraShort: string;

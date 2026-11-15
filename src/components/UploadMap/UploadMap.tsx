@@ -458,7 +458,12 @@ function UploadMap({
 				generation,
 				diagnostics,
 				prepareEntities: (map) => {
+					const importedOptions = map.settings.options;
+					const importedBiomes = map.biomes;
 					Object.assign(map, trimImportedStrings(map));
+					// Preserve source option strings and biome definitions without trimming them.
+					map.settings.options = importedOptions;
+					map.biomes = importedBiomes;
 					if (previousEntities) mergeMapEntities(map, previousEntities);
 				},
 			},
@@ -470,6 +475,8 @@ function UploadMap({
 		};
 
 		const {
+			biomes,
+			geography,
 			economy,
 			cities = [],
 			countries = [],
@@ -530,6 +537,8 @@ function UploadMap({
 		}
 
 		const MapInf: MapInf = {
+			biomes,
+			geography,
 			economy,
 			id: mapId,
 			mapId: mapId,

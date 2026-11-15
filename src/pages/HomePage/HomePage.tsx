@@ -78,13 +78,12 @@ const HomePage = () => {
 					useFlexGap
 				>
 					<Chip label={`Terra-Logger v${appVersion}`} color="primary" />
-					<Chip label={`AFMG ${afmgVersion}+ compatible`} color="secondary" />
 					<Chip
-						label={`Max fully supported AFMG Version 1.123`}
-						color="warning"
+						label={`AFMG ${afmgVersion} - 1.140 compatible`}
+						color="secondary"
 					/>
 					<Chip
-						label={`AFMG Versions 1.124 to 1.156 currently do not upload`}
+						label={`AFMG Versions 1.150 to 1.158 currently do not upload`}
 						color="error"
 					/>
 				</Stack>
@@ -97,12 +96,6 @@ const HomePage = () => {
 					files, converts generated map data into organized pages, lets you edit
 					world details before export, and generates Generic Markdown or
 					Obsidian-ready vault content.
-				</Typography>
-
-				<Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-					Terra-Logger still supports maps from the AFMG Economy Update
-					(V1.124.3), but newer AFMG features will not be available in
-					Terra-Logger until V1.1.5.
 				</Typography>
 			</section>
 

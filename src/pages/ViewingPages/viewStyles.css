@@ -279,6 +279,11 @@
   margin: 0rem;
 }
 
+/* City & Country Geography styling */
+[class*="atlas-block"][class*="--geographySummary"] {
+  margin-bottom: 10px;
+}
+
 /* City Page */
 
 /* Section Widths */

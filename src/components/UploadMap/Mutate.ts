@@ -14,6 +14,7 @@ import { generateNPCPopulation } from "../NPC/population/generatePopulation"
 import type { MapUploadDiagnostics, MapUploadGenerationOptions } from "./diagnostics";
 import { addUploadIssue } from "./diagnostics";
 import { applyImportedEconomy } from "./normalizeEconomy";
+import { applyImportedGeography } from "./importGeography";
 
 export type MutateProgress = {
 	section: string;
@@ -28,6 +29,7 @@ export type MutateProgressHandler = (progress: MutateProgress) => void;
 
 const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 	// add map info that doesn't need mutating.
+	tempMap.biomes = data.biomes;
 	tempMap.info = data.info;
 	tempMap.settings = data.settings;
 	tempMap.SVG = data.SVG;
@@ -242,6 +244,9 @@ const mutateData = async (
 	// The active-map layout owns background SVG rendering. Import only stores it.
 
 	options.prepareEntities?.(tempMap);
+
+	// Refresh source geography after reimport merging, preserving authored content.
+	applyImportedGeography(tempMap, data, Pack);
 
 	applyImportedEconomy(tempMap, data, Pack, (message) => {
 		addUploadIssue(options.diagnostics, {

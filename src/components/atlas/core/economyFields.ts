@@ -54,12 +54,13 @@ export const countryEconomyField: EconomyField = { type: "object", fields: {
 export const sharedEconomyField: EconomyField = { type: "object", fields: {
   goods: { type: "array", optional: true, item: { type: "object", fields: {
     id, name: text, tags: { type: "array", item: text }, value: number, unit: text, icon: text, color: text,
+    visible: { type: "boolean", optional: true },
     chance: { type: "number", signed: true, optional: true }, distribution: { ...text, optional: true },
     biomeOutput: { ...numberMap, optional: true },
     recipes: { type: "array", item: numberMap, optional: true },
     multipliers: { type: "object", optional: true, fields: {
       cultureType: { type: "map", item: { type: "number", signed: true }, optional: true },
-      ...Object.fromEntries(["culture", "state", "religion", "biome"].map((key) =>
+      ...Object.fromEntries(["culture", "state", "religion", "biome", "zone"].map((key) =>
         [key, { type: "map", numericKeys: true, item: { type: "number", signed: true }, optional: true } as EconomyField])),
     } },
     demandCoverage: { type: "object", optional: true, fields: Object.fromEntries(
@@ -68,6 +69,7 @@ export const sharedEconomyField: EconomyField = { type: "object", fields: {
   } } },
   markets: { type: "array", optional: true, item: { type: "object", fields: {
     id, centerCityId: id, color: text,
+    name: { ...text, optional: true },
     goods: { type: "array", item: { type: "object", fields: { goodId: id, stock: number, price: number } } },
   } } },
   deals: { type: "array", optional: true, item: { type: "object", fields: {

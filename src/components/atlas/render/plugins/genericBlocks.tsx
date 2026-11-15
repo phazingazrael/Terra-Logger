@@ -1,3 +1,4 @@
+import { GeographySummary } from "../GeographySummary";
 import { EconomySummary } from "../EconomySummary";
 import type {
 	AtlasBlock,
@@ -233,6 +234,7 @@ function resolveDetailsRowValue(
 		value?: unknown;
 		valueMode?: unknown;
 		resolver?: unknown;
+		fallbackResolver?: unknown;
 		args?: unknown;
 	},
 	context: AtlasRenderContext,
@@ -249,6 +251,11 @@ function resolveDetailsRowValue(
 		}
 
 		return resolver(context, isRecord(detail.args) ? detail.args : undefined);
+	}
+
+	if ((detail.valueMode === undefined || detail.valueMode === "static") &&
+		detail.value === undefined && typeof detail.fallbackResolver === "string") {
+		return detailsRowResolvers[detail.fallbackResolver]?.(context);
 	}
 
 	return detail.value;
@@ -294,6 +301,11 @@ function relationshipMatchesRelatedNPCBlock(
 }
 
 export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
+	geographySummary: {
+		type: "geographySummary",
+		label: "Biomes",
+		Render: ({ context }) => <GeographySummary context={context} />,
+	},
 	economySummary: {
 		type: "economySummary",
 		label: "Economy Summary",
@@ -362,6 +374,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					value?: unknown;
 					valueMode?: unknown;
 					resolver?: unknown;
+					fallbackResolver?: unknown;
 					args?: unknown;
 					hideWhenEmpty?: unknown;
 					hideWhenEqualTo?: unknown;
@@ -400,6 +413,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 					value?: unknown;
 					valueMode?: unknown;
 					resolver?: unknown;
+					fallbackResolver?: unknown;
 					args?: unknown;
 					emptyText?: unknown;
 					hideWhenEmpty?: unknown;
@@ -455,7 +469,9 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 								<Typography component="span" className="detail-label">
 									{label as string}:
 								</Typography>
-								<span className="detail-value">{renderedValue}</span>
+								<span className="detail-value" style={context.sourceType === "country" &&
+									(detail.fallbackResolver === "geography.climate" || detail.fallbackResolver === "geography.terrain")
+									? { whiteSpace: "pre-line" } : undefined}>{renderedValue}</span>
 							</div>
 						);
 					})}

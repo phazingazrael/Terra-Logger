@@ -1,6 +1,17 @@
 // Interfaces for AFMG imported Data
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model#burgs
 // AFMG economy source schema: 15853d2ab92aa1f3caf7ee65bfd6d9f90bdce18e.
+type AFMGBiome = {
+  i: number;
+  name: string;
+  color: string;
+  habitability: number;
+  iconsDensity: number;
+  icons: string[];
+  cost: number;
+  removed?: boolean;
+};
+
 type AFMGDemandCategory = "food" | "utilities" | "construction" | "military" | "luxury";
 
 type AFMGCultureType = "Generic" | "Hunting" | "Highland" | "River" | "Lake" | "Naval" | "Nomadic";
@@ -13,6 +24,7 @@ type AFMGGood = {
   unit: string;
   icon: string;
   color: string;
+  visible?: boolean;
   chance?: number;
   distribution?: string;
   biomeOutput?: Partial<Record<number, number>>;
@@ -23,6 +35,7 @@ type AFMGGood = {
     state?: Partial<Record<number, number>>;
     religion?: Partial<Record<number, number>>;
     biome?: Partial<Record<number, number>>;
+    zone?: Partial<Record<number, number>>;
   };
   demandCoverage?: Partial<Record<AFMGDemandCategory, number>>;
 };
@@ -31,6 +44,7 @@ type AFMGMarket = {
   i: number;
   centerBurgId: number;
   color: string;
+  name?: string;
   goods: Record<number, { stock: number; price: number }>;
 };
 
@@ -338,6 +352,7 @@ type NameBase = {
 // Inferred combination of data into 1 object following the data model below
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5
 declare interface MapInfo {
+  biomes: AFMGBiome[];
   cities: City[];
   countries: Country[];
   cultures: Culture[];
@@ -374,12 +389,13 @@ declare interface MapInfo {
     latitude0: string;
     prec: string;
     options: {
+      [option: string]: unknown;
       pinNotes: boolean;
       winds: Array<number>;
       temperatureEquator: number;
       temperatureNorthPole: number;
       temperatureSouthPole: number;
-      stateLabelsMode: string;
+      stateLabelsMode?: string;
       year: number;
       era: string;
       eraShort: string;
@@ -482,6 +498,7 @@ interface BurgData {
 }
 
 declare interface Pack {
+  biomes?: AFMGBiome[];
   goods?: AFMGGood[];
   markets?: AFMGMarket[];
   deals?: AFMGDeal[];

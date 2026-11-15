@@ -78,6 +78,12 @@ function normalizeGood(value: unknown): TLGood {
     color: readText(source.color, "Good color"),
   };
 
+  if (source.visible !== undefined) {
+    if (typeof source.visible !== "boolean") {
+      throw new Error("Good visibility must be a boolean.");
+    }
+    good.visible = source.visible;
+  }
   if (source.chance !== undefined) good.chance = readNumber(source.chance, "Good chance");
   if (source.distribution !== undefined) {
     good.distribution = readText(source.distribution, "Good distribution");
@@ -92,7 +98,7 @@ function normalizeGood(value: unknown): TLGood {
   if (source.multipliers !== undefined) {
     const multipliers = readRecord(source.multipliers, "Good multipliers");
     good.multipliers = {};
-    for (const field of ["cultureType", "culture", "state", "religion", "biome"] as const) {
+    for (const field of ["cultureType", "culture", "state", "religion", "biome", "zone"] as const) {
       if (multipliers[field] !== undefined) {
         good.multipliers[field] = readNumberMap(
           multipliers[field], `Good ${field} multipliers`, field !== "cultureType",
@@ -136,6 +142,7 @@ function normalizeMarket(value: unknown): TLMarket {
     id: readId(source.i, "Market ID"),
     centerCityId: readId(source.centerBurgId, "Market center city ID"),
     color: readText(source.color, "Market color"),
+    ...(source.name === undefined ? {} : { name: readText(source.name, "Market name") }),
     goods,
   };
 }

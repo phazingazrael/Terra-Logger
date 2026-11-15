@@ -1,3 +1,4 @@
+import { ensureGeographySummary } from "../../components/atlas/core/ensureGeographySummary";
 import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Container } from "@mui/material";
@@ -75,7 +76,7 @@ function CountryView() {
 		if (!country) return null;
 
 		if (isAtlasContent(country.content)) {
-			return ensureEconomySummary(ensureContextualNPCSections(country.content));
+			return ensureGeographySummary(ensureEconomySummary(ensureContextualNPCSections(country.content)));
 		}
 
 		return countryAdapter.createDefaultContent(country);
@@ -86,6 +87,7 @@ function CountryView() {
 
 		return {
 			economy: map?.economy,
+			mapGeography: map?.biomes ? { biomes: map.biomes, geography: map.geography } : undefined,
 			sourceType: "country" as const,
 			entity: country,
 			related: {
@@ -98,7 +100,7 @@ function CountryView() {
 			},
 			relatedLookups,
 		};
-	}, [country, notes, cities, countries, cultures, tags, npcs, relatedLookups, map?.economy]);
+	}, [country, notes, cities, countries, cultures, tags, npcs, relatedLookups, map?.economy, map?.biomes, map?.geography]);
 
 	useEffect(() => {
 		const el = document.querySelector(".Content");
@@ -130,7 +132,8 @@ function CountryView() {
 				};
 
 				await update("countries", String(updatedCountry._id), updatedCountry, {
-					shared: payload.relatedUpdates?.find((update) => update.store === "maps")?.value,
+					shared: payload.relatedUpdates?.flatMap((update) => update.store === "maps" && update.field !== "geography" ? [update.value] : [])[0],
+					geography: payload.relatedUpdates?.flatMap((update) => update.store === "maps" && update.field === "geography" ? [update.value] : [])[0],
 					cities: payload.relatedUpdates?.flatMap((update) => update.store === "cities" ? [update.value] : []),
 				});
 				await saveAtlasRelatedUpdates({

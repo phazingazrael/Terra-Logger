@@ -1,3 +1,4 @@
+import { ensureGeographySummary } from "../../components/atlas/core/ensureGeographySummary";
 import { ensureEconomySummary } from "../../components/atlas/core/ensureEconomySummary";
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Button, Container } from "@mui/material";
@@ -75,7 +76,7 @@ function CityView() {
 		if (!city) return null;
 
 		if (isAtlasContent(city.content)) {
-			return ensureEconomySummary(ensureContextualNPCSections(city.content));
+			return ensureGeographySummary(ensureEconomySummary(ensureContextualNPCSections(city.content)));
 		}
 
 		return cityAdapter.createDefaultContent(city);
@@ -86,6 +87,7 @@ function CityView() {
 
 		return {
 			economy: map?.economy,
+			mapGeography: map?.biomes ? { biomes: map.biomes, geography: map.geography } : undefined,
 			sourceType: "city" as const,
 			entity: city,
 			related: {
@@ -108,6 +110,8 @@ function CityView() {
 		npcs,
 		relatedLookups,
 		map?.economy,
+		map?.biomes,
+		map?.geography,
 	]);
 
 	useEffect(() => {
@@ -140,9 +144,8 @@ function CityView() {
 				};
 
 				await update("cities", String(updatedCity._id), updatedCity, {
-					shared: payload.relatedUpdates?.find(
-						(update) => update.store === "maps",
-					)?.value,
+					shared: payload.relatedUpdates?.flatMap((update) => update.store === "maps" && update.field !== "geography" ? [update.value] : [])[0],
+					geography: payload.relatedUpdates?.flatMap((update) => update.store === "maps" && update.field === "geography" ? [update.value] : [])[0],
 					cities: payload.relatedUpdates?.flatMap((update) =>
 						update.store === "cities" ? [update.value] : [],
 					),

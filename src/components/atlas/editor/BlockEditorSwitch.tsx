@@ -1,4 +1,5 @@
 import { EraChronologyBlockEditor } from "./blockEditors/EraChronologyBlockEditor";
+import { GeographyBlockEditor } from "./blockEditors/GeographyBlockEditor";
 import { EconomyBlockEditor } from "./blockEditors/EconomyBlockEditor";
 import type {
 	AtlasBlock,
@@ -28,6 +29,8 @@ export function BlockEditorSwitch({
 	onChange: (block: AtlasBlock) => void;
 }) {
 	if (block.type === "eraChronology") return <EraChronologyBlockEditor context={context} />;
+
+	if (block.type === "geographySummary") return <GeographyBlockEditor context={context} />;
 
 	if (block.type === "economySummary") return <EconomyBlockEditor context={context} onTradeBlockChange={onChange} />;
 

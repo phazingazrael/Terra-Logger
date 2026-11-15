@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
-import type { AtlasEconomySave } from "../definitions/Atlas";
+import type { AtlasMapSave } from "../definitions/Atlas";
 // src/db/client.ts
 import { ensurePersistentNPCFields } from "../components/NPC/persistence/normalize";
 import type { TLNPC } from "../definitions/TerraLogger";
@@ -132,7 +132,7 @@ export async function updateAndCache(
 	key: string,
 	updated: any,
 	activeMapId: string | null,
-	economy?: AtlasEconomySave,
+	economy?: AtlasMapSave,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(updated as TLNPC) : updated;
 	if ((store === "cities" || store === "countries") &&

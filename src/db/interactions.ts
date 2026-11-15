@@ -1,4 +1,5 @@
-import type { AtlasEconomySave } from "../definitions/Atlas";
+import { applyGeographyChanges } from "../components/atlas/core/geography";
+import type { AtlasMapSave } from "../definitions/Atlas";
 import { aggregateEconomyTrade, normalizeTradeEntries } from "../components/Util/economy";
 import { cityEconomyField, countryEconomyField, sharedEconomyField, validateEconomyValue } from "../components/atlas/core/economyFields";
 import {
@@ -156,7 +157,7 @@ export async function updateEntityAndEconomies(
   storeName: "cities" | "countries",
   key: string,
   updated: TLCity | TLCountry,
-  changes?: AtlasEconomySave,
+  changes?: AtlasMapSave,
 ): Promise<{ cities: TLCity[]; countries: TLCountry[]; map: MapInf }> {
   const mapId = updated.mapId;
   if (!mapId || updated._id !== key) {
@@ -205,7 +206,8 @@ export async function updateEntityAndEconomies(
       throw new Error("Cannot resolve a unique map record for economy summaries.");
     }
 
-    const currentMap: MapInf = changes?.shared === undefined ? rows[0] : { ...rows[0], economy: changes.shared };
+    const sourceMap = changes?.geography === undefined ? rows[0] : applyGeographyChanges(rows[0], changes.geography);
+    const currentMap: MapInf = changes?.shared === undefined ? sourceMap : { ...sourceMap, economy: changes.shared };
     if (changes?.shared !== undefined) {
       validateEconomyValue(changes.shared, sharedEconomyField, "Shared economy");
       function checkIds(records: readonly { id: number }[], label: string) {
@@ -253,7 +255,7 @@ export async function updateEntityAndEconomies(
     for (const country of refreshed.countries) {
       await tx.objectStore("countries").put(country);
     }
-    if (currentMap.economy) await tx.objectStore("maps").put(map);
+    if (currentMap.economy || changes?.geography !== undefined) await tx.objectStore("maps").put(map);
     await done;
     return { cities: refreshedCities, countries: refreshed.countries, map };
   } catch (error) {

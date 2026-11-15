@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: Database functions accept several record types. */
-import type { AtlasEconomySave } from "../definitions/Atlas";
+import type { AtlasMapSave } from "../definitions/Atlas";
 // src/db/DataContext.tsx
 
 import type React from "react";
@@ -52,7 +52,7 @@ type DatabaseContextValue = {
 	 */
 	add: (store: MapScopedStore, data: any) => Promise<void>;
 
-	update: (store: MapScopedStore, key: string, updated: any, economy?: AtlasEconomySave) => Promise<void>;
+	update: (store: MapScopedStore, key: string, updated: any, economy?: AtlasMapSave) => Promise<void>;
 
 	remove: (store: MapScopedStore, key: string) => Promise<void>;
 
@@ -219,7 +219,7 @@ export function DBProvider({ children }: React.PropsWithChildren) {
 	);
 
 	const update = useCallback(
-		async (store: MapScopedStore, key: string, updated: any, economy?: AtlasEconomySave): Promise<void> => {
+		async (store: MapScopedStore, key: string, updated: any, economy?: AtlasMapSave): Promise<void> => {
 			await updateAndCache(store, key, updated, activeMapId, economy);
 
 			bumpVersion();

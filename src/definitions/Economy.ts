@@ -25,6 +25,7 @@ export type TLGood = {
   unit: string;
   icon: string;
   color: string;
+  visible?: boolean;
   chance?: number;
   distribution?: string;
   biomeOutput?: Partial<Record<number, number>>;
@@ -35,6 +36,7 @@ export type TLGood = {
     state?: Partial<Record<number, number>>;
     religion?: Partial<Record<number, number>>;
     biome?: Partial<Record<number, number>>;
+    zone?: Partial<Record<number, number>>;
   };
   demandCoverage?: Partial<Record<TLDemandCategory, number>>;
 };
@@ -43,6 +45,7 @@ export type TLMarket = {
   id: number;
   centerCityId: number;
   color: string;
+  name?: string;
   goods: { goodId: number; stock: number; price: number }[];
 };
 

@@ -151,7 +151,8 @@ function usePageEditorModel<TSource extends AtlasSourceType>({
 		() => ({
 			...context,
 			entity: entityDraft,
-			economy: relatedUpdates.find((update) => update.store === "maps")?.value ?? context.economy,
+			economy: relatedUpdates.flatMap((update) => update.store === "maps" && update.field !== "geography" ? [update.value] : [])[0] ?? context.economy,
+			mapGeography: relatedUpdates.flatMap((update) => update.store === "maps" && update.field === "geography" ? [update.value.after] : [])[0] ?? context.mapGeography,
 			related: {
 				...context.related,
 				cities: context.related?.cities?.map((city) => {
@@ -618,6 +619,8 @@ function upsertRelatedUpdate(
 		(update) =>
 			update.store === next.store &&
 			update.action === "update" &&
+			(update.store !== "maps" || next.store !== "maps" ||
+				(update.field === "geography") === (next.field === "geography")) &&
 			update.key === next.key,
 	);
 
@@ -625,7 +628,14 @@ function upsertRelatedUpdate(
 		return [...current, next];
 	}
 
+	const previous = current[existingIndex];
+	let replacement = next;
+	if (next.store === "maps" && next.field === "geography" &&
+		previous.store === "maps" && previous.field === "geography") {
+		replacement = { ...next, value: { ...next.value, before: previous.value.before } };
+	}
+
 	return current.map((update, index) =>
-		index === existingIndex ? next : update,
+		index === existingIndex ? replacement : update,
 	);
 }

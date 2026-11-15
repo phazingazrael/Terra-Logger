@@ -1,7 +1,7 @@
 import type { TLCountry } from "../../../definitions/TerraLogger";
 import type { AtlasAdapter, AtlasContent } from "../../../definitions/Atlas";
 import { commonBlockPresets, commonSectionPresets } from "./shared";
-import { clear, economySummary, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, entitySplitListBlock, richTextBlock, sectionPreset } from "../core/presets";
+import { clear, geographySummary, economySummary, computedBlock, createContentShell, descriptionBlock, detailsListBlock, entityChipListBlock, entitySection, entitySplitListBlock, richTextBlock, sectionPreset } from "../core/presets";
 
 function createCountryContent(entity: TLCountry): AtlasContent {
   return createContentShell({
@@ -68,10 +68,11 @@ function createCountryContent(entity: TLCountry): AtlasContent {
         richTextBlock("Add country history notes here."),
       ]),
       sectionPreset("Geography & Environment", "section geography-environment", [
+        geographySummary(),
         detailsListBlock([
           { label: "Location", value: "[Describe location within the world, dimension, or space sector.]" },
-          { label: "Climate & Atmosphere", value: "[Earth-like, toxic, magical storms, artificial climate, etc.]" },
-          { label: "Topography & Terrain", value: "[Floating islands, underground caverns, space stations, etc.]" },
+          { label: "Climate & Atmosphere", fallbackResolver: "geography.climate", emptyText: "[Earth-like, toxic, magical storms, artificial climate, etc.]" },
+          { label: "Topography & Terrain", fallbackResolver: "geography.terrain", emptyText: "[Floating islands, underground caverns, space stations, etc.]" },
           { label: "Planar/Dimensional Traits", value: "[Is it tied to another plane? Does time move differently here?]" },
           { label: "Unique Natural Features", value: "[Magical ley lines, sentient forests, shifting deserts, etc.]" },
         ]),

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type {
 	AtlasBlock,
 	AtlasEditorContext,
@@ -15,6 +16,7 @@ type Row = {
 	value?: string;
 	valueMode?: "static" | "entity" | "computed";
 	resolver?: string;
+	fallbackResolver?: string;
 	args?: Record<string, unknown>;
 	emptyText?: string;
 	hideWhenEmpty?: boolean;
@@ -30,9 +32,9 @@ export function DetailsListBlockEditor({
 	context: AtlasEditorContext;
 	onChange: (block: AtlasBlock) => void;
 }>) {
-	const rows = (
+	const rows = useMemo(() => ((
 		Array.isArray(block.props.rows) ? block.props.rows : []
-	) as Row[];
+	) as Row[]).map((row) => ({ ...row, id: row.id || uuidv4() })), [block.props.rows]);
 
 	function setRows(nextRows: Row[]) {
 		onChange({ ...block, props: { ...block.props, rows: nextRows } });
@@ -90,7 +92,6 @@ export function DetailsListBlockEditor({
 									...row,
 									value,
 									valueMode: "static",
-									id: uuidv4(),
 								})
 							}
 						/>
@@ -126,7 +127,7 @@ function DetailsRowValueEditor({
 }: {
 	row: Row;
 	context: AtlasEditorContext;
-	onStaticChange: (value: string) => void;
+	onStaticChange: (value: string | undefined) => void;
 }) {
 	const mode = row.valueMode ?? "static";
 
@@ -199,12 +200,19 @@ function DetailsRowValueEditor({
 		);
 	}
 
+	const fallback = row.fallbackResolver ? detailsRowResolvers[row.fallbackResolver]?.(context) : undefined;
 	return (
-		<textarea
-			value={String(row.value ?? "")}
-			placeholder={row.emptyText ?? "Value"}
-			onChange={(event) => onStaticChange(event.target.value)}
-		/>
+		<>
+			<textarea
+				value={String(row.value ?? fallback ?? "")}
+				placeholder={row.emptyText ?? "Value"}
+				onChange={(event) => onStaticChange(event.target.value)}
+			/>
+			{row.fallbackResolver ? (
+				<Button type="button" variant="outlined" disabled={row.value === undefined}
+					onClick={() => onStaticChange(undefined)}>Use biome default</Button>
+			) : null}
+		</>
 	);
 }
 

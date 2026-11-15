@@ -6,8 +6,9 @@ import { ATLAS_CONTENT_SCHEMA, ATLAS_CONTENT_VERSION } from "../../../definition
 export type DetailRow =
   | {
     label: string;
-    value: string;
+    value?: string;
     valueMode?: "static";
+    fallbackResolver?: string;
     emptyText?: string;
     hideWhenEmpty?: boolean;
     hideWhenEqualTo?: string;
@@ -359,6 +360,10 @@ export function entityChipListBlock(label: string, entityPath: string): AtlasBlo
     },
     props: { label, emptyText: `No ${label.toLowerCase()} listed.` },
   };
+}
+
+export function geographySummary(): AtlasBlock {
+  return computedBlock("geographySummary", "Biomes", "geography.summary");
 }
 
 export function economySummary(): AtlasBlock {
