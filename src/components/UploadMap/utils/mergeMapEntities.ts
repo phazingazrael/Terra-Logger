@@ -77,21 +77,22 @@ export function mergeMapEntities(
     "religion", map.religions, previous.religions, (religion) => religion.i,
     ["i", "center", "code", "culture", "deity", "form", "members", "name", "origins", "type"],
   );
-  const incomingNotes = new Map(map.notes.map((note) => [note.id, note]));
+  const incomingNotes = new Map(map.notes.map((note) => [getImportedNoteKey(note.id), note]));
   map.notes = mergeEntities(
-    "note", map.notes, previous.notes, (note) => note.id,
-    ["id", "type"],
+    "note", map.notes, previous.notes, (note) => getImportedNoteKey(note.id),
+    ["type"],
   );
   for (const note of map.notes) {
-    const incoming = incomingNotes.get(note.id);
-    if (!incoming?.importedTravel) continue;
-    // The baseline is the last imported text, not a copy of authored edits.
-    // Refresh only fields that still match that baseline.
-    if (note.importedTravel) {
-      if (note.name === note.importedTravel.name) note.name = incoming.name;
-      if (note.legend === note.importedTravel.legend) note.legend = incoming.legend;
+    const incoming = incomingNotes.get(getImportedNoteKey(note.id));
+    if (!incoming?.importedTravel && !incoming?.importedNote) continue;
+    // Refresh only text still matching the last import; older untracked edits survive.
+    const baseline = note.importedTravel ?? note.importedNote;
+    if (baseline) {
+      if (note.name === baseline.name) note.name = incoming.name;
+      if (note.legend === baseline.legend) note.legend = incoming.legend;
     }
     note.importedTravel = incoming.importedTravel;
+    note.importedNote = incoming.importedNote;
   }
 
   // Cultures refer to name bases by position; name matching cannot repair a reorder.
@@ -159,4 +160,12 @@ export function mergeMapEntities(
       : cities.get(religion.center.i);
     religion.center = { ...religion.center, _id: center?._id ?? "" };
   }
+}
+
+// AFMG 1.152 attaches Notes to entities, replacing legacy SVG element aliases.
+export function getImportedNoteKey(id: string): string {
+  return id
+    .replace(/^(burg|state|province|river|route)Label(\d+)$/, "$1$2")
+    .replace(/^road(\d+)$/, "route$1")
+    .replace(/^(?:lake_|feature_)(\d+)$/, "feature$1");
 }

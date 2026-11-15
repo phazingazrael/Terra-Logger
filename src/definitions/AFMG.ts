@@ -460,7 +460,24 @@ declare interface AFMGLabel {
   startOffset?: number;
 }
 
+declare interface AFMGLegacySettingsOptions {
+  [option: string]: unknown;
+  mapSize?: number;
+  latitude?: number;
+  prec?: number;
+  pinNotes: boolean;
+  winds: number[];
+  temperatureEquator: number;
+  temperatureNorthPole: number;
+  temperatureSouthPole: number;
+  year: number;
+  era: string;
+  eraShort: string;
+  military: MilitaryType[];
+}
+
 declare interface MapInfo {
+  attachedNotes?: Note[];
   renderingSource?: AFMGRenderingSource;
   biomes: AFMGBiome[];
   cities: City[];

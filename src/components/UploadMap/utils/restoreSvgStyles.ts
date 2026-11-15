@@ -63,7 +63,7 @@ export function restoreSvgStyles(
   // These renderer-owned elements do not carry data-group markers.
   // https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/renderers/draw-ocean.ts
   // https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/renderers/draw-scalebar.ts
-  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/renderers/draw-legend.ts
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/4dd8da5464d9b5879eb06bdfce84afc38fcbebf0/src/renderers/draw-legend.ts
   const fixedTargets: Record<string, string> = {
     "ocean.base": "#oceanBase",
     "scaleBar.back": "#scaleBarBack",
@@ -82,13 +82,19 @@ export function restoreSvgStyles(
         : [[key, value as StoredStyleNode]] as const;
       for (const [group, child] of groups) {
         const fixedTarget = fixedTargets[`${path}.${group}`];
-        const target = Array.from(element.querySelectorAll("[data-group]"))
-          .find((candidate) => candidate.getAttribute("data-group") === group)
-          ?? (fixedTarget ? element.querySelector(fixedTarget) : undefined);
+        const matches = Array.from(element.querySelectorAll("[data-group]"))
+          .filter((candidate) => candidate.getAttribute("data-group") === group);
+        // 1.152.1 keeps one background per legend box; other groups retain first-match behavior.
+        const targets = path === "legend" && group === "box" ? matches : matches.slice(0, 1);
+        if (!targets.length && fixedTarget) {
+          const target = element.querySelector(fixedTarget);
+          if (target) targets.push(target);
+        }
         // AFMG leaves the legend empty when no legend has been drawn.
-        if (!target && path === "legend" && group === "box" && !element.hasChildNodes()) continue;
-        if (target) write(target, child, `${path}.${group}`);
-        else if (child.attrs && Object.keys(child.attrs).length) {
+        if (!targets.length && path === "legend" && group === "box" && !element.hasChildNodes()) continue;
+        if (targets.length) {
+          for (const target of targets) write(target, child, `${path}.${group}`);
+        } else if (child.attrs && Object.keys(child.attrs).length) {
           issues.push(`Saved SVG style "${path}.${group}" has no matching group; its source data is retained.`);
         }
       }

@@ -166,6 +166,8 @@ const mutateData = async (
 		const Notes = await mutateNotes(data, tempMap);
 
 		tempMap.notes = Notes;
+		options.diagnostics.counts["Entity-attached Notes"] = data.attachedNotes?.length ?? 0;
+		options.diagnostics.counts["Legacy Notes"] = data.notes.length;
 		options.diagnostics.counts["Journey Notes"] = Notes.filter(
 			(note) => note.importedTravel && /^journey\d+$/.test(note.id),
 		).length;

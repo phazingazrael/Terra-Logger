@@ -1,5 +1,7 @@
 /// <reference lib="webworker" />
 
+import { parseMapSettings } from "../utils/parseMapSettings";
+
 import { errorDetails } from "../../Util/errorDetails";
 
 import type {
@@ -282,9 +284,9 @@ function repairSvgLineBreakSplit(parts: string[]): string[] {
 
 function getMapIdentityFromMapFile(mapFile: string[]) {
   const params = mapFile[0]?.split("|") ?? [];
-  const settings = mapFile[1]?.split("|") ?? [];
+  const settings = parseMapSettings(mapFile[1]);
 
-  const name = String(settings[20] ?? "").trim();
+  const name = settings.mapName.trim();
   const id = String(params[6] ?? "").trim();
 
   return {

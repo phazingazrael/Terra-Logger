@@ -32,8 +32,30 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.10",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.10",
-  "commitCount": 97,
+  "commitCount": 100,
   "majorChanges": [
+    {
+      "hash": "2db1991883eab981c1028dd02911193c0f69e256",
+      "shortHash": "2db1991",
+      "date": "2026-11-15T13:25:20-07:00",
+      "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
+      "type": "feat",
+      "scope": "notes",
+      "details": "✨ import, edit, and export Journey and route notes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
+    },
+    {
+      "hash": "86d501b877ebf428805ea6c5e39f902ffaefa078",
+      "shortHash": "86d501b",
+      "date": "2026-11-15T13:21:33-07:00",
+      "subject": "feat(afmg): ✨ support 1.149 and 1.150 map serialization",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.149 and 1.150 map serialization",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078"
+    },
     {
       "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
       "shortHash": "49a688b",
@@ -165,6 +187,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "✨ Replace JSONUI functionality",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/811a72b59e38de49ab59849c244d968d4bd8aa24"
+    },
+    {
+      "hash": "dead210023798ef25262ed8ab2b68bb15be28377",
+      "shortHash": "dead210",
+      "date": "2026-11-15T13:15:12-07:00",
+      "subject": "refactor(core): ♻️ consolidate importer utilities and Atlas helpers",
+      "type": "refactor",
+      "scope": "core",
+      "details": "♻️ consolidate importer utilities and Atlas helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377"
     },
     {
       "hash": "038be52d75d520de66c90c021a6c92805ffb9c9f",
@@ -872,15 +905,15 @@ export const releaseChanges: ReleaseChanges = {
     }
   ],
   "highlightedChange": {
-    "hash": "49a688be736180f2d54acc7c301572e17f2d1e8b",
-    "shortHash": "49a688b",
-    "date": "2026-11-14T18:08:40-07:00",
-    "subject": "feat(diagnostics): ✨ report complete upload and export outcomes",
+    "hash": "2db1991883eab981c1028dd02911193c0f69e256",
+    "shortHash": "2db1991",
+    "date": "2026-11-15T13:25:20-07:00",
+    "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
     "type": "feat",
-    "scope": "diagnostics",
-    "details": "✨ report complete upload and export outcomes",
+    "scope": "notes",
+    "details": "✨ import, edit, and export Journey and route notes",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/49a688be736180f2d54acc7c301572e17f2d1e8b"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
   },
   "typeOptions": [
     "chore",
@@ -900,6 +933,7 @@ export const releaseChanges: ReleaseChanges = {
     "catalogs",
     "cleanup",
     "coa",
+    "core",
     "db",
     "deals",
     "diagnostics",
@@ -909,6 +943,7 @@ export const releaseChanges: ReleaseChanges = {
     "import",
     "lists",
     "navigation",
+    "notes",
     "npc",
     "react",
     "release",
@@ -917,6 +952,39 @@ export const releaseChanges: ReleaseChanges = {
     "views"
   ],
   "commits": [
+    {
+      "hash": "2db1991883eab981c1028dd02911193c0f69e256",
+      "shortHash": "2db1991",
+      "date": "2026-11-15T13:25:20-07:00",
+      "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
+      "type": "feat",
+      "scope": "notes",
+      "details": "✨ import, edit, and export Journey and route notes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
+    },
+    {
+      "hash": "86d501b877ebf428805ea6c5e39f902ffaefa078",
+      "shortHash": "86d501b",
+      "date": "2026-11-15T13:21:33-07:00",
+      "subject": "feat(afmg): ✨ support 1.149 and 1.150 map serialization",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.149 and 1.150 map serialization",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078"
+    },
+    {
+      "hash": "dead210023798ef25262ed8ab2b68bb15be28377",
+      "shortHash": "dead210",
+      "date": "2026-11-15T13:15:12-07:00",
+      "subject": "refactor(core): ♻️ consolidate importer utilities and Atlas helpers",
+      "type": "refactor",
+      "scope": "core",
+      "details": "♻️ consolidate importer utilities and Atlas helpers",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377"
+    },
     {
       "hash": "ed59301f328a57c738b4ead10b3eeeb4c8ae66e8",
       "shortHash": "ed59301",
@@ -1985,5 +2053,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-15T16:45:39.330Z"
+  "generatedAt": "2026-11-15T23:40:44.329Z"
 };

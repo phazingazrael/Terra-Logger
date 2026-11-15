@@ -7,6 +7,7 @@ import b64Imgs from "./json/b64Img.json";
 
 import {
   parseBiomes,
+  parseMapSettings,
   parseRenderingSource,
   restoreSvgLayers,
   restoreSvgFonts,
@@ -17,15 +18,14 @@ import {
   inlinePatternImages,
 } from "./utils";
 
-import type { SettingsOpts } from "../../definitions/TerraLogger";
+
 
 export const parseLoadedData = (data: string[]) => {
   // Parse Map Parameters //
 
   let params: string[];
-  let settings: string[];
-  let SetOpt: SettingsOpts;
-  let Notes: Note[];
+  const settings = parseMapSettings(data[1]);
+  let Notes: Note[] = [];
   let Cultures: Culture[];
   let Countries: Country[];
   let Cities: City[];
@@ -76,21 +76,6 @@ export const parseLoadedData = (data: string[]) => {
   // params
   if (data[0]) {
     params = data[0].split("|");
-  }
-
-  // settings
-  if (data[1]) {
-    settings = data[1].split("|");
-    let options: unknown;
-    try {
-      options = JSON.parse(settings[19]);
-    } catch {
-      throw new Error("Invalid AFMG settings options (settings[19]): malformed JSON.");
-    }
-    if (!options || typeof options !== "object" || Array.isArray(options)) {
-      throw new Error("Invalid AFMG settings options (settings[19]): expected an object.");
-    }
-    SetOpt = options as SettingsOpts;
   }
 
   const biomes = parseBiomes(data[3]);
@@ -363,7 +348,7 @@ export const parseLoadedData = (data: string[]) => {
       countries: Countries,
       cultures: Cultures,
       info: {
-        name: settings[20],
+        name: settings.mapName,
         seed: params[3],
         width: +params[4],
         height: +params[5],
@@ -371,36 +356,11 @@ export const parseLoadedData = (data: string[]) => {
       },
       nameBases: nameBases,
       notes: Notes,
+      attachedNotes: data[1]?.trimStart().startsWith("{") ? readAttachedNotes(data) : [],
       npcs: [],
       params: params,
       religions: Religions,
-      settings: {
-        mapName: settings[20],
-        distanceUnit: settings[0],
-        distanceScale: settings[1],
-        areaUnit: settings[2],
-        heightUnit: settings[3],
-        heightExponent: settings[4],
-        temperatureScale: settings[5],
-        barSize: settings[6],
-        barLabel: settings[7],
-        barBackOpacity: settings[8],
-        barPosX: settings[10],
-        barPosY: settings[11],
-        populationRate: Number.parseInt(settings[12], 10),
-        urbanization: settings[13],
-        mapSize: settings[14] || String(SetOpt.mapSize ?? 100),
-        latitude0: settings[15] || String(SetOpt.latitude ?? 50),
-        prec: settings[18] || String(SetOpt.prec ?? 100),
-        options: {
-          ...SetOpt,
-          militaryTypes: SetOpt.military as MilitaryType[],
-        },
-        hideLabels: +settings[21],
-        stylePreset: settings[22],
-        rescaleLabels: +settings[23],
-        urbanDensity: +settings[24],
-      },
+      settings,
       SVG: SVG,
       svgMod: "",
     };
@@ -431,3 +391,57 @@ export const parseLoadedData = (data: string[]) => {
 // data[28]
 // rulersString
 // data[33]
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/4dd8da5464d9b5879eb06bdfce84afc38fcbebf0/src/generators/notes.ts
+function readAttachedNotes(sections: readonly string[]): Note[] {
+  const notes: Note[] = [];
+  const add = (kind: string, value: unknown, owner?: number) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return;
+    const entity = value as Record<string, unknown>;
+    if (entity.note === undefined || entity.note === "") return;
+    if (typeof entity.note !== "string" || !Number.isSafeInteger(entity.i) || Number(entity.i) < 0) {
+      throw new Error(`Invalid AFMG attached Note: ${kind} ${String(entity.i)} requires a numeric ID and text note.`);
+    }
+    const id = kind === "regiment" ? `regiment${owner}-${entity.i}` : `${kind}${entity.i}`;
+    const label = entity.label && typeof entity.label === "object"
+      ? (entity.label as Record<string, unknown>).text : undefined;
+    const candidates = [entity.fullName, entity.name, label];
+    let name = candidates.find((candidate) => typeof candidate === "string" && candidate.trim()) as string | undefined;
+    if (kind === "river" && name && typeof entity.type === "string") name = `${name} ${entity.type}`;
+    notes.push({ id, name: name ?? id, legend: entity.note });
+  };
+  const collections: [string, number][] = [
+    ["state", 14], ["province", 30], ["burg", 15], ["marker", 35],
+    ["river", 32], ["route", 37], ["feature", 12], ["zone", 38],
+    ["journey", 52], ["market", 42], ["addedLabel", 47], ["culture", 13],
+    ["religion", 29], ["biome", 3], ["good", 41],
+  ];
+  for (const [kind, section] of collections) {
+    if (!sections[section]?.trim()) continue;
+    let records: unknown;
+    try { records = JSON.parse(sections[section]); } catch {
+      throw new Error(`Cannot read attached Notes: malformed AFMG ${kind} section (${section}).`);
+    }
+    if (!Array.isArray(records)) throw new Error(`Invalid AFMG ${kind} section (${section}): expected a list.`);
+    for (const value of records) {
+      add(kind, value);
+      if (kind !== "state" || !value || typeof value !== "object") continue;
+      const state = value as Record<string, unknown>;
+      if (state.military === undefined) continue;
+      if (!Array.isArray(state.military)) throw new Error(`Invalid AFMG military list for state ${state.i}.`);
+      for (const regiment of state.military) {
+        if (regiment && typeof regiment === "object" && "note" in regiment &&
+          (!Number.isSafeInteger(state.i) || Number(state.i) < 0)) {
+          throw new Error("Invalid AFMG regiment Note: owning state ID is missing.");
+        }
+        add("regiment", regiment, Number(state.i));
+      }
+    }
+  }
+  const ids = new Set<string>();
+  for (const note of notes) {
+    if (ids.has(note.id)) throw new Error(`Duplicate AFMG attached Note ID: ${note.id}.`);
+    ids.add(note.id);
+  }
+  return notes;
+}

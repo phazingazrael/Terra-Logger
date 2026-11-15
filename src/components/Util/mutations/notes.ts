@@ -3,11 +3,27 @@ import { v7 as uuidv7 } from "uuid";
 import type { TLMapInfo, TLNote } from "../../../definitions/TerraLogger";
 import type { Tag } from "../../../definitions/Common";
 import { getNoteCategory, noteAdapter } from "../../atlas/adapters/noteAdapter";
+import { getImportedNoteKey } from "../../UploadMap/utils/mergeMapEntities";
+
 export const mutateNotes = async (data: MapInfo, tempMap: TLMapInfo) => {
   const sourceNotes = new Map<string, Note & { type?: string; color?: string }>();
   for (const note of data.notes) {
     if (sourceNotes.has(note.id)) throw new Error(`Duplicate imported Note ID: ${note.id}.`);
     sourceNotes.set(note.id, note);
+  }
+  const attachedIds = new Set<string>();
+  for (const note of data.attachedNotes ?? []) {
+    const key = getImportedNoteKey(note.id);
+    const matches = [...sourceNotes.values()].filter((entry) => getImportedNoteKey(entry.id) === key);
+    if (matches.length > 1) throw new Error(`Ambiguous legacy Notes for AFMG entity ${key}.`);
+    const existing = matches[0];
+    const id = existing?.id ?? note.id;
+    sourceNotes.set(id, {
+      ...note, id, name: existing?.name || note.name,
+      legend: existing?.legend && existing.legend !== note.legend
+        ? `${existing.legend}<hr>${note.legend}` : note.legend,
+    });
+    attachedIds.add(id);
   }
   const importedTravel = new Set<string>();
   for (const travel of createTravelNotes(data)) {
@@ -38,6 +54,7 @@ export const mutateNotes = async (data: MapInfo, tempMap: TLMapInfo) => {
     }
     const newNote: TLNote = {
       _id: uuidv7(),
+      importedNote: attachedIds.has(note.id) ? { name: note.name, legend: note.legend } : undefined,
       importedTravel: importedTravel.has(note.id)
         ? { name: note.name, legend: note.legend, color: note.color } : undefined,
       legend: note.legend,

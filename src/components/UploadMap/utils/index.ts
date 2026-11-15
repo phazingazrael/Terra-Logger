@@ -23,3 +23,5 @@ export * from "./restoreSvgLayers";
 export * from "./restoreSvgStyles";
 
 export * from "./svg";
+
+export * from "./parseMapSettings";

@@ -125,6 +125,7 @@ export type TLMilitary = {
 };
 export type TLNote = {
   _id: string;
+  importedNote?: { name: string; legend: string };
   importedTravel?: {
     name: string;
     legend: string;
