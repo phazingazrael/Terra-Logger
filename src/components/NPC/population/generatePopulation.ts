@@ -97,6 +97,7 @@ function normalizeGovernmentType(value: unknown): string | undefined {
   return normalized;
 }
 function countryGovernmentType(country: TLCountry): string | undefined {
+  if (country.id === 0) return undefined;
   return normalizeGovernmentType(country.political?.formName) ?? normalizeGovernmentType(country.political?.form);
 }
 function numeric(value: string | number | undefined): number { return Number(String(value ?? "0").replace(/,/g, "")) || 0; }
@@ -233,7 +234,10 @@ export async function generateNPCPopulation(map: TLMapInfo, options: NPCPopulati
     for (let index = 0; index < map.countries.length; index += 1) {
       const country = map.countries[index]; report("countries", index, map.countries.length, `Generating government population for ${country.name}...`);
       const governmentType = countryGovernmentType(country);
-      if (!governmentType) {
+      if (country.id === 0) {
+        // Independent neutral communities have no collective government.
+        addCount("Neutral classifications skipped for country leadership", 1);
+      } else if (!governmentType) {
         issue({ severity: "warning", phase: "countries", message: "Skipped country leadership because no usable government type was provided.", entityType: "country", entityId: country._id, entityName: country.name, continued: true });
       } else {
         try {

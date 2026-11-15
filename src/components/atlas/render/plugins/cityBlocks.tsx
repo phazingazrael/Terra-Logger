@@ -59,7 +59,9 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 						<div className="meta">
 							<Stack direction="column" spacing={1} sx={{ width: "100%" }}>
 								<Typography color="text.secondary" component="h3">
-									Country: {city?.country?.name}
+									{city.country?.id === 0
+										? "A neutral city"
+										: `Country: ${city.country?.name ?? ""}`}
 								</Typography>
 								<Typography color="text.secondary" component="h3">
 									Population: {city?.population}
@@ -67,7 +69,7 @@ export const cityBlockPlugins: Record<string, AtlasBlockPlugin> = {
 								<Typography color="text.secondary" component="h3">
 									Size: {city?.size}
 								</Typography>
-								{city?.capital && (
+								{city?.capital && city.country?.id !== 0 && (
 									<Typography
 										color="text.secondary"
 										component="h3"

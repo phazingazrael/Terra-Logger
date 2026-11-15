@@ -22,7 +22,7 @@ export const mutateCountries = async (
 	let customEmblems: Element | null = null;
 
 	for (const country of data.countries) {
-		if (country.name !== "Unknown" && country.removed !== true) {
+		if ((country.i === 0 || country.name !== "Unknown") && country.removed !== true) {
 			// define new country object
 			const newCountry: TLCountry = createEmptyCountry();
 
@@ -38,8 +38,8 @@ export const mutateCountries = async (
 			newCountry.name = country.name;
 			newCountry.nameFull = country.fullName;
 			newCountry.planetPlane = "";
-			newCountry.political.form = country.form;
-			newCountry.political.formName = country.formName;
+			newCountry.political.form = country.i === 0 ? "" : country.form;
+			newCountry.political.formName = country.i === 0 ? "" : country.formName;
 			newCountry.pronounced = newCountry.name;
 			newCountry.religions = [];
 			newCountry.terrain = "";
@@ -94,7 +94,7 @@ export const mutateCountries = async (
 				}
 			}
 			newCountry.political.diplomacy = [];
-			if (country.name === "Neutrals") {
+			if (country.i === 0) {
 				newCountry.political.diplomacy = [];
 			} else {
 				country.diplomacy.forEach((diplomacyStatus, index) => {
@@ -186,7 +186,7 @@ export const mutateCountries = async (
 			newCountry.population.total =
 				Math.round(ruralvalue + urbanvalue).toLocaleString("en-US") || "";
 
-			newCountry.tags.push({
+			if (country.i !== 0) newCountry.tags.push({
 				_id: "0192be16-c07d-74ab-966e-5a5a5f43c2ff",
 				Default: true,
 				Description:
@@ -194,7 +194,7 @@ export const mutateCountries = async (
 				Name: "Country",
 				Type: "Locations",
 			});
-			newCountry.type = country.type;
+			newCountry.type = country.i === 0 ? "Neutral group" : country.type;
 
 			newCountry.content = countryAdapter.createDefaultContent(newCountry);
 

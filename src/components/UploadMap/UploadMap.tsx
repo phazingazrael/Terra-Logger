@@ -215,7 +215,7 @@ function UploadMap({
 		if (existingId === null || !toast.isActive(existingId)) {
 			uploadToastIdRef.current = toast(message, {
 				type,
-				autoClose: 30000,
+				autoClose: 10000,
 			});
 			return;
 		}
@@ -400,7 +400,7 @@ function UploadMap({
 			importMode.kind === "update"
 				? "Map update complete. The map is ready."
 				: "Map upload complete. The map is ready.",
-			diagnostics.issues.length ? "warning" : "success",
+			"success",
 		);
 	}
 

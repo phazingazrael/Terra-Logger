@@ -220,7 +220,8 @@ export function aggregateEconomyTrade(
     // market sales tax. This resolves current party ownership, not goods origin
     // or ownership when a historical deal was made.
     const id = city.country.id;
-    if (id === 0) return unresolved("unaffiliated-party", id);
+    // Zero is a valid unaffiliated classification, not a shared trade owner.
+    if (id === 0) return 0;
     if (!countryIds.has(id)) return unresolved("missing-country", id);
     return id;
   }
@@ -267,11 +268,18 @@ export function aggregateEconomyTrade(
       continue;
     }
     if (seller === buyer) continue;
-    const sellerTotals = countryTotals.get(seller);
-    const buyerTotals = countryTotals.get(buyer);
-    if (!sellerTotals || !buyerTotals) throw new Error(`Missing country trade totals for deal ${deal.id}.`);
-    addTrade(sellerTotals.exports, deal);
-    addTrade(buyerTotals.imports, deal);
+    // City totals above retain neutral-to-neutral trade. Only affiliated
+    // parties contribute to country totals; never pool neutral City trade.
+    if (seller !== 0) {
+      const sellerTotals = countryTotals.get(seller);
+      if (!sellerTotals) throw new Error(`Missing seller country trade totals for deal ${deal.id}.`);
+      addTrade(sellerTotals.exports, deal);
+    }
+    if (buyer !== 0) {
+      const buyerTotals = countryTotals.get(buyer);
+      if (!buyerTotals) throw new Error(`Missing buyer country trade totals for deal ${deal.id}.`);
+      addTrade(buyerTotals.imports, deal);
+    }
   }
 
   for (const totals of [...cityTotals.values(), ...countryTotals.values()]) {

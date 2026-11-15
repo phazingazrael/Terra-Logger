@@ -12,10 +12,10 @@ import {
 } from "../../core/richText";
 import { formatValue, getEntityValue } from "../pluginUtils";
 import {
-  formatTradeEntry,
-  isEconomyTradePath,
-  normalizeTradeEntries,
-  resolveTradeGood,
+	formatTradeEntry,
+	isEconomyTradePath,
+	normalizeTradeEntries,
+	resolveTradeGood,
 } from "../../../Util/economy";
 import {
 	Box,
@@ -166,11 +166,16 @@ function resolveEntitySplitListGroup(
 	}
 
 	const sourceValue = getEntityValue(context, path);
-	const childrenValue = isEconomyTradePath(path) &&
+	const childrenValue =
+		isEconomyTradePath(path) &&
 		(context.sourceType === "city" || context.sourceType === "country")
-		? normalizeTradeEntries(sourceValue).map((entry) =>
-			formatTradeEntry(entry, resolveTradeGood(entry, context.economy?.goods)))
-		: sourceValue;
+			? normalizeTradeEntries(sourceValue).map((entry) =>
+					formatTradeEntry(
+						entry,
+						resolveTradeGood(entry, context.economy?.goods),
+					),
+				)
+			: sourceValue;
 
 	const name =
 		typeof group.label === "string"
@@ -253,8 +258,11 @@ function resolveDetailsRowValue(
 		return resolver(context, isRecord(detail.args) ? detail.args : undefined);
 	}
 
-	if ((detail.valueMode === undefined || detail.valueMode === "static") &&
-		detail.value === undefined && typeof detail.fallbackResolver === "string") {
+	if (
+		(detail.valueMode === undefined || detail.valueMode === "static") &&
+		detail.value === undefined &&
+		typeof detail.fallbackResolver === "string"
+	) {
 		return detailsRowResolvers[detail.fallbackResolver]?.(context);
 	}
 
@@ -309,8 +317,10 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	economySummary: {
 		type: "economySummary",
 		label: "Economy Summary",
-		Render: ({ context }) => context.section
-			? <EconomySummary context={context} section={context.section} /> : null,
+		Render: ({ context }) =>
+			context.section ? (
+				<EconomySummary context={context} section={context.section} />
+			) : null,
 	},
 	heading: {
 		type: "heading",
@@ -469,9 +479,33 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 								<Typography component="span" className="detail-label">
 									{label as string}:
 								</Typography>
-								<span className="detail-value" style={context.sourceType === "country" &&
-									(detail.fallbackResolver === "geography.climate" || detail.fallbackResolver === "geography.terrain")
-									? { whiteSpace: "pre-line" } : undefined}>{renderedValue}</span>
+								<span
+									className="detail-value"
+									style={{ whiteSpace: "pre-line" }}
+								>
+									{context.sourceType === "country" &&
+									detail.value === undefined &&
+									(detail.fallbackResolver === "geography.climate" ||
+										detail.fallbackResolver === "geography.terrain")
+										? String(renderedValue)
+												.split("\n")
+												.map((line) => {
+													const separator = line.indexOf(":");
+													return (
+														<span key={line} style={{ display: "block" }}>
+															{separator >= 0 ? (
+																<>
+																	<strong>{line.slice(0, separator)}</strong>
+																	{line.slice(separator)}
+																</>
+															) : (
+																line
+															)}
+														</span>
+													);
+												})
+										: renderedValue}
+								</span>
 							</div>
 						);
 					})}
@@ -518,8 +552,11 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 		type: "entityChipList",
 		label: "Entity Chip List",
 		shouldRender: ({ block, context }) => {
-			if (context.sourceType === "npc" &&
-				(block.binding?.entityPath === "groups" || block.binding?.entityPath === "tags")) {
+			if (
+				context.sourceType === "npc" &&
+				(block.binding?.entityPath === "groups" ||
+					block.binding?.entityPath === "tags")
+			) {
 				return true;
 			}
 
@@ -662,7 +699,8 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 	largeTags: {
 		type: "largeTags",
 		label: "Large Tags",
-		shouldRender: ({ context }) => "tags" in context.entity && context.entity.tags.length > 0,
+		shouldRender: ({ context }) =>
+			"tags" in context.entity && context.entity.tags.length > 0,
 		Render: ({ context }) => {
 			const Tags = "tags" in context.entity ? context.entity.tags : [];
 			const theme = useTheme();

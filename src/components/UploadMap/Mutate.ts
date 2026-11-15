@@ -191,8 +191,8 @@ const mutateData = async (
 			if (tempCountry) {
 				city.country = {
 					_id: tempCountry._id,
-					govForm: tempCountry.political.form,
-					govName: tempCountry.political.formName,
+					govForm: tempCountry.id === 0 ? "" : tempCountry.political.form,
+					govName: tempCountry.id === 0 ? "" : tempCountry.political.formName,
 					id: tempCountry.id,
 					name: tempCountry.name,
 					nameFull: tempCountry.nameFull,

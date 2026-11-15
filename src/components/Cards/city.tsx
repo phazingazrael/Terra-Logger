@@ -82,7 +82,10 @@ function CityCard(props: Readonly<TLCity>) {
 
 				{/* City Detail Chips */}
 				<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-					{city.capital && city.capital !== undefined ? (
+					{city.country?.id === 0 ? (
+						<Chip label="A neutral city" size="small" />
+					) : null}
+					{city.capital && city.country?.id !== 0 ? (
 						<Chip
 							label={`Capital City of ${city.country.name}`}
 							size="small"
