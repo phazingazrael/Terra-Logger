@@ -72,7 +72,12 @@ export function restoreSvgFonts(
       }
     }
     if (font.variant !== undefined) {
-      if (font.variant === "normal" || font.variant === "small-caps") {
+      // AFMG stores the font-face font-style descriptor under "variant".
+      // https://github.com/Azgaar/Fantasy-Map-Generator/blob/bf32ac7230654361eedfc25985b4ecc3473889b1/src/services/fonts.ts
+      if (font.variant === "normal" || font.variant === "italic" || font.variant === "oblique") {
+        declarations.push(`font-style:${font.variant}`);
+      } else if (font.variant === "small-caps") {
+        // Retain support for definitions accepted by the previous importer.
         declarations.push(`font-variant:${font.variant}`);
       } else {
         issues.add(`Saved font "${font.family}" has an unsupported variant.`);

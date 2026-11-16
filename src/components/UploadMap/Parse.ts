@@ -316,6 +316,9 @@ export const parseLoadedData = (data: string[]) => {
     // - defs-compass-rose
     // - gridPatterns
     // - defs-hatching
+    // Includes AFMG 1.153 Illustrated relief/settlement and Harbor symbols:
+    // https://github.com/Azgaar/Fantasy-Map-Generator/blob/bf32ac7230654361eedfc25985b4ecc3473889b1/src/index.html
+    // Existing definitions win, including custom artwork saved with the map.
     ensureDefsHasBatch(svgElement as unknown as SVGSVGElement, svgDefs);
 
     renderingIssues.push(...restoreSvgStyles(

@@ -32,8 +32,19 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.10",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.10",
-  "commitCount": 100,
+  "commitCount": 101,
   "majorChanges": [
+    {
+      "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
+      "shortHash": "8a18fab",
+      "date": "2026-11-15T16:55:50-07:00",
+      "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.152.1 map settings and entity notes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
+    },
     {
       "hash": "2db1991883eab981c1028dd02911193c0f69e256",
       "shortHash": "2db1991",
@@ -905,15 +916,15 @@ export const releaseChanges: ReleaseChanges = {
     }
   ],
   "highlightedChange": {
-    "hash": "2db1991883eab981c1028dd02911193c0f69e256",
-    "shortHash": "2db1991",
-    "date": "2026-11-15T13:25:20-07:00",
-    "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
+    "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
+    "shortHash": "8a18fab",
+    "date": "2026-11-15T16:55:50-07:00",
+    "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
     "type": "feat",
-    "scope": "notes",
-    "details": "✨ import, edit, and export Journey and route notes",
+    "scope": "afmg",
+    "details": "✨ support 1.152.1 map settings and entity notes",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
   },
   "typeOptions": [
     "chore",
@@ -952,6 +963,17 @@ export const releaseChanges: ReleaseChanges = {
     "views"
   ],
   "commits": [
+    {
+      "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
+      "shortHash": "8a18fab",
+      "date": "2026-11-15T16:55:50-07:00",
+      "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ support 1.152.1 map settings and entity notes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
+    },
     {
       "hash": "2db1991883eab981c1028dd02911193c0f69e256",
       "shortHash": "2db1991",
@@ -2053,5 +2075,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-15T23:40:44.329Z"
+  "generatedAt": "2026-11-16T00:10:15.104Z"
 };
