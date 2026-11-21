@@ -91,7 +91,11 @@ g#coordinates,
 g#cults,
 g#emblems,
 g#goods,
+g#goodsBurgs,
+g#goodsCells,
+g#goodsIcons,
 g#gridOverlay,
+g#journeys,
 g#markets,
 g#population,
 g#prec,
@@ -107,11 +111,10 @@ g#texture,
 g#trails,
 g#vignette,
 g#zones,
-g#journeys,
-[id^="stateLabel"],
 [id^="burgLabel"],
+[id^="label"],
 [id^="marker"],
-[id^="label"] {
+[id^="stateLabel"] {
   display: none;
 }
 

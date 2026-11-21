@@ -32,8 +32,19 @@ export const releaseChanges: ReleaseChanges = {
   "previousTag": "1.0.0",
   "currentTag": "1.0.10",
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.0...1.0.10",
-  "commitCount": 101,
+  "commitCount": 102,
   "majorChanges": [
+    {
+      "hash": "d13dc88836a823e337d8f9be78d07eb980cdcab9",
+      "shortHash": "d13dc88",
+      "date": "2026-11-15T17:20:34-07:00",
+      "subject": "feat(afmg): ✨ restore 1.153 illustrated symbols and italic fonts",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ restore 1.153 illustrated symbols and italic fonts",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9"
+    },
     {
       "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
       "shortHash": "8a18fab",
@@ -916,15 +927,15 @@ export const releaseChanges: ReleaseChanges = {
     }
   ],
   "highlightedChange": {
-    "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
-    "shortHash": "8a18fab",
-    "date": "2026-11-15T16:55:50-07:00",
-    "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
+    "hash": "d13dc88836a823e337d8f9be78d07eb980cdcab9",
+    "shortHash": "d13dc88",
+    "date": "2026-11-15T17:20:34-07:00",
+    "subject": "feat(afmg): ✨ restore 1.153 illustrated symbols and italic fonts",
     "type": "feat",
     "scope": "afmg",
-    "details": "✨ support 1.152.1 map settings and entity notes",
+    "details": "✨ restore 1.153 illustrated symbols and italic fonts",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9"
   },
   "typeOptions": [
     "chore",
@@ -963,6 +974,17 @@ export const releaseChanges: ReleaseChanges = {
     "views"
   ],
   "commits": [
+    {
+      "hash": "d13dc88836a823e337d8f9be78d07eb980cdcab9",
+      "shortHash": "d13dc88",
+      "date": "2026-11-15T17:20:34-07:00",
+      "subject": "feat(afmg): ✨ restore 1.153 illustrated symbols and italic fonts",
+      "type": "feat",
+      "scope": "afmg",
+      "details": "✨ restore 1.153 illustrated symbols and italic fonts",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9"
+    },
     {
       "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
       "shortHash": "8a18fab",
@@ -2075,5 +2097,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/1c73ad00985638ca9e3b8824b9b2c32fbf3cd3b9"
     }
   ],
-  "generatedAt": "2026-11-16T00:10:15.104Z"
+  "generatedAt": "2026-11-21T16:49:10.410Z"
 };
