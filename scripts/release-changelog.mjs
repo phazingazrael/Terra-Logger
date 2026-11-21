@@ -3,98 +3,104 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const args = parseArgs(process.argv.slice(2));
+// Importing the shared release helpers must not run the changelog command.
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
 
-const changelogPath = path.resolve(args.file ?? "CHANGELOG.md");
-const packageJsonPath = path.resolve("package.json");
+function main() {
+	const args = parseArgs(process.argv.slice(2));
 
-const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-const version = String(packageJson.version ?? "").trim();
+	const changelogPath = path.resolve(args.file ?? "CHANGELOG.md");
+	const packageJsonPath = path.resolve("package.json");
 
-if (!version) {
-	fail("package.json is missing a valid version.");
-}
+	const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+	const version = String(packageJson.version ?? "").trim();
 
-const releaseTag = args.tagName ?? version;
-const remoteName = args.remote ?? "origin";
-const toRef = args.to ?? "HEAD";
-const repoUrl = args.repo ?? getGithubRepoUrl(remoteName);
-
-if (!repoUrl) {
-	fail(`Could not determine GitHub repo URL from remote "${remoteName}".`);
-}
-
-const previousTag = args.from ?? findPreviousReleaseTag(releaseTag, toRef);
-
-if (!previousTag) {
-	fail(
-		`Could not find a previous release tag. Pass one explicitly: --from <tag>`,
-	);
-}
-
-const commits = getCommits(previousTag, toRef);
-
-if (commits.length === 0) {
-	fail(`No commits found in range ${previousTag}..${toRef}.`);
-}
-
-const section = renderReleaseSection({
-	version,
-	releaseTag,
-	previousTag,
-	repoUrl,
-	commits,
-	releaseDate: new Date(),
-});
-
-const currentChangelog = existsSync(changelogPath)
-	? readFileSync(changelogPath, "utf8")
-	: "";
-
-const latestSummary = renderLatestSummary({
-	commits,
-	repoUrl,
-	majorLimit: Number.parseInt(String(args.majorLimit ?? "10"), 10),
-});
-
-const nextChangelog = upsertReleaseSection({
-	changelog: currentChangelog,
-	version,
-	section,
-	latestSummary,
-});
-
-if (args.dryRun) {
-	console.log(section);
-	process.exit(0);
-}
-
-writeFileSync(changelogPath, nextChangelog, "utf8");
-
-console.log(`Updated ${path.relative(process.cwd(), changelogPath)}`);
-console.log(`Release: ${version}`);
-console.log(`Range: ${previousTag}..${toRef}`);
-console.log(`Commits: ${commits.length}`);
-
-if (args.commit) {
-	commitChangelog({
-		changelogPath,
-		version,
-		includeVersionFiles: args.includeVersionFiles,
-		noVerify: args.noVerify,
-	});
-
-	if (args.tag) {
-		createReleaseTag(releaseTag, version);
+	if (!version) {
+		fail("package.json is missing a valid version.");
 	}
 
-	if (args.push) {
-		pushRelease({
-			remoteName,
-			releaseTag,
-			pushTag: args.tag,
+	const releaseTag = args.tagName ?? version;
+	const remoteName = args.remote ?? "origin";
+	const tags = getReleaseTags(args.to ?? "HEAD");
+	const currentTag = tags.find(name => compareReleaseVersions(name, version) === 0);
+	const toRef = args.to ?? currentTag ?? "HEAD";
+	const repoUrl = args.repo ?? getGithubRepoUrl(remoteName);
+
+	if (!repoUrl) {
+		fail(`Could not determine GitHub repo URL from remote "${remoteName}".`);
+	}
+
+	const previousTag = args.from ?? findPreviousReleaseTag(version, toRef);
+
+	if (!previousTag) {
+		fail(
+			`Could not find a previous release tag. Pass one explicitly: --from <tag>`,
+		);
+	}
+
+	const commits = getCommits(previousTag, toRef);
+
+	const section = renderReleaseSection({
+		version,
+		releaseTag: currentTag ?? (args.tag ? releaseTag : toRef),
+		previousTag,
+		repoUrl,
+		commits,
+		releaseDate: currentTag ? new Date(git(["log", "-1", "--format=%cs", toRef]).trim() + "T12:00:00Z") : args.commit && args.tag ? new Date() : null,
+	});
+
+	const currentChangelog = existsSync(changelogPath)
+		? readFileSync(changelogPath, "utf8")
+		: "";
+
+	const latestSummary = renderLatestSummary({
+		commits,
+		repoUrl,
+		majorLimit: Number.parseInt(String(args.majorLimit ?? "10"), 10),
+	});
+
+	const nextChangelog = upsertReleaseSection({
+		changelog: args.rebuild
+			? rebuildReleaseSections(getReleaseTags(toRef).filter(name => compareReleaseVersions(name, version) <= 0), repoUrl).join("\n")
+			: currentChangelog,
+		version,
+		section,
+		latestSummary,
+	});
+
+	if (args.dryRun) {
+		console.log(nextChangelog);
+		process.exit(0);
+	}
+
+	writeFileSync(changelogPath, nextChangelog, "utf8");
+
+	console.log(`Updated ${path.relative(process.cwd(), changelogPath)}`);
+	console.log(`Release: ${version}`);
+	console.log(`Range: ${previousTag}..${toRef}`);
+	console.log(`Commits: ${commits.length}`);
+
+	if (args.commit) {
+		commitChangelog({
+			changelogPath,
+			version,
+			includeVersionFiles: args.includeVersionFiles,
+			noVerify: args.noVerify,
 		});
+
+		if (args.tag) {
+			createReleaseTag(releaseTag, version);
+		}
+
+		if (args.push) {
+			pushRelease({
+				remoteName,
+				releaseTag,
+				pushTag: args.tag,
+			});
+		}
 	}
 }
 
@@ -104,6 +110,7 @@ function parseArgs(argv) {
 		tag: false,
 		push: false,
 		dryRun: false,
+		rebuild: false,
 		includeVersionFiles: false,
 		noVerify: false,
 	};
@@ -148,6 +155,10 @@ function parseArgs(argv) {
 				parsed.push = true;
 				break;
 
+			case "--rebuild":
+				parsed.rebuild = true;
+				break;
+
 			case "--dry-run":
 				parsed.dryRun = true;
 				break;
@@ -185,7 +196,7 @@ function requireValue(argv, index, flagName) {
 function getCommits(fromTag, toRef) {
 	const raw = git([
 		"log",
-		`${fromTag}..${toRef}`,
+		fromTag ? `${fromTag}..${toRef}` : toRef,
 		"--date=iso-strict",
 		"--pretty=format:%H%x1f%h%x1f%ad%x1f%s",
 	]);
@@ -203,6 +214,7 @@ function getCommits(fromTag, toRef) {
 				hash,
 				shortHash,
 				date: new Date(date),
+				dateKey: date.slice(0, 10),
 				subject,
 			};
 		})
@@ -221,14 +233,16 @@ function renderReleaseSection({
 	commits,
 	releaseDate,
 }) {
-	const compareUrl = `${repoUrl}/compare/${encodeTag(previousTag)}...${encodeTag(releaseTag)}`;
+	const compareUrl = previousTag
+		? `${repoUrl}/compare/${encodeTag(previousTag)}...${encodeTag(releaseTag)}`
+		: `${repoUrl}/commits/${encodeTag(releaseTag)}`;
 
 	const lines = [
 		`## ${version}`,
 		"",
 		`[Compare changes](${compareUrl})`,
 		"",
-		formatReleaseDate(releaseDate),
+		releaseDate ? formatReleaseDate(releaseDate) : "Unreleased",
 		"",
 	];
 
@@ -287,8 +301,8 @@ function groupCommitsByDate(commits) {
 	const groups = new Map();
 
 	for (const commit of commits) {
-		const key = toDateKey(commit.date);
-		const label = formatCommitGroupDate(commit.date);
+		const key = commit.dateKey;
+		const label = formatCommitGroupDate(new Date(key + "T12:00:00Z"));
 
 		if (!groups.has(key)) {
 			groups.set(key, {
@@ -314,66 +328,87 @@ function renderCommitLine(repoUrl, commit) {
 }
 
 function upsertReleaseSection({ changelog, version, section, latestSummary }) {
-	const bodyWithoutIntro = stripChangelogIntro(changelog);
-	const marker = `## ${version}`;
-	const existingIndex = bodyWithoutIntro.indexOf(marker);
-
-	let nextBody = "";
-
-	if (existingIndex >= 0) {
-		const nextReleaseIndex = bodyWithoutIntro.indexOf(
-			"\n## ",
-			existingIndex + marker.length,
-		);
-
-		const before = bodyWithoutIntro.slice(0, existingIndex).trimEnd();
-		const after =
-			nextReleaseIndex >= 0
-				? bodyWithoutIntro.slice(nextReleaseIndex + 1).trimStart()
-				: "";
-
-		nextBody = joinDocumentParts([before, section.trimEnd(), after]);
-	} else {
-		nextBody = joinDocumentParts([
-			section.trimEnd(),
-			bodyWithoutIntro.trimStart(),
-		]);
-	}
-
-	return joinDocumentParts([
-		"# Terra-Logger Changelog",
-		latestSummary.trimEnd(),
-		nextBody.trimEnd(),
-	]);
-}
-
-function stripChangelogIntro(changelog) {
-	const firstSectionIndex = changelog.search(/^## /m);
-
-	if (firstSectionIndex < 0) {
-		return "";
-	}
-
-	return changelog.slice(firstSectionIndex).trimStart();
+  const sections = releaseSections(changelog).filter(entry => compareReleaseVersions(entry.version, version) !== 0);
+  sections.push({ version, body: section.trimEnd() });
+  sections.sort((a, b) => compareReleaseVersions(b.version, a.version));
+  return joinDocumentParts([
+    "# Terra-Logger Changelog", latestSummary.trimEnd(), ...sections.map(entry => entry.body),
+  ]);
 }
 
 function joinDocumentParts(parts) {
 	return `${parts.filter((part) => part.trim()).join("\n\n")}\n`;
 }
 
-function findPreviousReleaseTag(currentTag, toRef) {
-	const raw = git(["tag", "--merged", toRef, "--sort=-creatordate"], {
-		allowEmpty: true,
-	});
 
-	const tags = raw
-		.split("\n")
-		.map((tag) => tag.trim())
-		.filter(Boolean)
-		.filter((tag) => tag !== currentTag)
-		.filter((tag) => tag !== `v${currentTag}`);
+// Only version tags are release boundaries; annotated-tag creation dates are not release order.
+export function parseReleaseVersion(value) {
+  const match = /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:[-_]([0-9A-Za-z.-]+))?$/.exec(value);
+  if (!match) return null;
+  return { numbers: match.slice(1, 4).map(Number), prerelease: match[4]?.toLowerCase() ?? null };
+}
 
-	return tags[0] ?? null;
+export function compareReleaseVersions(left, right) {
+  const a = parseReleaseVersion(left);
+  const b = parseReleaseVersion(right);
+  if (!a || !b) throw new Error("Invalid release version.");
+  for (let index = 0; index < 3; index++) {
+    if (a.numbers[index] !== b.numbers[index]) return a.numbers[index] - b.numbers[index];
+  }
+  if (a.prerelease === b.prerelease) return 0;
+  if (a.prerelease === null) return 1;
+  if (b.prerelease === null) return -1;
+  const leftParts = a.prerelease.split(".");
+  const rightParts = b.prerelease.split(".");
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index++) {
+    const x = leftParts[index];
+    const y = rightParts[index];
+    if (x === y) continue;
+    if (x === undefined) return -1;
+    if (y === undefined) return 1;
+    const numericX = /^\d+$/.test(x);
+    const numericY = /^\d+$/.test(y);
+    if (numericX && numericY) {
+      if (Number(x) !== Number(y)) return Number(x) - Number(y);
+      continue;
+    }
+    if (numericX !== numericY) return numericX ? -1 : 1;
+    return x < y ? -1 : 1;
+  }
+  return 0;
+}
+
+export function getReleaseTags(toRef) {
+  const raw = git(["tag", "--merged", toRef]);
+  const tags = raw.split("\n").map(name => name.trim()).filter(name => parseReleaseVersion(name));
+  tags.sort((a, b) => compareReleaseVersions(b, a) || Number(a.startsWith("v")) - Number(b.startsWith("v")));
+  // Prefer an unprefixed tag when both spellings identify the same release.
+  return tags.filter((name, index) => !index || compareReleaseVersions(name, tags[index - 1]) !== 0);
+}
+
+export function findPreviousReleaseTag(version, toRef) {
+  return getReleaseTags(toRef).find(name => compareReleaseVersions(name, version) < 0) ?? null;
+}
+
+function releaseSections(changelog) {
+  const headings = [...changelog.matchAll(/^## (v?\d+\.\d+\.\d+(?:[-_][0-9A-Za-z.-]+)?)\s*$/gm)];
+  return headings.map((heading, index) => ({
+    version: heading[1],
+    body: changelog.slice(heading.index, headings[index + 1]?.index)
+      .replace(/^## Major Changes since last release\b[\s\S]*$/m, "").trim(),
+  }));
+}
+
+function rebuildReleaseSections(tags, repoUrl) {
+  return tags.map(name => {
+    const previousTag = findPreviousReleaseTag(name, name);
+    const date = git(["log", "-1", "--format=%cs", name]).trim();
+    return renderReleaseSection({
+      version: name.replace(/^v/, ""), releaseTag: name, previousTag, repoUrl,
+      commits: getCommits(previousTag, name),
+      releaseDate: new Date(date + "T12:00:00Z"),
+    });
+  });
 }
 
 function getGithubRepoUrl(remoteName) {
@@ -471,6 +506,7 @@ function commandSucceeds(args) {
 
 function formatReleaseDate(date) {
 	return new Intl.DateTimeFormat("en-GB", {
+		timeZone: "UTC",
 		day: "numeric",
 		month: "long",
 		year: "numeric",
@@ -479,14 +515,11 @@ function formatReleaseDate(date) {
 
 function formatCommitGroupDate(date) {
 	return new Intl.DateTimeFormat("en-US", {
+		timeZone: "UTC",
 		month: "long",
 		day: "numeric",
 		year: "numeric",
 	}).format(date);
-}
-
-function toDateKey(date) {
-	return date.toISOString().slice(0, 10);
 }
 
 function escapeMarkdownText(value) {

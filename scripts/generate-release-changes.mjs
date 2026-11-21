@@ -3,6 +3,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { compareReleaseVersions, findPreviousReleaseTag, getReleaseTags } from "./release-changelog.mjs";
 
 const EMOJI_SHORTCODES = {
   ":art:": "🎨",
@@ -124,13 +125,12 @@ if (!repoUrl) {
   fail(`Could not determine GitHub repository URL from remote "${remoteName}".`);
 }
 
-const tags = getMergedTags(toRef);
-const currentTag = findCurrentVersionTag(tags, version);
+const tags = getReleaseTags(toRef);
+const currentTag = tags.find(name => compareReleaseVersions(name, version) === 0) ?? null;
+const releaseToRef = currentTag ?? toRef;
+const previousTag = findPreviousReleaseTag(version, releaseToRef);
 
-const releaseToRef = currentTag?.name ?? toRef;
-const previousTag = findPreviousTag(tags, currentTag, version);
-
-const commits = getCommits(previousTag?.name ?? null, releaseToRef);
+const commits = getCommits(previousTag, releaseToRef);
 const parsedCommits = commits.map((commit) => {
   const parsedSubject = parseCommitSubject(commit.rawSubject);
 
@@ -180,10 +180,10 @@ const scopeOptions = [
 
 const releaseChanges = {
   version,
-  previousTag: previousTag?.name ?? null,
-  currentTag: currentTag?.name ?? version,
+  previousTag,
+  currentTag,
   compareUrl: previousTag
-    ? `${repoUrl}/compare/${encodeURIComponent(previousTag.name)}...${encodeURIComponent(currentTag?.name ?? version)}`
+    ? `${repoUrl}/compare/${encodeURIComponent(previousTag)}...${encodeURIComponent(releaseToRef)}`
     : null,
   commitCount: parsedCommits.length,
   majorChanges,
@@ -200,7 +200,7 @@ writeFileSync(outputPath, renderGeneratedFile(releaseChanges), "utf8");
 
 console.log(`Generated ${path.relative(process.cwd(), outputPath)}`);
 console.log(`Version: ${version}`);
-console.log(`Previous tag: ${previousTag?.name ?? "none"}`);
+console.log(`Previous tag: ${previousTag ?? "none"}`);
 console.log(`Commits: ${parsedCommits.length}`);
 
 function parseArgs(argv) {
@@ -242,54 +242,6 @@ function requireValue(argv, index, flagName) {
   }
 
   return value;
-}
-
-function getMergedTags(toRef) {
-  const raw = git(
-    [
-      "for-each-ref",
-      "--merged",
-      toRef,
-      "--sort=-creatordate",
-      "--format=%(refname:short)%09%(creatordate:iso8601-strict)",
-      "refs/tags",
-    ],
-    { allowEmpty: true },
-  );
-
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [name, dateRaw] = line.split("\t");
-
-      return {
-        name,
-        date: dateRaw ? new Date(dateRaw) : new Date(0),
-      };
-    })
-    .filter((tag) => Number.isFinite(tag.date.getTime()));
-}
-
-function findCurrentVersionTag(tags, version) {
-  return (
-    tags.find((tag) => tag.name === version) ??
-    tags.find((tag) => tag.name === `v${version}`) ??
-    null
-  );
-}
-
-function findPreviousTag(tags, currentTag, version) {
-  if (currentTag) {
-    const currentIndex = tags.findIndex((tag) => tag.name === currentTag.name);
-    return tags[currentIndex + 1] ?? null;
-  }
-
-  return (
-    tags.find((tag) => tag.name !== version && tag.name !== `v${version}`) ??
-    null
-  );
 }
 
 function getCommits(previousRef, currentRef) {
@@ -419,7 +371,7 @@ function renderGeneratedFile(releaseChanges) {
     "export type ReleaseChanges = {",
     "\tversion: string;",
     "\tpreviousTag: string | null;",
-    "\tcurrentTag: string;",
+    "\tcurrentTag: string | null;",
     "\tcompareUrl: string | null;",
     "\tcommitCount: number;",
     "\tmajorChanges: ReleaseChangeCommit[];",

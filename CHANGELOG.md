@@ -1,18 +1,40 @@
 # Terra-Logger Changelog
 
-There have been 95 commits since last release.
+There have been 9 commits since last release.
 
 ## Major Changes since last release
-- feat(diagnostics): :sparkles: report complete upload and export outcomes [`49a688b`](https://github.com/phazingazrael/Terra-Logger/commit/49a688be736180f2d54acc7c301572e17f2d1e8b)
-- feat(eras): :sparkles: persist Atlas eras and export linked timelines [`53ee74b`](https://github.com/phazingazrael/Terra-Logger/commit/53ee74b7aa4a2ae680d51ae2340c913a48b12257)
-- feat(afmg): :sparkles: support 1.140 maps and editable biome geography [`13edb26`](https://github.com/phazingazrael/Terra-Logger/commit/13edb268e17ad3060a3a70e9d8304954d502582a)
-- feat: :sparkles: Integrate AFMG Economy data and add Era Management [`630a319`](https://github.com/phazingazrael/Terra-Logger/commit/630a319ca71f94b033dab8d02003d845821fbc36)
-- fix(ui): :lipstick: adjust list spacing and hide duplicate tag labels [`cacbfe5`](https://github.com/phazingazrael/Terra-Logger/commit/cacbfe52f654533c15a387aa79170b575b5bce37)
-- fix(atlas): :adhesive_bandage: avoid rewriting rich text after editor updates [`6468868`](https://github.com/phazingazrael/Terra-Logger/commit/6468868ac5ff8411b1f889ca2f9a00eddfd26693)
-- fix(atlas): :adhesive_bandage: use populated matching-note description fields [`d2bde12`](https://github.com/phazingazrael/Terra-Logger/commit/d2bde129e1ab8636dff2d0fc811de4c45a322e2c)
-- fix(export): :adhesive_bandage: keep the BotI note fallback as a block array [`622a10d`](https://github.com/phazingazrael/Terra-Logger/commit/622a10de674a8dc7497a92e2e26ef2b954d169e1)
-- fix(export): :adhesive_bandage: preserve the SVG root when adding namespaces [`810bde1`](https://github.com/phazingazrael/Terra-Logger/commit/810bde18cf534f207d47ea76885c3bbd4b03631c)
-- fix(export): :adhesive_bandage: resolve NPC folders and portraits from final paths [`15d11dd`](https://github.com/phazingazrael/Terra-Logger/commit/15d11ddd85a849c52c69c49a710978ef86e1646a)
+- fix(changelog): correct release ranges and prepare 1.0.11 [`067f577`](https://github.com/phazingazrael/Terra-Logger/commit/067f577c9fce922a0568528cd4d32eb8f928dc19)
+- feat(afmg): ✨ support 1.154 map data, shared icons and heraldry [`24a5c66`](https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228)
+- feat(afmg): :sparkles: restore 1.153 illustrated symbols and italic fonts [`d13dc88`](https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9)
+- feat(afmg): :sparkles: support 1.152.1 map settings and entity notes [`8a18fab`](https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7)
+- feat(notes): :sparkles: import, edit, and export Journey and route notes [`2db1991`](https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256)
+- feat(afmg): :sparkles: support 1.149 and 1.150 map serialization [`86d501b`](https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078)
+- refactor(core): :recycle: consolidate importer utilities and Atlas helpers [`dead210`](https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377)
+- fix(deals): :bug: neutral countries now properly associate with trade deals and markets. [`ed59301`](https://github.com/phazingazrael/Terra-Logger/commit/ed59301f328a57c738b4ead10b3eeeb4c8ae66e8)
+
+## 1.0.11
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.10...1.0.11)
+
+21 November 2026
+
+November 21, 2026
+
+- fix(changelog): correct release ranges and prepare 1.0.11 [`067f577`](https://github.com/phazingazrael/Terra-Logger/commit/067f577c9fce922a0568528cd4d32eb8f928dc19)
+- chore(map): 🔧 update SVG visibility rules and rendering roadmap [`d2e8772`](https://github.com/phazingazrael/Terra-Logger/commit/d2e8772551192ffae04ac5204595d09fb49d409a)
+- feat(afmg): ✨ support 1.154 map data, shared icons and heraldry [`24a5c66`](https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228)
+
+November 15, 2026
+
+- feat(afmg): :sparkles: restore 1.153 illustrated symbols and italic fonts [`d13dc88`](https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9)
+- feat(afmg): :sparkles: support 1.152.1 map settings and entity notes [`8a18fab`](https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7)
+- feat(notes): :sparkles: import, edit, and export Journey and route notes [`2db1991`](https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256)
+- feat(afmg): :sparkles: support 1.149 and 1.150 map serialization [`86d501b`](https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078)
+- refactor(core): :recycle: consolidate importer utilities and Atlas helpers [`dead210`](https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377)
+
+November 14, 2026
+
+- fix(deals): :bug: neutral countries now properly associate with trade deals and markets. [`ed59301`](https://github.com/phazingazrael/Terra-Logger/commit/ed59301f328a57c738b4ead10b3eeeb4c8ae66e8)
 
 ## 1.0.10
 
@@ -569,6 +591,7 @@ October 11, 2025
 
 - docs: :memo: Update Changelog [`1f2edd4`](https://github.com/phazingazrael/Terra-Logger/commit/1f2edd47783737cb29b082db60ab39e57cef5796)
 - feat: :sparkles: 1.0 Beta Release [`61593ba`](https://github.com/phazingazrael/Terra-Logger/commit/61593ba72ba714ebacaf0e884a0a51761cc73c70)
+
 ## 1.0.0_Beta
 
 [Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/0.8.4...1.0.0_Beta)
@@ -607,6 +630,7 @@ October 6, 2025
 - Testing Template Location fix for export [`2bb8b93`](https://github.com/phazingazrael/Terra-Logger/commit/2bb8b931597d6b261ec2487eaad3fc76ca3d9cbf)
 - Add files via upload [`c813402`](https://github.com/phazingazrael/Terra-Logger/commit/c81340202565ff5fe4d2adcdd7ca53f722d61795)
 - refactor: :art: Update vault.zip source file [`bc934e0`](https://github.com/phazingazrael/Terra-Logger/commit/bc934e03500fa4a8de4edfda01193be3d034d265)
+
 ## 0.8.4
 
 [Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/0.8.3...0.8.4)
@@ -687,6 +711,7 @@ September 9, 2025
 - fix: :bug: Fix app settings fully resetting when reloading the page. [`3aaf57e`](https://github.com/phazingazrael/Terra-Logger/commit/3aaf57e3de376765194b4d1809f4610f3de773a6)
 - refactor: :pencil2: Changed wording in navigation to indicate maps in memory or not. [`c9393ef`](https://github.com/phazingazrael/Terra-Logger/commit/c9393ef7e47d72ca7ab9305fda3be07722e7c1c2)
 - fix: :recycle: Code Clean up and Dark theme fixes. [`0530a1e`](https://github.com/phazingazrael/Terra-Logger/commit/0530a1ed38c8e4290b137fda4ada4243e0cf8295)
+
 ## 0.8.3
 
 [Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/0.8.2...0.8.3)
@@ -708,6 +733,7 @@ September 7, 2025
 - refactor: :memo: Consolidate json data from parsing functions [`2542536`](https://github.com/phazingazrael/Terra-Logger/commit/254253620b32f520fe562cbbd6e60890d5eefddc)
 - refactor: :memo: Update Export Code to reflect changed afmg.css [`0ba7270`](https://github.com/phazingazrael/Terra-Logger/commit/0ba7270617f7736bbc4880a85523e8a8e4fe291c)
 - style: :memo: Include all fonts listed from AFMG options. [`56bd1cd`](https://github.com/phazingazrael/Terra-Logger/commit/56bd1cd4ed88a24368f2db10147178d5b41f4686)
+
 ## 0.8.2
 
 [Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/0.8.1...0.8.2)
@@ -734,6 +760,7 @@ September 2, 2025
 - Update CHANGELOG.md [`06096b1`](https://github.com/phazingazrael/Terra-Logger/commit/06096b1c8fc5469b07fb87af763d63d8258e7b88)
 - Update package.json [`9fcdbad`](https://github.com/phazingazrael/Terra-Logger/commit/9fcdbad7ef74de4c37e513ef36ed638317f311a7)
 - Update CHANGELOG.md [`e058e57`](https://github.com/phazingazrael/Terra-Logger/commit/e058e573dd6280c43546cc5469b666b71817b058)
+
 ## 0.8.1
 
 [Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/v...0.8.1)
