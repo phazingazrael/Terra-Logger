@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import iconIndex from "./iconLibrary.json";
 import type { MapInf, TLCustomIcon } from "../../definitions/TerraLogger";
 
 // Source artwork and resolution rules are pinned, not fetched at runtime.
@@ -12,18 +13,54 @@ const fallbackTypes = new Map<string, string>([
   ["mountSnow", "mount"], ["vulcan", "mount"], ["coniferSnow", "conifer"], ["cactus", "dune"], ["deadTree", "dune"],
 ]);
 const noCustomIcons: readonly TLCustomIcon[] = [];
-let catalogPromise: Promise<Map<string, string>> | undefined;
+const iconPacks = new Map<string, string>(Object.entries(iconIndex.icons));
+const packPromises = new Map<string, Promise<Record<string, string>>>();
+const packLoaders: Record<string, () => Promise<{ default: Record<string, string> }>> = {
+  "settlements-01": () => import("./iconPacks/settlements-01.json"),
+  "charges-01": () => import("./iconPacks/charges-01.json"),
+  "charges-02": () => import("./iconPacks/charges-02.json"),
+  "charges-03": () => import("./iconPacks/charges-03.json"),
+  "charges-04": () => import("./iconPacks/charges-04.json"),
+  "charges-05": () => import("./iconPacks/charges-05.json"),
+  "charges-06": () => import("./iconPacks/charges-06.json"),
+  "charges-07": () => import("./iconPacks/charges-07.json"),
+  "charges-08": () => import("./iconPacks/charges-08.json"),
+  "charges-09": () => import("./iconPacks/charges-09.json"),
+  "charges-10": () => import("./iconPacks/charges-10.json"),
+  "charges-11": () => import("./iconPacks/charges-11.json"),
+  "charges-12": () => import("./iconPacks/charges-12.json"),
+  "charges-13": () => import("./iconPacks/charges-13.json"),
+  "charges-14": () => import("./iconPacks/charges-14.json"),
+  "charges-15": () => import("./iconPacks/charges-15.json"),
+  "goods-01": () => import("./iconPacks/goods-01.json"),
+  "relief-01": () => import("./iconPacks/relief-01.json"),
+  "relief-02": () => import("./iconPacks/relief-02.json"),
+};
 const sharedImages = new Map<string, Promise<string>>();
 const customImages = new WeakMap<readonly TLCustomIcon[], Map<string, Promise<string>>>();
 
 export type IconArtwork = { id: string; svg?: string; image?: string };
 export type MapIconContext = { customIcons: readonly TLCustomIcon[]; reliefSet: string };
 
-function catalog(): Promise<Map<string, string>> {
-  catalogPromise ??= import("./iconLibrary.json").then(({ default: data }) => new Map(
-    Object.entries(data.files).map(([path, svg]) => [path.replace(/\.svg$/, "").replaceAll("/", "-"), svg]),
-  ));
-  return catalogPromise;
+// The index resolves aliases and relief fallbacks without loading artwork packs.
+function catalog(): Map<string, string> {
+  return iconPacks;
+}
+
+function loadIconSvg(id: string): Promise<string | undefined> {
+  const pack = iconPacks.get(id);
+  if (!pack) return Promise.resolve(undefined);
+  let pending = packPromises.get(pack);
+  if (!pending) {
+    const load = packLoaders[pack];
+    if (!load) return Promise.reject(new Error(`Missing icon pack: ${pack}`));
+    pending = load().then(({ default: artwork }) => artwork).catch((error: unknown) => {
+      packPromises.delete(pack);
+      throw error;
+    });
+    packPromises.set(pack, pending);
+  }
+  return pending.then((artwork) => artwork[id]);
 }
 
 function normalizeReference(value: string): string {
@@ -104,14 +141,14 @@ export async function getMapIconArtwork(
     const text = points.map((point) => `&#${point};`).join("");
     return { id, svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="100" text-anchor="middle" dominant-baseline="central" stroke="none">${text}</text></svg>` };
   }
-  const files = await catalog();
+  const files = catalog();
   if (id.startsWith("icon-")) {
     const name = id.slice(5);
     id = name === "anchor" || name === "harbor" ? `ports-${name}`
       : files.has(`burgs-${name}`) ? `burgs-${name}`
       : files.has(`burgs-atlas-${name}`) ? `burgs-atlas-${name}` : `burgs-watabou-${name}`;
   }
-  let svg = files.get(id);
+  let svg = await loadIconSvg(id);
   const relief = id.match(/^relief-(simple|colored|gray|illustrated|stickers)-(\w+)-(\d+)$/);
   if (!svg && relief) {
     const [, set, type, variant] = relief;
@@ -123,7 +160,7 @@ export async function getMapIconArtwork(
       const available = [...files.keys()].filter((key) => key.startsWith(prefix))
         .sort((left, right) => Number(left.slice(prefix.length)) - Number(right.slice(prefix.length)));
       if (available.length) {
-        svg = files.get(available[(Number(variant) - 1) % available.length]);
+        svg = await loadIconSvg(available[(Number(variant) - 1) % available.length]);
         break;
       }
       candidate = fallbackTypes.get(candidate);
@@ -280,7 +317,7 @@ export async function createMapIconSymbol(
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/generators/emblems-generator.ts
 export async function chargeIconReference(name: string): Promise<string> {
   const canonical = name === "eagleTwoHeards" ? "eagleTwoHeads" : name;
-  const files = await catalog();
+  const files = catalog();
   const charge = [...files.keys()].find((id) => id.startsWith("charges-") && id.endsWith(`-${canonical}`));
   if (charge) return charge;
   if (/^(?:glyph|custom|burgs|ports|goods|charges|relief)-[\w-]+$/.test(canonical)) return canonical;
