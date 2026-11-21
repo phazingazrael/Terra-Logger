@@ -287,6 +287,7 @@ export type TLCountry = {
     imports: TLTradeEntry[];
     production?: TLCountryProduction;
     treasury?: number;
+    tariffs?: TLTariffRule[];
     salesTax?: number;
     pollTax?: number;
   };
@@ -669,6 +670,12 @@ export type TLEconomyParty = {
   id: number;
 };
 
+export type TLTariffRule = {
+  countryIds: number[] | "all";
+  goodIds: number[] | "all";
+  rate: number | "embargo";
+};
+
 export type TLDeal = {
   id: number;
   seller: TLEconomyParty;
@@ -677,6 +684,7 @@ export type TLDeal = {
   units: number;
   price: number;
   tax?: number;
+  tariff?: number;
 };
 
 export type TLDealAttributionIssue = {

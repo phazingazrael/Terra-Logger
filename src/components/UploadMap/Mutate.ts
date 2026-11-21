@@ -10,6 +10,8 @@ import { mutateReligions } from "../Util/mutations/religions";
 
 import { ensureAtlasContentForEntity } from "../atlas/legacy/enrichAtlasContent";
 
+import type { Tag } from "../../definitions/Common";
+import { getImportedNoteKey } from "./utils/mergeMapEntities";
 import type { TLMapInfo } from "../../definitions/TerraLogger";
 import { generateNPCPopulation } from "../NPC/population/generatePopulation"
 import {
@@ -299,6 +301,7 @@ const mutateData = async (
 	// The active-map layout owns background SVG rendering. Import only stores it.
 
 	options.prepareEntities?.(tempMap);
+	applyImportedTags(tempMap, data, options.diagnostics);
 
 	// Refresh source geography after reimport merging, preserving authored content.
 	applyImportedGeography(tempMap, data, Pack);
@@ -351,5 +354,50 @@ const mutateData = async (
 
 	return tempMap;
 };
+
+// Merge by exact tag name: reimport adds source tags without removing authored tags.
+// IDs depend on the source name so the same imported tag is shared across entities.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/generators/tags.ts
+function applyImportedTags(map: TLMapInfo, data: MapInfo, diagnostics: MapUploadDiagnostics): void {
+  let added = 0;
+  const readTags = (value: unknown, label: string): string[] => {
+    if (value === undefined) return [];
+    if (!Array.isArray(value) || !value.every((tag) => typeof tag === "string" && tag.trim())) {
+      throw new Error(`Invalid AFMG tags for ${label}: expected nonempty text entries.`);
+    }
+    return value as string[];
+  };
+  const merge = (entity: { tags: Tag[] }, value: unknown, label: string) => {
+    const names = new Set(entity.tags.map((tag) => tag.Name));
+    for (const name of readTags(value, label)) {
+      if (names.has(name)) continue;
+      entity.tags.push({
+        _id: `afmg-tag:${encodeURIComponent(name)}`, Name: name, Type: "AFMG",
+        Default: false, Description: "Imported from AFMG.",
+      });
+      names.add(name);
+      added += 1;
+    }
+  };
+  const collections = [
+    [map.cities, data.cities], [map.countries, data.countries],
+    [map.cultures, data.cultures], [map.religions, data.religions],
+  ] as const;
+  for (const [entities, sources] of collections) {
+    const byId = new Map<number, { tags?: string[] }>(sources.map((source) => [source.i, source]));
+    for (const entity of entities) {
+      const id = "id" in entity ? entity.id : entity.i;
+      merge(entity, byId.get(Number(id))?.tags, `entity ${id}`);
+    }
+  }
+  const notes = new Map<string, string[]>();
+  for (const source of [...data.notes, ...(data.attachedNotes ?? [])]) {
+    if (source.tags === undefined) continue;
+    const key = getImportedNoteKey(source.id);
+    notes.set(key, [...(notes.get(key) ?? []), ...readTags(source.tags, `Note ${source.id}`)]);
+  }
+  for (const note of map.notes) merge(note, notes.get(getImportedNoteKey(note.id)), `Note ${note.id}`);
+  diagnostics.counts["Imported tag assignments added"] = added;
+}
 
 export default mutateData;

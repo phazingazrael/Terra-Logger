@@ -1,7 +1,7 @@
 // Adapted from the pinned AFMG style writer:
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/386e0f447bc9d3b945e40b0bb123179662734284/src/generators/styles.ts
 type StoredStyleNode = {
-  attrs?: Record<string, string | number | null>;
+  attrs?: Record<string, string | number | boolean | null>;
   options?: Record<string, unknown>;
   [key: string]: unknown;
 };
@@ -17,7 +17,7 @@ function validateNode(value: unknown, path: string): asserts value is StoredStyl
   for (const [key, child] of Object.entries(value)) {
     if (key === "attrs") {
       if (!isRecord(child) || !Object.values(child).every((attribute) =>
-        attribute === null || typeof attribute === "string" ||
+        attribute === null || typeof attribute === "string" || typeof attribute === "boolean" ||
         (typeof attribute === "number" && Number.isFinite(attribute)))) {
         throw new Error(`Invalid AFMG styles section (48): ${path}.attrs contains invalid attributes.`);
       }
@@ -57,7 +57,6 @@ export function restoreSvgStyles(
   svg: SVGSVGElement,
   styles: Record<string, StoredStyleNode> | undefined,
 ): string[] {
-  if (!styles) return [];
   const issues: string[] = [];
   const layers = Array.from(svg.querySelectorAll("[data-layer]"));
   // These renderer-owned elements do not carry data-group markers.
@@ -101,13 +100,50 @@ export function restoreSvgStyles(
     }
   };
 
-  for (const [layer, node] of Object.entries(styles)) {
+  for (const [layer, node] of Object.entries(styles ?? {})) {
     const target = layer === "map" ? svg
       : layers.find((element) => element.getAttribute("data-layer") === layer);
     if (target) write(target, node, layer);
     else {
       issues.push(`Saved SVG style layer "${layer}" has no matching element; its source data is retained.`);
     }
+  }
+  issues.push(...restoreHatchPatterns(svg));
+  return issues;
+}
+
+// Adapted from the pinned AFMG coloured-hatch restorer; keep all lookups map-local.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/renderers/hatches.ts
+function restoreHatchPatterns(svg: SVGSVGElement): string[] {
+  const issues: string[] = [];
+  const definitions = new Map(
+    Array.from(svg.querySelectorAll("[id]")).map((element) => [element.id, element]),
+  );
+  const fills = new Set<string>();
+  for (const element of svg.querySelectorAll<SVGElement>("[fill], [style]")) {
+    const attribute = element.getAttribute("fill");
+    if (attribute) fills.add(attribute);
+    if (element.style.fill) fills.add(element.style.fill);
+  }
+  for (const fill of fills) {
+    const match = /^url\(#(hatch\d+)(?:-([\da-f]{6}))?\)$/.exec(fill);
+    if (!match) continue;
+    const id = fill.slice(5, -1);
+    if (definitions.has(id)) continue;
+    const base = definitions.get(match[1]);
+    if (!base || base.localName !== "pattern" || !base.parentNode || !match[2]) {
+      issues.push(`Saved SVG hatch "${id}" could not be restored: its base pattern is missing.`);
+      continue;
+    }
+    const pattern = base.cloneNode(true) as SVGPatternElement;
+    pattern.id = id;
+    const color = `#${match[2]}`;
+    for (const element of pattern.querySelectorAll<SVGElement>("*")) {
+      if (element.style.stroke) element.style.stroke = color;
+      if (element.style.fill) element.style.fill = color;
+    }
+    base.parentNode.appendChild(pattern);
+    definitions.set(id, pattern);
   }
   return issues;
 }

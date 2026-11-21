@@ -35,6 +35,22 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
   }
 
   const source = parse(raw, "map settings");
+  // These fields are retained below in the complete source settings object.
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/generators/lattice.ts
+  if (source.viewOnly !== undefined && typeof source.viewOnly !== "boolean") {
+    throw new Error("Invalid AFMG settings section (1): viewOnly must be boolean.");
+  }
+  if (source.graph !== undefined) {
+    const graph = record(source.graph, "graph");
+    if (graph.sampling !== undefined && (typeof graph.sampling !== "string" ||
+      !["square", "hexPointy", "hexFlat", "diamond", "triangle"].includes(graph.sampling))) {
+      throw new Error("Invalid AFMG settings section (1): unsupported graph sampling.");
+    }
+    if (graph.jitter !== undefined && (typeof graph.jitter !== "number" ||
+      !Number.isFinite(graph.jitter) || graph.jitter < 0 || graph.jitter > 0.9)) {
+      throw new Error("Invalid AFMG settings section (1): graph jitter must be between 0 and 0.9.");
+    }
+  }
   const customIcons = source.customIcons === undefined ? undefined : readCustomIcons(source.customIcons);
   const read = (path: string): unknown => path.split(".").reduce<unknown>(
     (value, key) => record(value, path)[key], source,

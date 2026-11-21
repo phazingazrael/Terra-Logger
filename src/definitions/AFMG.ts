@@ -48,6 +48,13 @@ type AFMGMarket = {
   goods: Record<number, { stock: number; price: number }>;
 };
 
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/generators/states-generator.ts
+type AFMGTariffRule = {
+  states: number[] | "all";
+  goods: number[] | "all";
+  rate: number | "embargo";
+};
+
 type AFMGDeal = {
   i: number;
   seller: number;
@@ -58,6 +65,7 @@ type AFMGDeal = {
   units: number;
   price: number;
   tax: number;
+  tariff?: number;
 };
 
 type AFMGProductionCandidate = {
@@ -89,6 +97,7 @@ type AFMGProductionRecord =
   | { goodId: number; units: number };
 
 type City = {
+  tags?: string[];
   capital: number; //if burg is a capital, 0 if not (each state has only 1 capital)
   cell: number; // burg cell id. One cell can have only one burg
   citadel: number; //if burg has a castle, 0 if not. Used for MFCG
@@ -119,6 +128,7 @@ type City = {
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#states
 type Country = {
+  tags?: string[];
   alert: number; // state war alert, see military forces page
   area: number; // state area in pixels
   burgs: number; // number of burgs within the state
@@ -166,6 +176,7 @@ type Country = {
   provinces: number[]; // ids of state provinces
   removed: boolean; // true if state is removed
   rural: number; // rural (non-burg) population of state cells. In population points
+  tariffs?: AFMGTariffRule[];
   salesTax?: number;
   pollTax?: number;
   treasury?: number;
@@ -175,6 +186,7 @@ type Country = {
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#cultures
 type Culture = {
+  tags?: string[];
   area: number; // culture area in pixels
   base: number; // nameBase id, name base is used for names generation
   cells: number; // number of cells assigned to culture
@@ -207,6 +219,7 @@ type MilitaryType = {
 
 //https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#markers
 type Note = {
+  tags?: string[];
   id: string;
   legend: string;
   name: string;
@@ -234,6 +247,7 @@ declare type Province = {
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#religions
 type Religion = {
+  tags?: string[];
   area: number; // religion area in pixels
   cells: number; // number of cells within the religion
   center: number; // cell id of religion center (initial cell)

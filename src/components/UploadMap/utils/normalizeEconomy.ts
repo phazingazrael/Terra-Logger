@@ -6,6 +6,7 @@ import type {
   TLGood,
   TLMapEconomy,
   TLMarket,
+  TLTariffRule,
   TLProductionCandidate,
   TLMapInfo,
 } from "../../../definitions/TerraLogger";
@@ -165,7 +166,26 @@ function normalizeDeal(value: unknown): TLDeal {
     units: readAmount(source.units, "Deal units"),
     price: readAmount(source.price, "Deal price"),
     tax: source.tax === undefined ? undefined : readAmount(source.tax, "Deal tax"),
+    tariff: source.tariff === undefined ? undefined : readAmount(source.tariff, "Deal tariff"),
   };
+}
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/generators/states-generator.ts
+function normalizeTariffs(value: unknown): TLTariffRule[] | undefined {
+  if (value === undefined) return undefined;
+  const selector = (value: unknown, label: string): number[] | "all" =>
+    value === "all" ? "all" : readList(value, label).map((id) => readId(id, label));
+  return readList(value, "Country tariffs").map((value, index) => {
+    const label = `Country tariff rule ${index}`;
+    const rule = readRecord(value, label);
+    const rate: TLTariffRule["rate"] = rule.rate === "embargo" ? "embargo" : readAmount(rule.rate, label);
+    if (typeof rate === "number" && rate > 10) throw new Error(`${label} rate cannot exceed 10.`);
+    return {
+      countryIds: selector(rule.states, `${label} states`),
+      goodIds: selector(rule.goods, `${label} goods`),
+      rate,
+    };
+  });
 }
 
 function readCellIds(value: unknown, label: string): number[] {
@@ -425,6 +445,7 @@ export function applyImportedEconomy(
       production: undefined,
       treasury: source.treasury === undefined
         ? undefined : readNumber(source.treasury, "Country treasury"),
+      tariffs: normalizeTariffs(source.tariffs),
       salesTax: source.salesTax === undefined
         ? undefined : readAmount(source.salesTax, "Country sales tax"),
       pollTax: source.pollTax === undefined

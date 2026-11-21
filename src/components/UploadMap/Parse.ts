@@ -412,7 +412,7 @@ function readAttachedNotes(sections: readonly string[]): Note[] {
     const candidates = [entity.fullName, entity.name, label];
     let name = candidates.find((candidate) => typeof candidate === "string" && candidate.trim()) as string | undefined;
     if (kind === "river" && name && typeof entity.type === "string") name = `${name} ${entity.type}`;
-    notes.push({ id, name: name ?? id, legend: entity.note });
+    notes.push({ id, name: name ?? id, legend: entity.note, tags: entity.tags as string[] | undefined });
   };
   const collections: [string, number][] = [
     ["state", 14], ["province", 30], ["burg", 15], ["marker", 35],
