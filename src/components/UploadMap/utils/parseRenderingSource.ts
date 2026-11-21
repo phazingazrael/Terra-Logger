@@ -6,7 +6,7 @@ import { readStoredSvgStyles } from "./restoreSvgStyles";
 const renderingSections = [
   2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
   21, 22, 24, 25, 26, 27, 29, 30, 32, 34, 35, 36, 37, 38, 39,
-  45, 46, 47, 48, 49, 50, 51, 52,
+  45, 46, 47, 48, 49, 50, 51, 52, 53,
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -105,6 +105,21 @@ export function parseRenderingSource(
       )
     )) {
       throw new Error("Invalid AFMG journeys section (52): expected journeys with valid segments and [x, y, cellId] points.");
+    }
+  }
+
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/67d555b83f0b2f40ae50b03c9bbfd018175acc6d/src/types/legend.ts
+  if (sections[53]?.trim()) {
+    const legends = parseSection(sections, 53, "legends");
+    if (!Array.isArray(legends) || !legends.every((legend) =>
+      isRecord(legend) && typeof legend.name === "string" &&
+      Array.isArray(legend.items) && legend.items.every((item) =>
+        Array.isArray(item) && item.length === 3 &&
+        (typeof item[0] === "string" ||
+          (typeof item[0] === "number" && Number.isFinite(item[0]))) &&
+        typeof item[1] === "string" && typeof item[2] === "string")
+    )) {
+      throw new Error("Invalid AFMG legends section (53): expected named legends with [ID, color, label] items.");
     }
   }
 

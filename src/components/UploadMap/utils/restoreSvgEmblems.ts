@@ -81,8 +81,11 @@ export async function restoreSvgEmblems(map: TLMapInfo) {
   }
   const modifiers: Partial<Record<TLMapEmblem["type"], number>> = {};
   const styles = readStoredSvgStyles(source.sections[48], source.version);
+  // Modern styles nest emblem groups; older stored layouts used direct children.
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/67d555b83f0b2f40ae50b03c9bbfd018175acc6d/src/model/styles/styles-schema.ts
+  const groupStyles = styles?.emblems?.groups as Record<string, unknown> | undefined;
   for (const type of ["burg", "province", "state"] as const) {
-    const groupStyle = styles?.emblems?.[groups[type]];
+    const groupStyle = groupStyles?.[groups[type]] ?? styles?.emblems?.[groups[type]];
     const options = groupStyle && typeof groupStyle === "object" &&
       "options" in groupStyle ? groupStyle.options : undefined;
     const size = options && typeof options === "object" && "size" in options
