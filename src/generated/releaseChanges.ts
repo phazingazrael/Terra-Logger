@@ -28,215 +28,77 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.11",
-  "previousTag": "1.0.10",
-  "currentTag": "1.0.11",
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.10...1.0.11",
-  "commitCount": 9,
+  "version": "1.0.12",
+  "previousTag": "1.0.11",
+  "currentTag": null,
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.11...HEAD",
+  "commitCount": 2,
   "majorChanges": [
     {
-      "hash": "24a5c668ef5e6552fbd3d776cca65be8c50da228",
-      "shortHash": "24a5c66",
-      "date": "2026-11-21T12:06:55-07:00",
-      "subject": "feat(afmg): ✨ support 1.154 map data, shared icons and heraldry",
+      "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
+      "shortHash": "e4c1ddd",
+      "date": "2026-11-21T15:05:13-07:00",
+      "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.154 map data, shared icons and heraldry",
+      "details": "✨ support 1.155 map data and coloured hatches",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
     },
     {
-      "hash": "d13dc88836a823e337d8f9be78d07eb980cdcab9",
-      "shortHash": "d13dc88",
-      "date": "2026-11-15T17:20:34-07:00",
-      "subject": "feat(afmg): ✨ restore 1.153 illustrated symbols and italic fonts",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ restore 1.153 illustrated symbols and italic fonts",
+      "hash": "224275c4577bac8129b8564eba69e7a467feff84",
+      "shortHash": "224275c",
+      "date": "2026-11-21T15:07:14-07:00",
+      "subject": "perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets",
+      "type": "perf",
+      "scope": "icons",
+      "details": "⚡ lazy-load artwork packs and remove obsolete assets",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9"
-    },
-    {
-      "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
-      "shortHash": "8a18fab",
-      "date": "2026-11-15T16:55:50-07:00",
-      "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.152.1 map settings and entity notes",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
-    },
-    {
-      "hash": "2db1991883eab981c1028dd02911193c0f69e256",
-      "shortHash": "2db1991",
-      "date": "2026-11-15T13:25:20-07:00",
-      "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
-      "type": "feat",
-      "scope": "notes",
-      "details": "✨ import, edit, and export Journey and route notes",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
-    },
-    {
-      "hash": "86d501b877ebf428805ea6c5e39f902ffaefa078",
-      "shortHash": "86d501b",
-      "date": "2026-11-15T13:21:33-07:00",
-      "subject": "feat(afmg): ✨ support 1.149 and 1.150 map serialization",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.149 and 1.150 map serialization",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078"
-    },
-    {
-      "hash": "dead210023798ef25262ed8ab2b68bb15be28377",
-      "shortHash": "dead210",
-      "date": "2026-11-15T13:15:12-07:00",
-      "subject": "refactor(core): ♻️ consolidate importer utilities and Atlas helpers",
-      "type": "refactor",
-      "scope": "core",
-      "details": "♻️ consolidate importer utilities and Atlas helpers",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377"
-    },
-    {
-      "hash": "d2e8772551192ffae04ac5204595d09fb49d409a",
-      "shortHash": "d2e8772",
-      "date": "2026-11-21T12:07:56-07:00",
-      "subject": "chore(map): 🔧 update SVG visibility rules and rendering roadmap",
-      "type": "chore",
-      "scope": "map",
-      "details": "🔧 update SVG visibility rules and rendering roadmap",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d2e8772551192ffae04ac5204595d09fb49d409a"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84"
     }
   ],
   "highlightedChange": {
-    "hash": "24a5c668ef5e6552fbd3d776cca65be8c50da228",
-    "shortHash": "24a5c66",
-    "date": "2026-11-21T12:06:55-07:00",
-    "subject": "feat(afmg): ✨ support 1.154 map data, shared icons and heraldry",
+    "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
+    "shortHash": "e4c1ddd",
+    "date": "2026-11-21T15:05:13-07:00",
+    "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
     "type": "feat",
     "scope": "afmg",
-    "details": "✨ support 1.154 map data, shared icons and heraldry",
+    "details": "✨ support 1.155 map data and coloured hatches",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
   },
   "typeOptions": [
-    "chore",
     "feat",
-    "fix",
-    "refactor"
+    "perf"
   ],
   "scopeOptions": [
     "afmg",
-    "changelog",
-    "core",
-    "deals",
-    "map",
-    "notes"
+    "icons"
   ],
   "commits": [
     {
-      "hash": "067f577c9fce922a0568528cd4d32eb8f928dc19",
-      "shortHash": "067f577",
-      "date": "2026-11-21T13:33:39-07:00",
-      "subject": "fix(changelog): correct release ranges and prepare 1.0.11",
-      "type": "fix",
-      "scope": "changelog",
-      "details": "correct release ranges and prepare 1.0.11",
+      "hash": "224275c4577bac8129b8564eba69e7a467feff84",
+      "shortHash": "224275c",
+      "date": "2026-11-21T15:07:14-07:00",
+      "subject": "perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets",
+      "type": "perf",
+      "scope": "icons",
+      "details": "⚡ lazy-load artwork packs and remove obsolete assets",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/067f577c9fce922a0568528cd4d32eb8f928dc19"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84"
     },
     {
-      "hash": "d2e8772551192ffae04ac5204595d09fb49d409a",
-      "shortHash": "d2e8772",
-      "date": "2026-11-21T12:07:56-07:00",
-      "subject": "chore(map): 🔧 update SVG visibility rules and rendering roadmap",
-      "type": "chore",
-      "scope": "map",
-      "details": "🔧 update SVG visibility rules and rendering roadmap",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d2e8772551192ffae04ac5204595d09fb49d409a"
-    },
-    {
-      "hash": "24a5c668ef5e6552fbd3d776cca65be8c50da228",
-      "shortHash": "24a5c66",
-      "date": "2026-11-21T12:06:55-07:00",
-      "subject": "feat(afmg): ✨ support 1.154 map data, shared icons and heraldry",
+      "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
+      "shortHash": "e4c1ddd",
+      "date": "2026-11-21T15:05:13-07:00",
+      "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.154 map data, shared icons and heraldry",
+      "details": "✨ support 1.155 map data and coloured hatches",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228"
-    },
-    {
-      "hash": "d13dc88836a823e337d8f9be78d07eb980cdcab9",
-      "shortHash": "d13dc88",
-      "date": "2026-11-15T17:20:34-07:00",
-      "subject": "feat(afmg): ✨ restore 1.153 illustrated symbols and italic fonts",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ restore 1.153 illustrated symbols and italic fonts",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9"
-    },
-    {
-      "hash": "8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7",
-      "shortHash": "8a18fab",
-      "date": "2026-11-15T16:55:50-07:00",
-      "subject": "feat(afmg): ✨ support 1.152.1 map settings and entity notes",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.152.1 map settings and entity notes",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7"
-    },
-    {
-      "hash": "2db1991883eab981c1028dd02911193c0f69e256",
-      "shortHash": "2db1991",
-      "date": "2026-11-15T13:25:20-07:00",
-      "subject": "feat(notes): ✨ import, edit, and export Journey and route notes",
-      "type": "feat",
-      "scope": "notes",
-      "details": "✨ import, edit, and export Journey and route notes",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256"
-    },
-    {
-      "hash": "86d501b877ebf428805ea6c5e39f902ffaefa078",
-      "shortHash": "86d501b",
-      "date": "2026-11-15T13:21:33-07:00",
-      "subject": "feat(afmg): ✨ support 1.149 and 1.150 map serialization",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.149 and 1.150 map serialization",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078"
-    },
-    {
-      "hash": "dead210023798ef25262ed8ab2b68bb15be28377",
-      "shortHash": "dead210",
-      "date": "2026-11-15T13:15:12-07:00",
-      "subject": "refactor(core): ♻️ consolidate importer utilities and Atlas helpers",
-      "type": "refactor",
-      "scope": "core",
-      "details": "♻️ consolidate importer utilities and Atlas helpers",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377"
-    },
-    {
-      "hash": "ed59301f328a57c738b4ead10b3eeeb4c8ae66e8",
-      "shortHash": "ed59301",
-      "date": "2026-11-14T20:46:32-07:00",
-      "subject": "fix(deals): 🐛 neutral countries now properly associate with trade deals and markets.",
-      "type": "fix",
-      "scope": "deals",
-      "details": "🐛 neutral countries now properly associate with trade deals and markets.",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ed59301f328a57c738b4ead10b3eeeb4c8ae66e8"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
     }
   ],
-  "generatedAt": "2026-11-21T20:34:38.084Z"
+  "generatedAt": "2026-11-21T22:19:02.004Z"
 };
