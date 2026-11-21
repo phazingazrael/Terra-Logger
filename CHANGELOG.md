@@ -1,10 +1,19 @@
 # Terra-Logger Changelog
 
-There have been 2 commits since last release.
+There have been 1 commits since last release.
 
 ## Major Changes since last release
-- perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets [`224275c`](https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84)
-- feat(afmg): ✨ support 1.155 map data and coloured hatches [`e4c1ddd`](https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06)
+- feat(afmg): ✨ support 1.156 map loading and legend data [`6ed83ca`](https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326)
+
+## 1.0.13
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.12...HEAD)
+
+Unreleased
+
+November 21, 2026
+
+- feat(afmg): ✨ support 1.156 map loading and legend data [`6ed83ca`](https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326)
 
 ## 1.0.12
 

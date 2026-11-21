@@ -28,77 +28,53 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.12",
-  "previousTag": "1.0.11",
+  "version": "1.0.13",
+  "previousTag": "1.0.12",
   "currentTag": null,
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.11...HEAD",
-  "commitCount": 2,
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.12...HEAD",
+  "commitCount": 1,
   "majorChanges": [
     {
-      "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
-      "shortHash": "e4c1ddd",
-      "date": "2026-11-21T15:05:13-07:00",
-      "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
+      "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
+      "shortHash": "6ed83ca",
+      "date": "2026-11-21T16:49:20-07:00",
+      "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.155 map data and coloured hatches",
+      "details": "✨ support 1.156 map loading and legend data",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
-    },
-    {
-      "hash": "224275c4577bac8129b8564eba69e7a467feff84",
-      "shortHash": "224275c",
-      "date": "2026-11-21T15:07:14-07:00",
-      "subject": "perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets",
-      "type": "perf",
-      "scope": "icons",
-      "details": "⚡ lazy-load artwork packs and remove obsolete assets",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
     }
   ],
   "highlightedChange": {
-    "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
-    "shortHash": "e4c1ddd",
-    "date": "2026-11-21T15:05:13-07:00",
-    "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
+    "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
+    "shortHash": "6ed83ca",
+    "date": "2026-11-21T16:49:20-07:00",
+    "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
     "type": "feat",
     "scope": "afmg",
-    "details": "✨ support 1.155 map data and coloured hatches",
+    "details": "✨ support 1.156 map loading and legend data",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
   },
   "typeOptions": [
-    "feat",
-    "perf"
+    "feat"
   ],
   "scopeOptions": [
-    "afmg",
-    "icons"
+    "afmg"
   ],
   "commits": [
     {
-      "hash": "224275c4577bac8129b8564eba69e7a467feff84",
-      "shortHash": "224275c",
-      "date": "2026-11-21T15:07:14-07:00",
-      "subject": "perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets",
-      "type": "perf",
-      "scope": "icons",
-      "details": "⚡ lazy-load artwork packs and remove obsolete assets",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84"
-    },
-    {
-      "hash": "e4c1ddde2e2c360304f426494a05ae1de57afb06",
-      "shortHash": "e4c1ddd",
-      "date": "2026-11-21T15:05:13-07:00",
-      "subject": "feat(afmg): ✨ support 1.155 map data and coloured hatches",
+      "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
+      "shortHash": "6ed83ca",
+      "date": "2026-11-21T16:49:20-07:00",
+      "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.155 map data and coloured hatches",
+      "details": "✨ support 1.156 map loading and legend data",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
     }
   ],
-  "generatedAt": "2026-11-21T22:19:02.004Z"
+  "generatedAt": "2026-11-21T23:50:36.522Z"
 };
