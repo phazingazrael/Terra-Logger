@@ -11,6 +11,15 @@ import type { TLHistoryEraReference } from "./History";
 export type TLOrdinary = {
   ordinary?: string;
   t?: string;
+  t2?: string;
+  stretch?: number;
+  x?: number;
+  y?: number;
+  angle?: number;
+  stroke?: string;
+  strokeWidth?: number;
+  compony?: number;
+  gyronny?: number;
   line?: string;
   size?: number;
   above?: boolean;
@@ -28,6 +37,12 @@ export type TLCharge = {
   stroke?: string;
   sinister?: boolean;
   reversed?: boolean;
+  stretch?: number;
+  x?: number;
+  y?: number;
+  angle?: number;
+  layered?: boolean;
+  outside?: "above" | "below" | "around";
 };
 
 export type TLDivision = {
@@ -36,13 +51,33 @@ export type TLDivision = {
   line?: string;
 };
 
+export type TLCoAInscription = {
+  text: string;
+  font: string;
+  size: number;
+  color: string;
+  path: string;
+  bold?: boolean;
+  italic?: boolean;
+  spacing?: number;
+  shadow?: { x: number; y: number; blur: number; color: string };
+};
+
 export type TLCoA = {
+  icon?: string;
+  custom?: boolean;
+  size?: number;
+  x?: number;
+  y?: number;
   t1?: string;
   division?: TLDivision;
   ordinaries?: TLOrdinary[];
   charges?: TLCharge[];
   shield?: string;
   line?: string;
+  inscriptions?: TLCoAInscription[];
+  diaper?: string;
+  zoom?: number;
 };
 
 export type TLCulture = {
@@ -191,20 +226,7 @@ export type TLCity = {
   cellId?: number;
   aliases?: string[];
   capital: boolean;
-  coa: {
-    t1: string;
-    division: {
-      division: string;
-      t: string;
-      line: string;
-    };
-    charges: {
-      charge: string;
-      t: string;
-      p: string; size: number;
-    }[];
-    shield: string;
-  };
+  coa?: TLCoA;
   coaSVG: string;
   content?: AtlasContent;
   country: {
@@ -401,6 +423,25 @@ export type TLNPC = {
 };
 
 
+// Independent Terra-Logger records; older saved maps retain list-based icon pools.
+export type TLBiome = {
+  i: number;
+  name: string;
+  color: string;
+  habitability: number;
+  iconsDensity: number;
+  icons: string[] | Record<string, { weight: number; size?: number }>;
+  cost: number;
+  removed?: boolean;
+};
+
+export type TLCustomIcon = {
+  id: string;
+  kind: "svg" | "image";
+  content: string;
+  viewBox: string;
+};
+
 // Cell assignments share the map biome catalog; country IDs are AFMG source IDs.
 export type TLMapGeography = {
   cells: {
@@ -430,7 +471,7 @@ export type TLMapEmblem = {
 
 export interface TLMapInfo {
   renderingSource?: TLMapRenderingSource;
-  biomes?: AFMGBiome[];
+  biomes?: TLBiome[];
   geography?: TLMapGeography;
   economy?: TLMapEconomy;
   cities: TLCity[];
@@ -478,6 +519,7 @@ export interface TLMapInfo {
       era: string;
       eraShort: string;
       militaryTypes: TLMilitaryType[];
+      customIcons?: TLCustomIcon[];
     };
     hideLabels: number;
     stylePreset: string;
@@ -490,7 +532,7 @@ export interface TLMapInfo {
 
 export interface MapInf {
   renderingSource?: TLMapRenderingSource;
-  biomes?: AFMGBiome[];
+  biomes?: TLBiome[];
   geography?: TLMapGeography;
   economy?: TLMapEconomy;
   id: string;
@@ -534,6 +576,7 @@ export interface MapInf {
       era: string;
       eraShort: string;
       militaryTypes: TLMilitaryType[];
+      customIcons?: TLCustomIcon[];
     };
     hideLabels: number;
     stylePreset: string;

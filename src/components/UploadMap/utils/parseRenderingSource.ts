@@ -45,12 +45,12 @@ export function parseRenderingSource(
   if (sections[49]?.trim()) {
     const relief = parseSection(sections, 49, "relief");
     if (!Array.isArray(relief) || !relief.every((icon) =>
-      isRecord(icon) && typeof icon.icon === "string" &&
+      isRecord(icon) && isReliefReference(icon) &&
       typeof icon.x === "number" && Number.isFinite(icon.x) &&
       typeof icon.y === "number" && Number.isFinite(icon.y) &&
       typeof icon.s === "number" && Number.isFinite(icon.s) && icon.s > 0
     )) {
-      throw new Error("Invalid AFMG relief section (49): expected icons with an icon name, finite coordinates and positive size.");
+      throw new Error("Invalid AFMG relief section (49): expected valid icon references or type descriptors, finite coordinates and positive size.");
     }
   }
 
@@ -115,4 +115,21 @@ export function parseRenderingSource(
     if (sections[index] !== undefined) retained[index] = sections[index];
   }
   return { version, sections: retained };
+}
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/generators/relief-generator.ts
+function isReliefReference(icon: Record<string, unknown>): boolean {
+  if ("icon" in icon) {
+    return typeof icon.icon === "string" && !!icon.icon.trim() &&
+      !("type" in icon) && icon.variant === undefined && icon.set === undefined;
+  }
+  const types = [
+    "mount", "mountSnow", "vulcan", "hill", "dune", "deciduous", "conifer",
+    "coniferSnow", "acacia", "palm", "grass", "swamp", "cactus", "deadTree",
+  ];
+  const sets = ["simple", "colored", "gray", "illustrated", "stickers"];
+  return typeof icon.type === "string" && types.includes(icon.type) &&
+    (icon.variant === undefined || (typeof icon.variant === "number" &&
+      Number.isSafeInteger(icon.variant) && icon.variant > 0)) &&
+    (icon.set === undefined || (typeof icon.set === "string" && sets.includes(icon.set)));
 }

@@ -12,35 +12,23 @@ const groups = {
 };
 
 function heraldry(source: AFMGEmblem): TLCoA {
+  if (source.icon) return { icon: source.icon, shield: source.shield };
   if (source.custom || typeof source.t1 !== "string") {
     throw new Error("No usable source heraldry is available.");
   }
   return {
-    t1: source.t1,
-    shield: source.shield,
-    division: source.division ? {
-      division: source.division.division,
-      t: source.division.t,
-      line: source.division.line,
-    } : undefined,
-    ordinaries: source.ordinaries?.map((ordinary) => ({
-      ordinary: ordinary.ordinary,
-      t: ordinary.t,
-      line: ordinary.line,
-      divided: ordinary.divided,
-      above: ordinary.above,
-    })),
+    ...source,
+    division: source.division ? { ...source.division } : undefined,
+    ordinaries: source.ordinaries?.map((ordinary) => ({ ...ordinary })),
     charges: source.charges?.map((charge) => ({
-      charge: charge.charge,
-      t: charge.t,
-      p: charge.p,
-      t2: charge.t2,
-      t3: charge.t3,
-      stroke: charge.stroke,
-      size: charge.size,
-      divided: charge.divided,
+      ...charge,
       sinister: charge.sinister === undefined ? undefined : Boolean(charge.sinister),
       reversed: charge.reversed === undefined ? undefined : Boolean(charge.reversed),
+      layered: charge.layered === undefined ? undefined : Boolean(charge.layered),
+    })),
+    inscriptions: source.inscriptions?.map((inscription) => ({
+      ...inscription,
+      shadow: inscription.shadow ? { ...inscription.shadow } : undefined,
     })),
   };
 }
@@ -131,7 +119,7 @@ export async function restoreSvgEmblems(map: TLMapInfo) {
           ? undefined : artworkByType[node.type].get(node.entityId);
         // Province artwork has no separate Atlas entity to supply a cached SVG.
         // react-doctor-disable-next-line react-doctor/async-await-in-loop
-        const markup = cached || await getCOA(node.id, heraldry(sourceCoa));
+        const markup = cached || await getCOA(node.id, heraldry(sourceCoa), map.settings.options.customIcons);
         definitions.appendChild(namespaceEmblemSvg(markup, node.id, svg));
       }
       const use = document.createElementNS("http://www.w3.org/2000/svg", "use");

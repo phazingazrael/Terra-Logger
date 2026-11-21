@@ -1,3 +1,4 @@
+import { MapIcon } from "../../../icons/MapIcon";
 import { entitySplitListBlock, findEconomyTradeBlock } from "../../core/presets";
 
 import { SplitListBlockEditor } from "./SplitListBlockEditor";
@@ -91,7 +92,7 @@ function EconomyValueEditor({ field, value, label, onChange }: Readonly<{
     control={<Checkbox checked={value === true} onChange={(_, checked) => onChange(checked)} />} />{clear}</Box>;
   const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
   if (field.type === "object") return <Box className="atlas-entity-object-card" sx={{ display: "grid", gap: 2 }}>
-    <strong>{label}</strong>{clear}
+    <strong>{typeof record.icon === "string" ? <MapIcon icon={record.icon} label={typeof record.name === "string" ? record.name : label} /> : null} {label}</strong>{clear}
     {Object.entries(field.fields).map(([key, item]) => <EconomyValueEditor key={key} field={item}
       value={record[key]} label={item.label ?? key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase())}
       onChange={(next) => onChange({ ...record, [key]: next })} />)}

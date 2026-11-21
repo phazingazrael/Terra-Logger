@@ -1,3 +1,4 @@
+import { GoodLabel } from "../../../icons/MapIcon";
 import { GeographySummary } from "../GeographySummary";
 import { EconomySummary } from "../EconomySummary";
 import type {
@@ -41,7 +42,7 @@ import type {
 	TLCountry,
 	TLCulture,
 } from "../../../../definitions/TerraLogger";
-import { memo, useMemo } from "react";
+import { isValidElement, memo, useMemo } from "react";
 
 type RichTextRendererProps = {
 	value: unknown;
@@ -166,15 +167,15 @@ function resolveEntitySplitListGroup(
 	}
 
 	const sourceValue = getEntityValue(context, path);
-	const childrenValue =
-		isEconomyTradePath(path) &&
-		(context.sourceType === "city" || context.sourceType === "country")
-			? normalizeTradeEntries(sourceValue).map((entry) =>
-					formatTradeEntry(
-						entry,
-						resolveTradeGood(entry, context.economy?.goods),
-					),
-				)
+	const trade = isEconomyTradePath(path) &&
+		(context.sourceType === "city" || context.sourceType === "country");
+	const childrenValue = trade
+			? normalizeTradeEntries(sourceValue).map((entry) => {
+					const good = resolveTradeGood(entry, context.economy?.goods);
+					return <GoodLabel chip key={JSON.stringify([entry.source, entry.good])} good={good}>
+						{formatTradeEntry(entry, good)}
+					</GoodLabel>;
+				})
 			: sourceValue;
 
 	const name =
@@ -681,7 +682,7 @@ export const genericBlockPlugins: Record<string, AtlasBlockPlugin> = {
 											// biome-ignore lint/suspicious/noArrayIndexKey: index is computed as PART of key, not as full key
 											key={`split-child-${groupIndex}-${childIndex}-${stableRenderKey(child, "child")}`}
 										>
-											{formatValue(child)}
+											{isValidElement(child) ? child : formatValue(child)}
 										</li>
 									))}
 								</ul>

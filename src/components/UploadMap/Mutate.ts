@@ -40,9 +40,29 @@ const assignMapInfo = (tempMap: TLMapInfo, data: MapInfo) => {
 				sections: { ...data.renderingSource.sections },
 			}
 		: undefined;
-	tempMap.biomes = data.biomes;
+	tempMap.biomes = data.biomes.map((biome) => ({
+		i: biome.i, name: biome.name, color: biome.color,
+		habitability: biome.habitability, iconsDensity: biome.iconsDensity,
+		icons: Array.isArray(biome.icons) ? [...biome.icons] : Object.fromEntries(
+			Object.entries(biome.icons).map(([icon, entry]) => [icon, {
+				weight: entry.weight, ...(entry.size === undefined ? {} : { size: entry.size }),
+			}]),
+		),
+		cost: biome.cost,
+		...(biome.removed === undefined ? {} : { removed: biome.removed }),
+	}));
 	tempMap.info = data.info;
-	tempMap.settings = data.settings;
+	tempMap.settings = {
+		...data.settings,
+		options: {
+			...data.settings.options,
+			...(data.settings.options.customIcons === undefined ? {} : {
+				customIcons: data.settings.options.customIcons.map((icon) => ({
+					id: icon.id, kind: icon.kind, content: icon.content, viewBox: icon.viewBox,
+				})),
+			}),
+		},
+	};
 	tempMap.SVG = data.SVG;
 };
 

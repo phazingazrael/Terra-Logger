@@ -35,6 +35,7 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
   }
 
   const source = parse(raw, "map settings");
+  const customIcons = source.customIcons === undefined ? undefined : readCustomIcons(source.customIcons);
   const read = (path: string): unknown => path.split(".").reduce<unknown>(
     (value, key) => record(value, path)[key], source,
   );
@@ -69,7 +70,10 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
   })) throw new Error("Invalid AFMG settings section (1): military.units contains invalid units.");
   const year = number("lore.calendar.year");
   if (!Number.isSafeInteger(year)) throw new Error("Invalid AFMG settings section (1): calendar year must be an integer.");
-  const resize = read("labels.resizeOnZoom");
+  // Since 1.154, AFMG always resizes labels and omits this flag from map settings.
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/services/io/auto-update.ts
+  const storedResize = read("labels.resizeOnZoom");
+  const resize = storedResize === undefined ? true : storedResize;
   if (typeof resize !== "boolean") throw new Error("Invalid AFMG settings section (1): labels.resizeOnZoom must be boolean.");
   const mapSize = number("geography.mapSize", 0);
   const latitude = number("geography.latitude", 0);
@@ -90,6 +94,7 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
     stylePreset: text("style.preset"), rescaleLabels: Number(resize),
     options: {
       ...source, afmgMapSettings: source, pinNotes: false, winds: winds as number[],
+      ...(customIcons === undefined ? {} : { customIcons }),
       temperatureEquator: number("climate.temperature.equator"),
       temperatureNorthPole: number("climate.temperature.northPole"),
       temperatureSouthPole: number("climate.temperature.southPole"),
@@ -97,4 +102,25 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
       militaryTypes: military as MilitaryType[],
     },
   };
+}
+
+// Validate the stored records here; SVG sanitization belongs to their rendering step.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/components/options-schema.ts
+function readCustomIcons(value: unknown): AFMGCustomIcon[] {
+  if (!Array.isArray(value)) {
+    throw new Error("Invalid AFMG settings section (1): customIcons must be a list.");
+  }
+  const ids = new Set<string>();
+  return value.map((raw, index) => {
+    const invalid = () => new Error(`Invalid AFMG custom icon at settings section 1, index ${index}.`);
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw invalid();
+    const icon = raw as Record<string, unknown>;
+    if (typeof icon.id !== "string" || !/^custom-[\w-]+$/.test(icon.id) || ids.has(icon.id) ||
+      (icon.kind !== "svg" && icon.kind !== "image") ||
+      typeof icon.content !== "string" || typeof icon.viewBox !== "string") throw invalid();
+    const frame = icon.viewBox.trim().split(/[\s,]+/).map(Number);
+    if (frame.length !== 4 || !frame.every(Number.isFinite) || frame[2] <= 0 || frame[3] <= 0) throw invalid();
+    ids.add(icon.id);
+    return { id: icon.id, kind: icon.kind, content: icon.content, viewBox: icon.viewBox };
+  });
 }

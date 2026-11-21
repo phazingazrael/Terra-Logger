@@ -31,7 +31,15 @@ export const mutateCountries = async (
 			newCountry.aliases = [newCountry.nameFull, newCountry.name].filter(
 				Boolean,
 			);
-			newCountry.coa = country.coa;
+			newCountry.coa = country.coa ? {
+				...country.coa,
+				charges: country.coa.charges?.map((charge) => ({
+					...charge,
+					sinister: charge.sinister === undefined ? undefined : Boolean(charge.sinister),
+					reversed: charge.reversed === undefined ? undefined : Boolean(charge.reversed),
+					layered: charge.layered === undefined ? undefined : Boolean(charge.layered),
+				})),
+			} : undefined;
 			newCountry.color = country.color;
 			newCountry.id = country.i;
 			newCountry.location = data.info.name;
@@ -117,7 +125,7 @@ export const mutateCountries = async (
 
 			if (country.coa) {
 				if ((country.coa as unknown as { custom: boolean }).custom !== true) {
-					const coa = country.coa;
+					const coa = newCountry.coa;
 					try {
 						// Keep requests sequential to avoid flooding the coat-of-arms service.
 						// react-doctor-disable-next-line react-doctor/async-await-in-loop
@@ -126,8 +134,8 @@ export const mutateCountries = async (
 							typeof coa === "object" &&
 							coa !== null &&
 							Object.keys(coa).length > 0
-								? await getCOA(String(country.i), coa)
-								: await getCOA(String(country.i), genCoa);
+								? await getCOA(String(country.i), coa ?? {}, data.settings.options.customIcons)
+								: await getCOA(String(country.i), genCoa, data.settings.options.customIcons);
 						newCountry.coaSVG = svg;
 					} catch (error) {
 						console.error(
@@ -162,7 +170,7 @@ export const mutateCountries = async (
 					const genCoa = generate();
 					// Keep requests sequential to avoid flooding the coat-of-arms service.
 					// react-doctor-disable-next-line react-doctor/async-await-in-loop
-					const svg = await getCOA(String(country.i), genCoa);
+					const svg = await getCOA(String(country.i), genCoa, data.settings.options.customIcons);
 
 					newCountry.coaSVG = svg;
 				} catch (error) {

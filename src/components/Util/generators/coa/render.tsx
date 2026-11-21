@@ -4,12 +4,14 @@
 // all Charges from https://github.com/Azgaar/Fantasy-Map-Generator/tree/0e84a0d72e4e1275f62d66b509ef74e1d2be2d40/charges
 // Simple svg shapes and charges are made by Azgaar and available under CC0.
 // a lot of the complex charge renders are from WappenWiki and available for non-commercial use only.
-const PATH = "./coaGen/charges/";
+import { chargeIconReference, createMapIconSymbol } from "../../../icons/iconLibrary";
 
 import type {
 	TLCharge,
 	TLCoA,
 	TLOrdinary,
+	TLCustomIcon,
+	TLCoAInscription,
 } from "../../../../definitions/TerraLogger";
 
 import { shieldPositions } from "./shieldPos";
@@ -25,6 +27,9 @@ const colors: { [key: string]: string } = {
 	murrey: "#85185b",
 	sanguine: "#b63a3a",
 	tenné: "#cc7f19",
+	"carnation": "#eabfa2",
+	"celeste": "#96c8fa",
+	"cendrée": "#777777",
 };
 
 const shieldSize: { [key: string]: number } = {
@@ -114,29 +119,29 @@ const shieldBox: { [key: string]: string } = {
 };
 
 const shieldPaths: { [key: string]: string } = {
-	heater: "m25,25 h150 v50 a150,150,0,0,1,-75,125 a150,150,0,0,1,-75,-125 z",
-	spanish: "m25,25 h150 v100 a75,75,0,0,1,-150,0 z",
+	heater: "m25,25 h150 v50 a150,150,0,0,1,-75,125 a150,150,0,0,1,-75,-125 v-50 z",
+	spanish: "m25,25 h150 v100 a75,75,0,0,1,-150,0 v-100 z",
 	french:
-		"m 25,25 h 150 v 139.15 c 0,41.745 -66,18.15 -75,36.3 -9,-18.15 -75,5.445 -75,-36.3 v 0 z",
+		"m 25,25 h 150 v 139.15 c 0,41.745 -66,18.15 -75,36.3 -9,-18.15 -75,5.445 -75,-36.3 v-139.15 z",
 	horsehead:
-		"m 20,40 c 0,60 40,80 40,100 0,10 -4,15 -0.35,30 C 65,185.7 81,200 100,200 c 19.1,0 35.3,-14.6 40.5,-30.4 C 144.2,155 140,150 140,140 140,120 180,100 180,40 142.72,40 150,15 100,15 55,15 55,40 20,40 Z",
+		"m 20,40 c 0,60 40,80 40,100 0,10 -4,15 -0.5,30 C 65,185.7 81,200 100,200 c 19,0 35,-14.3 40.5,-30 C 144,155 140,150 140,140 140,120 180,100 180,40 143,40 148,15 100,15 52,15 57,40 20,40 Z",
 	horsehead2:
 		"M60 20c-5 20-10 35-35 55 25 35 35 65 30 100 20 0 35 10 45 26 10-16 30-26 45-26-5-35 5-65 30-100a87 87 0 01-35-55c-25 3-55 3-80 0z",
 	polish:
-		"m 90.3,6.3 c -12.7,0 -20.7,10.9 -40.5,14 0,11.8 -4.9,23.5 -11.4,31.1 0,0 12.7,6 12.7,19.3 C 51.1,90.8 30,90.8 30,90.8 c 0,0 -3.6,7.4 -3.6,22.4 0,34.3 23.1,60.2 40.7,68.2 17.6,8 27.7,11.4 32.9,18.6 5.2,-7.3 15.3,-10.7 32.8,-18.6 17.6,-8 40.7,-33.9 40.7,-68.2 0,-15 -3.6,-22.4 -3.6,-22.4 0,0 -21.1,0 -21.1,-20.1 0,-13.3 12.7,-19.3 12.7,-19.3 C 155.1,43.7 150.2,32.1 150.2,20.3 130.4,17.2 122.5,6.3 109.7,6.3 102.5,6.3 100,10 100,10 c 0,0 -2.5,-3.7 -9.7,-3.7 z",
+		"m 100,10 c 0,0 -2.5,-3.7 -9.7,-3.7 -12.7,0 -20.7,10.9 -40.5,14 0,11.8 -4.9,23.5 -11.4,31.1 0,0 12.7,6 12.7,19.3 C 51.1,90.8 30,90.8 30,90.8 c 0,0 -3.6,7.4 -3.6,22.4 0,34.3 23.1,60.2 40.7,68.2 17.6,8 27.7,11.4 32.9,18.6 5.2,-7.3 15.3,-10.7 32.8,-18.6 17.6,-8 40.7,-33.9 40.7,-68.2 0,-15 -3.6,-22.4 -3.6,-22.4 0,0 -21.1,0 -21.1,-20.1 0,-13.3 12.7,-19.3 12.7,-19.3 C 155.1,43.7 150.2,32.1 150.2,20.3 130.4,17.2 122.5,6.3 109.7,6.3 102.5,6.3 100,10 100,10 z",
 	hessen:
 		"M170 20c4 5 8 13 15 20 0 0-10 0-10 15 0 100-15 140-75 145-65-5-75-45-75-145 0-15-10-15-10-15l15-20c0 15 10-5 70-5s70 20 70 5z",
 	swiss:
-		"m 25,20 c -0.1,0 25.2,8.5 37.6,8.5 C 75.1,28.5 99.1,20 100,20 c 0.6,0 24.9,8.5 37.3,8.5 C 149.8,28.5 174.4,20 175,20 l -0.3,22.6 C 173.2,160.3 100,200 100,200 100,200 26.5,160.9 25.2,42.6 Z",
+		"m 25,20 c 0.1,0 25.2,8.5 37.6,8.5 C 75.1,28.5 99.1,20 100,20 c 0.6,0 24.9,8.5 37.3,8.5 C 149.8,28.5 174.4,20 175,20 l -0.3,22.6 C 173.2,160.3 100,200 100,200 100,200 26.5,160.9 25.2,42.6 l -0.2,-22.6 Z",
 	boeotian:
 		"M150 115c-5 0-10-5-10-15s5-15 10-15c10 0 7 10 15 10 10 0 0-30 0-30-10-25-30-55-65-55S45 40 35 65c0 0-10 30 0 30 8 0 5-10 15-10 5 0 10 5 10 15s-5 15-10 15c-10 0-7-10-15-10-10 0 0 30 0 30 10 25 30 55 65 55s55-30 65-55c0 0 10-30 0-30-8 0-5 10-15 10z",
-	roman: "m 160,170 c -40,20 -80,20 -120,0 V 30 C 80,10 120,10 160,30 Z",
-	kite: "m 53.3,46.4 c 0,4.1 1,12.3 1,12.3 7.1,55.7 45.7,141.3 45.7,141.3 0,0 38.6,-85.6 45.7,-141.2 0,0 1,-8.1 1,-12.3 C 146.7,20.9 125.8,0.1 100,0.1 74.2,0.1 53.3,20.9 53.3,46.4 Z",
-	oldFrench: "m25,25 h150 v75 a100,100,0,0,1,-75,100 a100,100,0,0,1,-75,-100 z",
+	roman: "m 160,170 c -40,20 -80,20 -120,0 V 30 C 80,10 120,10 160,30 V 170 Z",
+	kite: "m 100,200 c 0,0 38.6,-85.6 45.7,-141.2 0,0 1,-8.1 1,-12.3 C 146.7,20.9 125.8,0.1 100,0.1 74.2,0.1 53.3,20.9 53.3,46.4 c 0,4.1 1,12.3 1,12.3 7.1,55.7 45.7,141.3 45.7,141.3 Z",
+	oldFrench: "m25,25 h150 v75 a100,100,0,0,1,-75,100 a100,100,0,0,1,-75,-100 v-75 z",
 	renaissance:
 		"M 25,33.9 C 33.4,50.3 36.2,72.9 36.2,81.7 36.2,109.9 25,122.6 25,141 c 0,29.4 24.9,44.1 40.2,47.7 15.3,3.7 29.3,0 34.8,11.3 5.5,-11.3 19.6,-7.6 34.8,-11.3 C 150.1,185 175,170.3 175,141 c 0,-18.4 -11.2,-31.1 -11.2,-59.3 0,-8.8 2.8,-31.3 11.2,-47.7 L 155.7,14.4 C 138.2,21.8 119.3,25.7 100,25.7 c -19.3,0 -38.2,-3.9 -55.7,-11.3 z",
 	baroque:
-		"m 100,25 c 18,0 50,2 75,14 v 37 l -2.7,3.2 c -4.9,5.4 -6.6,9.6 -6.7,16.2 0,6.5 2,11.6 6.9,17.2 l 2.8,3.1 v 10.2 c 0,17.7 -2.2,27.7 -7.8,35.9 -5,7.3 -11.7,11.3 -32.3,19.4 -12.6,5 -20.2,8.8 -28.6,14.5 C 103.3,198 100,200 100,200 c 0,0 -2.8,-2.3 -6.4,-4.7 C 85.6,189.8 78,186 65,180.9 32.4,168.1 26.9,160.9 25.8,129.3 L 25,116 l 3.3,-3.3 c 4.8,-5.2 7,-10.7 7,-17.3 0,-6.8 -1.8,-11.1 -6.5,-16.1 L 25,76 V 39 C 50,27 82,25 100,25 Z",
+		"m 25,39 C 50,27 82,25 100,25 c 18,0 50,2 75,14 v 37 l -2.7,3.2 c -4.9,5.4 -6.6,9.6 -6.7,16.2 0,6.5 2,11.6 6.9,17.2 l 2.8,3.1 v 10.2 c 0,17.7 -2.2,27.7 -7.8,35.9 -5,7.3 -11.7,11.3 -32.3,19.4 -12.6,5 -20.2,8.8 -28.6,14.5 C 103.3,198 100,200 100,200 c 0,0 -2.8,-2.3 -6.4,-4.7 C 85.6,189.8 78,186 65,180.9 32.4,168.1 26.9,160.9 25.8,129.3 L 25,116 l 3.3,-3.3 c 4.8,-5.2 7,-10.7 7,-17.3 0,-6.8 -1.8,-11.1 -6.5,-16.1 L 25,76 V 39 Z",
 	targe:
 		"m 20,35 c 15,0 115,-60 155,-10 -5,10 -15,15 -10,50 5,45 10,70 -10,90 C 125,195 75,195 50,175 25,150 30,130 35,85 50,95 65,85 65,70 65,50 50,45 40,50 30,55 27,65 30,70 23,73 20,70 14,70 11,60 20,45 20,35 Z",
 	targe2:
@@ -146,20 +151,20 @@ const shieldPaths: { [key: string]: string } = {
 	wedged:
 		"m 51.2,19 h 96.4 c 3.1,12.7 10.7,20.9 26.5,20.8 C 175.7,94.5 165.3,144.3 100,200 43.5,154.2 22.8,102.8 25.1,39.7 37,38.9 47.1,34.7 51.2,19 Z",
 	round:
-		"m 185,100 a 85,85 0 0 1 -85,85 85,85 0 0 1 -85,-85 85,85 0 0 1 85,-85 85,85 0 0 1 85,85",
+		"m 185,100 a 85,85 0 0 1 -85,85 85,85 0 0 1 -85,-85 85,85 0 0 1 85,-85 85,85 0 0 1 85,85 z",
 	oval: "m 32.3,99.5 a 67.7,93.7 0 1 1 0,1.3 z",
 	vesicaPiscis:
 		"M 100,0 C 63.9,20.4 41,58.5 41,100 c 0,41.5 22.9,79.6 59,100 36.1,-20.4 59,-58.5 59,-100 C 159,58.5 136.1,20.4 100,0 Z",
-	square: "M 25,25 H 175 V 175 H 25 Z",
-	diamond: "M 25,100 100,200 175,100 100,0 Z",
-	no: "m0,0 h200 v200 h-200 z",
-	flag: "M 10,40 h180 v120 h-180 Z",
-	pennon: "M 10,40 l190,60 -190,60 Z",
-	guidon: "M 10,40 h190 l-65,60 65,60 h-190 Z",
-	banner: "m 25,25 v 170 l 25,-40 25,40 25,-40 25,40 25,-40 25,40 V 25 Z",
-	dovetail: "m 25,25 v 175 l 75,-40 75,40 V 25 Z",
-	gonfalon: "m 25,25 v 125 l 75,50 75,-50 V 25 Z",
-	pennant: "M 25,15 100,200 175,15 Z",
+	square: "M 25,25 H 175 V 175 H 25 V 25 Z",
+	diamond: "M 25,100 100,200 175,100 100,0 25,100 Z",
+	no: "m0,0 h200 v200 h-200 v-200 z",
+	flag: "M 10,40 h180 v120 h-180 v-120 Z",
+	pennon: "M 10,40 l190,60 -190,60 v-120 Z",
+	guidon: "M 10,40 h190 l-65,60 65,60 h-190 v-120 Z",
+	banner: "m 25,25 v 170 l 25,-40 25,40 25,-40 25,40 25,-40 25,40 V 25 H 25 Z",
+	dovetail: "m 25,25 v 175 l 75,-40 75,40 V 25 H 25 Z",
+	gonfalon: "m 25,25 v 125 l 75,50 75,-50 V 25 H 25 Z",
+	pennant: "M 25,15 100,200 175,15 25,15 Z",
 	fantasy1:
 		"M 100,5 C 85,30 40,35 15,40 c 40,35 20,90 40,115 15,25 40,30 45,45 5,-15 30,-20 45,-45 20,-25 0,-80 40,-115 C 160,35 115,30 100,5 Z",
 	fantasy2:
@@ -174,14 +179,16 @@ const shieldPaths: { [key: string]: string } = {
 		"m 55,75 h 2 c 3,-25 38,-10 3,20 15,50 30,75 40,105 10,-30 25,-55 40,-105 -35,-30 0,-45 3,-20 h 2 C 150,30 110,20 100,0 90,20 50,30 55,75 Z",
 	gondor:
 		"m 100,200 c 15,-15 38,-35 45,-60 h 5 V 30 h -5 C 133,10 67,10 55,30 h -5 v 110 h 5 c 7,25 30,45 45,60 z",
-	easterling: "M 160,185 C 120,170 80,170 40,185 V 15 c 40,15 80,15 120,0 z",
+	easterling: "M 160,185 C 120,170 80,170 40,185 V 15 c 40,15 80,15 120,0 V 185 z",
 	erebor:
-		"M25 135 V60 l22-13 16-37 h75 l15 37 22 13 v75l-22 18-16 37 H63l-16-37z",
-	ironHills: "m 30,25 60,-10 10,10 10,-10 60,10 -5,125 -65,50 -65,-50 z",
+		"M25 135 V60 l22-13 16-37 h75 l15 37 22 13 v75l-22 18-16 37 H63l-16-37 -22-18z",
+	ironHills: "m 30,25 60,-10 10,10 10,-10 60,10 -5,125 -65,50 -65,-50 -5,-125 z",
 	urukHai:
-		"M 30,60 C 40,60 60,50 60,20 l -5,-3 45,-17 75,40 -5,5 -35,155 -5,-35 H 70 v 35 z",
+		"M 30,60 C 40,60 60,50 60,20 l -5,-3 45,-17 75,40 -5,5 -35,155 -5,-35 H 70 v 35 l -40,-140 z",
 	moriaOrc:
 		"M45 35c5 3 7 10 13 9h19c4-2 7-4 9-9 6 1 9 9 16 11 7-2 14 0 21 0 6-3 6-10 10-15 2-5 1-10-2-15-2-4-5-14-4-16 3 6 7 11 12 14 7 3 3 12 7 16 3 6 4 12 9 18 2 4 6 8 5 14 0 6-1 12 3 18-3 6-2 13-1 20 1 6-2 12-1 18 0 6-3 13 0 18 8 4 0 8-5 7-4 3-9 3-13 9-5 5-5 13-8 19 0 6 0 15-7 16-1 6-7 6-10 12-1-6 0-6-2-9l2-19c2-4 5-12-3-12-4-5-11-5-15 1l-13-18c-3-4-2 9-3 12 2 2-4-6-7-5-8-2-8 7-11 11-2 4-5 10-8 9 3-10 3-16 1-23-1-4 2-9-4-11 0-6 1-13-2-19-4-2-9-6-13-7V91c4-7-5-13 0-19-3-7 2-11 2-18-1-6 1-12 3-17v-1z",
+	"embowed": "m 25,25 a 170,170,0,0,1,150,0 v 50 a 150,150,0,0,1,-75,125 a 150,150,0,0,1,-75,-125 v -50 z",
+	"hexagon": "M 100,12 176.2,56 176.2,144 100,188 23.8,144 23.8,56 100,12 Z",
 };
 
 const lines: { [key: string]: string } = {
@@ -256,22 +263,18 @@ const templates = {
 	gyronny: `<polygon points="0,0 200,200 200,100 0,100"/><polygon points="200,0 0,200 100,200 100,0"/>`,
 	chevronny: `<path d="M0,80 100,-15 200,80 200,120 100,25 0,120z M0,160 100,65 200,160 200,200 100,105 0,200z M0,240 100,145 200,240 0,240z"/>`,
 	// lined divisions
-	perFessLined: (line: string) =>
-		`<path d="${line}"/><rect x="0" y="115" width="200" height="85" shape-rendering="crispedges"/>`,
-	perPaleLined: (line: string) =>
-		`<path d="${line}" transform="rotate(-90 100 100)"/><rect x="115" y="0" width="85" height="200" shape-rendering="crispedges"/>`,
-	perBendLined: (line: string) =>
-		`<path d="${line}" transform="translate(-10 -10) rotate(45 110 110) scale(1.1)"/><rect x="0" y="115" width="200" height="85" transform="translate(-10 -10) rotate(45 110 110) scale(1.1)" shape-rendering="crispedges"/>`,
-	perBendSinisterLined: (line: string) =>
-		`<path d="${line}" transform="translate(-10 -10) rotate(-45 110 110) scale(1.1)"/><rect x="0" y="115" width="200" height="85" transform="translate(-10 -10) rotate(-45 110 110) scale(1.1)" shape-rendering="crispedges"/>`,
+	perFessLined: (line: string) => `<path d="${line} V200 H0 Z"/>`,
+	perPaleLined: (line: string) => `<path d="${line} V200 H0 Z" transform="rotate(-90 100 100)"/>`,
+	perBendLined: (line: string) => `<path d="${line} V200 H0 Z" transform="translate(-10 -10) rotate(45 110 110) scale(1.1)"/>`,
+	perBendSinisterLined: (line: string) => `<path d="${line} V200 H0 Z" transform="translate(-10 -10) rotate(-45 110 110) scale(1.1)"/>`,
 	perChevronLined: (line: string) =>
-		`<rect x="15" y="115" width="200" height="200" transform="translate(70 70) rotate(45 100 100)"/><path d="${line}" transform="translate(129 71) rotate(-45 -100 100) scale(-1 1)"/><path d="${line}" transform="translate(71 71) rotate(45 100 100)"/>`,
+      `<path d="${line} L100,200 Z" transform="translate(129 71) rotate(-45 -100 100) scale(-1 1)"/><path d="${line} L100,200 Z" transform="translate(71 71) rotate(45 100 100)"/>`,
 	perChevronReversedLined: (line: string) =>
-		`<rect x="15" y="115" width="200" height="200" transform="translate(-70 -70) rotate(225.001 100 100)"/><path d="${line}" transform="translate(-70.7 -70.7) rotate(225 100 100) scale(1 1)"/><path d="${line}" transform="translate(270.7 -70.7) rotate(-225 -100 100) scale(-1 1)"/>`,
+      `<path d="${line} L100,200 Z" transform="translate(-70.7 -70.7) rotate(225 100 100)"/><path d="${line} L100,200 Z" transform="translate(270.7 -70.7) rotate(-225 -100 100) scale(-1 1)"/>`,
 	perCrossLined: (line: string) =>
-		`<rect x="100" y="0" width="100" height="92.5"/><rect x="0" y="107.5" width="100" height="92.5"/><path d="${line}" transform="translate(0 50) scale(.5001)"/><path d="${line}" transform="translate(200 150) scale(-.5)"/>`,
+      `<path d="${line} V400 H0 Z" transform="translate(0 50) scale(.5)"/><path d="${line} V400 H0 Z" transform="translate(200 150) scale(-.5)"/>`,
 	perPileLined: (line: string) =>
-		`<path d="${line}" transform="translate(161.66 10) rotate(66.66 -100 100) scale(-1 1)"/><path d="${line}" transform="translate(38.33 10) rotate(-66.66 100 100)"/><polygon points="-2.15,0 84.15,200 115.85,200 202.15,0 200,200 0,200"/>`,
+      `<path d="${line} V200 H0 Z" transform="translate(161.66 10) rotate(66.66 -100 100) scale(-1 1)"/><path d="${line} V200 H0 Z" transform="translate(38.33 10) rotate(-66.66 100 100)"/>`,
 	// straight ordinaries
 	fess: `<rect x="0" y="75" width="200" height="50"/>`,
 	pale: `<rect x="75" y="0" width="50" height="200"/>`,
@@ -298,8 +301,8 @@ const templates = {
 	chevron: `<polygon points="0,125 100,60 200,125 200,165 100,100 0,165"/>`,
 	chevronReversed: `<polygon points="0,75 100,140 200,75 200,35 100,100 0,35"/>`,
 	gyron: `<polygon points="0,0 100,100 0,100"/>`,
-	quarter: `<rect width="50%" height="50%"/>`,
-	canton: `<rect width="37.5%" height="37.5%"/>`,
+	quarter: "<rect width=\"100\" height=\"100\"/>",
+	canton: "<rect width=\"75\" height=\"75\"/>",
 	pile: `<polygon points="70,0 100,175 130,0"/>`,
 	pileInBend: `<polygon points="200,200 200,144 25,25 145,200"/>`,
 	pileInBendSinister: `<polygon points="0,200 0,144 175,25 55,200"/>`,
@@ -332,13 +335,18 @@ const templates = {
 	terraceLined: (line: string) =>
 		`<path d="${line}" transform="translate(0,50)"/><rect x="0" y="164" width="200" height="36" stroke="none"/>`,
 	crossLined: (line: string) =>
-		`<path d="${line}" transform="translate(0,-14.5)"/><path d="${line}" transform="rotate(180 100 100) translate(0,-14.5)"/><path d="${line}" transform="rotate(-90 100 100) translate(0,-14.5)"/><path d="${line}" transform="rotate(-270 100 100) translate(0,-14.5)"/>`,
+      `<path d="${line}" transform="translate(0 -14.5)"/><path d="${line}" transform="rotate(180 100 100) translate(0 -14.5)"/><path d="${line}" transform="rotate(-90 100 100) translate(0 -14.5)"/><path d="${line}" transform="rotate(-270 100 100) translate(0 -14.5)"/>`,
 	crossPartedLined: (line: string) =>
-		`<path d="${line}" transform="translate(0,-20)"/><path d="${line}" transform="rotate(180 100 100) translate(0,-20)"/><path d="${line}" transform="rotate(-90 100 100) translate(0,-20)"/><path d="${line}" transform="rotate(-270 100 100) translate(0,-20)"/>`,
+      `<path d="${line}" transform="translate(0 -20)"/><path d="${line}" transform="rotate(180 100 100) translate(0 -20)"/><path d="${line}" transform="rotate(-90 100 100) translate(0 -20)"/><path d="${line}" transform="rotate(-270 100 100) translate(0 -20)"/>`,
 	saltireLined: (line: string) =>
 		`<path d="${line}" transform="translate(0 -10) rotate(45 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(-20 10) rotate(225 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(-20 -10) rotate(-45 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(0 10) rotate(-225 110 100) scale(1.1 1)"/>`,
 	saltirePartedLined: (line: string) =>
 		`<path d="${line}" transform="translate(3 -13) rotate(45 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(-23 13) rotate(225 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(-23 -13) rotate(-45 110 100) scale(1.1 1)"/><path d="${line}" transform="translate(3 13) rotate(-225 110 100) scale(1.1 1)"/>`,
+	"gyronnyOfSixPerFess": "<polygon points=\"0,100 200,100 200,200 157.7,200 42.3,0 157.7,0 42.3,200 0,200\"/>",
+	"gyronnyOfSixPerPale": "<polygon points=\"100,0 100,200 200,200 200,157.7 0,42.3 0,157.7 200,42.3 200,0\"/>",
+	"gyronnyOfTenPerFess": "<polygon points=\"0,100 200,100 200,27.3 0,172.7 0,200 67.5,200 132.5,0 67.5,0 132.5,200 200,200 200,172.7 0,27.3\"/>",
+	"gyronnyOfTenPerPale": "<polygon points=\"100,0 100,200 27.3,200 172.7,0 200,0 200,67.5 0,132.5 0,67.5 200,132.5 200,200 172.7,200 27.3,0\"/>",
+	"gyronnyOfTwelve": "<polygon points=\"100,0 100,200 157.7,200 42.3,0\"/><polygon points=\"0,100 200,100 200,157.7 0,42.3\"/><polygon points=\"0,157.7 0,200 42.3,200 157.7,0 200,0 200,42.3\"/>",
 };
 
 const patterns = {
@@ -474,325 +482,468 @@ const patterns = {
 		}" viewBox="0 0 70 120"><rect width="70" height="120" fill="${c1}"/><path d="M 70,0 V 20 L 35,40 m 35,80 V 100 L 35,80 M 0,120 V 100 L 35,80 V 40 L 0,20 V 0" stroke="${c2}" fill="none" stroke-width="3"/></pattern>`,
 };
 
-const getCOA = async (id: string, coa: TLCoA) => {
-	const { division, ordinaries } = coa;
-	const shield = coa.shield && shieldPaths[coa.shield] && shieldPositions[coa.shield]
-		? coa.shield
-		: "heater";
-	// Normalize imported charge names before fetching or referencing their symbols.
-	const charges = coa.charges?.map((charge) =>
-		charge.charge === "eagleTwoHeards"
-			? { ...charge, charge: "eagleTwoHeads" }
-			: charge,
-	);
-	const ordinariesRegular = ordinaries?.filter((o) => !o.above);
-	const ordinariesAboveCharges = ordinaries?.filter((o) => o.above);
-	const shieldPath = (shield && shieldPaths[shield]) || shieldPaths.heater;
-	let tDiv: string | null | undefined = null;
-	if (division) {
-		if (division.t?.includes("-")) {
-			tDiv = division.t.split("-")[1];
-		} else {
-			tDiv = division.t;
-		}
-	}
-
-	const positions = shield && shieldPositions[shield];
-	const sizeModifier = (shield && shieldSize[shield]) || 1;
-	const viewBox = (shield && shieldBox[shield]) || "0 0 500 500";
-
-	const shieldClip = `<clipPath id="${shield}_${id}"><path d="${shieldPath}"/></clipPath>`;
-	const divisionClip = division
-		? `<clipPath id="divisionClip_${id}">${getTemplate(division.division ?? "", division.line as string)}</clipPath>`
-		: "";
-	const loadedCharges = await getCharges({ ...coa, charges }, id, shieldPath);
-	const loadedPatterns = getPatterns(coa, id);
-	const blacklight = `<radialGradient id="backlight_${id}" cx="100%" cy="100%" r="150%"><stop stop-color="#fff" stop-opacity=".3" offset="0"/><stop stop-color="#fff" stop-opacity=".15" offset=".25"/><stop stop-color="#000" stop-opacity="0" offset="1"/></radialGradient>`;
-	const field = `<rect x="0" y="0" width="200" height="200" fill="${clr(coa.t1 as string)}"/>`;
-	const style = `<style>
-      g.secondary,path.secondary {fill: var(--secondary);}
-      g.tertiary,path.tertiary {fill: var(--tertiary);}
-    </style>`;
-
-	const divisionGroup = division ? templateDivision() : "";
-	const overlay = `<path d="${shieldPath}" fill="url(#backlight_${id})" stroke="#333"/>`;
-
-	const svg = `<svg id="${id}" width="500" height="500" viewBox="${viewBox}">
-        <defs>${shieldClip}${divisionClip}${loadedCharges}${loadedPatterns}${blacklight}${style}</defs>
-        <g clip-path="url(#${shield}_${id})">${field}${divisionGroup}${templateAboveAll()}</g>
-        ${overlay}</svg>`;
-
-	return svg;
-
-	function templateDivision() {
-		let svg = "";
-
-		// In field part
-		if (ordinariesRegular) {
-			for (const ordinary of ordinariesRegular) {
-				if (ordinary.divided === "field")
-					svg += templateOrdinary(ordinary, ordinary.t as string);
-				else if (ordinary.divided === "counter")
-					svg += templateOrdinary(ordinary, tDiv as string);
-			}
-		}
-
-		if (charges) {
-			for (const charge of charges) {
-				if (charge.divided === "field")
-					svg += templateCharge(charge, charge.t as string);
-				else if (charge.divided === "counter")
-					svg += templateCharge(charge, tDiv as string);
-			}
-		}
-
-		if (ordinariesAboveCharges) {
-			for (const ordinary of ordinariesAboveCharges) {
-				if (ordinary.divided === "field")
-					svg += templateOrdinary(ordinary, ordinary.t as string);
-				else if (ordinary.divided === "counter")
-					svg += templateOrdinary(ordinary, tDiv as string);
-			}
-		}
-
-		// In division part
-		svg += `<g clip-path="url(#divisionClip_${id})"><rect x="0" y="0" width="200" height="200" fill="${clr(
-			division?.t ?? "",
-		)}"/>`;
-
-		if (ordinariesRegular) {
-			for (const ordinary of ordinariesRegular) {
-				if (ordinary.divided === "division")
-					svg += templateOrdinary(ordinary, ordinary.t as string);
-				else if (ordinary.divided === "counter")
-					svg += templateOrdinary(ordinary, coa.t1 as string);
-			}
-		}
-
-		if (charges) {
-			for (const charge of charges) {
-				if (charge.divided === "division")
-					svg += templateCharge(charge, charge.t as string);
-				else if (charge.divided === "counter")
-					svg += templateCharge(charge, coa.t1 as string);
-			}
-		}
-
-		if (ordinariesAboveCharges) {
-			for (const ordinary of ordinariesAboveCharges) {
-				if (ordinary.divided === "division")
-					svg += templateOrdinary(ordinary, ordinary.t as string);
-				else if (ordinary.divided === "counter")
-					svg += templateOrdinary(ordinary, coa.t1 as string);
-			}
-		}
-
-		svg += "</g>";
-		return svg;
-	}
-
-	function templateAboveAll() {
-		let svg = "";
-
-		if (ordinariesRegular) {
-			for (const ordinary of ordinariesRegular.filter((o) => !o.divided)) {
-				svg += templateOrdinary(ordinary, ordinary.t as string);
-			}
-		}
-
-		if (charges) {
-			for (const charge of charges.filter((o) => !o.divided)) {
-				svg += templateCharge(charge, charge.t as string);
-			}
-		}
-
-		if (ordinariesAboveCharges) {
-			for (const ordinary of ordinariesAboveCharges.filter((o) => !o.divided)) {
-				svg += templateOrdinary(ordinary, ordinary.t as string);
-			}
-		}
-
-		return svg;
-	}
-
-	function templateOrdinary(ordinary: TLOrdinary, tincture: string) {
-		const fill = clr(tincture);
-		let svg = `<g fill="${fill}" stroke="none">`;
-		if (ordinary.ordinary === "bordure")
-			svg += `<path d="${shieldPath}" fill="none" stroke="${fill}" stroke-width="16.7%"/>`;
-		else if (ordinary.ordinary === "orle")
-			svg += `<path d="${shieldPath}" fill="none" stroke="${fill}" stroke-width="5%" transform="scale(.85)" transform-origin="center"/>`;
-		else
-			svg += getTemplate(ordinary.ordinary as string, ordinary.line as string);
-		svg += "</g>";
-		return svg;
-	}
-
-	function templateCharge(
-		charge: TLCharge,
-		tincture: string,
-		secondaryTincture?: string,
-		tertiaryTincture?: string,
-	) {
-		const primary = clr(tincture);
-		const secondary = clr(secondaryTincture ?? charge.t2 ?? tincture);
-		const tertiary = clr(tertiaryTincture ?? charge.t3 ?? tincture);
-		const stroke = charge.stroke ?? "#000";
-
-		const chargePositions = [...new Set(charge.p)].filter(
-			(position) =>
-				(positions as { [key: string]: [number, number] })[position],
-		);
-
-		let svg = `<g fill="${primary}" style="--secondary: ${secondary}; --tertiary: ${tertiary}" stroke="${stroke}">`;
-		for (const p of chargePositions) {
-			const transform = getElTransform(charge, p);
-			svg += `<use href="#${charge.charge}_${id}" transform="${transform}"></use>`;
-		}
-		svg += "</g>";
-		return svg;
-
-		function getElTransform(c: TLCharge, p: string) {
-			const s = (c.size || 1) * sizeModifier;
-			const sx = c.sinister ? -s : s;
-			const sy = c.reversed ? -s : s;
-			let [x, y] = (positions as { [key: string]: [number, number] })[p];
-			x = x - 100 * (sx - 1);
-			y = y - 100 * (sy - 1);
-			const scale = c.sinister || c.reversed ? `${sx} ${sy}` : s;
-			return `translate(${x} ${y}) scale(${scale})`;
-		}
-	}
+// Shield edge groups are used for symmetric compony borders.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/shields.ts
+const shieldSegments: Record<string, number[]> = {
+  baroque: [2,10,9],
+  boeotian: [1,1,1,4,1,1,1,1,4,1],
+  embowed: [1,2,2],
+  fantasy1: [1,2,2,1],
+  fantasy4: [1,4,1],
+  french: [1,2,2],
+  heater: [1,2,2],
+  hessen: [1,4,1,2],
+  horsehead: [6,2],
+  kite: [6,0],
+  oldFrench: [1,2,2],
+  polish: [2,1,2,3,3,2,1,2],
+  renaissance: [4,4,1,2,1],
+  round: [4],
+  spanish: [1,3],
+  swiss: [2,2,2,2],
+  targe: [1,4,3,1,1],
+  targe2: [1,4,2,1],
+  vesicaPiscis: [2,2],
 };
 
-async function getCharges(coa: TLCoA, id: string, shieldPath: string) {
-	const charges = coa.charges ? coa.charges.map((charge) => charge.charge) : []; // add charges
-	// Pattern symbols can be used by the field, division, ordinaries, or charge colours.
-	const tinctures = [
-		coa.t1,
-		coa.division?.t,
-		...(coa.ordinaries ?? []).map((ordinary) => ordinary.t),
-		...(coa.charges ?? []).flatMap((charge) => [charge.t, charge.t2, charge.t3]),
-	];
-	for (const tincture of tinctures) {
-		const semyCharge = semy(tincture ?? "");
-		if (semyCharge) charges.push(semyCharge);
-	}
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/diapers.ts
+const diapers: Record<string, (id: string) => string> = {
+  sulzbach: (id: string) =>
+    `<pattern id="${id}" width=".101" height=".101" viewBox="0 0 100 100" patternTransform="rotate(45)"><g fill="#000" stroke="none" opacity=".08"><circle cx="50" cy="50" r="6"/><circle cx="0" cy="0" r="6"/><circle cx="100" cy="0" r="6"/><circle cx="100" cy="100" r="6"/><circle cx="0" cy="100" r="6"/></g><g fill="none" stroke="#000" stroke-width="4" opacity=".08"><path d="m6 80v-60"/><path d="m20 6h60"/><path d="m94 20v60"/><path d="m80 94h-60"/><path d="m6 6c11.787 2.9106 18.776 10.599 22 22-13.205-3.8261-19.647-11.696-22-22z"/><path d="m28 72c-2.9106 11.787-10.599 18.776-22 22 3.8261-13.205 11.696-19.647 22-22z"/><path d="m94 6c-2.9106 11.787-10.599 18.776-22 22 3.8261-13.205 11.696-19.647 22-22z"/><path d="m72 72c11.787 2.9106 18.776 10.599 22 22-13.205-3.8261-19.647-11.696-22-22z"/></g></pattern>`,
+  sennwald: (id: string) =>
+    `<pattern id="${id}" width=".101" height=".101" viewBox="0 0 100 100" patternTransform="rotate(45)"><g fill="none" stroke="#000" opacity=".2"><path d="M6 6 h88 v88 H6 z"/><path d="M29.8 47c-22.6 1-9.3 35.9 10 23.5-2.6 19 32.2 21.8 25.8-4.4 21 7.7 30.5-26.4 4-24.4C92 21.7 44.4 4.3 47.6 31.2 45 7.4 3.3 26.5 30 46.9z"/><path d="M59.6 45a11 10.5 38.5 11-19 9.5 11 10.5 38.5 1119-9.4z"/></g></pattern>`,
+  tessellation: (id: string) =>
+    `<pattern id="${id}" width=".125" height=".125" viewBox="0 0 84 84"><path fill="#222" opacity=".1" stroke-width="2" fill-rule="evenodd" d="M84 23c-4.417 0-8-3.584-8-7.998V8h-7.002C64.58 8 61 4.42 61 0H23c0 4.417-3.584 8-7.998 8H8v7.002C8 19.42 4.42 23 0 23v38c4.417 0 8 3.584 8 7.998V76h7.002C19.42 76 23 79.58 23 84h38c0-4.417 3.584-8 7.998-8H76v-7.002C76 64.58 79.58 61 84 61V23zM59.05 83H43V66.95c5.054-.5 9-4.764 9-9.948V52h5.002c5.18 0 9.446-3.947 9.95-9H83v16.05c-5.054.5-9 4.764-9 9.948V74h-5.002c-5.18 0-9.446 3.947-9.95 9zm-34.1 0H41V66.95c-5.053-.502-9-4.768-9-9.948V52h-5.002c-5.184 0-9.447-3.946-9.95-9H1v16.05c5.053.502 9 4.768 9 9.948V74h5.002c5.184 0 9.447 3.946 9.95 9zm0-82H41v16.05c-5.054.5-9 4.764-9 9.948V32h-5.002c-5.18 0-9.446 3.947-9.95 9H1V24.95c5.054-.5 9-4.764 9-9.948V10h5.002c5.18 0 9.446-3.947 9.95-9zm34.1 0H43v16.05c5.053.502 9 4.768 9 9.948V32h5.002c5.184 0 9.447 3.946 9.95 9H83V24.95c-5.053-.502-9-4.768-9-9.948V10h-5.002c-5.184 0-9.447-3.946-9.95-9zM50 50v7.002C50 61.42 46.42 65 42 65c-4.417 0-8-3.584-8-7.998V50h-7.002C22.58 50 19 46.42 19 42c0-4.417 3.584-8 7.998-8H34v-7.002C34 22.58 37.58 19 42 19c4.417 0 8 3.584 8 7.998V34h7.002C61.42 34 65 37.58 65 42c0 4.417-3.584 8-7.998 8H50z"/></pattern>`,
+  nourse: (id: string) =>
+    `<pattern id="${id}" width=".25" height=".25" viewBox="0 0 26 26"><g fill="none" stroke="#000" stroke-width="1" opacity=".06"><path d="M26 1h-.2A25 25 0 001 26M25.2 26A25 25 0 000 1"/><path d="M1 0v.2a25 25 0 0025 25"/><path d="M0 25.2h.2A25 25 0 0025.2 0"/><path stroke-width=".4" d="M10.5 10.6h5v5h-5z"/><path stroke-width=".5" d="M11 10c0-3.2 4.1-3.2 4 0M15 16.2c0 3.4-4 3.3-4 0M16.2 11c3.2.2 3.1 4.3 0 4.1M9.9 15.1c-3.3 0-3.3-4 0-4"/><g fill="#000" stroke="none"><circle cx="21.9" cy="19.7" r="1"/><circle cx="20" cy="20.7" r="1"/><circle cx="21.9" cy="21.9" r="1"/><circle cx="5" cy="7.2" r="1"/><circle cx="6.9" cy="6.1" r="1"/><circle cx="5" cy="5" r="1"/><circle cx="21.9" cy="4.9" r="1"/><circle cx="20" cy="6" r="1"/><circle cx="21.9" cy="7.1" r="1"/><circle cx="4.9" cy="22" r="1"/><circle cx="6.9" cy="20.9" r="1"/><circle cx="4.9" cy="19.8" r="1"/><circle cx="12" cy="14.2" r=".9"/><circle cx="14.1" cy="14.2" r=".9"/><circle cx="12" cy="12" r=".9"/><circle cx="14.1" cy="12" r=".9"/><circle cx="1.8" cy="13.1" r=".8"/><circle cx=".9" cy="14.6" r=".8"/><circle cx=".9" cy="11.6" r=".8"/><circle cx="24.3" cy="13.1" r=".8"/><circle cx="25.2" cy="14.6" r=".8"/><circle cx="25.2" cy="11.6" r=".8"/><circle cx="13" cy="24.3" r=".8"/><circle cx="14.6" cy="25.1" r=".8"/><circle cx="11.5" cy="25.1" r=".8"/><circle cx="13" cy="1.8" r=".8"/><circle cx="11.4" cy="1" r=".8"/><circle cx="14.6" cy="1" r=".8"/></g></g></pattern>`
+};
 
-	const uniqueCharges = [...new Set(charges)];
-	const fetchedCharges = await Promise.all(
-		uniqueCharges.map(async (charge) => {
-			if (charge === "inescutcheon")
-				return `<g id="inescutcheon_${id}"><path transform="translate(66 66) scale(.34)" d="${shieldPath}"/></g>`;
-			const fetched = await fetchCharge(charge as TLCharge, id);
-			return fetched;
-		}),
-	);
-	return fetchedCharges.join("");
+// Keep existing pattern artwork; 1.154 gives every tile explicit shield-space dimensions.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/patterns.ts
+const patternSizes: Record<string, [number, number]> = {
+  semy: [25, 25],
+  vair: [25, 50],
+  counterVair: [25, 50],
+  vairInPale: [25, 25],
+  vairEnPointe: [25, 50],
+  vairAncien: [25, 25],
+  potent: [25, 25],
+  counterPotent: [25, 25],
+  potentInPale: [25, 12.5],
+  potentEnPointe: [25, 25],
+  ermine: [25, 25],
+  chequy: [50, 50],
+  lozengy: [25, 25],
+  fusily: [25, 50],
+  pally: [100, 25],
+  barry: [25, 100],
+  gemelles: [25, 25],
+  bendy: [100, 100],
+  bendySinister: [100, 100],
+  palyBendy: [125.16, 71.52],
+  barryBendy: [71.44, 125.02],
+  pappellony: [25, 25],
+  pappellony2: [25, 25],
+  scaly: [25, 25],
+  plumetty: [25, 50],
+  masoned: [25, 25],
+  fretty: [40, 40],
+  grillage: [50, 50],
+  chainy: [33.4, 33.4],
+  maily: [33.4, 33.4],
+  honeycombed: [28.6, 49.028],
+};
+function drawPattern(name: string, id: string, c1: string, c2: string, size: number, charge = ""): string {
+  const [width, height] = patternSizes[name];
+  const markup = patterns[name as keyof typeof patterns](id, c1, c2, size, charge);
+  return markup.replace(/^<pattern\b([^>]*)>/, (_tag, attrs: string) =>
+    `<pattern${attrs.replace(/(\s)(width|height)="[^"]*"/g, (_attr, space: string, key: string) =>
+      `${space + key}="${key === "width" ? width * size : height * size}"`)} patternUnits="userSpaceOnUse">`);
 }
 
-async function fetchCharge(charge: TLCharge, id: string) {
-	const fetched = fetch(`${PATH}${charge}.svg`)
-		.then((res) => {
-			if (res.ok) return res.text();
-			throw new Error("Cannot fetch charge");
-		})
-		.then((text) => {
-			const html = document.createElement("html");
-			html.innerHTML = text;
-			const g = html.querySelector("g");
-			g?.setAttribute("id", `${charge}_${id}`);
-			return g?.outerHTML;
-		})
-		.catch((err) => {
-			console.error(err);
-		});
-	return fetched;
+const SIZE_MODIFIERS: Record<string, number> = { small: 0.8, smaller: 0.5, smallest: 0.25, big: 1.6, bigger: 2 };
+const divisionNames = new Set(["chevronny","gyronny","gyronnyOfSixPerFess","gyronnyOfSixPerPale","gyronnyOfTenPerFess","gyronnyOfTenPerPale","gyronnyOfTwelve","perBend","perBendSinister","perChevron","perChevronReversed","perCross","perFess","perPale","perPile","perSaltire"]);
+const ordinaryNames = new Set(["bar","bend","bendSinister","bendlet","bendletSinister","canton","chevron","chevronReversed","chief","cross","crossParted","fess","fessCotissed","fessDoubleCotissed","flaunches","gemelle","gore","gyron","label","mount","pale","pall","pallReversed","pile","pileInBend","pileInBendSinister","piles","pilesInPoint","point","quarter","saltire","saltireParted","terrace"]);
+
+// Rendering behavior adapted from the pinned AFMG 1.154 renderer.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/renderer.ts
+const round = (value: number) => Math.round(value * 100) / 100;
+const escapeXml = (text: string) => text.replace(/[&<>"]/g, char => `&#${char.charCodeAt(0)};`);
+const attr = (name: string, value: string | number | undefined) => (value ? ` ${name}="${value}"` : "");
+
+function getTemplate(id: string | undefined, line?: string): string {
+  const value = templates[id as keyof typeof templates];
+  const lined = templates[(`${id}Lined`) as keyof typeof templates];
+  if (line && line !== "straight" && Object.keys(lines).includes(line) && typeof lined === "function") return lined(lines[line]);
+  return typeof value === "string" ? value : "";
 }
 
-function getPatterns(coa: TLCoA, id: string) {
-	const isPattern = (string: string) => string.includes("-");
-	const patternsToAdd = [];
-
-	if (coa.t1?.includes("-")) patternsToAdd.push(coa.t1); // add field pattern
-
-	if (coa.division && isPattern(coa.division.t as string))
-		patternsToAdd.push(coa.division.t); // add division pattern
-
-	if (coa.ordinaries)
-		for (const ordinary of coa.ordinaries.filter((ordinary) =>
-			isPattern(ordinary.t as string),
-		)) {
-			patternsToAdd.push(ordinary.t);
-		}
-	// add ordinaries pattern
-
-	if (coa.charges)
-		for (const charge of coa.charges) {
-			// Secondary and tertiary colours can reference patterns too.
-			for (const tincture of [charge.t, charge.t2, charge.t3]) {
-				if (tincture && isPattern(tincture)) patternsToAdd.push(tincture);
-			}
-		}
-
-	if (!patternsToAdd.length) return "";
-
-	return [...new Set(patternsToAdd)]
-		.map((patternString) => {
-			if (!patternString) return null;
-			const [pattern, t1, t2, size] = patternString.split("-");
-			const charge = semy(patternString);
-			if (charge)
-				return patterns.semy(
-					patternString,
-					clr(t1),
-					clr(t2),
-					getSizeMod(size),
-					`${charge}_${id}`,
-				);
-			return patterns[pattern as keyof typeof patterns](
-				patternString,
-				clr(t1),
-				clr(t2),
-				getSizeMod(size),
-				charge as string,
-			);
-		})
-		.join("");
+/** the charge a semy tincture strews, like `mullet` in `semy_of_mullet-or-azure` */
+function semy(tincture: string | undefined): string | null {
+  return tincture?.match(/^semy_of_(.*?)-/)?.[1] ?? null;
 }
 
-function getSizeMod(size: string) {
-	if (size === "small") return 0.8;
-	if (size === "smaller") return 0.5;
-	if (size === "smallest") return 0.25;
-	if (size === "big") return 1.6;
-	return 1;
+/** placement of a charge or ordinary group; a positioned charge is sized per position instead */
+function groupTransform(element: TLCharge | TLOrdinary): string {
+  const positioned = "p" in element && element.p;
+  const { x = 0, y = 0, angle = 0 } = element;
+  const size = positioned ? 1 : (element.size ?? 1);
+  const stretch = positioned ? 0 : (element.stretch ?? 0);
+
+  let sx = size;
+  let sy = size;
+  if (stretch < 0) sx = round(sx * (1 - stretch));
+  else if (stretch > 0) sy = round(sy * (1 + stretch));
+  const dx = round(x - 100 * (sx - 1));
+  const dy = round(y - 100 * (sy - 1));
+
+  let transform = "";
+  if (dx || dy) transform += `translate(${dx} ${dy})`;
+  if (angle) transform += ` rotate(${angle} ${sx * 100} ${sy * 100})`;
+  if (sx !== 1 || sy !== 1) transform += sx === sy ? ` scale(${sx})` : ` scale(${sx} ${sy})`;
+  return transform.trim();
 }
 
-function getTemplate(id: string, line: string) {
-	const linedId = `${id}Lined`;
-	if (!line || line === "straight" || !(linedId in templates))
-		return templates[id as keyof typeof templates];
-	const linePath = lines[line];
-	const templateValue = templates[linedId as keyof typeof templates];
-	if (typeof templateValue === "function") {
-		return templateValue(linePath);
-	}
-	return templateValue;
+function useTransform(charge: TLCharge, [px, py]: [number, number], sizeModifier: number): string {
+  const size = round((charge.size || 1) * sizeModifier);
+  const stretch = charge.stretch ?? 0;
+  let sx = charge.sinister ? -size : size;
+  let sy = charge.reversed ? -size : size;
+  if (stretch < 0) sx = round(sx * (1 - stretch));
+  else if (stretch > 0) sy = round(sy * (1 + stretch));
+  const x = round(px - 100 * (sx - 1));
+  const y = round(py - 100 * (sy - 1));
+
+  let transform = "";
+  if (x || y) transform += `translate(${x} ${y})`;
+  if (sx !== 1 || sy !== 1) transform += sx === sy ? ` scale(${sx})` : ` scale(${sx} ${sy})`;
+  return transform.trim();
 }
 
-// get color or link to pattern
-function clr(tincture: string) {
-	if (colors[tincture]) return colors[tincture];
-	return `url(#${tincture})`;
+function viewBoxOf(box: string, zoom: number): string {
+  const [x0, y0, w0, h0] = box.split(" ").map(Number);
+  const w = Math.round(w0 / zoom);
+  const h = Math.round(h0 / zoom);
+  return `${x0 - w / 2 + 100} ${y0 - h / 2 + 100} ${w} ${h}`;
 }
 
-// get charge is string starts with "semy"
-function semy(string: string) {
-	const isSemy = /^semy/.test(string);
-	if (!isSemy) return false;
-	const match = string.match(/semy_of_(.*?)-/);
-	return match?.[1]; // add null check
+function drawInscription(inscription: TLCoAInscription, pathId: string): string {
+  const { text, font, size, color, path, bold, italic, spacing, shadow } = inscription;
+  const rows = text.split("|");
+  const tspans = rows
+    .map((row, i) => `<tspan x="0" dy="${i > 0 ? 1 : -0.5 * (rows.length - 1)}em">${escapeXml(row)}</tspan>`)
+    .join("");
+  const style = shadow
+    ? ` style="text-shadow: ${shadow.x}px ${shadow.y}px ${shadow.blur}px ${escapeXml(shadow.color)}"`
+    : "";
+
+  const typeface = ` font-family="${escapeXml(font)}" font-size="${size}px" font-weight="${bold ? "bold" : "normal"}" font-style="${italic ? "italic" : "normal"}"`;
+  const label = `<text${attr("letter-spacing", spacing)} fill="${escapeXml(color)}"${typeface} dominant-baseline="middle"${style}><textPath href="#${pathId}" text-anchor="middle" startOffset="50%">${tspans}</textPath></text>`;
+  return `<g transform="translate(100, 100)"><path id="${pathId}" fill="none" d="${escapeXml(path)}"/>${label}</g>`;
+}
+
+// Symmetric border geometry follows the pinned AFMG renderer.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/compony.ts
+const PARAMS: Record<string, number> = { m: 2, l: 2, h: 1, v: 1, c: 6, s: 4, q: 4, t: 2, a: 7, z: 0 };
+
+interface PathSegment {
+  type: string;
+  values: number[];
+}
+
+/** a path's segments with implicit repeats expanded, as SVGPathElement.getPathData() gives them */
+function pathSegments(d: string): PathSegment[] {
+  const segments: PathSegment[] = [];
+  let i = 0;
+  let command = "";
+
+  const skip = () => {
+    while (i < d.length && /[\s,]/.test(d[i])) i++;
+  };
+  const number = () => {
+    skip();
+    const match = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/.exec(d.slice(i));
+    if (!match) throw new Error(`Invalid path at ${i}: ${d}`);
+    i += match[0].length;
+    return +match[0];
+  };
+  const flag = () => {
+    skip();
+    const char = d[i++];
+    if (char !== "0" && char !== "1") throw new Error(`Invalid arc flag at ${i}: ${d}`);
+    return +char;
+  };
+
+  for (skip(); i < d.length; skip()) {
+    if (/[a-z]/i.test(d[i])) command = d[i++];
+    else if (!command) throw new Error(`Invalid path at ${i}: ${d}`);
+
+    const lower = command.toLowerCase();
+    const values = Array.from({ length: PARAMS[lower] }, (_, k) =>
+      lower === "a" && (k === 3 || k === 4) ? flag() : number()
+    );
+    segments.push({ type: command, values });
+
+    if (lower === "z") command = "";
+    else if (lower === "m") command = command === "m" ? "l" : "L";
+  }
+  return segments;
+}
+
+/** dash array splitting a shield outline into compony tiles about `compony` long, symmetric within each edge */
+function componyDashes(shieldPath: string, edges: number[] | undefined, compony: number): number[] {
+  const data = pathSegments(shieldPath);
+  const merge = edges ?? Array(data.length - 2).fill(1);
+  const dashes = [0];
+  let counter = 1;
+  let start = `M${data[0].values[0]},${data[0].values[1]}`;
+
+  for (const count of merge) {
+    if (count === 0) continue;
+    let path = start;
+    for (let j = 0; j < count; j++) path += data[counter + j].type + data[counter + j].values;
+    counter += count;
+
+    const segment = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    segment.setAttribute("d", path);
+    if (typeof segment.getTotalLength !== "function") return []; // no geometry outside a browser
+    const length = segment.getTotalLength();
+    const end = segment.getPointAtLength(length);
+    start = `M${end.x},${end.y}`;
+
+    // an odd number of dashes per edge keeps it symmetric, unless the outline is one edge
+    let numDashes =
+      merge.length === 1 ? Math.round(length / compony / 2) * 2 : Math.round(0.5 + length / compony / 2) * 2 - 1;
+    const dashLength = length / numDashes;
+    dashes.push((dashes.pop() ?? 0) + dashLength);
+    while (--numDashes > 0) dashes.push(dashLength);
+  }
+
+  dashes.pop();
+  dashes.push(1000); // closes the outline
+  if (dashes.length % 2) dashes.push(0);
+  return dashes;
+}
+
+const getCOA = async (id: string, coa: TLCoA, customIcons: readonly TLCustomIcon[] = []) => {
+  if (coa.icon) return renderPicture(id, coa, customIcons);
+  const { ordinaries = [], inscriptions = [] } = coa;
+  const fieldTincture = coa.t1 ?? "argent";
+  const charges = (coa.charges ?? []).map((charge) => charge.charge === "eagleTwoHeards" ? { ...charge, charge: "eagleTwoHeads" } : charge);
+  const shield = coa.shield && Object.keys(shieldPaths).includes(coa.shield) ? coa.shield : "heater";
+  const shieldPath = shieldPaths[shield];
+  const box = shieldBox[shield] ?? "0 0 200 200";
+  const sizeModifier = shieldSize[shield] ?? 1;
+  const segments = shieldSegments[shield];
+  const positions = shieldPositions[shield] ?? shieldPositions.spanish;
+  const division =
+    coa.division && divisionNames.has(coa.division.division ?? "") && coa.division.division !== "no" ? coa.division : null;
+  const ordinariesRegular = ordinaries.filter(o => !o.above);
+  const ordinariesAbove = ordinaries.filter(o => o.above);
+
+  const patternDefs = new Map<string, string>();
+  const chargeNames = new Set<string>();
+  let masks = 0;
+
+  // a color, or a link to a pattern defined for this emblem
+  const clr = (tincture: string | undefined): string | undefined => {
+    if (!tincture) return undefined;
+    if (Object.keys(colors).includes(tincture)) return colors[tincture];
+    if (/^#[\da-f]{3,8}$/i.test(tincture)) return tincture;
+    const [pattern, t1, t2, size] = tincture.split("-");
+    const charge = semy(tincture);
+    if (!charge && !Object.keys(patternSizes).includes(pattern)) return "#000000"; // unknown tincture
+
+    const patternId = `${tincture.replaceAll("#", "")}_${id}`; // hex colours are tinctures too: `vair-#228833-or`
+    if (!patternDefs.has(patternId)) {
+      const [c1, c2] = [clr(t1) ?? "#000000", clr(t2) ?? "#000000"];
+      const sizeModifier = Object.keys(SIZE_MODIFIERS).includes(size) ? SIZE_MODIFIERS[size] : 1;
+      if (charge) chargeNames.add(charge);
+      const markup = charge
+        ? drawPattern("semy", patternId, c1, c2, sizeModifier, `${charge}_${id}`)
+        : drawPattern(pattern, patternId, c1, c2, sizeModifier);
+      patternDefs.set(patternId, markup);
+    }
+    return `url(#${patternId})`;
+  };
+
+  const drawCharge = (charge: TLCharge, t = clr(charge.t), t2?: string, t3?: string, hideBackground = false) => {
+    const storedName = charge.charge ?? "";
+    const name = storedName === "inescutcheon" ? `inescutcheon${shield[0].toUpperCase()}${shield.slice(1)}` : storedName;
+    chargeNames.add(name);
+    const stroke = charge.stroke || "#000";
+    const style = `--tincture: ${t}; --secondary: ${t2 || t}; --tertiary: ${t3 || t}; --stroke: ${stroke}; --background: ${hideBackground ? "none" : "block"}`;
+    const uses = [...new Set(charge.p ?? "e")]
+      .filter(p => positions[p])
+      .map(p => `<use href="#${name}_${id}"${attr("transform", useTransform(charge, positions[p], sizeModifier))}/>`)
+      .join("");
+    return `<g fill="${t}"${attr("transform", groupTransform(charge))} stroke="${escapeXml(stroke)}" style="${escapeXml(style)}">${uses}</g>`;
+  };
+
+  const drawOrdinary = (ordinary: TLOrdinary, t = clr(ordinary.t), t2 = t) => {
+    const { ordinary: type, gyronny, compony } = ordinary;
+    const width = type === "bordure" ? 33.3 : type === "orle" ? 10 : ordinary.strokeWidth || 1;
+
+    let content: string;
+    if (type === "bordure" || type === "orle") {
+      const transform = type === "orle" ? ` transform="translate(15 15) scale(.85)"` : "";
+      const outline = `<path d="${shieldPath}" fill="none" stroke="${t}"${transform}/>`;
+      if (gyronny) {
+        const count = Math.round(gyronny / 2) * 2;
+        const angle = (2 * Math.PI) / count;
+        const point = (k: number) =>
+          `${round(100 + Math.cos(k * angle) * 200)},${round(100 + Math.sin(k * angle) * 200)}`;
+        const sectors = Array.from(
+          { length: count / 2 },
+          (_, i) => `<polygon points="100,100 ${point(2 * i)} ${point(2 * i + 1)}"/>`
+        ).join("");
+        const maskId = `mask${masks++}_${id}`;
+        content = `<mask id="${maskId}"><path d="${shieldPath}" fill="none" stroke="white"/></mask>${outline}<g fill="${t2}" mask="url(#${maskId})"${transform}>${sectors}</g>`;
+      } else if (compony) {
+        const dashes = componyDashes(shieldPath, segments, compony).map(dash => Math.round(dash * 1000) / 1000);
+        const tiles = `<path d="${shieldPath}" fill="none" stroke="${t2}" stroke-dasharray="${dashes.join(" ")}"${transform}/>`;
+        content = outline + (dashes.length ? tiles : "");
+      } else {
+        content = outline;
+      }
+    } else {
+      if (!ordinaryNames.has(type ?? "")) return "";
+      content = getTemplate(type, ordinary.line);
+    }
+
+    const stroke = escapeXml(ordinary.stroke || "none");
+    return `<g fill="${t}" stroke="${stroke}" stroke-width="${width}"${attr("transform", groupTransform(ordinary))}>${content}</g>`;
+  };
+
+  const own = (charge: TLCharge, hide = false) =>
+    drawCharge(charge, clr(charge.t), clr(charge.t2), clr(charge.t3), hide);
+  const drawCharges = (test: (charge: TLCharge) => boolean, hide = false) =>
+    charges
+      .filter(test)
+      .map(charge => own(charge, hide))
+      .join("");
+
+  // a divided part draws its own elements and the counterchanged ones in the other part's tincture
+  const partOrdinaries = (list: TLOrdinary[], part: "field" | "division", counter: string | undefined) =>
+    list
+      .filter(o => o.divided === part || o.divided === "counter")
+      .map(o => (o.divided === part ? drawOrdinary(o, clr(o.t), clr(o.t2)) : drawOrdinary(o, clr(counter))))
+      .join("");
+  const partCharges = (part: "field" | "division", counter: string | undefined, hide: boolean) =>
+    charges
+      .filter(c => (c.divided === part || c.divided === "counter") && (!hide || c.layered))
+      .map(c => (c.divided === part ? own(c, hide) : drawCharge(c, clr(counter), undefined, undefined, hide)))
+      .join("");
+
+  const diaper = coa.diaper && Object.keys(diapers).includes(coa.diaper) ? coa.diaper : null;
+  const plainField = !fieldTincture.includes("-");
+  const plainDivision = !division?.t?.includes("-");
+  const diaperType = !diaper
+    ? null
+    : plainField && plainDivision
+      ? "overall"
+      : plainField
+        ? "field"
+        : plainDivision
+          ? "division"
+          : null;
+  const diaperRect = (type: string) =>
+    diaperType === type
+      ? `<rect class="diaper" x="0" y="0" width="200" height="200" fill="url(#diaper_${id})" style="pointer-events: none"/>`
+      : "";
+
+  const below =
+    drawCharges(c => c.outside === "below" || c.outside === "around") +
+    drawCharges(c => c.outside === "below" && !!c.layered, true);
+
+  const field = `<rect x="0" y="0" width="200" height="200" fill="${clr(fieldTincture)}"/>`;
+
+  let divided = "";
+  if (division) {
+    divided += partOrdinaries(ordinariesRegular, "field", division.t);
+    divided += diaperRect("field");
+    divided += partCharges("field", division.t, false) + partCharges("field", division.t, true);
+    divided += partOrdinaries(ordinariesAbove, "field", division.t);
+
+    divided += `<g clip-path="url(#division_${id})"><rect x="0" y="0" width="200" height="200" fill="${clr(division.t)}"/>`;
+    divided += partOrdinaries(ordinariesRegular, "division", fieldTincture);
+    divided += diaperRect("division");
+    divided += partCharges("division", fieldTincture, false) + partCharges("division", fieldTincture, true);
+    divided += partOrdinaries(ordinariesAbove, "division", fieldTincture);
+    divided += "</g>";
+  }
+
+  const onField = (c: TLCharge) => !c.outside && (!c.divided || !division);
+  const overall =
+    ordinariesRegular
+      .filter(o => !o.divided)
+      .map(o => drawOrdinary(o, clr(o.t), clr(o.t2)))
+      .join("") +
+    diaperRect("overall") +
+    drawCharges(onField) +
+    drawCharges(c => onField(c) && !!c.layered, true) +
+    ordinariesAbove
+      .filter(o => !o.divided)
+      .map(o => drawOrdinary(o, clr(o.t), clr(o.t2)))
+      .join("");
+
+  const above =
+    drawCharges(c => c.outside === "above") +
+    drawCharges(c => (c.outside === "above" && !!c.layered) || c.outside === "around", true);
+
+  const written = inscriptions
+    .map((inscription, i) => drawInscription(inscription, `inscription${i}_${id}`))
+    .join("");
+
+  const shieldClip = `<clipPath id="shield_${id}"><path d="${shieldPath}"/></clipPath>`;
+  const divisionClip = division
+    ? `<clipPath id="division_${id}">${getTemplate(division.division, division.line)}</clipPath>`
+    : "";
+  const diaperDef = diaperType && diaper ? diapers[diaper](`diaper_${id}`) : "";
+  const backlight = `<radialGradient id="backlight_${id}" cx="100%" cy="100%" r="150%"><stop stop-color="#fff" stop-opacity=".3" offset="0"/><stop stop-color="#fff" stop-opacity=".15" offset=".25"/><stop stop-color="#000" stop-opacity="0" offset="1"/></radialGradient>`;
+  const overlay = `<path d="${shieldPath}" fill="url(#backlight_${id})" stroke="#333"/>`;
+
+  const loadedCharges = await Promise.all([...chargeNames].map((charge) => fetchCharge(charge, id, customIcons, shield)));
+  const defs = shieldClip + divisionClip + loadedCharges.join("") + [...patternDefs.values()].join("");
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" id="${id}" width="200" height="200" viewBox="${viewBoxOf(box, coa.zoom || 1)}">
+      <defs>${defs}${diaperDef}${backlight}</defs>
+      ${below}<g clip-path="url(#shield_${id})">${field}${divided}${overall}</g>${overlay}${above}${written}</svg>`;
+
+  return svg;
+};
+
+async function fetchCharge(charge: string, id: string, customIcons: readonly TLCustomIcon[], shield: string) {
+  if (charge.startsWith("inescutcheon")) {
+    const named = charge.slice("inescutcheon".length);
+    const name = named ? named[0].toLowerCase() + named.slice(1) : shield;
+    const shape = Object.keys(shieldPaths).includes(name) ? name : shield;
+    return `<g id="${escapeXml(charge)}_${id}"><path transform="translate(67 67) scale(.33)" d="${shieldPaths[shape]}"/></g>`;
+  }
+  const reference = await chargeIconReference(charge);
+  const symbol = await createMapIconSymbol(reference, `charge-art-${id}-${charge}`, customIcons);
+  const paint = reference.startsWith("custom-") ? ' stroke="none"'
+    : reference.startsWith("charges-") || reference.startsWith("glyph-") ? ""
+    : ' style="stroke: var(--tincture)"';
+  return `${symbol.outerHTML}<g id="${charge}_${id}"><use href="#${symbol.id}" x="60" y="60" width="80" height="80"${paint}/></g>`;
+}
+
+// A whole-emblem picture uses the same shared artwork as goods, markers and relief.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/renderers/emblems/renderer.ts
+async function renderPicture(id: string, coa: TLCoA, customIcons: readonly TLCustomIcon[]) {
+  const symbol = await createMapIconSymbol(coa.icon ?? "", `picture-art-${id}`, customIcons);
+  const shape = coa.shield && Object.keys(shieldPaths).includes(coa.shield) ? shieldPaths[coa.shield] : undefined;
+  const viewBox = shape && coa.shield ? shieldBox[coa.shield] ?? "0 0 200 200" : "0 0 200 200";
+  const clip = shape ? `<clipPath id="picture-clip-${id}"><path d="${shape}"/></clipPath>` : "";
+  const gradient = shape ? `<radialGradient id="picture-light-${id}" cx="100%" cy="100%" r="150%"><stop stop-color="#fff" stop-opacity=".3" offset="0"/><stop stop-color="#fff" stop-opacity=".15" offset=".25"/><stop stop-color="#000" stop-opacity="0" offset="1"/></radialGradient>` : "";
+  const paint = coa.icon?.startsWith("charges-") ? ' fill="#d7374a" stroke="#000"'
+    : /^(burgs|ports)-/.test(coa.icon ?? "") ? ' fill="#ffffff" stroke="#3e3e4b"'
+    : coa.icon?.startsWith("goods-") ? ' stroke="#000" stroke-width="2"'
+    : coa.icon?.startsWith("relief-") ? ' stroke="#5c5c70"'
+    : coa.icon?.startsWith("glyph-") ? ' fill="currentColor"' : "";
+  const picture = `<use href="#${symbol.id}" width="200" height="200"${paint}/>`;
+  const content = shape ? `<g clip-path="url(#picture-clip-${id})">${picture}</g><path d="${shape}" fill="url(#picture-light-${id})" stroke="#333"/>` : picture;
+  return `<svg xmlns="http://www.w3.org/2000/svg" id="${id}" width="200" height="200" viewBox="${viewBox}"><defs>${symbol.outerHTML}${clip}${gradient}</defs>${content}</svg>`;
 }
 
 export default getCOA;

@@ -1,3 +1,4 @@
+import { GoodLabel } from "../../../icons/MapIcon";
 import type { Tag } from "../../../../definitions/Common";
 import type { TLTradeEntry } from "../../../../definitions/TerraLogger";
 import {
@@ -252,6 +253,9 @@ function TradeListEditor<TSource extends AtlasSourceType>({
 								options={economy?.goods ?? []}
 								value={resolveTradeGood(item, economy?.goods) ?? null}
 								getOptionLabel={(good) => `${good.name} (#${good.id})`}
+								renderOption={({ key, ...props }, good) => (
+									<li key={key} {...props}><GoodLabel good={good}>{`${good.name} (#${good.id})`}</GoodLabel></li>
+								)}
 								isOptionEqualToValue={(option, value) => option.id === value.id}
 								onChange={(_, good) => {
 									if (good)
@@ -304,6 +308,9 @@ function TradeListEditor<TSource extends AtlasSourceType>({
 								options={economy?.goods ?? []}
 								value={resolveTradeGood(item, economy?.goods) ?? null}
 								getOptionLabel={(good) => `${good.name} (#${good.id})`}
+								renderOption={({ key, ...props }, good) => (
+									<li key={key} {...props}><GoodLabel good={good}>{`${good.name} (#${good.id})`}</GoodLabel></li>
+								)}
 								isOptionEqualToValue={(option, value) => option.id === value.id}
 								onChange={(_event, good) => {
 									const currentGood = resolveTradeGood(item, economy?.goods);

@@ -59,7 +59,6 @@ export function parseBiomes(section: string | undefined): AFMGBiome[] {
       typeof biome.habitability !== "number" || !Number.isFinite(biome.habitability) ||
       typeof biome.iconsDensity !== "number" || !Number.isFinite(biome.iconsDensity) ||
       typeof biome.cost !== "number" || !Number.isFinite(biome.cost) ||
-      !Array.isArray(biome.icons) || !biome.icons.every((icon) => typeof icon === "string") ||
       (biome.removed !== undefined && typeof biome.removed !== "boolean")) {
       throw invalid();
     }
@@ -72,9 +71,27 @@ export function parseBiomes(section: string | undefined): AFMGBiome[] {
       color: biome.color,
       habitability: biome.habitability,
       iconsDensity: biome.iconsDensity,
-      icons: biome.icons as string[],
+      icons: readBiomeIcons(biome.icons, index),
       cost: biome.cost,
       ...(typeof biome.removed === "boolean" ? { removed: biome.removed } : {}),
     };
   });
+}
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/generators/relief-generator.ts
+function readBiomeIcons(value: unknown, index: number): AFMGBiome["icons"] {
+  const invalid = () => new Error(`Invalid AFMG biome icon pool at section 3, index ${index}.`);
+  if (Array.isArray(value)) {
+    if (!value.every((icon) => typeof icon === "string")) throw invalid();
+    return [...value];
+  }
+  if (!value || typeof value !== "object") throw invalid();
+  return Object.fromEntries(Object.entries(value).map(([icon, raw]) => {
+    if (!icon.trim() || !raw || typeof raw !== "object" || Array.isArray(raw)) throw invalid();
+    const entry = raw as Record<string, unknown>;
+    if (typeof entry.weight !== "number" || !Number.isFinite(entry.weight) || entry.weight <= 0 ||
+      (entry.size !== undefined && (typeof entry.size !== "number" ||
+        !Number.isFinite(entry.size) || entry.size <= 0))) throw invalid();
+    return [icon, { weight: entry.weight, ...(entry.size === undefined ? {} : { size: entry.size }) }];
+  }));
 }

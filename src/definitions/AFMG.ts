@@ -7,7 +7,7 @@ type AFMGBiome = {
   color: string;
   habitability: number;
   iconsDensity: number;
-  icons: string[];
+  icons: string[] | Record<string, { weight: number; size?: number }>;
   cost: number;
   removed?: boolean;
 };
@@ -92,22 +92,7 @@ type City = {
   capital: number; //if burg is a capital, 0 if not (each state has only 1 capital)
   cell: number; // burg cell id. One cell can have only one burg
   citadel: number; //if burg has a castle, 0 if not. Used for MFCG
-  coa: {
-    // emblem object, data model is the same as in Armoria and covered in API documentation. The only additional fields are optional size: number, x: number and y: number that controls the emblem position on the map (if it's not default). If emblem is loaded by user, then the value is { custom: true } and cannot be displayed in Armoria
-    t1: string;
-    division: {
-      division: string;
-      t: string;
-      line: string;
-    };
-    charges: {
-      charge: string;
-      t: string;
-      p: string;
-      size: number;
-    }[];
-    shield: string;
-  };
+  coa?: AFMGEmblem;
   culture: number; // burg culture id
   feature: number; // burg feature id (id of a landmass)
   i: number; // burg id, always equal to the array index
@@ -145,22 +130,7 @@ type Country = {
   }[];
   cells: number; // number of cells within the state
   center: number; // cell id of state center (initial cell)
-  coa: {
-    // emblem object, data model is the same as in Armoria and covered in API documentation. The only additional fields are optional size: number, x: number and y: number that controls the emblem position on the map (if it's not default). If emblem is loaded by user, then the value is { custom: true } and cannot be displayed in Armoria
-    t1: string;
-    division: {
-      division: string;
-      t: string;
-      line: string;
-    };
-    charges: {
-      charge: string;
-      t: string;
-      p: string;
-      size: number;
-    }[];
-    shield: string;
-  };
+  coa?: AFMGEmblem;
   color: string; // state color in hex (e.g. #45ff12) or link to hatching pattern (e.g. url(#hatch7))
   culture: number; // state culture id (equals to initial cell culture)
   diplomacy: string[]; // diplomatic relations status for all states. 'x' for self and neutrals. Element 0 (neutrals) diplomacy is used differently and contains wars story as string[][]
@@ -250,22 +220,7 @@ declare type Province = {
   burgs: number[]; // id of burgs within the province
   cells: number; // number of cells within the province
   center: number; // cell id of province center (initial cell)
-  coa: {
-    // emblem object, data model is the same as in Armoria and covered in API documentation. The only additional fields are optional size: number, x: number and y: number that controls the emblem position on the map (if it's not default). If emblem is loaded by user, then the value is { custom: true } and cannot be displayed in Armoria
-    t1: string;
-    division: {
-      division: string;
-      t: string;
-      line: string;
-    };
-    charges: {
-      charge: string;
-      t: string;
-      p: string;
-      size: number;
-    }[];
-    shield: string;
-  };
+  coa?: AFMGEmblem;
   color: string; // province color in hex (e.g. #45ff12) or link to hatching pattern (e.g. url(#hatch7))
   formName: string; // string form name, used to get province fullName
   fullName: string; // full state name. Combination of the proper name and province formName
@@ -356,11 +311,18 @@ type AFMGRenderingSource = {
   sections: Partial<Record<number, string>>;
 };
 
-declare interface AFMGReliefIcon {
-  icon: string;
-  x: number;
-  y: number;
-  s: number;
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/generators/relief-generator.ts
+declare type AFMGReliefIcon = { x: number; y: number; s: number } & (
+  | { icon: string }
+  | { type: string; variant?: number; set?: string }
+);
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/components/icons.ts
+declare interface AFMGCustomIcon {
+  id: string;
+  kind: "svg" | "image";
+  content: string;
+  viewBox: string;
 }
 
 declare interface AFMGLayersState {
@@ -409,14 +371,29 @@ declare interface AFMGTravelRoute {
   label?: AFMGLabel;
 }
 
-// https://github.com/Azgaar/Fantasy-Map-Generator/blob/356f1c8088aba49bd41d837be4732d765a574728/src/types/emblems.ts
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/354eeaa7a6aa6e0e57abb8e2f5af5e62cef8aab4/src/types/emblems.ts
 declare interface AFMGEmblem {
+  // Legacy saved SVGs use custom; 1.154 picture emblems use a library icon.
+  icon?: string;
   custom?: boolean;
   size?: number;
   x?: number;
   y?: number;
   shield?: string;
   t1?: string;
+  diaper?: string;
+  zoom?: number;
+  inscriptions?: {
+    text: string;
+    font: string;
+    size: number;
+    color: string;
+    path: string;
+    bold?: boolean;
+    italic?: boolean;
+    spacing?: number;
+    shadow?: { x: number; y: number; blur: number; color: string };
+  }[];
   division?: { division: string; t: string; line?: string };
   ordinaries?: {
     ordinary: string;
@@ -424,6 +401,16 @@ declare interface AFMGEmblem {
     line?: string;
     divided?: string;
     above?: boolean;
+    t2?: string;
+    size?: number;
+    stretch?: number;
+    x?: number;
+    y?: number;
+    angle?: number;
+    stroke?: string;
+    strokeWidth?: number;
+    compony?: number;
+    gyronny?: number;
   }[];
   charges?: {
     charge: string;
@@ -435,6 +422,12 @@ declare interface AFMGEmblem {
     size?: number;
     sinister?: number | boolean;
     reversed?: number | boolean;
+    stretch?: number;
+    x?: number;
+    y?: number;
+    angle?: number;
+    layered?: number | boolean;
+    outside?: "above" | "below" | "around";
     divided?: string;
   }[];
 }
@@ -527,6 +520,7 @@ declare interface MapInfo {
       era: string;
       eraShort: string;
       militaryTypes: MilitaryType[];
+      customIcons?: AFMGCustomIcon[];
     };
     hideLabels: number;
     stylePreset: string;

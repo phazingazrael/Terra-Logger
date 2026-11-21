@@ -1,3 +1,4 @@
+import { GoodLabel } from "../../icons/MapIcon";
 import { Fragment } from "react";
 import {
 	Box,
@@ -115,7 +116,7 @@ export function EconomySummary({
 	];
 
 	function goodName(id: number) {
-		return goods.get(id)?.name ?? `Unknown good #${id}`;
+		return <GoodLabel good={goods.get(id)}>{goods.get(id)?.name ?? `Unknown good #${id}`}</GoodLabel>;
 	}
 	function quantity(units: number, goodId: number) {
 		const unit = goods.get(goodId)?.unit;
@@ -143,12 +144,12 @@ export function EconomySummary({
 						{keyEconomyRows(entries, (entry) => JSON.stringify([entry.source, entry.good])).map(({ item: entry, key }) => (
 							<ListItem key={key} disableGutters>
 								<ListItemText
-									primary={formatTradeEntry(
+									primary={<GoodLabel good={"goodId" in entry.good ? goods.get(entry.good.goodId) : undefined}>{formatTradeEntry(
 										entry,
 										"goodId" in entry.good
 											? goods.get(entry.good.goodId)
 											: undefined,
-									)}
+									)}</GoodLabel>}
 									secondary={
 										entry.source === "afmg"
 											? "Imported from AFMG"

@@ -31,7 +31,15 @@ export const mutateCities = async (
 			newCity._id = uuidv7(); // unique id,
 			newCity.aliases = [newCity.name];
 			newCity.capital = !!city.capital; // if city is capital
-			newCity.coa = city.coa; // set CoA data
+			newCity.coa = city.coa ? {
+				...city.coa,
+				charges: city.coa.charges?.map((charge) => ({
+					...charge,
+					sinister: charge.sinister === undefined ? undefined : Boolean(charge.sinister),
+					reversed: charge.reversed === undefined ? undefined : Boolean(charge.reversed),
+					layered: charge.layered === undefined ? undefined : Boolean(charge.layered),
+				})),
+			} : undefined; // set CoA data
 			newCity.country.id = city.state; // set country id,
 			newCity.defenses = "";
 			newCity.description = ""; // no description
@@ -65,7 +73,7 @@ export const mutateCities = async (
 
 			if (city.coa) {
 				if ((city.coa as unknown as { custom: boolean }).custom !== true) {
-					const coa = city.coa;
+					const coa = newCity.coa;
 
 					try {
 						const genCoa = generate();
@@ -73,8 +81,8 @@ export const mutateCities = async (
 							typeof coa === "object" &&
 							coa !== null &&
 							Object.keys(coa).length > 0
-								? await getCOA(String(city.i), coa)
-								: await getCOA(String(city.i), genCoa);
+								? await getCOA(String(city.i), coa ?? {}, data.settings.options.customIcons)
+								: await getCOA(String(city.i), genCoa, data.settings.options.customIcons);
 
 						newCity.coaSVG = svg;
 					} catch (error) {
@@ -115,7 +123,7 @@ export const mutateCities = async (
 					// Keep requests sequential to avoid flooding the coat-of-arms service.
 					// react-doctor-disable-next-line react-doctor/async-await-in-loop
 					const genCoa = generate();
-					const svg = await getCOA(String(city.i), genCoa);
+					const svg = await getCOA(String(city.i), genCoa, data.settings.options.customIcons);
 
 					newCity.coaSVG = svg;
 				} catch (error) {

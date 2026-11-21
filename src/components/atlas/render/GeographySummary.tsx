@@ -1,3 +1,4 @@
+import { BiomeIcons } from "../../icons/MapIcon";
 import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import type { AtlasRenderContext } from "../../../definitions/Atlas";
 import type { TLCity, TLCountry } from "../../../definitions/TerraLogger";
@@ -9,8 +10,8 @@ export function GeographySummary({ context }: { context: AtlasRenderContext }) {
   if (!data?.geography) return <p>Reimport this map to include its biome assignments.</p>;
   if (context.sourceType === "city") {
     const biome = cityBiome(context.entity as TLCity, data);
-    return biome ? <Chip variant="outlined" label={biome.name}
-      icon={<Box component="span" sx={{ bgcolor: biome.color, width: 12, height: 12, borderRadius: "50%" }} />} />
+    return biome ? <Box><Chip variant="outlined" label={biome.name}
+      icon={<Box component="span" sx={{ bgcolor: biome.color, width: 12, height: 12, borderRadius: "50%" }} />} /><BiomeIcons biome={biome} /></Box>
       : <p>No biome assignment is available for this City.</p>;
   }
   const rows = countryBiomeComposition((context.entity as TLCountry).id, data);
@@ -23,7 +24,7 @@ export function GeographySummary({ context }: { context: AtlasRenderContext }) {
         <Table size="small" aria-label="Country biome composition">
           <TableHead><TableRow><TableCell>Biome</TableCell><TableCell align="right">Cells</TableCell><TableCell align="right">Coverage</TableCell></TableRow></TableHead>
           <TableBody>{rows.map((row) => <TableRow key={row.id}>
-            <TableCell><Box component="span" sx={{ display: "inline-block", bgcolor: row.biome?.color, width: 10, height: 10, borderRadius: "50%", mr: 1 }} />{row.biome?.name ?? "Unknown biome"}</TableCell>
+            <TableCell><Box component="span" sx={{ display: "inline-block", bgcolor: row.biome?.color, width: 10, height: 10, borderRadius: "50%", mr: 1 }} />{row.biome?.name ?? "Unknown biome"}<BiomeIcons biome={row.biome} /></TableCell>
             <TableCell align="right">{row.count.toLocaleString()}</TableCell>
             <TableCell align="right">{row.percent.toFixed(1)}%</TableCell>
           </TableRow>)}</TableBody>

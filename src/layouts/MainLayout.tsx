@@ -14,10 +14,11 @@ import { ProdAnalytics } from "../analytics";
 import KaushanScript from "../assets/fonts/KaushanScript-Regular.ttf";
 import Icon from "../assets/icon.png";
 import MainNav from "../components/MainNav";
+import { MapIconProvider } from "../components/icons/MapIcon";
 import NavTrail from "../components/navTrail";
 import { ContentMain } from "../components/Styled/contentMain";
 import { getAppSettings } from "../db/appSettings";
-import { useDB } from "../db/DataContext";
+import { useActiveMap, useDB } from "../db/DataContext";
 import { getFullStore } from "../db/interactions";
 import type { MapInf } from "../definitions/TerraLogger";
 
@@ -89,6 +90,7 @@ const dark = createTheme({
 function MainLayout() {
 	const [mapsList, setMapsList] = useState<MapInf[]>([]);
 	const { activeMapId } = useDB();
+	const iconMap = useActiveMap<MapInf>();
 	const [themeName, setThemeName] = useState<"light" | "dark">("light");
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -160,7 +162,7 @@ function MainLayout() {
 		}
 	}, [activeMapId, location.pathname, navigate]);
 
-	return (
+	const layout = (
 		<ThemeProvider theme={selectedTheme}>
 			<AppBar position="static" className="TerraLogger-Header">
 				<Toolbar disableGutters>
@@ -225,6 +227,7 @@ function MainLayout() {
 			</Container>
 		</ThemeProvider>
 	);
+	return <MapIconProvider map={iconMap}>{layout}</MapIconProvider>;
 }
 
 export default MainLayout;

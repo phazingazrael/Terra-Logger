@@ -370,6 +370,12 @@
   margin-bottom: 10px;
 }
 
+.atlas-block--geographySummary img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: none !important;
+}
+
 /* City Page */
 
 /* Section Widths */

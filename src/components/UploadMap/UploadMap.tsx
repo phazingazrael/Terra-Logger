@@ -365,7 +365,7 @@ function UploadMap({
 		updateUploadToast("Parsing map data...", 25);
 
 		uploadPhase(diagnostics, "Parsing map sections");
-		const parsedMap = parseLoadedData(mapFile);
+		const parsedMap = await parseLoadedData(mapFile);
 		for (const message of parsedMap.renderingIssues) {
 			addUploadIssue(diagnostics, {
 				severity: "warning",

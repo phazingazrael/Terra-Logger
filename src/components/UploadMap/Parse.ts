@@ -20,7 +20,7 @@ import {
 
 
 
-export const parseLoadedData = (data: string[]) => {
+export const parseLoadedData = async (data: string[]) => {
   // Parse Map Parameters //
 
   let params: string[];
@@ -329,9 +329,10 @@ export const parseLoadedData = (data: string[]) => {
     // Replace <image> hrefs inside <pattern id="oceanic"> with provided base64 payloads
     inlinePatternImages(svgElement as unknown as SVGSVGElement, b64Imgs);
 
-    renderingIssues.push(...restoreSvgLayers(
+    renderingIssues.push(...await restoreSvgLayers(
       svgElement as unknown as SVGSVGElement,
       renderingSource,
+      settings.options.customIcons,
     ));
     renderingIssues.push(...restoreSvgFonts(
       svgElement as unknown as SVGSVGElement,
