@@ -18,6 +18,7 @@ const stores = {
 	note: "notes",
 	npc: "npcs",
 	era: "eras",
+	developmentalEra: "developmentalEras",
 } as const;
 
 export function AtlasView({

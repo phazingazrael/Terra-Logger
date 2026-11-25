@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: We're modifying DB, any could be accepted. */
-import { saveMapEra } from "./eras";
-import type { TLMapEra } from "../definitions/History";
+import { saveDevelopmentalEra, removeDevelopmentalEra, saveMapEra } from "./eras";
+import type { TLDevelopmentalEra, TLMapEra } from "../definitions/History";
 import type { AtlasMapSave } from "../definitions/Atlas";
 // src/db/client.ts
 import { ensurePersistentNPCFields } from "../components/NPC/persistence/normalize";
@@ -123,6 +123,10 @@ export async function addAndCache(
 	activeMapId: string | null,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(data as TLNPC) : data;
+	if (store === "developmentalEras") {
+		await saveDevelopmentalEra(prepared.mapId, prepared as TLDevelopmentalEra, null);
+		return;
+	}
 	if (store === "eras") {
 		await saveMapEra(prepared.mapId, prepared as TLMapEra, null);
 		return;
@@ -141,6 +145,11 @@ export async function updateAndCache(
 	economy?: AtlasMapSave,
 ): Promise<void> {
 	const prepared = store === "npcs" ? ensurePersistentNPCFields(updated as TLNPC) : updated;
+	if (store === "developmentalEras") {
+		if (prepared._id !== key) throw new Error("Developmental-era identity does not match the saved record.");
+		await saveDevelopmentalEra(prepared.mapId, prepared as TLDevelopmentalEra);
+		return;
+	}
 	if (store === "eras") {
 		if (prepared._id !== key) throw new Error("Era identity does not match the saved record.");
 		await saveMapEra(prepared.mapId, prepared as TLMapEra);
@@ -167,6 +176,13 @@ export async function deleteAndCache(
 	key: string,
 	activeMapId: string | null,
 ): Promise<void> {
+	if (store === "developmentalEras") {
+		const db = await initMapsDatabase();
+		const era = await db.get(store, key) as TLDevelopmentalEra | undefined;
+		if (!era || (activeMapId && era.mapId !== activeMapId)) throw new Error("This developmental era is unavailable in the active map.");
+		await removeDevelopmentalEra(era.mapId, key);
+		return;
+	}
 	await deleteDataFromStore(store, key);
 	if (activeMapId) deleteCachedRecord(activeMapId, store, key);
 }

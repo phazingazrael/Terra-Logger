@@ -9,6 +9,7 @@ import type {
   TLTariffRule,
   TLProductionCandidate,
   TLMapInfo,
+  TLStateFinance,
 } from "../../../definitions/TerraLogger";
 
 import {
@@ -86,6 +87,17 @@ function normalizeGood(value: unknown): TLGood {
     }
     good.visible = source.visible;
   }
+  if (source.carriage !== undefined) good.carriage = readAmount(source.carriage, "Good carriage");
+  if (source.development !== undefined) {
+    good.development = readAmount(source.development, "Good development");
+    if (good.development > 100) throw new Error("Good development cannot exceed 100.");
+  }
+  if (source.deposits !== undefined) {
+    const deposits = readList(source.deposits, "Good deposits");
+    if (deposits.length !== 2) throw new Error("Good deposits require minimum and maximum.");
+    good.deposits = [readId(deposits[0], "Minimum deposits"), readId(deposits[1], "Maximum deposits")];
+    if (good.deposits[0] > good.deposits[1]) throw new Error("Minimum deposits exceed maximum deposits.");
+  }
   if (source.chance !== undefined) good.chance = readNumber(source.chance, "Good chance");
   if (source.distribution !== undefined) {
     good.distribution = readText(source.distribution, "Good distribution");
@@ -146,6 +158,30 @@ function normalizeMarket(value: unknown): TLMarket {
     color: readText(source.color, "Market color"),
     ...(source.name === undefined ? {} : { name: readText(source.name, "Market name") }),
     goods,
+    feePaid: source.feePaid === undefined ? undefined : readAmount(source.feePaid, "Market fee paid"),
+    rural: source.rural === undefined ? undefined : normalizeRural(source.rural),
+  };
+}
+
+function normalizeRural(value: unknown): NonNullable<TLMarket["rural"]> {
+  const source = readRecord(value, "Market rural economy");
+  const pairs = (value: unknown, label: string): [number, number][] =>
+    readList(value, label).map((entry) => {
+      const pair = readList(entry, label);
+      if (pair.length !== 2) throw new Error(`${label} requires good/quantity pairs.`);
+      return [readId(pair[0], label), readAmount(pair[1], label)];
+    });
+  return {
+    earned: readAmount(source.earned, "Rural earnings"),
+    spent: readAmount(source.spent, "Rural spending"),
+    bought: pairs(source.bought, "Rural purchases"),
+    kept: source.kept === undefined ? undefined : pairs(source.kept, "Rural retained goods"),
+    margin: source.margin === undefined ? undefined : readNumber(source.margin, "Rural margin"),
+    pollTax: source.pollTax === undefined ? undefined : readList(source.pollTax, "Rural poll tax").map((entry): [number, number, number] => {
+      const row = readList(entry, "Rural poll tax");
+      if (row.length !== 3) throw new Error("Rural poll tax requires country, owed and paid.");
+      return [readId(row[0], "Rural country"), readAmount(row[1], "Rural tax owed"), readAmount(row[2], "Rural tax paid")];
+    }),
   };
 }
 
@@ -156,7 +192,27 @@ function normalizeParty(type: unknown, id: unknown): TLEconomyParty {
   return { type: type === "burg" ? "city" : "market", id: readId(id, "Deal party ID") };
 }
 
-function normalizeDeal(value: unknown): TLDeal {
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/types/economy.ts
+function normalizeDeal(value: unknown, index: number): TLDeal {
+  if (Array.isArray(value)) {
+    if (value.length !== 9) throw new Error(`Deal ${index} requires nine tuple values.`);
+    const [cityId, marketId, goodId, kind, units, price, tax, tariff, carriage] = value;
+    const kinds = ["sale", "input", "demand", "kept", "order"] as const;
+    const kindId = readId(kind, "Deal kind");
+    if (kindId > 4) throw new Error(`Invalid deal kind at index ${index}.`);
+    const city: TLEconomyParty = { type: "city", id: readId(cityId, "Deal city") };
+    const market: TLEconomyParty = { type: "market", id: readId(marketId, "Deal market") };
+    // Parties retain the source city/market references. Kept records are not
+    // exchanges, and an order's city identifies the state seat.
+    return {
+      id: index, kind: kinds[kindId],
+      seller: kindId === 0 || kindId === 3 ? city : market,
+      buyer: kindId === 0 || kindId === 3 ? market : city,
+      goodId: readId(goodId, "Deal good"), units: readAmount(units, "Deal units"),
+      price: readAmount(price, "Deal price"), tax: readAmount(tax, "Deal tax"),
+      tariff: readAmount(tariff, "Deal tariff"), carriage: readAmount(carriage, "Deal carriage"),
+    };
+  }
   const source = readRecord(value, "Deal");
   return {
     id: readId(source.i, "Deal ID"),
@@ -219,6 +275,9 @@ export function normalizeMapEconomy(
       good: pack.cells.good === undefined ? undefined : readCellIds(pack.cells.good, "Cell goods"),
       market: pack.cells.market === undefined ? undefined : readCellIds(pack.cells.market, "Cell markets"),
       country: readCellIds(pack.cells.state, "Cell countries"),
+      population: pack.cells.pop.length ? Array.from(pack.cells.pop, (value) => readAmount(value, "Cell population")) : undefined,
+      prosperity: pack.cells.prosperity === undefined ? undefined : [...pack.cells.prosperity],
+      development: pack.cells.development === undefined ? undefined : [...pack.cells.development],
     },
   };
 
@@ -252,10 +311,14 @@ export function normalizeMapEconomy(
       reportIssue(`Market ${market.id} refers to missing city ${market.centerCityId}.`);
     }
     for (const good of market.goods) checkGood(good.goodId, `Market ${market.id}`);
+    for (const [goodId] of [...(market.rural?.bought ?? []), ...(market.rural?.kept ?? [])]) {
+      checkGood(goodId, `Market ${market.id} rural economy`);
+    }
   }
   for (const deal of economy.deals ?? []) {
     checkGood(deal.goodId, `Deal ${deal.id}`);
     for (const party of [deal.seller, deal.buyer]) {
+      if (deal.kind === "kept" && party.type === "market" && party.id === 0) continue;
       if (party.type === "market" && economy.markets === undefined) {
         reportIssue("Markets section is absent; market references cannot be resolved.");
         continue;
@@ -338,6 +401,11 @@ export function normalizeCityProduction(
   if (value === undefined) return undefined;
 
   return readList(value, "City production").map((value): TLCityProduction => {
+    if (Array.isArray(value)) {
+      if (value.length !== 2) throw new Error("City production requires good/quantity pairs.");
+      // Modern output has no source classification or recipe.
+      return { type: "total", goodId: readId(value[0], "Production good ID"), units: readAmount(value[1], "Production units") };
+    }
     const source = readRecord(value, "City production entry");
 
     // Deal references do not contain production quantities or recipe inputs.
@@ -390,6 +458,40 @@ export function normalizeCityProduction(
   });
 }
 
+function normalizeAdjustments(value: unknown): { name: string; value: number }[] {
+  return readList(value, "Economy adjustments").map((value) => {
+    const entry = readRecord(value, "Economy adjustment");
+    return { name: readText(entry.name, "Adjustment name"), value: readNumber(entry.value, "Adjustment value") };
+  });
+}
+
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/model/political/states-generator.ts
+function normalizeFinance(value: unknown): TLStateFinance | undefined {
+  if (value === undefined) return undefined;
+  const source = readRecord(value, "Country finance");
+  const budget = readRecord(source.budget, "Country budget");
+  const spent = readRecord(source.spent, "Country spending");
+  return {
+    marketFee: readAmount(source.marketFee, "Country market fee"),
+    adjustments: normalizeAdjustments(source.adjustments),
+    budget: {
+      court: readAmount(budget.court, "Court budget"),
+      administration: readAmount(budget.administration, "Administration budget"),
+      infrastructure: readAmount(budget.infrastructure, "Infrastructure budget"),
+      military: readAmount(budget.military, "Military budget"),
+      corruption: readAmount(budget.corruption, "Corruption budget"),
+    },
+    collected: readAmount(source.collected, "Country collected taxes"),
+    spent: {
+      court: readAmount(spent.court, "Court spending"),
+      administration: readAmount(spent.administration, "Administration spending"),
+      infrastructure: readAmount(spent.infrastructure, "Infrastructure spending"),
+      military: readAmount(spent.military, "Military spending"),
+    },
+    pocketed: readAmount(source.pocketed, "Country pocketed taxes"),
+  };
+}
+
 export function applyImportedEconomy(
   map: TLMapInfo,
   data: MapInfo,
@@ -420,36 +522,44 @@ export function applyImportedEconomy(
     const source = sourceCities.get(city.id);
     if (!source) throw new Error(`Missing source economy for city ${city.id}.`);
     const current = city.economy;
+    // Modern AFMG keeps market membership on the source cell, not the burg.
+    const marketId = source.market ?? pack.cells.market?.[source.cell];
     city.economy = {
       ...current,
       description: current?.description ?? "",
       imports: retainAuthoredTrade(current?.imports),
       exports: retainAuthoredTrade(current?.exports),
       production: normalizeCityProduction(source.production),
-      marketId: source.market === undefined
-        ? undefined : readId(source.market, "City market ID"),
+      marketId: marketId === undefined || marketId === 0
+        ? undefined : readId(marketId, "City market ID"),
       treasury: source.treasury === undefined
         ? undefined : readNumber(source.treasury, "City treasury"),
+      adjustments: source.adjustments === undefined ? undefined : normalizeAdjustments(source.adjustments),
+      pollTaxPaid: source.pollTaxPaid === undefined ? undefined : readAmount(source.pollTaxPaid, "City poll tax paid"),
+      // Revenue minus ingredient costs can be negative.
+      // https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/model/economy/production-generator.ts
       product: source.product === undefined
-        ? undefined : readAmount(source.product, "City product"),
+        ? undefined : readNumber(source.product, "City product"),
     };
   }
 
   for (const country of map.countries) {
     const source = sourceCountries.get(country.id);
     if (!source) throw new Error(`Missing source economy for country ${country.id}.`);
+    const finances = source.economy ?? source;
     country.economy = {
       ...country.economy,
+      finance: normalizeFinance(source.economy),
       imports: retainAuthoredTrade(country.economy.imports),
       exports: retainAuthoredTrade(country.economy.exports),
       production: undefined,
-      treasury: source.treasury === undefined
-        ? undefined : readNumber(source.treasury, "Country treasury"),
-      tariffs: normalizeTariffs(source.tariffs),
-      salesTax: source.salesTax === undefined
-        ? undefined : readAmount(source.salesTax, "Country sales tax"),
-      pollTax: source.pollTax === undefined
-        ? undefined : readAmount(source.pollTax, "Country poll tax"),
+      treasury: finances.treasury === undefined
+        ? undefined : readNumber(finances.treasury, "Country treasury"),
+      tariffs: normalizeTariffs(finances.tariffs),
+      salesTax: finances.salesTax === undefined
+        ? undefined : readAmount(finances.salesTax, "Country sales tax"),
+      pollTax: finances.pollTax === undefined
+        ? undefined : readAmount(finances.pollTax, "Country poll tax"),
     };
   }
 

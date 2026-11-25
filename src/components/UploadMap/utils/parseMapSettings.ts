@@ -51,6 +51,21 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
       throw new Error("Invalid AFMG settings section (1): graph jitter must be between 0 and 0.9.");
     }
   }
+  // https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/data/development.ts
+  let eras: AFMGDevelopmentalEra[] | undefined;
+  if (source.eras !== undefined) {
+    if (!Array.isArray(source.eras)) throw new Error("Invalid AFMG settings section (1): eras must be a list.");
+    const levels = new Set<number>();
+    eras = source.eras.map((value) => {
+      const entry = record(value, "eras entry");
+      if (typeof entry.level !== "number" || !Number.isInteger(entry.level) || entry.level < 1 || entry.level > 100 ||
+        levels.has(entry.level) || typeof entry.name !== "string" || !entry.name.trim()) {
+        throw new Error("Invalid AFMG settings section (1): eras need unique levels from 1 to 100 and nonempty names.");
+      }
+      levels.add(entry.level);
+      return { level: entry.level, name: entry.name };
+    });
+  }
   const customIcons = source.customIcons === undefined ? undefined : readCustomIcons(source.customIcons);
   const read = (path: string): unknown => path.split(".").reduce<unknown>(
     (value, key) => record(value, path)[key], source,
@@ -82,7 +97,8 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
     return ["icon", "name", "type"].every((key) => typeof unit[key] === "string") &&
       ["rural", "urban", "crew", "power", "separate"].every((key) =>
         typeof unit[key] === "number" && Number.isFinite(unit[key]) && unit[key] >= 0) &&
-      Number(unit.crew) > 0 && Number.isInteger(unit.separate);
+      Number(unit.crew) > 0 && Number.isInteger(unit.separate) &&
+      (unit.goods === undefined || (Array.isArray(unit.goods) && unit.goods.every((id) => Number.isInteger(id) && id >= 0)));
   })) throw new Error("Invalid AFMG settings section (1): military.units contains invalid units.");
   const year = number("lore.calendar.year");
   if (!Number.isSafeInteger(year)) throw new Error("Invalid AFMG settings section (1): calendar year must be an integer.");
@@ -111,6 +127,7 @@ export function parseMapSettings(section: string | undefined): MapInfo["settings
     options: {
       ...source, afmgMapSettings: source, pinNotes: false, winds: winds as number[],
       ...(customIcons === undefined ? {} : { customIcons }),
+      ...(eras === undefined ? {} : { eras }),
       temperatureEquator: number("climate.temperature.equator"),
       temperatureNorthPole: number("climate.temperature.northPole"),
       temperatureSouthPole: number("climate.temperature.southPole"),

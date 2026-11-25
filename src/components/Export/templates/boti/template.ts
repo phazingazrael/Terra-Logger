@@ -1,4 +1,5 @@
 import { getBotiEraBlocks } from "./blocks/era";
+import { getDevelopmentalEraBlocks } from "../../builder/eraMarkdown";
 import type {
 	ExportSourceType,
 	MarkdownBlock,
@@ -30,6 +31,8 @@ export const botiTemplate: MarkdownDocumentTemplate = {
 				return getBotiNoteBlocks();
 			case "religion":
 				return getBotiReligionBlocks();
+			case "developmentalEra":
+			  return getDevelopmentalEraBlocks();
 			case "era":
 				return getBotiEraBlocks();
 			case "npc":

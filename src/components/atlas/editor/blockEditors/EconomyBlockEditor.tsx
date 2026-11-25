@@ -11,7 +11,7 @@ import type {
   TLMapEconomy,
 } from "../../../../definitions/TerraLogger";
 
-import { cityEconomyField, countryEconomyField, sharedEconomyField, defaultEconomyValue, type EconomyField } from "../../core/economyFields";
+import { cityEconomyField, countryEconomyField, sharedEconomyField, defaultEconomyValue, validateEconomyValue, type EconomyField } from "../../core/economyFields";
 import { EntityFieldEditor } from "../entityFields/EntityFieldEditor";
 import { getEntityFieldSchemas } from "../entityFields/entityFieldCatalog";
 import { getValueAtPath } from "../entityFields/entityFieldAccess";
@@ -54,6 +54,7 @@ export function EconomyBlockEditor({ context, onTradeBlockChange }: {
             value: { ...selectedCity, economy: value as TLCity["economy"] } })} />
       </> : <p>No contributing Cities.</p>}
     </> : <p>Imported trade edits update the linked deals. Removing an entry deletes those deals from the map on Save.</p>}
+    <p>Kept records describe retained output, not trade. Orders are Country purchases; their City identifies the state seat. Prices and carriage are per unit; taxes and tariffs are totals. Budget values are whole percentages and may sum above 100. Edits update stored values; Terra-Logger does not rerun AFMG’s economy simulation or recalculate taxes, budgets, rural results or prosperity when you edit quantities.</p>
     <p>Goods, markets, deals, and cell assignments are shared by the whole map. Changes here affect every page using those records.</p>
     <EconomyValueEditor label="Shared map economy" field={sharedEconomyField}
       value={context.economy ?? { cells: { country: [] } }}
@@ -78,7 +79,7 @@ function EconomyValueEditor({ field, value, label, onChange }: Readonly<{
         type={field.type === "number" ? "number" : "text"}
         value={value === null ? "__null__" : typeof value === "number" || typeof value === "string" ? value : ""}
         slotProps={{ htmlInput: field.type === "number" ? {
-          min: field.signed ? undefined : 0, step: field.integer ? 1 : "any",
+          min: field.signed ? undefined : 0, max: field.max, step: field.integer ? 1 : "any",
         } : {} }}
         onChange={(event) => onChange(field.type === "number"
           ? event.target.value === "" ? undefined : Number(event.target.value)
@@ -90,6 +91,27 @@ function EconomyValueEditor({ field, value, label, onChange }: Readonly<{
   }
   if (field.type === "boolean") return <Box><FormControlLabel label={label}
     control={<Checkbox checked={value === true} onChange={(_, checked) => onChange(checked)} />} />{clear}</Box>;
+  if (field.type === "tuple") return <Box className="atlas-entity-object-card" sx={{ display: "grid", gap: 2 }}>
+    <strong>{label}</strong>{clear}
+    {Object.entries(field.fields).map(([name, item], position) => <EconomyValueEditor key={name} field={item}
+      label={name} value={Array.isArray(value) ? value[position] : undefined}
+      onChange={(next) => onChange(Object.values(field.fields).map((entry, index) =>
+        index === position ? next : Array.isArray(value) ? value[index] : defaultEconomyValue(entry)))} />)}
+  </Box>;
+  if (field.type === "union") {
+    const choices = Object.entries(field.choices);
+    const selected = choices.find(([name, item]) => {
+      try { validateEconomyValue(value, item, name); return true; } catch { return false; }
+    }) ?? choices[0];
+    return <Box sx={{ display: "grid", gap: 2 }}>
+      <TextField select label={label} value={selected[0]} onChange={(event) =>
+        onChange(defaultEconomyValue(field.choices[event.target.value]))}>
+        {choices.map(([name]) => <MenuItem key={name} value={name}>{name}</MenuItem>)}
+      </TextField>
+      <EconomyValueEditor field={selected[1]} label={selected[0]} value={value} onChange={onChange} />
+      {clear}
+    </Box>;
+  }
   const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
   if (field.type === "object") return <Box className="atlas-entity-object-card" sx={{ display: "grid", gap: 2 }}>
     <strong>{typeof record.icon === "string" ? <MapIcon icon={record.icon} label={typeof record.name === "string" ? record.name : label} /> : null} {label}</strong>{clear}

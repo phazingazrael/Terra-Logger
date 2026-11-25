@@ -209,7 +209,7 @@ function repairNameBasesLineBreakSplit(parts: string[]): string[] {
   // Newer files append icons, measurers, labels, styles, relief, layer state
   // graph overrides, journeys and legends. Locate
   // rivers against each supported ending before rejoining split name bases.
-  for (const expectedSectionCount of [54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 40, 39]) {
+  for (const expectedSectionCount of [56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 40, 39]) {
     if (parts.length < expectedSectionCount) continue;
 
     const trailingSectionCount = expectedSectionCount - (nameBasesIndex + 1);

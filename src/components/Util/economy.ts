@@ -129,11 +129,14 @@ export function aggregateCountryProduction(
       // Recipe inputs are consumption, so they do not enter these totals.
       if (entry.type === "local") {
         good.localUnits += entry.units;
-      } else {
+      } else if (entry.type === "manufacturing") {
         good.manufacturedUnits += entry.units;
+      } else {
+        good.unclassifiedUnits = (good.unclassifiedUnits ?? 0) + entry.units;
       }
       if (!Number.isFinite(good.localUnits) ||
-        !Number.isFinite(good.manufacturedUnits)) {
+        !Number.isFinite(good.manufacturedUnits) ||
+        !Number.isFinite(good.unclassifiedUnits ?? 0)) {
         throw new Error("Production total exceeds the supported numeric range.");
       }
     }
@@ -253,12 +256,15 @@ export function aggregateEconomyTrade(
       throw new Error(`Duplicate deal ID in trade totals: ${deal.id}.`);
     }
     dealIds.add(deal.id);
+    // Retained output never crosses a market; state orders belong to the
+    // seat's country, not to the people or industry of the seat city.
+    if (deal.kind === "kept") continue;
 
     if (deal.seller.type === "city") {
       const totals = cityTotals.get(deal.seller.id);
       if (totals) addTrade(totals.exports, deal);
     }
-    if (deal.buyer.type === "city") {
+    if (deal.buyer.type === "city" && deal.kind !== "order") {
       const totals = cityTotals.get(deal.buyer.id);
       if (totals) addTrade(totals.imports, deal);
     }
@@ -413,4 +419,73 @@ export function editImportedTradeDeals(
     }
     return { ...deal, goodId: change.goodId ?? deal.goodId, units };
   }) };
+}
+
+export function formatDealKind(deal: TLDeal): string {
+  return deal.kind === undefined ? "Legacy trade" : {
+    sale: "Sale", input: "Production input", demand: "Household demand", kept: "Retained output", order: "State order",
+  }[deal.kind];
+}
+
+export function formatDealParty(deal: TLDeal, side: "seller" | "buyer", cities: ReadonlyMap<number, TLCity>): string {
+  if (deal.kind === "kept" && side === "buyer") return "Retained; no transfer";
+  const party = deal[side];
+  if (party.type === "market") return `Market #${party.id}`;
+  const city = cities.get(party.id);
+  const name = city?.name ?? `City #${party.id}`;
+  return deal.kind === "order" && side === "buyer"
+    ? `${city ? `Country #${city.country.id}` : `Country at ${name}`} (seat: ${name})` : name;
+}
+
+export function additionalEconomyDealIds(city: TLCity | undefined, country: TLCountry | undefined, economy: TLMapEconomy | undefined, cities: readonly TLCity[]): number[] {
+  const cityById = new Map(cities.map((city) => [city.id, city]));
+  return (economy?.deals ?? []).filter((deal) => {
+    if (deal.kind !== "kept" && deal.kind !== "order") return false;
+    const party = deal.kind === "kept" ? deal.seller : deal.buyer;
+    if (party.type !== "city") return false;
+    if (city) return deal.kind === "kept" && party.id === city.id;
+    return country?.id !== 0 && country !== undefined && cityById.get(party.id)?.country.id === country.id;
+  }).map((deal) => deal.id);
+}
+
+// Shared data for Atlas tables and both Markdown templates, with the same units and labels.
+export function economyDetailTables(city: TLCity | undefined, country: TLCountry | undefined, economy: TLMapEconomy | undefined, cities: readonly TLCity[]): { title: string; headers: string[]; rows: string[][] }[] {
+  const tables: { title: string; headers: string[]; rows: string[][] }[] = [];
+  const add = (title: string, headers: string[], rows: string[][]) => { if (rows.length) tables.push({ title, headers, rows }); };
+  const number = formatEconomyNumber;
+  const goods = new Map((economy?.goods ?? []).map((good) => [good.id, good]));
+  const goodName = (id: number, units?: number) => formatTradeEntry({ source: "manual", good: { goodId: id }, units }, goods.get(id));
+  const finance = country?.economy.finance;
+  if (city?.economy?.pollTaxPaid !== undefined) add("City taxes", ["Field", "Value"], [["Poll tax paid", number(city.economy.pollTaxPaid)]]);
+  add("Income adjustments", ["Name", "Value"], (city?.economy?.adjustments ?? finance?.adjustments ?? []).map((item) => [item.name, number(item.value)]));
+  if (finance) {
+    add("Country finance", ["Field", "Value"], [["Daily market licence fee", number(finance.marketFee)], ["Taxes collected", number(finance.collected)], ["Pocketed taxes", number(finance.pocketed)]]);
+    add("Budget and spending", ["Category", "Budget (%)", "Spent"], Object.entries(finance.budget).map(([name, budget]) => [name, number(budget), name === "corruption" ? "Included in pocketed taxes" : number(finance.spent[name as keyof typeof finance.spent])]));
+  }
+  add("Tariffs and embargoes", ["Countries", "Goods", "Rate"], (country?.economy.tariffs ?? []).map((rule) => [rule.countryIds === "all" ? "All" : rule.countryIds.join(", "), rule.goodIds === "all" ? "All" : rule.goodIds.map((id) => goodName(id)).join(", "), rule.rate === "embargo" ? "Embargo" : `${number(rule.rate * 100)}%`]));
+  const byId = new Map(cities.map((city) => [city.id, city]));
+  const markets = (economy?.markets ?? []).filter((market) => city ? market.id === city.economy?.marketId : country !== undefined && country.id !== 0 && byId.get(market.centerCityId)?.country.id === country.id);
+  for (const market of markets) {
+    const prefix = `${market.name ?? "Market"} #${market.id}`;
+    const rural = market.rural;
+    add(`${prefix} finance`, ["Field", "Value"], [
+      ...(market.feePaid === undefined ? [] : [["Licence fee paid", number(market.feePaid)]]),
+      ...(rural ? [["Rural earnings", number(rural.earned)], ["Rural spending", number(rural.spent)], ...(rural.margin === undefined ? [] : [["Centre margin", number(rural.margin)]])] : []),
+    ]);
+    if (rural) {
+      add(`${prefix} rural goods`, ["Activity", "Good and quantity"], [...rural.bought.map(([id, units]) => ["Purchased", goodName(id, units)]), ...(rural.kept ?? []).map(([id, units]) => ["Retained", goodName(id, units)])]);
+      add(`${prefix} rural poll tax`, ["Country", "Owed", "Paid"], (rural.pollTax ?? []).map(([id, owed, paid]) => [String(id), number(owed), number(paid)]));
+    }
+  }
+  const used = new Set<number>();
+  for (const entry of [...(city?.economy?.imports ?? country?.economy.imports ?? []), ...(city?.economy?.exports ?? country?.economy.exports ?? [])]) if ("goodId" in entry.good) used.add(entry.good.goodId);
+  for (const entry of city?.economy?.production ?? []) if (entry.type !== "deal") used.add(entry.goodId);
+  for (const entry of country?.economy.production?.goods ?? []) used.add(entry.goodId);
+  add("Good definitions", ["Good", "Carriage per unit per decima", "Deposit range", "Minimum development (%)"], [...used].sort((a, b) => a - b).flatMap((id) => {
+    const good = goods.get(id);
+    return good && (good.carriage !== undefined || good.deposits !== undefined || good.development !== undefined) ? [[good.name, good.carriage === undefined ? "—" : number(good.carriage), good.deposits?.join("–") ?? "—", good.development === undefined ? "—" : number(good.development)]] : [];
+  }));
+  const prosperity = city?.cellId === undefined ? undefined : economy?.cells.prosperity?.[city.cellId];
+  if (prosperity !== undefined) add("Source-cell economy", ["Field", "Value"], [["Rural prosperity (%)", prosperity === 0 ? "Not recorded" : number(prosperity)]]);
+  return tables;
 }

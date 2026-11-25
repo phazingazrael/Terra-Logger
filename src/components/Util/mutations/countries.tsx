@@ -20,6 +20,7 @@ export const mutateCountries = async (
 	mapSVG: string,
 ) => {
 	let customEmblems: Element | null = null;
+	const troops = militaryTroopConverter(data.renderingSource?.version ?? data.params[0], populationRate);
 
 	for (const country of data.countries) {
 		if ((country.i === 0 || country.name !== "Unknown") && country.removed !== true) {
@@ -70,18 +71,13 @@ export const mutateCountries = async (
 					newCountry.political.military.push({
 						_id: uuidv7(),
 						id: military.i,
-						a: military.a,
+						a: troops(military.a),
 						cell: military.cell,
 						x: military.x,
 						y: military.y,
 						bx: military.bx,
 						by: military.by,
-						u: {
-							cavalry: military.u.cavalry,
-							archers: military.u.archers,
-							infantry: military.u.infantry,
-							artillery: military.u.artillery,
-						},
+						u: Object.fromEntries(Object.entries(military.u).map(([name, amount]) => [name, troops(amount)])),
 						n: military.n,
 						name: military.name,
 						state: military.state,
@@ -212,3 +208,17 @@ export const mutateCountries = async (
 
 	return tempMap.countries;
 };
+
+// Terra-Logger keeps troop counts; AFMG 1.157 changed its saved values to population points.
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/model/political/military-generator.ts
+function militaryTroopConverter(version: string, scale: number): (value: number) => number {
+  const [major, minor] = version.split(".").map(Number);
+  const points = major > 1 || (major === 1 && minor >= 157);
+  if (points && (!Number.isFinite(scale) || scale <= 0)) throw new Error("Military population scale must be positive.");
+  return (value) => {
+    if (!Number.isFinite(value) || value < 0) throw new Error("Military strength and composition must contain non-negative numbers.");
+    const count = points ? Math.ceil(Math.round(value * scale * 1000) / 1000) : value;
+    if (!Number.isFinite(count) || count > Number.MAX_SAFE_INTEGER) throw new Error("Military troop count exceeds the supported range.");
+    return count;
+  };
+}

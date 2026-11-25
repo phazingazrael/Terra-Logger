@@ -47,3 +47,36 @@ export type TLMapHistoryConfiguration = {
   currentEra?: TLCurrentHistoryEra;
   previousEras: TLHistoryEra[];
 };
+
+export type TLDevelopmentalEraPlacement = {
+  id: string;
+  // Absolute chronology coordinates; resolve their historical-era/local-year labels on read.
+  startYear: number;
+  endYear: number;
+  estimated: boolean;
+  // Older placements remain explicitly unassigned.
+  subject?: { type: "country" | "city"; entityId: string };
+};
+
+export type TLDevelopmentalEra = {
+  id: string;
+  _id: string;
+  mapId: string;
+  name: string;
+  level: number;
+  active: boolean;
+  description: string;
+  content?: AtlasContent;
+  placements: TLDevelopmentalEraPlacement[];
+  regionalEstimatesInitialized?: boolean;
+  estimateBasis: { startYear: number; endYear: number };
+  source?: { level: number; name: string; present: boolean };
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TLDevelopmentSummary = {
+  level: number;
+  eraId?: string;
+  eraName?: string;
+};

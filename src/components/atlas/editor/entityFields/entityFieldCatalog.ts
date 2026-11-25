@@ -27,6 +27,10 @@ const diplomacyStatusOptions = toOptions([
 ]);
 
 export const entityFieldCatalog: AtlasEntityFieldCatalog = {
+  developmentalEra: [
+    { path: "name", label: "Era Name", editor: "text" },
+    { path: "description", label: "Description", editor: "textarea" },
+  ],
   era: [
     { path: "name", label: "Era Name", editor: "text" },
     { path: "shortName", label: "Abbreviation", editor: "text" },
@@ -179,6 +183,7 @@ export const entityFieldCatalog: AtlasEntityFieldCatalog = {
 };
 
 export const computedBlockEditableFields: AtlasComputedFieldMap = {
+  developmentalEra: { developmentalEraHeader: ["name"] },
   era: { eraHeader: ["name", "shortName"] },
   country: {
     countryHeader: [

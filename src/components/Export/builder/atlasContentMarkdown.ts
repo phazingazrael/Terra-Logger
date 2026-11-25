@@ -242,6 +242,9 @@ function renderGenericAtlasBlockToMarkdown({
   sourceType: ExportSourceType;
   data?: AtlasExportData;
 }): string {
+  if (sourceType === "developmentalEra" &&
+    (block.binding?.resolver === "developmentalEra.header" || block.binding?.resolver === "developmentalEra.placements")) return "";
+
   if (sourceType === "era" &&
     (block.binding?.resolver === "era.header" || block.binding?.resolver === "era.chronology" ||
       block.binding?.resolver === "era.events")) return "";

@@ -110,6 +110,18 @@ export function renderMarkdownFiles(
 	} as Required<RenderOptions>;
 	const files: FileSpec[] = [];
 
+	const developmentalEraPaths: Record<string, string> = Object.create(null);
+	const developmentalNames = new Set<string>();
+	const developmentalDocuments = exports?.includes("Developmental Eras")
+		? [...(data.DevelopmentalEras ?? [])].sort((a, b) => a.level - b.level || a._id.localeCompare(b._id)).map((era) => {
+			const base = filenameFrom(era, opt.filenameFields.DevelopmentalEras ?? ["name", "_id"], "developmental-era");
+			let name = withExt(base, opt.extension), suffix = 2;
+			while (developmentalNames.has(name)) name = withExt(`${base}-${suffix++}`, opt.extension);
+			developmentalNames.add(name);
+			const path = `${isBotiTemplate(opt.templateName) ? "World/01. Lore/Eras/Developmental" : "history/developmental"}/${name}`;
+			developmentalEraPaths[era._id] = path;
+			return { era, path, name };
+		}) : [];
 	const global = ctx(data);
 
 	const renderBuilderContent = (
@@ -127,6 +139,7 @@ export function renderMarkdownFiles(
 				sourceType,
 				entity: item,
 				documentPath,
+				developmentalEraPaths,
 			},
 		});
 	};
@@ -139,7 +152,7 @@ export function renderMarkdownFiles(
 
 		return (
 			(template.id === "default" || template.id === "boti") &&
-			["note", "culture", "religion", "city", "country", "map", "npc", "era"].includes(
+			["note", "culture", "religion", "city", "country", "map", "npc", "era", "developmentalEra"].includes(
 				sourceType,
 			)
 		);
@@ -249,9 +262,11 @@ export function renderMarkdownFiles(
 				sourceType && shouldUseBuilder(sourceType, opt.templateName),
 			);
 
+			const entityPath = singular === "City" ? `${prefix}${item.country.name}/${name}` : npcPath;
+			const documentPath = isBotiTemplate(opt.templateName) ? getBotiExportPath(entityPath) : entityPath;
 			const content =
 				usesBuilder && sourceType
-					? renderBuilderContent(sourceType, exportItem, singular === "NPC" ? npcPath : undefined)
+					? renderBuilderContent(sourceType, exportItem, documentPath)
 					: Mustache.render(tpl, {
 							...global,
 							...exportItem,
@@ -420,5 +435,9 @@ export function renderMarkdownFiles(
 		}
 	}
 
+	for (const { era, path, name } of developmentalDocuments) {
+		onRendering?.(`Developmental era ${era.name} (${era._id})`);
+		files.push({ path, name, content: renderBuilderContent("developmentalEra", era, path) });
+	}
 	return files;
 }

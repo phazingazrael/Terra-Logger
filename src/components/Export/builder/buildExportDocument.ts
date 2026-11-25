@@ -1,3 +1,4 @@
+import { renderDevelopmentSummary } from "./eraMarkdown";
 import type {
   ExportContext,
   MarkdownDocumentTemplate,
@@ -17,5 +18,7 @@ export function buildExportDocument({
     return rendered ? [rendered] : [];
   });
 
+  const development = renderDevelopmentSummary(context);
+  if (development) renderedBlocks.push(development);
   return `${renderedBlocks.join("\n\n")}\n`;
 }

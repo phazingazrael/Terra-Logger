@@ -1,5 +1,5 @@
-import { createMapEraRecords, getMapEras, mapWithEraRecords, mapWithoutEraRecords, refreshNPCEraReferences, validateMapEras } from "../components/HistoryGenerator/eras/mapEras";
-import type { TLMapEra } from "../definitions/History";
+import { refreshDevelopmentSummaries, createMapEraRecords, getMapEras, mapWithEraRecords, mapWithoutEraRecords, refreshNPCEraReferences, validateMapEras } from "../components/HistoryGenerator/eras/mapEras";
+import type { TLDevelopmentalEra, TLMapEra } from "../definitions/History";
 import { applyGeographyChanges } from "../components/atlas/core/geography";
 import type { AtlasMapSave } from "../definitions/Atlas";
 import { aggregateEconomyTrade, normalizeTradeEntries } from "../components/Util/economy";
@@ -108,7 +108,7 @@ export async function saveImportedMapRecords(
       !("mapId" in value) || value.mapId !== mapId) {
       throw new Error("Imported records must belong to the selected map.");
     }
-    if (record.storeName === "tags" || record.storeName === "eras") {
+    if (record.storeName === "tags" || record.storeName === "eras" || record.storeName === "developmentalEras") {
       throw new Error("Map import does not directly replace authored tags or eras.");
     }
   }
@@ -126,7 +126,7 @@ export async function saveImportedMapRecords(
   try {
     if (replace) {
       for (const storeName of mapScopedStores) {
-        if (storeName === "tags" || storeName === "eras") continue;
+        if (storeName === "tags" || storeName === "eras" || storeName === "developmentalEras") continue;
         await deleteIndexedMapRecords(tx, storeName, mapId);
       }
 
@@ -186,7 +186,7 @@ export async function updateEntityAndEconomies(
     throw new Error("Economy updates require a matching entity ID and map ID.");
   }
   const db = await initMapsDatabase();
-  const tx = db.transaction(["maps", "cities", "countries"], "readwrite");
+  const tx = db.transaction(["maps", "cities", "countries", "developmentalEras"], "readwrite");
   const done = tx.done;
   void done.catch(() => {});
 
@@ -239,12 +239,26 @@ export async function updateEntityAndEconomies(
       const previousCount = rows[0].economy?.cells.country.length;
       if ((previousCount !== undefined && cells.country.length !== previousCount) ||
         (cells.good !== undefined && cells.good.length !== cells.country.length) ||
-        (cells.market !== undefined && cells.market.length !== cells.country.length)) {
+        (cells.market !== undefined && cells.market.length !== cells.country.length) ||
+        (cells.population !== undefined && cells.population.length !== cells.country.length) ||
+        (cells.prosperity !== undefined && cells.prosperity.length !== cells.country.length) ||
+        (cells.development !== undefined && cells.development.length !== cells.country.length)) {
         throw new Error("Cell assignment lists must retain the map's cell count.");
+      }
+      for (const good of changes.shared.goods ?? []) {
+        if (good.deposits && good.deposits[0] > good.deposits[1]) throw new Error("Minimum deposits exceed maximum deposits.");
       }
       checkIds(changes.shared.goods ?? [], "good");
       checkIds(changes.shared.markets ?? [], "market");
       checkIds(changes.shared.deals ?? [], "deal");
+      for (const deal of changes.shared.deals ?? []) {
+        if (deal.kind === undefined) continue;
+        const citySells = deal.kind === "sale" || deal.kind === "kept";
+        if (deal.seller.type !== (citySells ? "city" : "market") ||
+          deal.buyer.type !== (citySells ? "market" : "city")) {
+          throw new Error(`Deal ${deal.id} parties do not match its kind.`);
+        }
+      }
       for (const market of changes.shared.markets ?? []) {
         checkIds(market.goods.map((good) => ({ id: good.goodId })), "market good");
       }
@@ -273,13 +287,15 @@ export async function updateEntityAndEconomies(
       },
     } : currentMap;
 
-    for (const city of refreshedCities) await tx.objectStore("cities").put(city);
-    for (const country of refreshed.countries) {
+    const developmentalEras = await tx.objectStore("developmentalEras").index("mapIdIndex").getAll(mapId) as TLDevelopmentalEra[];
+    const development = refreshDevelopmentSummaries(refreshedCities, refreshed.countries, map.economy, developmentalEras);
+    for (const city of development.cities) await tx.objectStore("cities").put(city);
+    for (const country of development.countries) {
       await tx.objectStore("countries").put(country);
     }
     if (currentMap.economy || changes?.geography !== undefined) await tx.objectStore("maps").put(map);
     await done;
-    return { cities: refreshedCities, countries: refreshed.countries, map };
+    return { cities: development.cities, countries: development.countries, map };
   } catch (error) {
     try {
       tx.abort();

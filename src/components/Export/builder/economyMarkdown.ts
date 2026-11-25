@@ -2,6 +2,10 @@ import type { TLCity, TLCountry } from "../../../definitions/TerraLogger";
 import type { ExportContext } from "./exportTypes";
 import { isAtlasContent } from "../../atlas/core/validators";
 import {
+  additionalEconomyDealIds,
+  economyDetailTables,
+  formatDealKind,
+  formatDealParty,
   formatDealAttributionIssue,
   formatEconomyNumber,
   formatTradeEntry,
@@ -37,7 +41,9 @@ export function renderEconomySection(
   const hasImported = shared !== undefined || economy?.treasury !== undefined ||
     city?.economy?.production !== undefined || city?.economy?.product !== undefined ||
     city?.economy?.marketId !== undefined || country?.economy.production !== undefined ||
-    country?.economy.salesTax !== undefined || country?.economy.pollTax !== undefined;
+    country?.economy.salesTax !== undefined || country?.economy.pollTax !== undefined ||
+    country?.economy.finance !== undefined || country?.economy.tariffs !== undefined ||
+    city?.economy?.pollTaxPaid !== undefined || city?.economy?.adjustments !== undefined;
   if (!authored && !hasImported && imports.length === 0 &&
     exports.length === 0 && !economy?.description) return "";
 
@@ -58,15 +64,13 @@ export function renderEconomySection(
   function formatDeal(id: number) {
     const deal = deals.get(id);
     if (!deal) return `Unavailable deal #${id}`;
-    const seller = deal.seller.type === "city"
-      ? cities.get(deal.seller.id)?.name ?? `City #${deal.seller.id}`
-      : `Market #${deal.seller.id}`;
-    const buyer = deal.buyer.type === "city"
-      ? cities.get(deal.buyer.id)?.name ?? `City #${deal.buyer.id}`
-      : `Market #${deal.buyer.id}`;
-    return "Deal #" + id + ": " + seller + " → " + buyer + "; " +
-      formatGood(deal.goodId, deal.units) + "; price: " + deal.price +
-      (deal.tax === undefined ? "" : `; tax: ${deal.tax}`);
+    const seller = formatDealParty(deal, "seller", cities);
+    const buyer = formatDealParty(deal, "buyer", cities);
+    return "Deal #" + id + " — " + formatDealKind(deal) + ": " + seller + " → " + buyer + "; " +
+      formatGood(deal.goodId, deal.units) + "; price / unit: " + formatEconomyNumber(deal.price) +
+      (deal.tax === undefined ? "" : `; tax (total): ${formatEconomyNumber(deal.tax)}`) +
+      (deal.tariff === undefined ? "" : `; tariff (total): ${formatEconomyNumber(deal.tariff)}`) +
+      (deal.carriage === undefined ? "" : `; carriage / unit: ${formatEconomyNumber(deal.carriage)}`);
   }
 
   const parts = [authored];
@@ -110,6 +114,7 @@ export function renderEconomySection(
     else parts.push(markdownList(production.map((entry) => {
       if (entry.type === "deal") return formatDeal(entry.dealId);
       const output = formatGood(entry.goodId, entry.units);
+      if (entry.type === "total") return output;
       if (entry.type === "local") return `${output} — local`;
       return output + " — manufactured; recipe inputs: " +
         (entry.recipe.map((input) => formatGood(input.goodId, input.units)).join(", ") ||
@@ -143,10 +148,11 @@ export function renderEconomySection(
     else parts.push(
       production.reportedCityCount + " of " + production.cityCount +
         " cities supplied production records. Rural production is not included.",
-      markdownTable(["Good", "Local", "Manufactured", "Unit"],
+      markdownTable(["Good", "Local", "Manufactured", "Unclassified output", "Unit"],
         production.goods.map((good) => [
           formatGood(good.goodId), formatEconomyNumber(good.localUnits),
-          formatEconomyNumber(good.manufacturedUnits), goods.get(good.goodId)?.unit ?? "",
+          formatEconomyNumber(good.manufacturedUnits), formatEconomyNumber(good.unclassifiedUnits ?? 0),
+          goods.get(good.goodId)?.unit ?? "",
         ])),
     );
     if (shared?.unresolvedDealIds?.length) {
@@ -157,10 +163,17 @@ export function renderEconomySection(
         ].join("; "))));
     }
   }
+  for (const table of economyDetailTables(city, country, shared, context.data.Cities)) {
+    parts.push(`### ${table.title}`, markdownTable(table.headers, table.rows));
+  }
+  const ledgerIds = new Set([...imports, ...exports].flatMap((entry) => entry.source === "afmg" ? entry.dealIds : []));
+  for (const entry of city?.economy?.production ?? []) if (entry.type === "deal") ledgerIds.add(entry.dealId);
+  for (const id of additionalEconomyDealIds(city, country, shared, context.data.Cities)) ledgerIds.add(id);
+  if (ledgerIds.size > 0) parts.push("### Economy ledger", markdownList([...ledgerIds].sort((a, b) => a - b).map(formatDeal)));
   if (hasImported) parts.push(shared?.deals === undefined
     ? "Imported trade data unavailable."
     : city
-      ? "City imports are recorded purchases; exports are recorded sales."
+      ? "City imports are input and household purchases; exports are sales. Retained output and state orders are excluded."
       : "Country totals use current party ownership: City countries and AFMG market owners. " +
         "Goods origin and historical ownership are not recorded.");
 

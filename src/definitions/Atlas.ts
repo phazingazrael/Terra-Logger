@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { TLMapEra } from "./History";
+import type { TLDevelopmentalEra, TLMapEra } from "./History";
 import type {
   TLMapEconomy,
   MapInf,
@@ -23,9 +23,10 @@ export type AtlasSourceType =
 	| "religion"
 	| "note"
 	| "npc"
-	| "era";
+	| "era"
+	| "developmentalEra";
 
-export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote | TLNPC | TLMapEra;
+export type AtlasEntity = TLCity | TLCountry | TLCulture | TLReligion | TLNote | TLNPC | TLMapEra | TLDevelopmentalEra;
 
 export type AtlasEntityBySource = {
 	city: TLCity;
@@ -35,6 +36,7 @@ export type AtlasEntityBySource = {
 	note: TLNote;
 	npc: TLNPC;
 	era: TLMapEra;
+	developmentalEra: TLDevelopmentalEra;
 };
 
 export type AtlasRelatedEntities = Partial<{
@@ -45,6 +47,7 @@ export type AtlasRelatedEntities = Partial<{
 	notes: TLNote[];
 	npcs: TLNPC[];
 	eras: TLMapEra[];
+	developmentalEras: TLDevelopmentalEra[];
 	tags: Tag[];
 }>;
 

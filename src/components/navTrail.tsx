@@ -6,7 +6,7 @@ import {
 	Divider,
 } from "@mui/material";
 import { useActive } from "../db/DataContext";
-import type { TLMapEra } from "../definitions/History";
+import type { TLDevelopmentalEra, TLMapEra } from "../definitions/History";
 
 type LabelMap = Record<string, string>;
 import type {
@@ -40,6 +40,7 @@ function BreadcrumbsNav({
 	const cultures = useActive<TLCulture>("cultures");
 	const npcs = useActive<TLNPC>("npcs");
 	const eras = useActive<TLMapEra>("eras");
+	const developmentalEras = useActive<TLDevelopmentalEra>("developmentalEras");
 
 	const crumbs = [
 		{ to: rootTo, label: rootLabel },
@@ -52,8 +53,12 @@ function BreadcrumbsNav({
 			if (seg === "view_note") return { to: "/notes", label: "Notes" };
 			if (seg === "view_culture") return { to: "/cultures", label: "Cultures" };
 			if (seg === "view_npc") return { to: "/npcs", label: "NPCs" };
-			if (seg === "eras" || seg === "view_era") return { to: "/eras", label: "Eras" };
+			if (seg === "eras" || seg === "view_era" || seg === "view_developmental_era") return { to: "/eras", label: "Eras" };
 			const prevSeg = segments[i - 1];
+			if (prevSeg === "view_developmental_era") {
+				const era = developmentalEras.find((item) => item._id === seg);
+				return { to, label: era?.name ?? "Developmental Era" };
+			}
 			if (prevSeg === "view_era") {
 				const era = eras.find((item) => item._id === seg);
 				return { to, label: era?.name ?? "Era" };

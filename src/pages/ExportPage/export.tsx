@@ -1,4 +1,4 @@
-import type { TLMapEra } from "../../definitions/History";
+import type { TLDevelopmentalEra, TLMapEra } from "../../definitions/History";
 import { useMemo } from "react";
 import { useActive, useActiveMap, useDB } from "../../db/DataContext";
 
@@ -25,6 +25,7 @@ function ExportPage() {
 	const Religions = useActive<TLReligion>("religions");
 	const NPCs = useActive<TLNPC>("npcs");
 	const Eras = useActive<TLMapEra>("eras");
+	const DevelopmentalEras = useActive<TLDevelopmentalEra>("developmentalEras");
 	const { isActiveLoaded } = useDB();
 
 	const citiesByCountryName = useMemo(() => {
@@ -62,9 +63,10 @@ function ExportPage() {
 		Religions,
 		NPCs,
 		Eras,
+		DevelopmentalEras,
 	};
 
-	if (!MapInfo || !isActiveLoaded("eras") || !isActiveLoaded("npcs")) {
+	if (!MapInfo || !isActiveLoaded("eras") || !isActiveLoaded("developmentalEras") || !isActiveLoaded("npcs")) {
 		return <div className="contentSubBody exportPage">Loading export data...</div>;
 	}
 

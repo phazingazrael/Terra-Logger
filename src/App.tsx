@@ -100,6 +100,10 @@ const router = createBrowserRouter([
 				lazy: () => import("./pages/ErasPage/ErasPage").then((m) => ({ Component: m.default })),
 			},
 			{
+				path: "view_developmental_era/:_id",
+				lazy: () => import("./pages/ViewingPages/era").then((m) => ({ Component: m.DevelopmentalEraView })),
+			},
+			{
 				path: "view_era/:_id",
 				lazy: () => import("./pages/ViewingPages/era").then((m) => ({ Component: m.default })),
 			},

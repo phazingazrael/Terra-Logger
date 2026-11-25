@@ -1,4 +1,5 @@
 import { getDefaultEraBlocks } from "./blocks/era";
+import { getDevelopmentalEraBlocks } from "../../builder/eraMarkdown";
 import type {
   ExportSourceType,
   MarkdownBlock,
@@ -32,6 +33,8 @@ export const defaultTemplate: MarkdownDocumentTemplate = {
         return getDefaultReligionBlocks();
       case "map":
         return getDefaultMapBlocks();
+      case "developmentalEra":
+        return getDevelopmentalEraBlocks();
       case "era":
         return getDefaultEraBlocks();
       case "npc":

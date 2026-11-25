@@ -6,7 +6,7 @@ import { readStoredSvgStyles } from "./restoreSvgStyles";
 const renderingSections = [
   2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
   21, 22, 24, 25, 26, 27, 29, 30, 32, 34, 35, 36, 37, 38, 39,
-  45, 46, 47, 48, 49, 50, 51, 52, 53,
+  45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {

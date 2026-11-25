@@ -182,26 +182,13 @@ function MilitaryUnitEditor({
 			...unit,
 			...patch,
 			n: kind === "regiment" ? 0 : 1,
-			u: {
-				infantry: unit.u?.infantry ?? 0,
-				cavalry: unit.u?.cavalry ?? 0,
-				archers: unit.u?.archers ?? 0,
-				artillery: unit.u?.artillery ?? 0,
-				...(patch.u ?? {}),
-			},
+			u: { ...unit.u, ...(patch.u ?? {}) },
 		});
 	}
 
-	function patchComposition(field: keyof TLMilitary["u"], value: string) {
-		patchUnit({
-			u: {
-				infantry: unit.u?.infantry ?? 0,
-				cavalry: unit.u?.cavalry ?? 0,
-				archers: unit.u?.archers ?? 0,
-				artillery: unit.u?.artillery ?? 0,
-				[field]: toNumber(value),
-			},
-		});
+	function patchComposition(field: string, value: string) {
+		const u = { ...unit.u, [field]: toNumber(value) };
+		patchUnit({ u, a: Object.values(u).reduce((total, count) => total + count, 0) });
 	}
 
 	function changeKind(nextKind: MilitaryKind) {
@@ -265,63 +252,16 @@ function MilitaryUnitEditor({
 				</label>
 			</div>
 
-			{kind === "regiment" ? (
-				<section className="atlas-military-composition">
-					<strong>Regiment Composition</strong>
-
-					<div className="atlas-military-fields atlas-military-fields--composition">
-						<label>
-							Infantry
-							<input
-								type="number"
-								value={unit.u?.infantry ?? 0}
-								onChange={(event) =>
-									patchComposition("infantry", event.target.value)
-								}
-							/>
-						</label>
-
-						<label>
-							Cavalry
-							<input
-								type="number"
-								value={unit.u?.cavalry ?? 0}
-								onChange={(event) =>
-									patchComposition("cavalry", event.target.value)
-								}
-							/>
-						</label>
-
-						<label>
-							Archers
-							<input
-								type="number"
-								value={unit.u?.archers ?? 0}
-								onChange={(event) =>
-									patchComposition("archers", event.target.value)
-								}
-							/>
-						</label>
-
-						<label>
-							Artillery
-							<input
-								type="number"
-								value={unit.u?.artillery ?? 0}
-								onChange={(event) =>
-									patchComposition("artillery", event.target.value)
-								}
-							/>
-						</label>
-					</div>
-				</section>
-			) : (
-				<section className="atlas-military-composition">
-					<p className="atlas-muted">
-						Fleets use overall strength and map position data.
-					</p>
-				</section>
-			)}
+			<section className="atlas-military-composition">
+				<strong>Unit Composition</strong>
+				<div className="atlas-military-fields atlas-military-fields--composition">
+					{Object.entries(unit.u).map(([name, count]) => <label key={name}>
+						{name}
+						<input type="number" min={0} step={1} value={count}
+							onChange={(event) => patchComposition(name, event.target.value)} />
+					</label>)}
+				</div>
+			</section>
 
 			<details className="atlas-military-advanced">
 				<summary>Advanced map data</summary>
@@ -421,6 +361,7 @@ function normalizeMilitaryUnit(value: unknown): TLMilitary | null {
 	const record = value as Partial<TLMilitary>;
 
 	return {
+		...record,
 		_id:
 			typeof record._id === "string" && record._id
 				? record._id
@@ -432,12 +373,7 @@ function normalizeMilitaryUnit(value: unknown): TLMilitary | null {
 		y: toNumber(record.y),
 		bx: toNumber(record.bx),
 		by: toNumber(record.by),
-		u: {
-			cavalry: toNumber(record.u?.cavalry),
-			archers: toNumber(record.u?.archers),
-			infantry: toNumber(record.u?.infantry),
-			artillery: toNumber(record.u?.artillery),
-		},
+		u: Object.fromEntries(Object.entries(record.u ?? {}).map(([name, count]) => [name, toNumber(count)])),
 		n: record.n === 1 ? 1 : 0,
 		name: typeof record.name === "string" ? record.name : "",
 		state: toNumber(record.state),
@@ -455,12 +391,7 @@ function createMilitaryUnit(kind: MilitaryKind): TLMilitary {
 		y: 0,
 		bx: 0,
 		by: 0,
-		u: {
-			cavalry: 0,
-			archers: 0,
-			infantry: 0,
-			artillery: 0,
-		},
+		u: kind === "fleet" ? { fleet: 0 } : { cavalry: 0, archers: 0, infantry: 0, artillery: 0 },
 		n: kind === "regiment" ? 0 : 1,
 		name: kind === "regiment" ? "New Regiment" : "New Fleet",
 		state: 0,

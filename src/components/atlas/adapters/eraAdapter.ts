@@ -1,5 +1,5 @@
 import type { AtlasAdapter, AtlasContent } from "../../../definitions/Atlas";
-import type { TLMapEra } from "../../../definitions/History";
+import type { TLDevelopmentalEra, TLMapEra } from "../../../definitions/History";
 import { clear, computedBlock, createContentShell, descriptionBlock, entitySection, richTextBlock, sectionPreset } from "../core/presets";
 import { commonBlockPresets, commonSectionPresets } from "./shared";
 
@@ -40,4 +40,26 @@ export const eraAdapter: AtlasAdapter<"era"> = {
     id: "era-timeline", label: "Era Timeline", description: "Editable, manually ordered notable events.",
     create: () => computedBlock("eraTimeline", "Notable Events", "era.events"),
   }],
+};
+
+function createDevelopmentalEraContent(era: TLDevelopmentalEra): AtlasContent {
+  return createContentShell({
+    sourceType: "developmentalEra", entityId: era._id, mapId: era.mapId, title: era.name,
+    sections: [
+      entitySection("Header", "section header", [computedBlock("developmentalEraHeader", "Developmental Era", "developmentalEra.header")], { ...clear, wrapper: { ...clear.wrapper, gridSpan: "full" } }),
+      entitySection("Overview", "section description", [descriptionBlock("Era description")], { wrapper: { gridSpan: "full" } }),
+      entitySection("Development & Dates", "section era-chronology", [computedBlock("developmentalEraPlacements", "Development & Dates", "developmentalEra.placements")], { wrapper: { gridSpan: "full" } }),
+      sectionPreset("Notes", "section editor-notes", [richTextBlock("")]),
+    ],
+  });
+}
+
+export const developmentalEraAdapter: AtlasAdapter<"developmentalEra"> = {
+  sourceType: "developmentalEra", label: "Developmental Era", defaultLayout: "content-grid",
+  resizableSectionClasses: ["era-chronology", "editor-notes", "freeform", "details"],
+  getEntityId: (era) => era._id,
+  getEntityTitle: (era) => era.name,
+  createDefaultContent: createDevelopmentalEraContent,
+  sectionPresets: commonSectionPresets<"developmentalEra">(),
+  blockPresets: commonBlockPresets<"developmentalEra">(),
 };

@@ -253,8 +253,11 @@ export const parseLoadedData = async (data: string[]) => {
     Pack.cells.good = data[40].split(",").map(Number);
   }
 
-  if (data[41]) {
-    const goods: unknown = JSON.parse(data[41]);
+  // Goods moved from section 41 to JSON settings in AFMG 1.157.
+  const settingsGoods = settings.options.afmgMapSettings && typeof settings.options.afmgMapSettings === "object"
+    ? (settings.options.afmgMapSettings as Record<string, unknown>).goods : undefined;
+  if (settingsGoods !== undefined || data[41]) {
+    const goods: unknown = settingsGoods === undefined ? JSON.parse(data[41]) : settingsGoods;
     if (!Array.isArray(goods)) {
       throw new Error("Invalid AFMG goods section: expected a list.");
     }
@@ -281,6 +284,21 @@ export const parseLoadedData = async (data: string[]) => {
     Pack.cells.market = data[44].split(",").map(Number);
   }
 
+  const sourceVersion = data[0]?.split("|")[0].split(".").map(Number) ?? [];
+  const requiresEconomyCells = sourceVersion[0] > 1 || (sourceVersion[0] === 1 && sourceVersion[1] >= 157);
+  for (const [index, key] of [[54, "prosperity"], [55, "development"]] as const) {
+    if (!data[index]?.trim()) {
+      if (requiresEconomyCells) throw new Error(`Missing AFMG cell ${key} section (${index}).`);
+      continue;
+    }
+    const tokens = data[index].split(",");
+    const values = tokens.map(Number);
+    if (tokens.some((token) => !token.trim()) || values.length !== Pack.cells.state.length || values.some((value) =>
+      !Number.isInteger(value) || value < 0 || value > 100)) {
+      throw new Error(`Invalid AFMG cell ${key} section (${index}): expected one value from 0 to 100 per cell.`);
+    }
+    Pack.cells[key] = values;
+  }
   const renderingSource = parseRenderingSource(data);
   const renderingIssues: string[] = [];
 
@@ -421,9 +439,11 @@ function readAttachedNotes(sections: readonly string[]): Note[] {
     ["religion", 29], ["biome", 3], ["good", 41],
   ];
   for (const [kind, section] of collections) {
-    if (!sections[section]?.trim()) continue;
+    const settingsGoods = kind === "good" && sections[1]?.trimStart().startsWith("{")
+      ? (JSON.parse(sections[1]) as Record<string, unknown>).goods : undefined;
+    if (settingsGoods === undefined && !sections[section]?.trim()) continue;
     let records: unknown;
-    try { records = JSON.parse(sections[section]); } catch {
+    try { records = settingsGoods === undefined ? JSON.parse(sections[section]) : settingsGoods; } catch {
       throw new Error(`Cannot read attached Notes: malformed AFMG ${kind} section (${section}).`);
     }
     if (!Array.isArray(records)) throw new Error(`Invalid AFMG ${kind} section (${section}): expected a list.`);

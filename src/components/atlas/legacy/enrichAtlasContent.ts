@@ -86,6 +86,7 @@ const ENRICHMENT_SECTION_TITLES: Record<AtlasSourceType, string[]> = {
   ],
   note: [],
   era: [],
+  developmentalEra: [],
   npc: ["Current Location", "Relationship Graph", "History"],
 };
 

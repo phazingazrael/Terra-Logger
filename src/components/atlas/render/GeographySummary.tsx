@@ -1,10 +1,30 @@
 import { BiomeIcons } from "../../icons/MapIcon";
-import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Box, Chip, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import type { AtlasRenderContext } from "../../../definitions/Atlas";
 import type { TLCity, TLCountry } from "../../../definitions/TerraLogger";
 import { cityBiome, countryBiomeComposition } from "../core/geography";
 
 export function GeographySummary({ context }: { context: AtlasRenderContext }) {
+  if (context.sourceType !== "city" && context.sourceType !== "country") return null;
+  const development = (context.entity as TLCity | TLCountry).development;
+  return <Box sx={{ display: "grid", gap: 1 }}>
+    {development ? <Box>
+      <Typography variant="body2">
+        {context.sourceType === "city" ? "Local development" : "Average development"}: {development.eraId
+          ? <Link component={RouterLink} to={`/view_developmental_era/${development.eraId}`}>{development.eraName ?? "Developmental era"}</Link>
+          : development.eraName ?? "Unclassified"}
+        {` (level ${Number(development.level.toFixed(2))})`}
+      </Typography>
+      {context.sourceType === "country" ? <Typography variant="caption" color="text.secondary">
+        Mean of populated map cells; individual Cities may be in different developmental eras.
+      </Typography> : null}
+    </Box> : null}
+    <BiomeSummary context={context} />
+  </Box>;
+}
+
+function BiomeSummary({ context }: { context: AtlasRenderContext }) {
   if (context.sourceType !== "city" && context.sourceType !== "country") return null;
   const data = context.mapGeography;
   if (!data?.geography) return <p>Reimport this map to include its biome assignments.</p>;

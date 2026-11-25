@@ -25,6 +25,9 @@ type AFMGGood = {
   icon: string;
   color: string;
   visible?: boolean;
+  carriage?: number;
+  deposits?: [number, number];
+  development?: number;
   chance?: number;
   distribution?: string;
   biomeOutput?: Partial<Record<number, number>>;
@@ -46,6 +49,14 @@ type AFMGMarket = {
   color: string;
   name?: string;
   goods: Record<number, { stock: number; price: number }>;
+  rural?: {
+    earned: number; spent: number;
+    bought: [goodId: number, units: number][];
+    kept?: [goodId: number, units: number][];
+    margin?: number;
+    pollTax?: [stateId: number, owed: number, paid: number][];
+  };
+  feePaid?: number;
 };
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/blob/4536054599811565ee63fff365f28644ddcd29b7/src/generators/states-generator.ts
@@ -55,7 +66,13 @@ type AFMGTariffRule = {
   rate: number | "embargo";
 };
 
-type AFMGDeal = {
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/types/economy.ts
+type AFMGDeal =
+  | [burg: number, market: number, good: number, kind: 0 | 1 | 2 | 3 | 4,
+      units: number, price: number, tax: number, tariff: number, carriage: number]
+  | AFMGLegacyDeal;
+
+type AFMGLegacyDeal = {
   i: number;
   seller: number;
   sellerType: "burg" | "market";
@@ -85,6 +102,7 @@ type AFMGProductionCandidate = {
 };
 
 type AFMGProductionRecord =
+  | [good: number, units: number]
   | { dealId: number }
   | {
       goodId: number;
@@ -115,6 +133,8 @@ type City = {
   production?: AFMGProductionRecord[];
   treasury?: number;
   product?: number;
+  adjustments?: { name: string; value: number }[];
+  pollTaxPaid?: number;
   port: number; //if burg is not a port, then 0, otherwise feature id of the water body the burg stands on
   removed: boolean; //if burg is removed
   shanty: number; //if burg has a shanty town, 0 if not. Used for MFCG
@@ -127,7 +147,22 @@ type City = {
 };
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Data-model/d6437512a723ab571e6637cfb0fac99ccf9847e5#states
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/model/political/states-generator.ts
+type AFMGStateFinance = {
+  marketFee: number;
+  adjustments: { name: string; value: number }[];
+  budget: Record<"court" | "administration" | "infrastructure" | "military" | "corruption", number>;
+  collected: number;
+  spent: Record<"court" | "administration" | "infrastructure" | "military", number>;
+  pocketed: number;
+  salesTax: number;
+  pollTax: number;
+  treasury: number;
+  tariffs: AFMGTariffRule[];
+};
+
 type Country = {
+  economy?: AFMGStateFinance;
   tags?: string[];
   alert: number; // state war alert, see military forces page
   area: number; // state area in pixels
@@ -159,12 +194,7 @@ type Country = {
     y: number;
     bx: number;
     by: number;
-    u: {
-      archers: number;
-      cavalry: number;
-      artillery: number;
-      infantry: number;
-    };
+    u: Record<string, number>;
     n: number;
     name: string;
     state: number;
@@ -207,6 +237,7 @@ type Culture = {
 
 // https://github.com/Azgaar/Fantasy-Map-Generator/wiki/Military-Forces#military-units-editor
 type MilitaryType = {
+  goods?: number[];
   icon: string;
   name: string;
   rural: number;
@@ -467,6 +498,12 @@ declare interface AFMGLabel {
   startOffset?: number;
 }
 
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/data/development.ts
+declare interface AFMGDevelopmentalEra {
+  level: number;
+  name: string;
+}
+
 declare interface AFMGLegacySettingsOptions {
   [option: string]: unknown;
   mapSize?: number;
@@ -535,6 +572,7 @@ declare interface MapInfo {
       eraShort: string;
       militaryTypes: MilitaryType[];
       customIcons?: AFMGCustomIcon[];
+      eras?: AFMGDevelopmentalEra[];
     };
     hideLabels: number;
     stylePreset: string;
@@ -597,6 +635,8 @@ interface CellData {
   s: number[];
   // number[] - cells state index. Uint16Array
   state: number[];
+  prosperity?: number[];
+  development?: number[];
   // number[] - distance field. 1, 2, ... - land cells, -1, -2, ... - water cells, 0 - unmarked cell. Uint8Array
   t: number[];
   // number[][] - indexes of vertices of each cell

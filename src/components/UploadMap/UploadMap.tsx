@@ -23,6 +23,7 @@ import type {
 	MapDatabaseStore,
 } from "../../db/connections/mapsDatabase";
 import { useDB } from "../../db/DataContext";
+import { refreshImportedDevelopmentalEras } from "../../db/eras";
 import {
 	queryDataFromStore,
 	saveImportedMapRecords,
@@ -803,6 +804,14 @@ function UploadMap({
 			percent: 96,
 			message: "Refreshing maps list...",
 		});
+
+		uploadPhase(diagnostics, "Saving developmental eras and summaries");
+		const developmentalEras = await refreshImportedDevelopmentalEras(mapId);
+		diagnostics.counts["Developmental eras"] = developmentalEras.length;
+		diagnostics.counts["Classification-enabled developmental eras"] = developmentalEras.filter((era) => era.active).length;
+		diagnostics.counts["Developmental placements"] = developmentalEras.reduce((sum, era) => sum + era.placements.length, 0);
+		diagnostics.counts["Estimated developmental placements"] = developmentalEras.reduce((sum, era) => sum + era.placements.filter((placement) => placement.estimated).length, 0);
+		importSummary.imported.push({ label: "Developmental eras", count: developmentalEras.length });
 
 		uploadPhase(diagnostics, "Reading final Era records");
 		const eras = await queryDataFromStore<TLMapEra>("eras", "mapIdIndex", mapId);

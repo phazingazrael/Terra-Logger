@@ -56,6 +56,7 @@ const defaultExports: Array<string> = [
 	"Religions",
 	"NPCs",
 	"Eras",
+	"Developmental Eras",
 ];
 
 function useMarkdownExportPanelModel(props: {
@@ -175,6 +176,7 @@ function useMarkdownExportPanelModel(props: {
 			religions: data.Religions?.length,
 			npcs: data.NPCs?.length,
 			eras: data.Eras?.length,
+			developmentalEras: data.DevelopmentalEras?.length,
 		};
 
 		try {
@@ -186,6 +188,8 @@ function useMarkdownExportPanelModel(props: {
 				"INFO",
 				`• counts:${defaultexports.includes("Cities") ? `cities=${counts.cities}, ` : ""}${defaultexports.includes("Countries") ? `countries=${counts.countries}, ` : ""}${defaultexports.includes("Cultures") ? `cultures=${counts.cultures}, ` : ""}${defaultexports.includes("Notes") ? `notes=${counts.notes}, ` : ""}${defaultexports.includes("Religions") ? `religions=${counts.religions}, ` : ""}${defaultexports.includes("NPCs") ? `npcs=${counts.npcs}, ` : ""}${defaultexports.includes("Eras") ? `eras=${counts.eras}` : ""}`,
 			);
+
+			if (defaultexports.includes("Developmental Eras")) log("INFO", `Developmental eras selected: ${counts.developmentalEras}`);
 
 			setStatus("Preparing templates…");
 			const loadedFiles = tplCfg?.Files

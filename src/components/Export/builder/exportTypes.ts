@@ -10,7 +10,8 @@ export type ExportSourceType =
   | "religion"
   | "note"
   | "npc"
-  | "era";
+  | "era"
+  | "developmentalEra";
 
 export type ExportEntity = Record<string, unknown>;
 
@@ -20,6 +21,7 @@ export type ExportContext = {
   sourceType: ExportSourceType;
   entity: ExportEntity;
   documentPath?: string;
+  developmentalEraPaths?: Readonly<Record<string, string>>;
 };
 
 export type MarkdownBlock = {

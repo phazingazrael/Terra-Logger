@@ -95,6 +95,8 @@ const mutateData = async (
 		"Relationships",
 		"Culture Population",
 		"SVG",
+		"Geography",
+		"Economy",
 		...(options.generation.generateNPCs ? ["NPC Population"] : []),
 	];
 
@@ -304,8 +306,10 @@ const mutateData = async (
 	applyImportedTags(tempMap, data, options.diagnostics);
 
 	// Refresh source geography after reimport merging, preserving authored content.
+	reportMutationProgress("Geography");
 	applyImportedGeography(tempMap, data, Pack);
 
+	reportMutationProgress("Economy");
 	applyImportedEconomy(tempMap, data, Pack, (message) => {
 		addUploadIssue(options.diagnostics, {
 			severity: "warning",

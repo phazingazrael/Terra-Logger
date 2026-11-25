@@ -23,6 +23,7 @@ import type {
 } from "../../../../definitions/TerraLogger";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { MapIcon } from "../../../icons/MapIcon";
 import { SvgImage } from "../../../Util/svgImage";
 import { getPoliticalDescriptor } from "../../../Util/countryUtils";
 
@@ -104,32 +105,15 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 												{regiments?.slice(0, 10).map((regiment) => (
 													<TableRow key={regiment._id}>
 														<TableCell>
-															<span className="unit-icon">{regiment.icon}</span>
+															<span className="unit-icon"><MapIcon icon={regiment.icon} label={regiment.name} /></span>
 															{regiment.name}
 														</TableCell>
 														<TableCell>{regiment.a}</TableCell>
 														<TableCell>
-															{!!regiment.u.cavalry && (
-																<span className="unit-comp">
-																	🐴 {regiment.u.cavalry}
-																</span>
-															)}
-															{!!regiment.u.infantry && (
-																<span className="unit-comp">
-																	👣 {regiment.u.infantry}
-																</span>
-															)}
-															{!!regiment.u.archers && (
-																<span className="unit-comp">
-																	🏹 {regiment.u.archers}
-																</span>
-															)}
-															{!!regiment.u.artillery && (
-																<span className="unit-comp">
-																	💣 {regiment.u.artillery}
-																</span>
-															)}
-														</TableCell>
+															{Object.entries(regiment.u).filter(([, count]) => count > 0).map(([name, count]) => (
+														<span className="unit-comp" key={name}>{name}: {count}</span>
+													))}
+													</TableCell>
 													</TableRow>
 												))}
 											</TableBody>
@@ -156,7 +140,7 @@ export const countryBlockPlugins: Record<string, AtlasBlockPlugin> = {
 											{fleets?.slice(0, 10).map((fleet) => (
 												<TableRow key={fleet._id}>
 													<TableCell>
-														<span className="unit-icon">{fleet.icon}</span>
+														<span className="unit-icon"><MapIcon icon={fleet.icon} label={fleet.name} /></span>
 														{fleet.name}
 													</TableCell>
 													<TableCell>{fleet.a}</TableCell>

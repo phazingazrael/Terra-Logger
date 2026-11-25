@@ -88,6 +88,13 @@ t,
   font-size: 0.8em;
 }
 
+/* https://github.com/Azgaar/Fantasy-Map-Generator/blob/8cc7f8e4a00fa4b2fab5a29d619b310cfcd60272/src/index.css */
+#armies use.regimentIcon {
+  pointer-events: none;
+  fill: #fff;
+  text-shadow: 0 0 4px #000;
+}
+
 #statesBody {
   stroke-width: 3;
 }

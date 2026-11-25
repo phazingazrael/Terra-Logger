@@ -21,11 +21,14 @@ import type {
 import type {
   TLCity,
   TLCountry,
-  TLEconomyParty,
   TLTradeEntry,
 } from "../../../definitions/TerraLogger";
 
 import {
+	additionalEconomyDealIds,
+	economyDetailTables,
+	formatDealKind,
+	formatDealParty,
 	formatDealAttributionIssue,
 	formatEconomyNumber,
 	formatTradeEntry,
@@ -71,7 +74,9 @@ export function EconomySummary({
 		city?.economy?.marketId !== undefined ||
 		city?.economy?.product !== undefined ||
 		country?.economy.salesTax !== undefined ||
-		country?.economy.pollTax !== undefined;
+		country?.economy.pollTax !== undefined ||
+		country?.economy.finance !== undefined || country?.economy.tariffs !== undefined ||
+		city?.economy?.pollTaxPaid !== undefined || city?.economy?.adjustments !== undefined;
 	const imports = normalizeTradeEntries(economy.imports);
 	const exports = normalizeTradeEntries(economy.exports);
 	const showDescription =
@@ -107,6 +112,8 @@ export function EconomySummary({
 	);
 	for (const entry of production ?? [])
 		if (entry.type === "deal") dealIds.add(entry.dealId);
+	for (const id of additionalEconomyDealIds(city, country, shared, context.related?.cities ?? [])) dealIds.add(id);
+	const detailTables = economyDetailTables(city, country, shared, context.related?.cities ?? []);
 	const output = production?.filter((entry) => entry.type !== "deal");
 	const finances: [string, number | undefined][] = [
 		["Treasury", economy.treasury],
@@ -121,11 +128,6 @@ export function EconomySummary({
 	function quantity(units: number, goodId: number) {
 		const unit = goods.get(goodId)?.unit;
 		return formatEconomyNumber(units) + (unit ? ` ${unit}` : "");
-	}
-	function partyName(party: TLEconomyParty) {
-		return party.type === "city"
-			? (cities.get(party.id)?.name ?? `City #${party.id}`)
-			: `Market #${party.id}`;
 	}
 	function renderTradeEntries(label: string, entries: TLTradeEntry[]) {
 		return (
@@ -175,13 +177,15 @@ export function EconomySummary({
 					<Table size="small" aria-label={label}>
 						<TableHead>
 							<TableRow>
-								<TableCell>Deal</TableCell>
+								<TableCell>Deal / kind</TableCell>
 								<TableCell>Seller</TableCell>
 								<TableCell>Buyer</TableCell>
 								<TableCell>Good</TableCell>
 								<TableCell align="right">Quantity</TableCell>
-								<TableCell align="right">Price</TableCell>
-								<TableCell align="right">Tax</TableCell>
+								<TableCell align="right">Price / unit</TableCell>
+								<TableCell align="right">Tax (total)</TableCell>
+								<TableCell align="right">Tariff (total)</TableCell>
+								<TableCell align="right">Carriage / unit</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -190,15 +194,15 @@ export function EconomySummary({
 								if (!deal)
 									return (
 										<TableRow key={id}>
-											<TableCell colSpan={7}>Unavailable deal #{id}</TableCell>
+											<TableCell colSpan={9}>Unavailable deal #{id}</TableCell>
 										</TableRow>
 									);
 								return (
 									<Fragment key={id}>
 										<TableRow>
-											<TableCell>#{id}</TableCell>
-											<TableCell>{partyName(deal.seller)}</TableCell>
-											<TableCell>{partyName(deal.buyer)}</TableCell>
+											<TableCell>#{id} — {formatDealKind(deal)}</TableCell>
+											<TableCell>{formatDealParty(deal, "seller", cities)}</TableCell>
+											<TableCell>{formatDealParty(deal, "buyer", cities)}</TableCell>
 											<TableCell>{goodName(deal.goodId)}</TableCell>
 											<TableCell align="right" title={String(deal.units)}>
 												{quantity(deal.units, deal.goodId)}
@@ -216,10 +220,12 @@ export function EconomySummary({
 													? "—"
 													: formatEconomyNumber(deal.tax)}
 											</TableCell>
+											<TableCell align="right">{deal.tariff === undefined ? "—" : formatEconomyNumber(deal.tariff)}</TableCell>
+											<TableCell align="right">{deal.carriage === undefined ? "—" : formatEconomyNumber(deal.carriage)}</TableCell>
 										</TableRow>
 										{(unresolvedReasons.get(id) ?? []).map((reason) => (
 											<TableRow key={reason}>
-												<TableCell colSpan={7}>{reason}</TableCell>
+												<TableCell colSpan={9}>{reason}</TableCell>
 											</TableRow>
 										))}
 									</Fragment>
@@ -301,7 +307,7 @@ export function EconomySummary({
 						</Typography>
 					) : output.length === 0 ? (
 						<Typography color="text.secondary">
-							No local or manufactured output recorded.
+							No output recorded.
 						</Typography>
 					) : (
 						<TableContainer>
@@ -325,7 +331,7 @@ export function EconomySummary({
 													size="small"
 													variant="outlined"
 													label={
-														entry.type === "local" ? "Local" : "Manufactured"
+														entry.type === "total" ? "Total output" : entry.type === "local" ? "Local" : "Manufactured"
 													}
 												/>
 												{entry.type === "manufacturing" ? (
@@ -385,6 +391,7 @@ export function EconomySummary({
 											<TableCell>Good</TableCell>
 											<TableCell align="right">Local</TableCell>
 											<TableCell align="right">Manufactured</TableCell>
+											<TableCell align="right">Unclassified output</TableCell>
 											<TableCell>Unit</TableCell>
 										</TableRow>
 									</TableHead>
@@ -403,6 +410,9 @@ export function EconomySummary({
 													title={String(good.manufacturedUnits)}
 												>
 													{formatEconomyNumber(good.manufacturedUnits)}
+												</TableCell>
+												<TableCell align="right">
+													{formatEconomyNumber(good.unclassifiedUnits ?? 0)}
 												</TableCell>
 												<TableCell>
 													{goods.get(good.goodId)?.unit ?? ""}
@@ -461,19 +471,30 @@ export function EconomySummary({
 					)}
 				</Box>
 			) : null}
+			{detailTables.length > 0 ? <Box component="details">
+				<summary>Economy details</summary>
+				{detailTables.map((table) => <Box component="details" key={table.title} sx={{ mt: 1 }}>
+					<summary>{table.title}</summary>
+					<TableContainer><Table size="small" aria-label={table.title}>
+						<TableHead><TableRow>{table.headers.map((header) => <TableCell key={header}>{header}</TableCell>)}</TableRow></TableHead>
+						<TableBody>{keyEconomyRows(table.rows, (row) => JSON.stringify(row)).map(({ item: row, key }) =>
+							<TableRow key={key}>{table.headers.map((header, index) => <TableCell key={header}>{row[index]}</TableCell>)}</TableRow>)}</TableBody>
+					</Table></TableContainer>
+				</Box>)}
+			</Box> : null}
 			{hasImported ? (
 				<Typography variant="body2" color="text.secondary">
 					{shared?.deals === undefined
 						? "Imported trade data unavailable."
 						: city
-							? "City imports are recorded purchases; exports are recorded sales."
+							? "City imports are input and household purchases; exports are sales. Retained output and state orders are excluded."
 							: "Country totals use current party ownership: City countries and AFMG market owners. Goods origin and historical ownership are not recorded."}
 				</Typography>
 			) : null}
 			{dealIds.size > 0
 				? renderLedger(
 						[...dealIds].sort((a, b) => a - b),
-						"Trade ledger",
+						"Economy ledger",
 					)
 				: null}
 			{country && (shared?.unresolvedDealIds?.length ?? 0) > 0 ? (

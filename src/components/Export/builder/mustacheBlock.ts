@@ -824,12 +824,7 @@ function normalizeCountryMilitary(value: unknown): ExportRecord[] {
         name: readString(unit, "name") || "Unnamed Unit",
         icon: readString(unit, "icon"),
         a: readCountryValue(unit, "a"),
-        u: {
-          cavalry: readCountryValue(u, "cavalry"),
-          archers: readCountryValue(u, "archers"),
-          infantry: readCountryValue(u, "infantry"),
-          artillery: readCountryValue(u, "artillery"),
-        },
+        u: Object.fromEntries(Object.keys(u).map((name) => [name, readCountryValue(u, name)])),
       },
     ];
   });

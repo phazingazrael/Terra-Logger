@@ -160,7 +160,7 @@ const MainNav = ({ mapsList }: { mapsList: MapInf[] }): JSX.Element => {
 					<NavigationLink item={{ label: "Cultures", to: "/cultures", icon: NotebookIcon, activePrefixes: ["/view_culture"] }} />
 					<NavigationLink item={{ label: "NPCs", to: "/npcs", icon: NotebookIcon, activePrefixes: ["/view_npc"] }} />
 					<NavigationLink item={{ label: "Notes", to: "/notes", icon: NotebookIcon, activePrefixes: ["/view_note"] }} />
-					<NavigationLink item={{ label: "Eras", to: "/eras", icon: NotebookIcon, activePrefixes: ["/view_era"] }} />
+					<NavigationLink item={{ label: "Eras", to: "/eras", icon: NotebookIcon, activePrefixes: ["/view_era", "/view_developmental_era"] }} />
 				</div>
 			) : null}
 			<NavigationLink item={{ label: "Settings", to: "/settings", icon: FadersIcon }} />

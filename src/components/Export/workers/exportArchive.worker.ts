@@ -60,6 +60,13 @@ self.onmessage = async (event: MessageEvent<ExportArchiveRequest>) => {
         }
       }
     }
+    if (request.selectedExports.includes("Developmental Eras")) {
+      const eras = request.data.DevelopmentalEras ?? [];
+      details.push(`Developmental eras: ${eras.length}; active: ${eras.filter((era) => era.active).length}; placements: ${eras.reduce((sum, era) => sum + era.placements.length, 0)}.`);
+      for (const era of eras) {
+        details.push(`Developmental era ${era.name} (${era._id}): threshold ${era.level}, ${era.active ? "active" : "inactive"}, ${era.placements.length} placements (${era.placements.filter((placement) => placement.estimated).length} estimated).`);
+      }
+    }
     context = "Creating ZIP archive";
     post({
       id: request.id,

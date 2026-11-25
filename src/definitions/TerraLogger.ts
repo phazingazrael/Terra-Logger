@@ -1,4 +1,4 @@
-import type { TLMapHistoryConfiguration } from "./History";
+import type { TLDevelopmentSummary, TLMapHistoryConfiguration } from "./History";
 // src/definitions/TerraLogger.ts //
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // visual effects only for eslint-disable //
@@ -128,6 +128,7 @@ export type TLNeighbor = {
 };
 
 export type TLMilitaryType = {
+  goods?: number[];
   icon: string;
   name: string;
   rural: number;
@@ -147,12 +148,7 @@ export type TLMilitary = {
   y: number;
   bx: number;
   by: number;
-  u: {
-    cavalry: number;
-    archers: number;
-    infantry: number;
-    artillery: number;
-  };
+  u: Record<string, number>;
   n: number;
   name: string;
   state: number;
@@ -222,6 +218,7 @@ export type TLNameBase = {
 };
 
 export type TLCity = {
+  development?: TLDevelopmentSummary;
   _id: string;
   cellId?: number;
   aliases?: string[];
@@ -252,6 +249,8 @@ export type TLCity = {
     marketId?: number;
     treasury?: number;
     product?: number;
+    adjustments?: { name: string; value: number }[];
+    pollTaxPaid?: number;
   };
   features: string[];
   id: number;
@@ -272,6 +271,7 @@ export type TLCity = {
 };
 
 export type TLCountry = {
+  development?: TLDevelopmentSummary;
   _id: string;
   aliases?: string[];
   cities: TLCity[];
@@ -290,6 +290,7 @@ export type TLCountry = {
     tariffs?: TLTariffRule[];
     salesTax?: number;
     pollTax?: number;
+    finance?: TLStateFinance;
   };
   history: { details: string; events: string[]; };
   id: number;
@@ -633,6 +634,15 @@ export type TLTradeEntry =
 
 export type TLDemandCategory = "food" | "utilities" | "construction" | "military" | "luxury";
 
+export type TLStateFinance = {
+  marketFee: number;
+  adjustments: { name: string; value: number }[];
+  budget: Record<"court" | "administration" | "infrastructure" | "military" | "corruption", number>;
+  collected: number;
+  spent: Record<"court" | "administration" | "infrastructure" | "military", number>;
+  pocketed: number;
+};
+
 export type TLGood = {
   id: number;
   name: string;
@@ -642,6 +652,9 @@ export type TLGood = {
   icon: string;
   color: string;
   visible?: boolean;
+  carriage?: number;
+  deposits?: [number, number];
+  development?: number;
   chance?: number;
   distribution?: string;
   biomeOutput?: Partial<Record<number, number>>;
@@ -663,6 +676,14 @@ export type TLMarket = {
   color: string;
   name?: string;
   goods: { goodId: number; stock: number; price: number }[];
+  rural?: {
+    earned: number; spent: number;
+    bought: [goodId: number, units: number][];
+    kept?: [goodId: number, units: number][];
+    margin?: number;
+    pollTax?: [countryId: number, owed: number, paid: number][];
+  };
+  feePaid?: number;
 };
 
 export type TLEconomyParty = {
@@ -677,6 +698,8 @@ export type TLTariffRule = {
 };
 
 export type TLDeal = {
+  kind?: "sale" | "input" | "demand" | "kept" | "order";
+  carriage?: number;
   id: number;
   seller: TLEconomyParty;
   buyer: TLEconomyParty;
@@ -710,6 +733,9 @@ export type TLMapEconomy = {
     good?: number[];
     market?: number[];
     country: number[];
+    population?: number[];
+    prosperity?: number[];
+    development?: number[];
   };
 };
 
@@ -730,6 +756,7 @@ export type TLProductionCandidate = {
 };
 
 export type TLCityProduction =
+  | { type: "total"; goodId: number; units: number }
   | { type: "local"; goodId: number; units: number }
   | {
       type: "manufacturing";
@@ -748,5 +775,6 @@ export type TLCountryProduction = {
     goodId: number;
     localUnits: number;
     manufacturedUnits: number;
+    unclassifiedUnits?: number;
   }[];
 };

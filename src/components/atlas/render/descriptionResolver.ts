@@ -52,7 +52,7 @@ export function resolveGenericDescription(
   const entityName = entity.nameFull || entity.name || "This entry";
 
   return {
-    value: `${entityName} is a ${sourceType}.`,
+    value: `${entityName} is a ${sourceType === "developmentalEra" ? "Developmental Era" : sourceType}.`,
     format: "text",
     source: "fallback",
   };

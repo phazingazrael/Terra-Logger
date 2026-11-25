@@ -1,10 +1,55 @@
 import { Box, Chip, Link, Paper, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import type { TLNPC } from "../../../../definitions/TerraLogger";
+import type { TLCity, TLNPC } from "../../../../definitions/TerraLogger";
 import type { AtlasBlockPlugin } from "../../../../definitions/Atlas";
-import type { TLMapEra } from "../../../../definitions/History";
+import { developmentalPlacementSubject, developmentalPlacementsForEntity, historicalYearLabel } from "../../../HistoryGenerator/eras/mapEras";
+import type { TLDevelopmentalEra, TLMapEra } from "../../../../definitions/History";
 
 export const eraBlockPlugins: Record<string, AtlasBlockPlugin> = {
+  developmentalEraHeader: {
+    type: "developmentalEraHeader", label: "Developmental Era",
+    Render: ({ context }) => {
+      if (context.sourceType !== "developmentalEra") return null;
+      const era = context.entity as TLDevelopmentalEra;
+      return <div className="header"><div className="info">
+        <Typography variant="h1">{era.name}</Typography>
+        <Chip size="small" label={era.active && era.placements.length ? "Active developmental era" : "Inactive developmental era"} />
+        <Typography color="text.secondary">Development threshold: {era.level}</Typography>
+      </div></div>;
+    },
+  },
+  developmentalEraPlacements: {
+    type: "developmentalEraPlacements", label: "Development & Dates",
+    Render: ({ context }) => {
+      if (context.sourceType !== "developmentalEra") return null;
+      const era = context.entity as TLDevelopmentalEra;
+      const historical = context.related?.eras ?? [];
+      const inheritedCities = new Map<string, TLCity[]>();
+      for (const city of context.related?.cities ?? []) {
+        for (const placement of developmentalPlacementsForEntity(era, city, "city")) {
+          if (placement.subject?.type !== "country") continue;
+          const members = inheritedCities.get(placement.id) ?? [];
+          members.push(city); inheritedCities.set(placement.id, members);
+        }
+      }
+      return <Box sx={{ display: "grid", gap: 2 }}>
+        <Typography>Development threshold: {era.level} · {era.active && era.placements.length ? "Active" : "Inactive"}</Typography>
+        {era.placements.length ? era.placements.map((placement) => <Paper key={placement.id} variant="outlined" sx={{ p: 2 }}>
+          <Typography variant="subtitle2">{developmentalPlacementSubject(placement, context.related?.cities, context.related?.countries)}</Typography>
+          <Chip size="small" label={placement.estimated ? "Estimated" : "Manually dated"} />
+          <Typography sx={{ mt: 1 }}>{historicalYearLabel(placement.startYear, historical)} – {historicalYearLabel(placement.endYear, historical)}</Typography>
+          {placement.subject?.type === "country" ? <details>
+            <summary>Cities inheriting this period</summary>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+              {(inheritedCities.get(placement.id) ?? []).map((city) =>
+                <Link key={city._id} component={RouterLink} to={`/view_city/${city._id}`}>{city.name}</Link>)}
+            </Box>
+          </details> : null}
+        </Paper>) : <Typography color="text.secondary">No dated placements.</Typography>}
+        <Typography variant="caption" color="text.secondary">Cell development is independent of these dates.</Typography>
+      </Box>;
+    },
+  },
   eraHeader: {
     type: "eraHeader", label: "Era",
     Render: ({ context }) => {
