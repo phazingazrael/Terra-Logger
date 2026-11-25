@@ -510,6 +510,14 @@
   margin: 0 0 1rem;
 }
 
+.ViewPage .MuiPaper-root {
+  margin-bottom: 0px;
+}
+
+.ViewPage.Eras .atlas-embedded-editor-workspace {
+  height: min(71dvh, 58rem);
+}
+
 .atlas-editor-panel__header {
   margin-bottom: 2dvh;
   padding-top: 10px;

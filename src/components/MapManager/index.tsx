@@ -49,12 +49,10 @@ const MapManager: React.FC<MapManagerProps> = ({ onImportSummary }) => {
 		handleOpen();
 	};
 
-	const handleMapSelect = (mapId: string) => {
-		if (selectedMaps.includes(mapId)) {
-			setSelectedMaps(selectedMaps.filter((id) => id !== mapId));
-		} else {
-			setSelectedMaps([...selectedMaps, mapId]);
-		}
+	const handleMapSelect = (mapId: string, checked: boolean) => {
+		setSelectedMaps((previous) => checked
+			? previous.includes(mapId) ? previous : [...previous, mapId]
+			: previous.filter((id) => id !== mapId));
 	};
 
 	const handleDeleteMaps = async (
@@ -85,7 +83,7 @@ const MapManager: React.FC<MapManagerProps> = ({ onImportSummary }) => {
 			<Grid container spacing={2}>
 				{mapsList.map((map) => (
 					<Grid size={3} key={map.id} id={map.id}>
-						<MapsCard {...map} handleMapSelect={handleMapSelect} />
+						<MapsCard {...map} selected={selectedMaps.includes(map.id)} handleMapSelect={handleMapSelect} />
 					</Grid>
 				))}
 			</Grid>

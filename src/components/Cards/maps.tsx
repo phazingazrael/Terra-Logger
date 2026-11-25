@@ -6,7 +6,7 @@ import rgbToRgba from "../Util/rgb2rgba";
 import "./cards.css";
 import type { Context } from "../../definitions/Common";
 
-const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
+const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, selected, id, info }) => {
 	const { Theme }: Context = useOutletContext();
 
 	let themeColor = null;
@@ -30,7 +30,8 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 				<input
 					type="checkbox"
 					aria-label={`Select map ${info.name}`}
-					onChange={() => handleMapSelect(id)}
+					checked={selected}
+					onChange={(event) => handleMapSelect(id, event.target.checked)}
 				/>
 			</CardMedia>
 			<CardContent>
@@ -51,7 +52,8 @@ const MapsCard: React.FC<MapsCardProps> = ({ handleMapSelect, id, info }) => {
 	);
 };
 type MapsCardProps = {
-	handleMapSelect: (mapId: string) => void;
+	handleMapSelect: (mapId: string, checked: boolean) => void;
+	selected: boolean;
 	id: string;
 	info: {
 		name: string;
