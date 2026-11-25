@@ -1,30 +1,66 @@
 # Terra-Logger Changelog
 
-There have been 1 commits since last release.
+There have been 2 commits since last release.
 
 ## Major Changes since last release
-- feat(afmg): ✨ support 1.156 map loading and legend data [`6ed83ca`](https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326)
+- fix(ui): 🐛 synchronize map selection and refine Era layouts [`6172fc9`](https://github.com/phazingazrael/Terra-Logger/commit/6172fc9ad93b18e3deb0f026e50153d92564f17c)
+- feat(afmg): :sparkles: support 1.157 economy and regional developmental eras [`0e828f7`](https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817)
+
+## 1.0.14
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.13...HEAD)
+
+November 25, 2026
+
+- fix(ui): 🐛 synchronize map selection and refine Era layouts [`6172fc9`](https://github.com/phazingazrael/Terra-Logger/commit/6172fc9ad93b18e3deb0f026e50153d92564f17c)
+- feat(afmg): :sparkles: support 1.157 economy and regional developmental eras [`0e828f7`](https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817)
 
 ## 1.0.13
 
-[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.12...HEAD)
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.12...1.0.13)
 
-Unreleased
+21 November 2026
 
 November 21, 2026
 
+- chore(version): 🔖 prepare 1.0.13 and record 1.156 completion [`7e20e34`](https://github.com/phazingazrael/Terra-Logger/commit/7e20e34f0a6f24839187c2933b5db937aed26e36)
 - feat(afmg): ✨ support 1.156 map loading and legend data [`6ed83ca`](https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326)
 
 ## 1.0.12
 
-[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.11...HEAD)
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.11...1.0.12)
 
-Unreleased
+21 November 2026
 
 November 21, 2026
 
+- chore(version): 🔖 prepare 1.0.12 and record 1.155 completion [`67e35ba`](https://github.com/phazingazrael/Terra-Logger/commit/67e35baf92bc66a3d8cbb8c4b7d834c687903bb0)
 - perf(icons): ⚡ lazy-load artwork packs and remove obsolete assets [`224275c`](https://github.com/phazingazrael/Terra-Logger/commit/224275c4577bac8129b8564eba69e7a467feff84)
 - feat(afmg): ✨ support 1.155 map data and coloured hatches [`e4c1ddd`](https://github.com/phazingazrael/Terra-Logger/commit/e4c1ddde2e2c360304f426494a05ae1de57afb06)
+
+## 1.0.11
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.10...1.0.11)
+
+21 November 2026
+
+November 21, 2026
+
+- fix(changelog): correct release ranges and prepare 1.0.11 [`3bdd8f7`](https://github.com/phazingazrael/Terra-Logger/commit/3bdd8f7a6cc5fbdc06f91cb08383b50de0eee5e7)
+- chore(map): 🔧 update SVG visibility rules and rendering roadmap [`d2e8772`](https://github.com/phazingazrael/Terra-Logger/commit/d2e8772551192ffae04ac5204595d09fb49d409a)
+- feat(afmg): ✨ support 1.154 map data, shared icons and heraldry [`24a5c66`](https://github.com/phazingazrael/Terra-Logger/commit/24a5c668ef5e6552fbd3d776cca65be8c50da228)
+
+November 15, 2026
+
+- feat(afmg): :sparkles: restore 1.153 illustrated symbols and italic fonts [`d13dc88`](https://github.com/phazingazrael/Terra-Logger/commit/d13dc88836a823e337d8f9be78d07eb980cdcab9)
+- feat(afmg): :sparkles: support 1.152.1 map settings and entity notes [`8a18fab`](https://github.com/phazingazrael/Terra-Logger/commit/8a18fab2dbc655b63f3c4c4c08c5c5d8695afbd7)
+- feat(notes): :sparkles: import, edit, and export Journey and route notes [`2db1991`](https://github.com/phazingazrael/Terra-Logger/commit/2db1991883eab981c1028dd02911193c0f69e256)
+- feat(afmg): :sparkles: support 1.149 and 1.150 map serialization [`86d501b`](https://github.com/phazingazrael/Terra-Logger/commit/86d501b877ebf428805ea6c5e39f902ffaefa078)
+- refactor(core): :recycle: consolidate importer utilities and Atlas helpers [`dead210`](https://github.com/phazingazrael/Terra-Logger/commit/dead210023798ef25262ed8ab2b68bb15be28377)
+
+November 14, 2026
+
+- fix(deals): :bug: neutral countries now properly associate with trade deals and markets. [`ed59301`](https://github.com/phazingazrael/Terra-Logger/commit/ed59301f328a57c738b4ead10b3eeeb4c8ae66e8)
 
 ## 1.0.10
 

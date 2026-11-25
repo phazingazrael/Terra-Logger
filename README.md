@@ -58,7 +58,7 @@ We have exciting plans for future versions of Terra-Logger:
 - [x] AFMG v1.154.0 (Icon Library) Update Support.
 - [x] AFMG v1.155.0 (Translations) Update Support.
 - [x] AFMG v1.156.0 Update Support.
-- [ ] AFMG v1.157.0 (Economy Rework) Update Support.
+- [x] AFMG v1.157.0 (Economy Rework) Update Support.
 - [ ] AFMG v1.158.0 Update Support.
 - [ ] Rewrite background map support to be written in canvas, supporting better viewing options.
   - [ ] Support zooming to various features on map.

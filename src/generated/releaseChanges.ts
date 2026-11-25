@@ -28,53 +28,66 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.13",
-  "previousTag": "1.0.12",
+  "version": "1.0.14",
+  "previousTag": "1.0.13",
   "currentTag": null,
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.12...HEAD",
-  "commitCount": 1,
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.13...HEAD",
+  "commitCount": 2,
   "majorChanges": [
     {
-      "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
-      "shortHash": "6ed83ca",
-      "date": "2026-11-21T16:49:20-07:00",
-      "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
+      "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
+      "shortHash": "0e828f7",
+      "date": "2026-11-25T14:03:11-07:00",
+      "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.156 map loading and legend data",
+      "details": "✨ support 1.157 economy and regional developmental eras",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
     }
   ],
   "highlightedChange": {
-    "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
-    "shortHash": "6ed83ca",
-    "date": "2026-11-21T16:49:20-07:00",
-    "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
+    "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
+    "shortHash": "0e828f7",
+    "date": "2026-11-25T14:03:11-07:00",
+    "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
     "type": "feat",
     "scope": "afmg",
-    "details": "✨ support 1.156 map loading and legend data",
+    "details": "✨ support 1.157 economy and regional developmental eras",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
   },
   "typeOptions": [
-    "feat"
+    "feat",
+    "fix"
   ],
   "scopeOptions": [
-    "afmg"
+    "afmg",
+    "ui"
   ],
   "commits": [
     {
-      "hash": "6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326",
-      "shortHash": "6ed83ca",
-      "date": "2026-11-21T16:49:20-07:00",
-      "subject": "feat(afmg): ✨ support 1.156 map loading and legend data",
+      "hash": "6172fc9ad93b18e3deb0f026e50153d92564f17c",
+      "shortHash": "6172fc9",
+      "date": "2026-11-25T14:04:37-07:00",
+      "subject": "fix(ui): 🐛 synchronize map selection and refine Era layouts",
+      "type": "fix",
+      "scope": "ui",
+      "details": "🐛 synchronize map selection and refine Era layouts",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6172fc9ad93b18e3deb0f026e50153d92564f17c"
+    },
+    {
+      "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
+      "shortHash": "0e828f7",
+      "date": "2026-11-25T14:03:11-07:00",
+      "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.156 map loading and legend data",
+      "details": "✨ support 1.157 economy and regional developmental eras",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6ed83ca2e60824d8f4db4514ebbd22bf0cdb6326"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
     }
   ],
-  "generatedAt": "2026-11-21T23:50:36.522Z"
+  "generatedAt": "2026-11-25T21:06:19.596Z"
 };
