@@ -88,6 +88,9 @@ function normalizeGood(value: unknown): TLGood {
     good.visible = source.visible;
   }
   if (source.carriage !== undefined) good.carriage = readAmount(source.carriage, "Good carriage");
+  if (source.depositYield !== undefined) {
+    good.depositYield = readAmount(source.depositYield, "Good deposit yield");
+  }
   if (source.development !== undefined) {
     good.development = readAmount(source.development, "Good development");
     if (good.development > 100) throw new Error("Good development cannot exceed 100.");

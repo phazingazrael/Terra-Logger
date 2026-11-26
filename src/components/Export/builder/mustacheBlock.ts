@@ -90,6 +90,7 @@ function createTemplateOverrides(
     case "city":
       return {
         country: resolveCityCountry(context),
+        government: resolveCityGovernment(context),
         description: renderEntityDescriptionBodyToMarkdown({
           entity: context.entity,
           sourceType: "city",
@@ -493,6 +494,15 @@ function getSingularContextKey(sourceType: ExportContext["sourceType"]): string 
     default:
       return "Entity";
   }
+}
+
+function resolveCityGovernment(context: ExportContext): Record<string, unknown> {
+  const country = resolveCityCountry(context);
+  if (String(country.id) === "0") {
+    return isRecord(context.entity.government)
+      ? { form: "Anarchy", formName: context.entity.government.formName } : {};
+  }
+  return { form: country.govForm, formName: country.govName };
 }
 
 function resolveCityCountry(context: ExportContext): Record<string, unknown> {

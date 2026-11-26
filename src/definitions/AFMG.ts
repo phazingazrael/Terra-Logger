@@ -16,6 +16,7 @@ type AFMGDemandCategory = "food" | "utilities" | "construction" | "military" | "
 
 type AFMGCultureType = "Generic" | "Hunting" | "Highland" | "River" | "Lake" | "Naval" | "Nomadic";
 
+// https://github.com/Azgaar/Fantasy-Map-Generator/blob/18795e9b8884b86787190993e6a41b55487b97af/src/types/economy.ts
 type AFMGGood = {
   i: number;
   name: string;
@@ -27,6 +28,7 @@ type AFMGGood = {
   visible?: boolean;
   carriage?: number;
   deposits?: [number, number];
+  depositYield?: number;
   development?: number;
   chance?: number;
   distribution?: string;

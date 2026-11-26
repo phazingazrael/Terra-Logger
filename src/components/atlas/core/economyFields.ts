@@ -78,6 +78,7 @@ export const sharedEconomyField: EconomyField = { type: "object", fields: {
     visible: { type: "boolean", optional: true },
     carriage: optionalNumber, development: { ...number, max: 100, optional: true },
     deposits: { type: "tuple", optional: true, fields: { Minimum: id, Maximum: id } },
+    depositYield: { ...optionalNumber, label: "Deposit yield multiplier (default: 1)" },
     chance: { type: "number", signed: true, optional: true }, distribution: { ...text, optional: true },
     biomeOutput: { ...numberMap, optional: true },
     recipes: { type: "array", item: numberMap, optional: true },

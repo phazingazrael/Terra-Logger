@@ -8,7 +8,7 @@ const template = [
   "Capital: {{#capital}}Yes{{/capital}}{{^capital}}No{{/capital}}",
   "Country: {{country.name}}",
   "Defenses:",
-  "GovtType: {{country.govForm}}",
+  "GovtType: {{government.form}}",
   "Imports:",
   "Exports:",
   "Leaders:",

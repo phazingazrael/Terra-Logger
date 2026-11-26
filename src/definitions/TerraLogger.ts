@@ -218,6 +218,7 @@ export type TLNameBase = {
 };
 
 export type TLCity = {
+  government?: { formName: string };
   development?: TLDevelopmentSummary;
   _id: string;
   cellId?: number;
@@ -654,6 +655,7 @@ export type TLGood = {
   visible?: boolean;
   carriage?: number;
   deposits?: [number, number];
+  depositYield?: number;
   development?: number;
   chance?: number;
   distribution?: string;

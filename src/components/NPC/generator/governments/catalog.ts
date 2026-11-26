@@ -30,6 +30,10 @@ function buildDefinitionMap(
 
 let activeDefinitions = buildDefinitionMap(governmentDefinitionDefaults);
 
+export function listActiveGovernmentDefinitions(): GovernmentDefinition[] {
+	return [...activeDefinitions.values()].sort((left, right) => left.id.localeCompare(right.id));
+}
+
 export function getActiveGovernmentDefinitionById(
 	id: string | undefined,
 ): GovernmentDefinition | undefined {

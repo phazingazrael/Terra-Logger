@@ -1,3 +1,4 @@
+import { listActiveGovernmentDefinitions } from "../../../NPC/generator/governments";
 import type {
   AtlasComputedFieldMap,
   AtlasEntityFieldCatalog,
@@ -80,6 +81,9 @@ export const entityFieldCatalog: AtlasEntityFieldCatalog = {
     { path: "economy.description", label: "Economic Description", editor: "textarea", },
     { path: "economy.exports", label: "Exports", editor: "tradeList", itemLabel: "Export", },
     { path: "economy.imports", label: "Imports", editor: "tradeList", itemLabel: "Import", },
+    { path: "government.formName", label: "Self-governing form (neutral Cities)", editor: "select",
+      get options() { return toOptions(listActiveGovernmentDefinitions().filter((definition) => definition.category === "Anarchy").map((definition) => definition.name)); },
+    },
     { path: "features", label: "Features", editor: "stringList", itemLabel: "Feature", options: toOptions(CITY_FEATURE_OPTIONS), },
     { path: "leaders", label: "Leaders", editor: "stringList", itemLabel: "Leader" },
     { path: "mapLink", label: "Map Link", editor: "text" },
@@ -214,6 +218,7 @@ export const computedBlockEditableFields: AtlasComputedFieldMap = {
       "type",
       "size",
       "population",
+      "government.formName",
     ],
   },
 

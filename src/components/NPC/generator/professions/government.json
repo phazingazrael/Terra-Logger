@@ -1,5 +1,23 @@
 {
   "Monarchy": {
+    "Chiefdom": {
+      "Chief": "Leads the chiefdom and settles matters of customary law and common policy.",
+      "Elder": "Advises the chief and represents community traditions and concerns.",
+      "War Leader": "Organizes defence and commands the forces of the chiefdom.",
+      "Steward": "Coordinates stores, tribute and shared resources."
+    },
+    "Paramount Chiefdom": {
+      "Paramount Chief": "Coordinates the authority and obligations of the chiefdoms within the realm.",
+      "Subchief": "Represents a constituent chiefdom and administers its agreed obligations.",
+      "Council Elder": "Advises on customary law and mediates disputes between chiefdoms.",
+      "Tribute Steward": "Oversees tribute, redistribution and shared stores."
+    },
+    "Tribe": {
+      "Tribal Chief": "Leads the tribe in accordance with its customs and communal obligations.",
+      "Elder": "Preserves customary knowledge and advises on community decisions.",
+      "Speaker": "Represents the tribe in negotiations and communicates collective decisions.",
+      "War Leader": "Coordinates defence and leads the tribe during conflict."
+    },
     "Duchy": {
       "Duke/Duchess": "The ruler of a duchy, overseeing its governance and administration.",
       "Court Wizard": "Adviser to the duke/duchess, responsible for magical matters and divination.",
@@ -42,6 +60,12 @@
     }
   },
   "Republic": {
+    "Tribal Council": {
+      "Council Speaker": "Chairs the tribal council and communicates its collective decisions.",
+      "Clan Representative": "Represents clan concerns and participates in council deliberations.",
+      "Lawkeeper": "Maintains customary law and assists in resolving disputes.",
+      "Resource Steward": "Coordinates the use and distribution of shared resources."
+    },
     "Republic": {
       "President": "Elected leader of the republic, serving as head of state and government.",
       "Senator": "Representative of a region or constituency within the republic's legislative body.",
@@ -116,6 +140,18 @@
     }
   },
   "Theocracy": {
+    "Shamanate": {
+      "High Shaman": "Leads spiritual and civic affairs through the traditions of the shamanate.",
+      "Ritual Keeper": "Maintains communal rites, sacred places and ceremonial knowledge.",
+      "Spirit Interpreter": "Advises on spiritual matters and interprets omens and traditions.",
+      "Sacred Steward": "Administers sacred holdings, offerings and communal resources."
+    },
+    "Priesthood": {
+      "High Priest": "Leads the governing priesthood and oversees religious and civic policy.",
+      "Senior Priest": "Advises on doctrine and coordinates religious administration.",
+      "Temple Steward": "Manages temple holdings, offerings and public services.",
+      "Religious Scholar": "Preserves religious texts and advises on doctrine and religious law."
+    },
     "Theocracy": {
       "High Priest/High Priestess": "Supreme religious leader of the theocracy, interpreting divine will and guiding religious doctrine.",
       "Council of Elders": "Group of senior clergy who advise the high priest/priestess and help govern the theocracy.",
@@ -158,6 +194,12 @@
     }
   },
   "Union": {
+    "Clans Union": {
+      "Union Speaker": "Coordinates the union and communicates agreements between its member clans.",
+      "Clan Delegate": "Represents a member clan in the shared assembly.",
+      "Mediator": "Helps resolve disputes and negotiate agreements between clans.",
+      "Common Defence Coordinator": "Coordinates the joint defence commitments of member clans."
+    },
     "Union": {
       "Union President": "Elected leader of the union, tasked with representing the collective interests of member states.",
       "Assembly Delegate": "Representative of a member state within the union's legislative assembly.",

@@ -276,7 +276,7 @@ const template = [
   "",
   "> [!government]- Government & Power Structure",
   ">> [!notes]- Government Type",
-  ">> Monarchy, Theocracy, AI-Controlled, Mage Council, etc.",
+  ">> {{#government.formName}}{{government.form}} ({{government.formName}}){{/government.formName}}{{^government.formName}}Monarchy, Theocracy, AI-Controlled, Mage Council, etc.{{/government.formName}}",
   ">",
   ">> [!notes]- Current Ruler(s)",
   ">> King, High Priestess, AI Overlord, Elder Council, etc.",

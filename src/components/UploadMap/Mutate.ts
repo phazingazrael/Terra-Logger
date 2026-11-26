@@ -13,6 +13,7 @@ import { ensureAtlasContentForEntity } from "../atlas/legacy/enrichAtlasContent"
 import type { Tag } from "../../definitions/Common";
 import { getImportedNoteKey } from "./utils/mergeMapEntities";
 import type { TLMapInfo } from "../../definitions/TerraLogger";
+import { assignNeutralCityGovernments } from "../NPC/generator/engine/government";
 import { generateNPCPopulation } from "../NPC/population/generatePopulation"
 import {
   addUploadIssue,
@@ -304,6 +305,7 @@ const mutateData = async (
 
 	options.prepareEntities?.(tempMap);
 	applyImportedTags(tempMap, data, options.diagnostics);
+	options.diagnostics.counts["Neutral City governments assigned"] = assignNeutralCityGovernments(tempMap.cities);
 
 	// Refresh source geography after reimport merging, preserving authored content.
 	reportMutationProgress("Geography");

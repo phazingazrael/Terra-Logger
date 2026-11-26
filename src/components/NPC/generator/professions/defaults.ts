@@ -5,6 +5,7 @@ import ProfessionNames from "./profession.json";
 import type { NPCProfessionDefinition } from "../../types";
 
 const PROFESSION_CATALOG_VERSION = 1;
+const GOVERNMENT_PROFESSION_CATALOG_VERSION = 2;
 
 type GovernmentProfessionSource = Record<
 	string,
@@ -90,7 +91,7 @@ export function createGovernmentProfessionDefaults(): NPCProfessionDefinition[] 
 				records.push({
 					id: `default:npc.profession.government.${rolePath}`,
 					source: "default",
-					version: PROFESSION_CATALOG_VERSION,
+					version: GOVERNMENT_PROFESSION_CATALOG_VERSION,
 					enabled: true,
 					catalog: "government",
 					category: "government",
@@ -125,7 +126,7 @@ export const npcProfessionDefaultBundles = Object.freeze([
 	{
 		generatorType: "npc",
 		sectionId: "npc.professions.government",
-		version: PROFESSION_CATALOG_VERSION,
+		version: GOVERNMENT_PROFESSION_CATALOG_VERSION,
 		records: governmentProfessionDefaults,
 	},
 ] as const satisfies readonly DefaultCatalogBundle[]);

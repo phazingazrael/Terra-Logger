@@ -481,9 +481,9 @@ export function economyDetailTables(city: TLCity | undefined, country: TLCountry
   for (const entry of [...(city?.economy?.imports ?? country?.economy.imports ?? []), ...(city?.economy?.exports ?? country?.economy.exports ?? [])]) if ("goodId" in entry.good) used.add(entry.good.goodId);
   for (const entry of city?.economy?.production ?? []) if (entry.type !== "deal") used.add(entry.goodId);
   for (const entry of country?.economy.production?.goods ?? []) used.add(entry.goodId);
-  add("Good definitions", ["Good", "Carriage per unit per decima", "Deposit range", "Minimum development (%)"], [...used].sort((a, b) => a - b).flatMap((id) => {
+  add("Good definitions", ["Good", "Carriage per unit per decima", "Deposit range", "Deposit yield multiplier", "Minimum development (%)"], [...used].sort((a, b) => a - b).flatMap((id) => {
     const good = goods.get(id);
-    return good && (good.carriage !== undefined || good.deposits !== undefined || good.development !== undefined) ? [[good.name, good.carriage === undefined ? "—" : number(good.carriage), good.deposits?.join("–") ?? "—", good.development === undefined ? "—" : number(good.development)]] : [];
+    return good && (good.carriage !== undefined || good.deposits !== undefined || good.depositYield !== undefined || good.development !== undefined) ? [[good.name, good.carriage === undefined ? "—" : number(good.carriage), good.deposits?.join("–") ?? "—", number(good.depositYield ?? 1), good.development === undefined ? "—" : number(good.development)]] : [];
   }));
   const prosperity = city?.cellId === undefined ? undefined : economy?.cells.prosperity?.[city.cellId];
   if (prosperity !== undefined) add("Source-cell economy", ["Field", "Value"], [["Rural prosperity (%)", prosperity === 0 ? "Not recorded" : number(prosperity)]]);

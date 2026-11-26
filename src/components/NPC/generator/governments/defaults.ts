@@ -13,30 +13,93 @@ import type {
 	GovernmentRoleDefinition,
 } from "../../types";
 
-const GOVERNMENT_CATALOG_VERSION = 1;
+const GOVERNMENT_CATALOG_VERSION = 2;
 
 const governmentNamesByCategory = {
+	Anarchy: [
+		"Commune",
+		"Community",
+		"Council",
+		"Free Territory",
+		"Tribes"
+	],
 	Monarchy: [
-		"Beylik", "Despotate", "Dominion", "Duchy", "Emirate", "Empire", "Horde",
-		"Grand Duchy", "Heptarchy", "Khaganate", "Khanate", "Kingdom", "Marches",
-		"Principality", "Satrapy", "Shogunate", "Sultanate", "Tsardom", "Ulus", "Viceroyalty",
+		"Beylik",
+		"Chiefdom",
+		"Despotate",
+		"Dominion",
+		"Duchy",
+		"Emirate",
+		"Empire",
+		"Grand Duchy",
+		"Heptarchy",
+		"Horde",
+		"Khaganate",
+		"Khanate",
+		"Kingdom",
+		"Marches",
+		"Paramount Chiefdom",
+		"Principality",
+		"Satrapy",
+		"Shogunate",
+		"Sultanate",
+		"Tribe",
+		"Tsardom",
+		"Ulus",
+		"Viceroyalty"
 	],
 	Republic: [
-		"Chancellery", "City-state", "Diarchy", "Federation", "Free City",
-		"Most Serene Republic", "Oligarchy", "Protectorate", "Republic", "Tetrarchy",
-		"Trade Company", "Triumvirate",
-	],
-	Union: [
-		"Confederacy", "Confederation", "Conglomerate", "Commonwealth", "League", "Union",
-		"United Hordes", "United Kingdom", "United Provinces", "United Republic",
-		"United States", "United Tribes",
+		"Chancellery",
+		"City-state",
+		"Diarchy",
+		"Federation",
+		"Free City",
+		"Junta",
+		"Most Serene Republic",
+		"Oligarchy",
+		"Protectorate",
+		"Republic",
+		"Tetrarchy",
+		"Trade Company",
+		"Tribal Council",
+		"Triumvirate"
 	],
 	Theocracy: [
-		"Bishopric", "Brotherhood", "Caliphate", "Diocese", "Divine Duchy",
-		"Divine Grand Duchy", "Divine Principality", "Divine Kingdom", "Divine Empire",
-		"Eparchy", "Exarchate", "Holy State", "Imamah", "Patriarchate", "Theocracy",
+		"Bishopric",
+		"Brotherhood",
+		"Caliphate",
+		"Diocese",
+		"Divine Duchy",
+		"Divine Empire",
+		"Divine Grand Duchy",
+		"Divine Kingdom",
+		"Divine Principality",
+		"Eparchy",
+		"Exarchate",
+		"Holy State",
+		"Imamah",
+		"Patriarchate",
+		"Priesthood",
+		"See",
+		"Shamanate",
+		"Thearchy",
+		"Theocracy"
 	],
-	Anarchy: ["Commune", "Community", "Council", "Free Territory", "Tribes"],
+	Union: [
+		"Clans Union",
+		"Confederacy",
+		"Confederation",
+		"Conglomerate",
+		"Commonwealth",
+		"League",
+		"Union",
+		"United Hordes",
+		"United Kingdom",
+		"United Provinces",
+		"United Republic",
+		"United States",
+		"United Tribes"
+	]
 } as const;
 
 type GovernmentProfessionInput = Record<
@@ -177,6 +240,11 @@ function supplementalRoles(
 
 function municipalRoles(category: string, name: string): GovernmentRoleDefinition[] {
 	const title = (() => {
+		if (["Chiefdom", "Paramount Chiefdom", "Tribe"].includes(name)) return "Local Chief";
+		if (name === "Tribal Council") return "Council Speaker";
+		if (name === "Clans Union") return "Clan Representative";
+		if (name === "Shamanate") return "Local Shaman";
+		if (name === "Priesthood") return "Local Priest";
 		if (["Theocracy", "Brotherhood", "Thearchy", "See", "Holy State", "Divine Monarchy", "Diocese", "Bishopric"].includes(name)) return "High Priest";
 		if (["Junta", "Horde", "Shogunate", "Khaganate"].includes(name)) return "Military Governor";
 		if (["Duchy", "Grand Duchy", "Principality", "Kingdom", "Empire", "Tsardom", "Emirate", "Caliphate", "Satrapy", "Dominion", "Protectorate", "Marches", "Despotate", "Ulus"].includes(name)) return "Governor";

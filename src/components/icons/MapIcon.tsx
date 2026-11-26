@@ -159,6 +159,18 @@ export function GoodLabel({
       <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>
         {children ?? good?.name}
       </span>
+      {good && (good.depositYield !== undefined || (good.deposits?.[1] ?? 0) > 0) ? (
+        <span
+          title="Deposit output multiplier; already included in imported production quantities."
+          style={{
+            fontSize: "0.75em",
+            opacity: 0.75,
+            whiteSpace: "nowrap",
+          }}
+        >
+          Deposit yield ×{good.depositYield ?? 1}
+        </span>
+      ) : null}
     </span>
   );
   return chip ? (

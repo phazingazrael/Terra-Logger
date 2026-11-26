@@ -1,6 +1,7 @@
 export {
 	getActiveGovernmentDefinitionById,
 	getGovernmentDefinition,
+	listActiveGovernmentDefinitions,
 	getGovernmentLeadershipStructure,
 	refreshGovernmentDefinitionCatalog,
 } from "./catalog";

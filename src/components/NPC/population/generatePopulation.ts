@@ -2,7 +2,7 @@ import { errorDetails, type ErrorDetails } from "../../Util/errorDetails";
 import type { TLNPC, NPCEntityType, NPCRelationship, NPCDisplayReference } from "../../../definitions/TerraLogger";
 import type { TLMapInfo, TLCity, TLCountry, TLCulture, TLReligion } from "../../../definitions/TerraLogger";
 import { generateNPCDraft } from "../generator/engine/generate";
-import { buildGovernmentRoleAssignments } from "../generator/engine/government";
+import { assignNeutralCityGovernments, buildGovernmentRoleAssignments } from "../generator/engine/government";
 import { getGovernmentDefinition } from "../generator/governments";
 import { listActiveNPCProfessions } from "../generator/professions/catalog";
 import type { NPCGenerationConstraints } from "../types";
@@ -169,6 +169,29 @@ async function generateCountryPopulation(map: TLMapInfo, mapId: string, country:
 }
 
 async function generateCityLeadership(map: TLMapInfo, mapId: string, city: TLCity, random?: () => number): Promise<TLNPC[]> {
+  if (city.country.id === 0) {
+    assignNeutralCityGovernments([city], random);
+    const definition = getGovernmentDefinition(city.government?.formName);
+    if (!definition || definition.category !== "Anarchy") {
+      throw new Error(`Neutral City "${city.name}" has no available Anarchy government.`);
+    }
+    const assignments = buildGovernmentRoleAssignments(definition.name, { countryCount: 1, cityCount: 1, random });
+    const result: TLNPC[] = [];
+    for (const assignment of assignments) for (let index = 0; index < assignment.count; index += 1) {
+      // City government roles are generated sequentially to preserve seeded output.
+      // react-doctor-disable-next-line react-doctor/async-await-in-loop
+      result.push(await createContextualNPC({
+        mapId, entityType: "city", entityId: city._id,
+        relationshipType: assignment.classification === "leader" ? "leads" : "serves",
+        roleTitle: assignment.title, primary: assignment.primary,
+        currentLocation: { id: city._id, name: city.name },
+        religion: primaryReligionForCity(map, city), associateReligion: "when-religious",
+        constraints: { governmentDefinitionId: assignment.governmentDefinitionId, governmentRoleId: assignment.governmentRoleId, professionId: assignment.professionId },
+        random,
+      }));
+    }
+    return result;
+  }
   const country = map.countries.find((entry) => String(entry.id) === String(city.country?.id) || entry._id === city.country?._id);
   const governmentType = country
     ? countryGovernmentType(country)
