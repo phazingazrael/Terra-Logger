@@ -249,8 +249,10 @@ function renderReleaseSection({
 	const commitsByDate = groupCommitsByDate(commits);
 
 	for (const group of commitsByDate) {
-		lines.push(group.label);
-		lines.push("");
+		if (!releaseDate || group.label !== formatReleaseDate(releaseDate)) {
+			lines.push(group.label);
+			lines.push("");
+		}
 
 		for (const commit of group.commits) {
 			lines.push(renderCommitLine(repoUrl, commit));
@@ -302,7 +304,7 @@ function groupCommitsByDate(commits) {
 
 	for (const commit of commits) {
 		const key = commit.dateKey;
-		const label = formatCommitGroupDate(new Date(key + "T12:00:00Z"));
+		const label = formatReleaseDate(new Date(key + "T12:00:00Z"));
 
 		if (!groups.has(key)) {
 			groups.set(key, {
@@ -509,15 +511,6 @@ function formatReleaseDate(date) {
 		timeZone: "UTC",
 		day: "numeric",
 		month: "long",
-		year: "numeric",
-	}).format(date);
-}
-
-function formatCommitGroupDate(date) {
-	return new Intl.DateTimeFormat("en-US", {
-		timeZone: "UTC",
-		month: "long",
-		day: "numeric",
 		year: "numeric",
 	}).format(date);
 }

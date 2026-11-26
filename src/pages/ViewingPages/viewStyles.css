@@ -436,6 +436,7 @@
 /* population content width */
 .culturePopPaper {
   padding: 0.5rem;
+  margin-bottom: 1dvh !important;
 }
 
 .culturePopTotal {

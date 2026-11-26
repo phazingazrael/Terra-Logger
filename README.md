@@ -40,16 +40,33 @@ We have exciting plans for future versions of Terra-Logger:
 
 ### Version 1.1.0
 
-- [x] Additional Exports (Cultures & Notes)
+- [x] Additional Exports (Cultures, Notes, Cities, Countries, Religions).
 - [x] Ability to choose between multiple Markdown Templates.
   - Currently only basic Markdown and the Bag of Tips Inspired Vault.
-- [x] Customize page sections; Title, Subtitle, Segments, etc.
-- [x] Ability to modify data prior to export.
-- [x] Customize what data is exported.
 - [x] Implement Shuggaloaf's System Agnostic RPG NPC Generator.
-- [x] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
-- [ ] Expand Military notes/Military data into their own top level entity.
-- [ ] Expand Points Of Interest notes into their own top level entity.
+  - [x] Further customize Shuggaloaf's System Agnostic RPG NPC Generator to allow specific npc type generation for map data use.
+  - [ ] Expand NPC generation for Atlas entities.
+- [x] Replace the legacy JSONUI editor with the Atlas Document Editor.
+- [x] Support editing Cities.
+- [x] Support editing Countries.
+- [x] Support editing Cultures.
+- [x] Support editing Religions.
+- [x] Support editing Notes.
+- [ ] Support editing Militaries (converted from notes/country data)
+- [ ] Support editing Points of Interest (converted from notes data)
+- [x] Replace the legacy Markdown exporter with the Markdown Builder.
+- [x] Support reusable Markdown export blocks.
+- [x] Support Atlas custom section exports.
+- [ ] Continue export customization.
+  - [ ] Customize exported frontmatter.
+  - [ ] Select exported sections.
+- [ ] Continue Atlas editor improvements.
+  - [x] Improve rich text editing.
+  - [ ] Expand reusable block types.
+  - [ ] Expand reusable section presets.
+- [ ] Rewrite background map support to be written in canvas, supporting better viewing options.
+  - [ ] Support zooming to various features on map.
+ **AFMG Update Support**
 - [x] AFMG v1.124.0 (Economy) Update support.
 - [x] AFMG v1.140.0 (Labels) Update Support.
 - [x] AFMG v1.150.0 (Journeys) Update Support.
@@ -59,9 +76,7 @@ We have exciting plans for future versions of Terra-Logger:
 - [x] AFMG v1.155.0 (Translations) Update Support.
 - [x] AFMG v1.156.0 Update Support.
 - [x] AFMG v1.157.0 (Economy Rework) Update Support.
-- [ ] AFMG v1.158.0 Update Support.
-- [ ] Rewrite background map support to be written in canvas, supporting better viewing options.
-  - [ ] Support zooming to various features on map.
+- [x] AFMG v1.158.0 Update Support.
 
 ### Version 1.2.0
 

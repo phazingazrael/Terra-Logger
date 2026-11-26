@@ -30,9 +30,9 @@ export type ReleaseChanges = {
 export const releaseChanges: ReleaseChanges = {
   "version": "1.0.14",
   "previousTag": "1.0.13",
-  "currentTag": null,
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.13...HEAD",
-  "commitCount": 2,
+  "currentTag": "1.0.14",
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.13...1.0.14",
+  "commitCount": 3,
   "majorChanges": [
     {
       "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
@@ -44,6 +44,17 @@ export const releaseChanges: ReleaseChanges = {
       "details": "✨ support 1.157 economy and regional developmental eras",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
+    },
+    {
+      "hash": "c0699fa6570da7455bb6776e0241cd7491426663",
+      "shortHash": "c0699fa",
+      "date": "2026-11-25T14:08:43-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.14 and record 1.157 completion",
+      "type": "chore",
+      "scope": "version",
+      "details": "🔖 prepare 1.0.14 and record 1.157 completion",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c0699fa6570da7455bb6776e0241cd7491426663"
     }
   ],
   "highlightedChange": {
@@ -58,14 +69,27 @@ export const releaseChanges: ReleaseChanges = {
     "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
   },
   "typeOptions": [
+    "chore",
     "feat",
     "fix"
   ],
   "scopeOptions": [
     "afmg",
-    "ui"
+    "ui",
+    "version"
   ],
   "commits": [
+    {
+      "hash": "c0699fa6570da7455bb6776e0241cd7491426663",
+      "shortHash": "c0699fa",
+      "date": "2026-11-25T14:08:43-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.14 and record 1.157 completion",
+      "type": "chore",
+      "scope": "version",
+      "details": "🔖 prepare 1.0.14 and record 1.157 completion",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c0699fa6570da7455bb6776e0241cd7491426663"
+    },
     {
       "hash": "6172fc9ad93b18e3deb0f026e50153d92564f17c",
       "shortHash": "6172fc9",
@@ -89,5 +113,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
     }
   ],
-  "generatedAt": "2026-11-25T21:06:19.596Z"
+  "generatedAt": "2026-11-26T02:15:16.038Z"
 };
