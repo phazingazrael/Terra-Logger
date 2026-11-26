@@ -19,6 +19,7 @@ import { buildExportDocument } from "./builder/buildExportDocument";
 import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
 import type { ExportSourceType } from "./builder/exportTypes";
 
+import { exportPathKey } from "./zipUtils";
 import { injectSvgStyle, normalizeSvgForExport } from "./svgExportUtils";
 
 // === Filename + Slug Helpers ===
@@ -63,6 +64,30 @@ const withExt = (base: string, ext: string) => {
 	// extension to the base string and return the result
 	return `${base}${ext}`;
 };
+
+type ExportNameRequest = { entity: Record<string, unknown>; base: string; folder: string };
+
+function allocateExportNames<T extends ExportNameRequest>(requests: T[], extension: string, boti: boolean): (T & { name: string })[] {
+	const key = (request: T, base = request.base) => exportPathKey(boti ? getBotiExportPath(`${request.folder}${withExt(base, extension)}`) : `${request.folder}${withExt(base, extension)}`);
+	const counts = new Map<string, number>();
+	for (const request of requests) counts.set(key(request), (counts.get(key(request)) ?? 0) + 1);
+	// Reserve unique names first so a generated suffix cannot take another entity's filename.
+	const used = new Set(requests.filter((request) => counts.get(key(request)) === 1).map((request) => key(request)));
+	return requests.map((request, index) => {
+		if (counts.get(key(request)) === 1) return { ...request, name: withExt(request.base, extension) };
+		const ids = [request.entity.id, request.entity._id]
+			.filter((value) => typeof value === "string" || (typeof value === "number" && Number.isSafeInteger(value) && value >= 0))
+			.map((value) => slug(value, "")).filter(Boolean);
+		const suffix = ids[0] ?? String(index + 1);
+		let base = `${request.base}-${suffix}`;
+		if (used.has(key(request, base)) && ids[1]) base += `-${ids[1]}`;
+		const candidate = base;
+		let ordinal = 2;
+		while (used.has(key(request, base))) base = `${candidate}-${ordinal++}`;
+		used.add(key(request, base));
+		return { ...request, base, name: withExt(base, extension) };
+	});
+}
 
 function ctx(data: DataSets) {
 	// shallow-copy the DataSets object to create a context object
@@ -111,17 +136,16 @@ export function renderMarkdownFiles(
 	const files: FileSpec[] = [];
 
 	const developmentalEraPaths: Record<string, string> = Object.create(null);
-	const developmentalNames = new Set<string>();
-	const developmentalDocuments = exports?.includes("Developmental Eras")
-		? [...(data.DevelopmentalEras ?? [])].sort((a, b) => a.level - b.level || a._id.localeCompare(b._id)).map((era) => {
-			const base = filenameFrom(era, opt.filenameFields.DevelopmentalEras ?? ["name", "_id"], "developmental-era");
-			let name = withExt(base, opt.extension), suffix = 2;
-			while (developmentalNames.has(name)) name = withExt(`${base}-${suffix++}`, opt.extension);
-			developmentalNames.add(name);
-			const path = `${isBotiTemplate(opt.templateName) ? "World/01. Lore/Eras/Developmental" : "history/developmental"}/${name}`;
-			developmentalEraPaths[era._id] = path;
-			return { era, path, name };
-		}) : [];
+	const developmentalFolder = `${isBotiTemplate(opt.templateName) ? "World/01. Lore/Eras/Developmental" : "history/developmental"}/`;
+	const developmentalDocuments = allocateExportNames(exports?.includes("Developmental Eras")
+		? [...(data.DevelopmentalEras ?? [])].sort((a, b) => a.level - b.level || a._id.localeCompare(b._id)).map((era) => ({
+			entity: era, folder: developmentalFolder,
+			base: filenameFrom(era, opt.filenameFields.DevelopmentalEras ?? ["name", "_id"], "developmental-era"),
+		})) : [], opt.extension, isBotiTemplate(opt.templateName)).map(({ entity: era, folder, name }) => {
+		const path = `${folder}${name}`;
+		developmentalEraPaths[era._id] = path;
+		return { era, path, name };
+	});
 	const global = ctx(data);
 
 	const renderBuilderContent = (
@@ -212,136 +236,52 @@ export function renderMarkdownFiles(
 	) => {
 		const prefix = `${dir}/`;
 
-		arr.forEach((item, i) => {
-			onRendering?.(`${singular} ${item.name ?? item.title ?? ""} (${item._id ?? item.id ?? i})`);
-			const base = filenameFrom(item, fields, `${dir}-${i + 1}`);
-			const name = withExt(base, opt.extension);
-			const sourceType = getSourceTypeFromSingular(singular);
-			let npcPath = `${prefix}${name}`;
-			if (singular === "NPC") {
-				let folder = "";
+		const requests = arr.map((item, index) => {
+			let folder = prefix;
+			if (singular === "City") folder += `${item.country.name}/`;
+			else if (singular === "NPC") {
 				for (const relation of item.relationships ?? []) {
 					if (relation.relatedEntityType === "city") {
-						const city = data.Cities.find(
-							(city) => String(city._id) === String(relation.relatedEntityId),
-						);
-						if (city) {
-							folder = `${city.country.name}/${city.name}`;
-							break;
-						}
+						const city = data.Cities.find((city) => String(city._id) === String(relation.relatedEntityId));
+						if (city) { folder = `${prefix}${city.country.name}/${city.name}/`; break; }
 					} else if (relation.relatedEntityType === "country") {
-						const country = data.Countries.find(
-							(country) => String(country._id) === String(relation.relatedEntityId),
-						);
-						if (country) {
-							folder = country.name;
-							break;
-						}
-					} else if (relation.profession?.name) {
-						folder = relation.profession.name;
-					} else if (relation.ancestry?.name) {
-						folder = `${relation.ancestry.name}`;
-					} else {
-						folder = "";
-					}
-				}
-				npcPath = `${prefix}${folder ? `${folder}/` : ""}${name}`;
-				if (isBotiTemplate(opt.templateName)) npcPath = getBotiExportPath(npcPath);
-			}
-
-			const exportItem =
-				singular === "Country"
-					? {
-							...item,
-							cities:
-								citiesByCountryId.get(String(item.id)) ?? item.cities ?? [],
-						}
-					: item;
-
-			const usesBuilder = Boolean(
-				sourceType && shouldUseBuilder(sourceType, opt.templateName),
-			);
-
-			const entityPath = singular === "City" ? `${prefix}${item.country.name}/${name}` : npcPath;
-			const documentPath = isBotiTemplate(opt.templateName) ? getBotiExportPath(entityPath) : entityPath;
-			const content =
-				usesBuilder && sourceType
-					? renderBuilderContent(sourceType, exportItem, documentPath)
-					: Mustache.render(tpl, {
-							...global,
-							...exportItem,
-							[singular]: exportItem,
-						});
-
-			const rawSvg =
-				singular === "City" || singular === "Country" ? item.coaSVG : undefined;
-
-			if (singular === "City") {
-				files.push({
-					path: `${prefix}${item.country.name}/${name}`,
-					name,
-					content,
-				});
-				if (rawSvg) {
-					const svgDoc = normalizeSvgForExport(rawSvg);
-
-					if (svgDoc) {
-						files.push({
-							path: `${prefix}${item.country.name}/${base}.svg`,
-							name: `${base}.svg`,
-							content: svgDoc,
-						});
-					}
-				}
-			} else if (singular === "Country") {
-				files.push({ path: `${prefix}${name}`, name, content });
-				if (rawSvg) {
-					const svgDoc = normalizeSvgForExport(rawSvg);
-
-					if (svgDoc) {
-						files.push({
-							path: `${prefix}${base}.svg`,
-							name: `${base}.svg`,
-							content: svgDoc,
-						});
-					}
+						const country = data.Countries.find((country) => String(country._id) === String(relation.relatedEntityId));
+						if (country) { folder = `${prefix}${country.name}/`; break; }
+					} else if (relation.profession?.name) folder = `${prefix}${relation.profession.name}/`;
+					else if (relation.ancestry?.name) folder = `${prefix}${relation.ancestry.name}/`;
+					else folder = prefix;
 				}
 			} else if (singular === "Note") {
-				const name = withExt(base, opt.extension);
-
-				if (opt.templateName === "Bag of Tips Inspired") {
-					const folder = botiNoteFolder(item as TLNote);
-
-					files.push({
-						path: `${folder}${name}`,
-						name,
-						content,
-					});
-				} else {
-					const idParts = (item.id as string).split(/(\d+)/);
-					const subDir =
-						idParts[0] === "burg"
-							? "city"
-							: idParts[0] === "state" || idParts[0] === "stateLabel"
-								? "country"
-								: idParts[0];
-
-					files.push({
-						path: `${prefix}${subDir}/${name}`,
-						name,
-						content,
-					});
+				if (isBotiTemplate(opt.templateName)) folder = botiNoteFolder(item as TLNote);
+				else {
+					const root = String(item.id ?? "").split(/(\d+)/)[0];
+					const subDir = root === "burg" ? "city" : root === "state" || root === "stateLabel" ? "country" : root;
+					folder += `${subDir}/`;
 				}
-			} else if (singular === "NPC") {
-				files.push({
-					path: npcPath,
-					name,
-					content,
-				});
-			} else {
-				files.push({ path: `${prefix}${name}`, name, content });
 			}
+			return { entity: item, folder, base: filenameFrom(item, fields, `${dir}-${index + 1}`) };
 		});
+		const documents = allocateExportNames(requests, opt.extension, isBotiTemplate(opt.templateName));
+		for (const { entity: item, base, name, folder } of documents) {
+			onRendering?.(`${singular} ${item.name ?? item.title ?? ""} (${item._id ?? item.id ?? name})`);
+			const sourceType = getSourceTypeFromSingular(singular);
+			const path = `${folder}${name}`;
+			const documentPath = isBotiTemplate(opt.templateName) ? getBotiExportPath(path) : path;
+			const svgPath = `${folder}${base}.svg`;
+			const exportItem = {
+				...item,
+				coaFilename: isBotiTemplate(opt.templateName) ? getBotiExportPath(svgPath) : svgPath,
+				...(singular === "Country" ? { cities: citiesByCountryId.get(String(item.id)) ?? item.cities ?? [] } : {}),
+			};
+			const content = sourceType && shouldUseBuilder(sourceType, opt.templateName)
+				? renderBuilderContent(sourceType, exportItem, documentPath)
+				: Mustache.render(tpl, { ...global, ...exportItem, [singular]: exportItem });
+			files.push({ path, name, content });
+			if ((singular === "City" || singular === "Country") && item.coaSVG) {
+				const svgDoc = normalizeSvgForExport(item.coaSVG);
+				if (svgDoc) files.push({ path: svgPath, name: `${base}.svg`, content: svgDoc });
+			}
+		}
 	};
 
 	if (exports?.includes("Cities")) {
@@ -417,21 +357,18 @@ export function renderMarkdownFiles(
 	}
 
 	if (exports?.includes("Eras")) {
-		const usedNames = new Set<string>();
 		const eras = [...(data.Eras ?? [])].sort((a, b) =>
 			a.timelineStartYear - b.timelineStartYear || a._id.localeCompare(b._id));
-		for (const era of eras) {
-			onRendering?.(`Era ${era.name} (${era._id})`);
+		const documents = allocateExportNames(eras.map((era) => {
 			const eraName = filenameFrom(era, opt.filenameFields.Eras ?? ["name", "_id"], "era");
-			const base = isBotiTemplate(opt.templateName) && era.status === "current"
-				? `current-${eraName}`
-				: eraName;
-			let name = withExt(base, opt.extension);
-			let suffix = 2;
-			while (usedNames.has(name)) name = withExt(`${base}-${suffix++}`, opt.extension);
-			usedNames.add(name);
-			const path = `history/${name}`;
-			files.push({ path, name, content: renderBuilderContent("era", era, path) });
+			const base = isBotiTemplate(opt.templateName) && era.status === "current" ? `current-${eraName}` : eraName;
+			return { entity: era, base, folder: "history/" };
+		}), opt.extension, isBotiTemplate(opt.templateName));
+		for (const { entity: era, folder, name } of documents) {
+			onRendering?.(`Era ${era.name} (${era._id})`);
+			const path = `${folder}${name}`;
+			const documentPath = isBotiTemplate(opt.templateName) ? getBotiExportPath(path) : path;
+			files.push({ path, name, content: renderBuilderContent("era", era, documentPath) });
 		}
 	}
 

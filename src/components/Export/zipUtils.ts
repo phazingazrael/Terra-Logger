@@ -6,6 +6,22 @@ export function normalizeZipPath(p: string) {
     .replace(/^\/+/, "");
 }
 
+export function exportPathKey(path: string): string {
+  return normalizeZipPath(path).replace(/\/+/g, "/").normalize("NFC").toLowerCase();
+}
+
+export function assertUniqueExportPaths(entries: ReadonlyArray<Pick<FileSpec, "path">>): void {
+  const paths = new Map<string, string>();
+  for (const entry of entries) {
+    const key = exportPathKey(entry.path);
+    const previous = paths.get(key);
+    if (previous !== undefined) {
+      throw new Error(`Duplicate export paths: "${previous}" and "${entry.path}". Archive creation stopped to prevent overwriting data.`);
+    }
+    paths.set(key, entry.path);
+  }
+}
+
 export function withBase(pathLike: string) {
   const base = (import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
   const rel = String(pathLike).replace(/^\/+/, "");
@@ -21,6 +37,7 @@ export async function createMergedZipBlob(
 ): Promise<Blob> {
   const { default: JSZip } = await import("jszip");
 
+  assertUniqueExportPaths(entries);
   const url = withBase(publicZipRelPath);
   onDetail?.(`Fetching base vault ZIP: ${url}`);
   const res = await fetch(url, { cache: "no-cache" });
@@ -71,6 +88,7 @@ export async function createZipBlob(
   onProgress?: (percent: number, currentFile?: string) => void,
 ): Promise<Blob> {
   const { default: JSZip } = await import("jszip");
+  assertUniqueExportPaths(files);
   const zip = new JSZip();
 
   for (const file of files) {

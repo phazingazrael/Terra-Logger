@@ -5,7 +5,7 @@ import { errorDetails } from "../../Util/errorDetails";
 import type { ZipEntry } from "../../../definitions/Export";
 import { remapPathsForBOTI } from "../BotiUtils";
 import { renderMarkdownFiles } from "../renderMarkdownFiles";
-import { createMergedZipBlob, createZipBlob } from "../zipUtils";
+import { assertUniqueExportPaths, createMergedZipBlob, createZipBlob } from "../zipUtils";
 import type {
   ExportArchiveRequest,
   ExportArchiveResponse,
@@ -42,14 +42,10 @@ self.onmessage = async (event: MessageEvent<ExportArchiveRequest>) => {
       files = remapPathsForBOTI(files);
     }
 
+    assertUniqueExportPaths(files);
     const details = files.map((file) => `FILE: ${file.path}`);
     const mermaidBlocks = files.reduce((sum, file) => sum + (typeof file.content === "string" ? (file.content.match(/^[ \t]*(?:>[ \t]*)*```mermaid[ \t]*$/gm)?.length ?? 0) : 0), 0);
     details.push(`Mermaid blocks generated: ${mermaidBlocks}; rendering in Obsidian has not been verified.`);
-    const paths = new Set<string>();
-    for (const file of files) {
-      if (paths.has(file.path)) details.push(`WARNING: Duplicate output path overwritten in ZIP: ${file.path}`);
-      paths.add(file.path);
-    }
     if (request.selectedExports.includes("Eras")) {
       const npcs = new Map((request.data.NPCs ?? []).map((npc) => [npc._id, new Set((npc.history ?? []).map((entry) => entry.id))]));
       for (const era of request.data.Eras ?? []) {

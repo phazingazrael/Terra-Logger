@@ -32,6 +32,14 @@ import {
 import type { DataSets, PartialTemplates } from "../../definitions/Export";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
+export function formatExportLogLines(type: string, text: string, now = new Date()): string[] {
+	const timestamp = now.toISOString().slice(0, 19).replace("T", " ");
+	return text.split(/\r?\n/).map((line) => {
+		const detail = /^(FILE|WARNING|ERROR):\s?(.*)$/.exec(line);
+		return `[${timestamp}] [${detail?.[1] ?? type}] ${detail?.[2] ?? line}`;
+	});
+}
+
 function LinearProgressWithLabel(props: { value: number }) {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
@@ -139,11 +147,10 @@ function useMarkdownExportPanelModel(props: {
 		if (el) el.scrollTo({ top: el.scrollHeight });
 	}, [logs]);
 
-	const log = (type: string, line: string) =>
-		setLogs((l) => [
-			...l,
-			`[${new Date().toISOString().slice(0, 19).replace("T", " ")}] [{${type}}] ${line}`,
-		]);
+	const log = (type: string, line: string) => {
+		const entries = formatExportLogLines(type, line);
+		setLogs((previous) => [...previous, ...entries]);
+	};
 
 	// Main export
 	const run = async () => {
@@ -272,7 +279,7 @@ function useMarkdownExportPanelModel(props: {
 
 	const downloadLogs = () => {
 		const logsText = logs.join("\n");
-		const blob = new Blob([logsText], { type: "text/plain" });
+		const blob = new Blob(["\uFEFF", logsText], { type: "text/plain;charset=utf-8" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;

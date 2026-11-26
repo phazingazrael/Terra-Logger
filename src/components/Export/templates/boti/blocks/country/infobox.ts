@@ -4,7 +4,7 @@ const template = [
 	"> [!infobox]",
 	"> # Country of {{name}}",
 	"> **Pronounced:**  \"{{name}}\"",
-	"> ![[{{name}}.svg]]",
+	"> ![[{{coaFilename}}]]",
 	"> ###### Info",
 	">  |",
 	"> ---|---|",
