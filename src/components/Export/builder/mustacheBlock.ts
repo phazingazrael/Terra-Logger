@@ -1,4 +1,5 @@
 import Mustache from "mustache";
+import { exportDocumentLink, exportIcon, renderReligionCenter } from "./markdownUtils";
 import type { ExportContext, MarkdownBlock } from "./exportTypes";
 import { renderEntityDescriptionBodyToMarkdown } from "./atlasContentMarkdown";
 import { renderEconomySection } from "./economyMarkdown";
@@ -50,11 +51,14 @@ function createMustacheContext(context: ExportContext): MustacheContext {
     ...context.entity,
     ...overrides,
   };
+  const description = typeof entity.description === "string" ? entity.description : "";
+  const descriptionCallout = description.split(/\r?\n/).map((line) => line ? `> ${line}` : ">").join("\n");
 
   const result: MustacheContext = {
     ...context.data,
     ...entity,
     [singular]: entity,
+    descriptionCallout,
   };
 
   if (context.templateId === "boti" &&
@@ -188,100 +192,53 @@ function resolveCultureOriginById(
   return name ? wikiLink(name) : id;
 }
 
-function resolveReligionCenter(
-  context: ExportContext,
-): Record<string, unknown> {
-  const rawCenter =
-    context.entity.center ??
-    context.entity.cultureCenter ??
-    context.entity.originCenter;
-
-  if (!rawCenter) return { name: "" };
-
-  const centerName = resolveReligionCenterName(rawCenter, context);
-
-  return {
-    name: centerName,
-  };
+function resolveReligionCenter(context: ExportContext): Record<string, unknown> {
+  return { name: renderReligionCenter(context) };
 }
 
-function resolveReligionCenterName(
-  rawCenter: unknown,
-  context: ExportContext,
-): string {
-  if (rawCenter == null) return "";
-
-  if (typeof rawCenter === "string" || typeof rawCenter === "number") {
-    return resolveNamedEntityReference(rawCenter, context);
-  }
-
-  if (typeof rawCenter !== "object") {
-    return String(rawCenter);
-  }
-
-  const centerRecord = rawCenter as Record<string, unknown>;
-
-  const directName = readString(centerRecord, "name") ||
-    readString(centerRecord, "Name") ||
-    readString(centerRecord, "title");
-
-  if (directName && directName !== "[object Object]") {
-    return wikiLink(directName);
-  }
-
-  const centerI = readString(centerRecord, "i");
-
-  if (centerI) {
-    const resolvedByI = resolveCenterByI(centerI, context);
-
-    if (resolvedByI) return resolvedByI;
-  }
-
-  const centerId =
-    readString(centerRecord, "id") ||
-    readString(centerRecord, "_id");
-
-  if (centerId) {
-    return resolveNamedEntityReference(centerId, context);
-  }
-
-  return "";
-}
-
-function resolveCenterByI(
-  centerI: string,
-  context: ExportContext,
-): string {
-  const collections = [
-    context.data.Cultures,
-    context.data.Religions,
-    context.data.Cities,
-    context.data.Countries,
-  ].filter(Array.isArray) as unknown[][];
-
-  for (const collection of collections) {
-    const match = collection.find((item) => {
-      if (!item || typeof item !== "object") return false;
-
-      const record = item as Record<string, unknown>;
-
-      return String(record.i ?? "") === centerI;
-    });
-
-    if (!match || typeof match !== "object") continue;
-
-    const record = match as Record<string, unknown>;
-
-    const name =
-      readString(record, "name") ||
-      readString(record, "Name") ||
-      readString(record, "nameFull") ||
-      readString(record, "title");
-
-    if (name) return wikiLink(name);
-  }
-
-  return "";
+/** Readable source labels; the artwork remains authoritative for arrangement. */
+export function createCoatOfArmsMarkdownBlock(id: string): MarkdownBlock {
+  return { id, render(context) {
+    const coa = isRecord(context.entity.coa) ? context.entity.coa : {};
+    const label = (value: unknown) => {
+      const raw = String(value ?? "").replace(/^charges-/, "").trim();
+      const variant = raw.match(/^(.*?)(\d+)$/);
+      const name = variant?.[1] ?? raw;
+      const words = name === "crossCeltic" ? "Celtic cross" : name
+        .replace(/([a-z\d])([A-Z])/g, "$1 $2").replace(/[-_]+/g, " ");
+      return words ? words.charAt(0).toUpperCase() + words.slice(1) +
+        (variant ? ` (variant ${variant[2]})` : "") : "";
+    };
+    const colours = new Map([
+      ["argent", "Silver / white"], ["or", "Gold / yellow"], ["sable", "Black"],
+      ["gules", "Red"], ["azure", "Blue"], ["vert", "Green"], ["purpure", "Purple"],
+    ]);
+    const colour = (value: unknown) => {
+      const raw = String(value ?? "").trim();
+      return colours.has(raw) ? `${colours.get(raw)} (${raw})` : label(raw);
+    };
+    const details = [
+      coa.shield ? `- **Shield:** ${label(coa.shield)}` : "",
+      coa.t1 ? `- **Field:** ${colour(coa.t1)}` : "",
+    ].filter(Boolean);
+    for (const [heading, values, field] of [
+      ["Ordinaries", coa.ordinaries, "ordinary"], ["Charges", coa.charges, "charge"],
+    ] as const) {
+      const items = (Array.isArray(values) ? values : []).flatMap((raw) => {
+        if (!isRecord(raw) || !raw[field]) return [];
+        const colours = [raw.t, raw.t2, raw.t3].filter(Boolean).map(colour).join(", ");
+        return [`- ${label(raw[field])}${colours ? ` — ${colours}` : ""}`];
+      });
+      if (items.length) details.push(`### ${heading}`, items.join("\n"));
+    }
+    const filename = String(context.entity.coaFilename ?? "");
+    if (filename && String(context.entity.coaSVG ?? "").trim()) {
+      const link = exportDocumentLink({ ...context, documentPaths: { "asset:coa": filename } },
+        "asset", "coa", "Coat of arms");
+      if (context.documentPath) details.push(`!${link}`);
+    }
+    return details.length ? `## Coat of Arms\n\n${details.join("\n\n")}` : "";
+  } };
 }
 
 function resolveReligionOrigins(
@@ -360,81 +317,6 @@ function resolveReligionOriginById(
   return name ? wikiLink(name) : id;
 }
 
-function resolveNamedEntityReference(
-  value: unknown,
-  context: ExportContext,
-): string {
-  if (value == null) return "";
-
-  if (typeof value === "object") {
-    const record = value as Record<string, unknown>;
-
-    const name =
-      readString(record, "name") ||
-      readString(record, "Name") ||
-      readString(record, "nameFull") ||
-      readString(record, "title");
-
-    if (name) return wikiLink(name);
-
-    const i = readString(record, "i");
-    if (i) {
-      const resolvedByI = resolveCenterByI(i, context);
-      if (resolvedByI) return resolvedByI;
-    }
-
-    const id = readString(record, "id") || readString(record, "_id");
-    if (id) return resolveNamedEntityReference(id, context);
-
-    return "";
-  }
-
-  if (typeof value === "string" && value.trim().startsWith("[[")) {
-    return value.trim();
-  }
-
-  const id = String(value).trim();
-
-  if (!id || id === "[object Object]") return "";
-
-  const collections = [
-    context.data.Cultures,
-    context.data.Countries,
-    context.data.Cities,
-    context.data.Religions,
-    context.data.Notes,
-  ].filter(Array.isArray) as unknown[][];
-
-  for (const collection of collections) {
-    const match = collection.find((item) => {
-      if (!item || typeof item !== "object") return false;
-
-      const record = item as Record<string, unknown>;
-
-      return (
-        String(record.id ?? "") === id ||
-        String(record._id ?? "") === id ||
-        String(record.i ?? "") === id ||
-        readString(record, "name") === id ||
-        readString(record, "Name") === id
-      );
-    });
-
-    if (!match || typeof match !== "object") continue;
-
-    const record = match as Record<string, unknown>;
-    const name =
-      readString(record, "name") ||
-      readString(record, "Name") ||
-      readString(record, "nameFull") ||
-      readString(record, "title");
-
-    if (name) return wikiLink(name);
-  }
-
-  return id;
-}
-
 function wikiLink(value: string): string {
   return `[[${value.trim()}]]`;
 }
@@ -467,6 +349,11 @@ function resolveMapSettings(context: ExportContext): Record<string, unknown> {
     ...settings,
     options: {
       ...options,
+      militaryTypes: Array.isArray(options.militaryTypes) ? options.militaryTypes.map((raw) => {
+        const unit = isRecord(raw) ? raw : {};
+        const icon = String(unit.icon ?? "");
+        return { ...unit, icon: exportIcon(context, icon, String(unit.name ?? icon)) || icon };
+      }) : [],
       "winds[0]": winds[0] ?? "",
       "winds[1]": winds[1] ?? "",
       "winds[2]": winds[2] ?? "",
@@ -530,7 +417,6 @@ function resolveCityCountry(context: ExportContext): Record<string, unknown> {
 
   return findCountryByReference(String(rawCountry), context) ?? {};
 }
-
 
 type ExportRecord = Record<string, unknown>;
 

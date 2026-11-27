@@ -35,8 +35,10 @@ self.onmessage = async (event: MessageEvent<ExportArchiveRequest>) => {
       request.renderOptions,
       request.selectedExports,
       (item) => { context = `Rendering ${item}`; },
+      request.icons.paths,
     );
 
+    files.push(...request.icons.files);
     context = "Mapping archive paths";
     if (request.isBOTI) {
       files = remapPathsForBOTI(files);

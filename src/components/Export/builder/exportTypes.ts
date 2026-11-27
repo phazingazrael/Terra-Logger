@@ -21,6 +21,7 @@ export type ExportContext = {
   sourceType: ExportSourceType;
   entity: ExportEntity;
   documentPath?: string;
+  documentPaths?: Readonly<Record<string, string>>;
   developmentalEraPaths?: Readonly<Record<string, string>>;
 };
 

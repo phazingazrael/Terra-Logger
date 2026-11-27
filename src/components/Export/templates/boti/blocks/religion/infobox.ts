@@ -1,24 +1,7 @@
-import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+import { renderBotiInfobox } from "../../../../builder/atlasContentMarkdown";
+import type { MarkdownBlock } from "../../../../builder/exportTypes";
 
-const template = [
-	"> [!infobox]",
-	"> # `=this.Name`",
-	"> ![[PlaceholderImage.png]]",
-	"> ###### Info",
-	">  |",
-	"> ---|---|",
-	"> **Holy City / HQ** | `=this.Headquarters` |",
-	"> **Symbols** | `=this.Symbols` |",
-	"> **Deities** | `=this.Deities` |",
-	"> **Domains** | `=this.Domains` |",
-	"> ###### Believers",
-	">  |",
-	"> ---|---|",
-	"> **Rural** | `=this.RuralPopulation` |",
-	"> **Urban** | `=this.UrbanPopulation` |",
-].join("\n");
-
-export const botiReligionInfoboxBlock = createMustacheMarkdownBlock({
-	id: "boti.religion.infobox",
-	template,
-});
+export const botiReligionInfoboxBlock: MarkdownBlock = {
+  id: "boti.religion.infobox",
+  render: renderBotiInfobox,
+};

@@ -151,7 +151,7 @@ export function pickNoteTemplateKey(note: TLNote): string {
   if (["label"].includes(root)) return "Note-Label";
   if (["reg", "regiment", "mil", "military"].includes(root))
     return "Note-Military";
-  if (["poi", "marker", "pin"].includes(root)) return "Note-POI";
+  if (["poi", "marker", "pin", "addedlabel"].includes(root)) return "Note-POI";
 
   // optional: light tag-based fallback
   const tags = Array.isArray(note.tags)
@@ -176,4 +176,28 @@ export function pickNoteTemplateKey(note: TLNote): string {
   if (has("poi") || has("marker")) return "Note-POI";
 
   return "Note-Label";
+}
+
+const botiCalloutTypes = new Map<string, Map<string, string>>();
+
+/** Match the existing template's callout before guessing a type for custom sections. */
+export function getBotiSectionCalloutType(sourceType: string | undefined, title: string): string | undefined {
+  const key = title.trim().toLowerCase();
+  if (sourceType === "npc") {
+    const types: Record<string, string> = {
+      overview: "overview", background: "story", "aspirations & motivations": "goals",
+      "relationships & acquaintances": "groups", "public perception": "Rumors",
+      "hidden details": "Secrets", notes: "Notes",
+    };
+    return Object.entries(types).find(([title]) => title === key)?.[1];
+  }
+  const type = sourceType === "developmentalEra" ? "era" : sourceType ?? "";
+  let types = botiCalloutTypes.get(type);
+  if (!types) {
+    const template = resolveRawFromGlob(`./templates/boti/${type}.md`) ?? "";
+    types = new Map([...template.matchAll(/^>+[ \t]*\[!([^\]|]+)(?:\|[^\]]*)?\][+-]?[ \t]+([^\r\n]+)$/gm)]
+      .map((match) => [match[2].trim().toLowerCase(), match[1]]));
+    botiCalloutTypes.set(type, types);
+  }
+  return types.get(key);
 }

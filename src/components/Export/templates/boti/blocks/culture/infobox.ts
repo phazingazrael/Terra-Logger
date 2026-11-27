@@ -1,31 +1,7 @@
-import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+import { renderBotiInfobox } from "../../../../builder/atlasContentMarkdown";
+import type { MarkdownBlock } from "../../../../builder/exportTypes";
 
-const template = [
-	"> [!infobox]",
-	"> # `=this.Name`",
-	"> **Pronounced:**  \"`=this.Pronounced`\"",
-	"> ![[PlaceholderImage.png]]",
-	"> ###### Info",
-	">  |",
-	"> ---|---|",
-	"> **Aliases** | `=this.Aliases` |",
-	"> **Type** | `=this.Type` |",
-	"> **Region** | `=this.Region` |",
-	"> **Theme** | `=this.Theme` |",
-	"> **Language** | `=this.Language` |",
-	"> **Ethnic Groups** | `=this.EthnicGroups` |",
-	"> **Urban Population** | `=this.UrbanPopulation` |",
-	"> **Rural Population** | `=this.RuralPopulation` |",
-	"> ###### Belief & Governance",
-	">  |",
-	"> ---|---|",
-	"> **Religions** | `=this.Religions` |",
-	"> **Government** | `=this.Government` |",
-	"> **Technology Level** | `=this.TechnologyLevel` |",
-	"> **Notable Figures** | `=this.NotableFigures` |",
-].join("\n");
-
-export const botiCultureInfoboxBlock = createMustacheMarkdownBlock({
-	id: "boti.culture.infobox",
-	template,
-});
+export const botiCultureInfoboxBlock: MarkdownBlock = {
+  id: "boti.culture.infobox",
+  render: renderBotiInfobox,
+};

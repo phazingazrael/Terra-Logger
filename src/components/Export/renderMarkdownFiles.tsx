@@ -11,13 +11,15 @@ import type {
 	RenderOptions,
 	TemplateMap,
 } from "../../definitions/Export";
-import type { TLNote } from "../../definitions/TerraLogger";
+import type { TLNote, TLNPC } from "../../definitions/TerraLogger";
 import { DEFAULT_RENDER_OPTIONS } from "./Constants";
 import { botiNoteFolder, getBotiExportPath, isBotiTemplate } from "./BotiUtils";
 
+import { exportDocumentLink, singleLineText } from "./builder/markdownUtils";
+import { renderEntityDescriptionBodyToMarkdown } from "./builder/atlasContentMarkdown";
 import { buildExportDocument } from "./builder/buildExportDocument";
 import { getMarkdownDocumentTemplate } from "./builder/templateRegistry";
-import type { ExportSourceType } from "./builder/exportTypes";
+import type { ExportContext, ExportSourceType } from "./builder/exportTypes";
 
 import { exportPathKey } from "./zipUtils";
 import { injectSvgStyle, normalizeSvgForExport } from "./svgExportUtils";
@@ -128,6 +130,7 @@ export function renderMarkdownFiles(
 	options?: RenderOptions,
 	exports?: string[],
 	onRendering?: (context: string) => void,
+	iconPaths: Readonly<Record<string, string>> = {},
 ): FileSpec[] {
 	const opt = {
 		...DEFAULT_RENDER_OPTIONS,
@@ -148,24 +151,24 @@ export function renderMarkdownFiles(
 	});
 	const global = ctx(data);
 
+	const documentPaths: Record<string, string> = Object.assign(Object.create(null), iconPaths);
+	const pendingDocuments: Array<{ token: string; context: ExportContext }> = [];
 	const renderBuilderContent = (
 		sourceType: ExportSourceType,
 		item: Record<string, unknown>,
 		documentPath?: string,
 	): string => {
 		const template = getMarkdownDocumentTemplate(opt.templateName);
-
-		return buildExportDocument({
-			template,
-			context: {
-				data,
-				templateId: template.id,
-				sourceType,
-				entity: item,
-				documentPath,
-				developmentalEraPaths,
-			},
-		});
+		if (documentPath && typeof item._id === "string") {
+			documentPaths[`${sourceType}:${item._id}`] = documentPath;
+		}
+		// Allocate every filename before rendering so forward links use collision-safe paths.
+		const token = `\u0000atlas-export-${pendingDocuments.length}`;
+		pendingDocuments.push({ token, context: {
+			data, templateId: template.id, sourceType, entity: item,
+			documentPath, documentPaths, developmentalEraPaths,
+		} });
+		return token;
 	};
 
 	const shouldUseBuilder = (
@@ -196,8 +199,9 @@ export function renderMarkdownFiles(
 
 		const mapEntity = data.MapInfo as unknown as Record<string, unknown>;
 
+		const mapDocumentPath = `${data.MapInfo.info.name} ${opt.mapInfoFilename}`;
 		const mapMd = shouldUseBuilder("map", opt.templateName)
-			? renderBuilderContent("map", mapEntity)
+			? renderBuilderContent("map", mapEntity, isBotiTemplate(opt.templateName) ? getBotiExportPath(mapDocumentPath) : mapDocumentPath)
 			: Mustache.render(templates.MapInfo, {
 					...global,
 					...data.MapInfo,
@@ -223,7 +227,7 @@ export function renderMarkdownFiles(
 		citiesByCountryId.set(countryId, cities);
 	}
 
-	type Coll = keyof Omit<DataSets, "MapInfo">;
+	type Coll = keyof Omit<DataSets, "MapInfo" | "ReferenceCatalogs">;
 
 	const add = (
 		_coll: Coll,
@@ -255,7 +259,7 @@ export function renderMarkdownFiles(
 				if (isBotiTemplate(opt.templateName)) folder = botiNoteFolder(item as TLNote);
 				else {
 					const root = String(item.id ?? "").split(/(\d+)/)[0];
-					const subDir = root === "burg" ? "city" : root === "state" || root === "stateLabel" ? "country" : root;
+					const subDir = root === "burg" ? "city" : root === "state" || root === "stateLabel" ? "country" : root.toLowerCase() === "addedlabel" ? "poi" : root;
 					folder += `${subDir}/`;
 				}
 			}
@@ -270,6 +274,7 @@ export function renderMarkdownFiles(
 			const svgPath = `${folder}${base}.svg`;
 			const exportItem = {
 				...item,
+				...(singular === "Religion" ? { deity: singleLineText(item.deity) } : {}),
 				coaFilename: isBotiTemplate(opt.templateName) ? getBotiExportPath(svgPath) : svgPath,
 				...(singular === "Country" ? { cities: citiesByCountryId.get(String(item.id)) ?? item.cities ?? [] } : {}),
 			};
@@ -375,6 +380,77 @@ export function renderMarkdownFiles(
 	for (const { era, path, name } of developmentalDocuments) {
 		onRendering?.(`Developmental era ${era.name} (${era._id})`);
 		files.push({ path, name, content: renderBuilderContent("developmentalEra", era, path) });
+	}
+
+	if (exports?.includes("NPCs")) {
+		for (const [field, type, folderName] of [
+			["ancestry", "race", "races"], ["profession", "occupation", "occupations"],
+		] as const) {
+			const definitions = field === "ancestry"
+				? data.ReferenceCatalogs?.ancestries ?? [] : data.ReferenceCatalogs?.professions ?? [];
+			const definitionsById = new Map(definitions.map((definition) => [definition.id, definition]));
+			const groups = new Map<string, { id: string; name: string; members: TLNPC[] }>();
+			for (const npc of data.NPCs) {
+				const reference = npc[field];
+				if (!reference?.name.trim()) continue;
+				const id = reference.id?.trim() || `name:${reference.name.trim()}`;
+				const group = groups.get(id) ?? { id, name: reference.name, members: [] };
+				group.members.push(npc);
+				groups.set(id, group);
+			}
+			const boti = isBotiTemplate(opt.templateName);
+			const folder = `${boti ? "z_Assets/Reference/" : "assets/reference/"}${folderName}/`;
+			const plans = allocateExportNames([...groups.values()].map((group) => ({
+				entity: { id: group.id, name: group.name }, group, folder,
+				base: filenameFrom({ name: group.name }, ["name"], type),
+			})), opt.extension, boti);
+			for (const plan of plans) documentPaths[`${type}:${plan.group.id}`] = plan.folder + plan.name;
+			for (const { group, folder, name } of plans) {
+				onRendering?.(`${type} reference ${group.name}`);
+				const path = folder + name;
+				const context: ExportContext = {
+					data, templateId: getMarkdownDocumentTemplate(opt.templateName).id,
+					sourceType: "npc", entity: {}, documentPath: path, documentPaths,
+				};
+				// Only name-only references may resolve by a unique catalog name.
+				const matches = group.id.startsWith("name:")
+					? definitions.filter((definition) => definition.name === group.name.trim()) : [];
+				const definition = definitionsById.get(group.id) ?? (matches.length === 1 ? matches[0] : undefined);
+				const descriptions = definition?.description.trim() ? [definition.description] : field === "profession"
+					? [...new Set(group.members.map((npc) => npc.profession?.description?.trim() ?? "").filter(Boolean))] : [];
+				const details: string[] = [];
+				if (definition && "rarity" in definition) details.push(`**Rarity:** ${definition.rarity}`);
+				if (definition && "category" in definition) details.push(`**Category:** ${definition.category === "government" ? "Government" : "General"}`);
+				if (definition && "governmentCategory" in definition && definition.governmentCategory) {
+					details.push(`**Government category:** ${definition.governmentCategory}`);
+				}
+				const content = [
+					["---", `type: ${type}`, `name: ${JSON.stringify(group.name)}`, "---"].join("\n"),
+					`# ${singleLineText(group.name)}`, "## Overview",
+					...(descriptions.length ? descriptions.map((description) => renderEntityDescriptionBodyToMarkdown({
+						entity: { description }, sourceType: "npc",
+					})) : [`No description is available for this ${type}.`]),
+					...details,
+					"## Associated NPCs",
+					boti ? [
+						"```dataview", 'LIST FROM "World/13. NPCs"',
+						`WHERE ${field === "ancestry" ? "Race" : "Occupation"} = this.file.link`,
+						"SORT file.name ASC", "```",
+					].join("\n") : group.members.map((npc) => `- ${exportDocumentLink(context, "npc", npc._id, npc.fullName || npc.name)}`).join("\n"),
+				].join("\n\n");
+				files.push({ path, name, content });
+			}
+		}
+	}
+	const template = getMarkdownDocumentTemplate(opt.templateName);
+	const renderedDocuments = new Map(pendingDocuments.map(({ token, context }) => {
+		onRendering?.(`${context.sourceType} ${String(context.entity.name ?? "")} (${String(context.entity._id ?? context.entity.id ?? "")})`);
+		return [token, buildExportDocument({ template, context })];
+	}));
+	for (const file of files) {
+		if (typeof file.content === "string" && renderedDocuments.has(file.content)) {
+			file.content = renderedDocuments.get(file.content) ?? file.content;
+		}
 	}
 	return files;
 }

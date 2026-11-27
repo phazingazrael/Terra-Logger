@@ -12,7 +12,6 @@ export const defaultFrontmatterBlock: MarkdownBlock = {
       readString(entity, "nameFull") ||
       readString(entity, "title");
 
-    const id = readString(entity, "_id") || readString(entity, "id");
     const category = sourceType === "note" ? getNoteCategory(entity as TLNote) : undefined;
     const isTravelNote = category?.id === "journey" ||
       category?.id === "route" || category?.id.startsWith("route:");
@@ -25,7 +24,6 @@ export const defaultFrontmatterBlock: MarkdownBlock = {
       isTravelNote && category ? `note_type: ${quoteYamlString(category.label)}` : "",
       isTravelNote ? `source_note_id: ${quoteYamlString(readString(entity, "id"))}` : "",
       name ? `name: ${quoteYamlString(name)}` : "",
-      id ? `terra_id: ${quoteYamlString(id)}` : "",
       "---",
     ].filter(Boolean);
 

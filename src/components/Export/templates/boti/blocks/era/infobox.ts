@@ -1,17 +1,7 @@
-import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+import { renderBotiInfobox } from "../../../../builder/atlasContentMarkdown";
+import type { MarkdownBlock } from "../../../../builder/exportTypes";
 
-export const botiEraInfoboxBlock = createMustacheMarkdownBlock({
+export const botiEraInfoboxBlock: MarkdownBlock = {
   id: "boti.era.infobox",
-  template: [
-    "> [!infobox]",
-    "> # `=this.Name`",
-    "> ###### Chronology",
-    "> | | |",
-    "> | --- | --- |",
-    "> | **Abbreviation** | `=this.ShortName` |",
-    "> | **Status** | `=this.Status` |",
-    "> | **First Year** | `=this.FirstYear` |",
-    "> | **Present / Final Year** | `=this.FinalYear` |",
-    "> | **Years Elapsed / Duration** | `=this.Length` |",
-  ].join("\n"),
-});
+  render: renderBotiInfobox,
+};

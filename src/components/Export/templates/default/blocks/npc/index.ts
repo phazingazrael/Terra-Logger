@@ -1,6 +1,6 @@
 import type { MarkdownBlock } from "../../../../builder/exportTypes";
 import { createDefaultCustomAtlasSectionsBlock } from "../universal/customAtlasSections";
-import { renderAtlasSectionByLabelToMarkdown } from "../../../../builder/atlasContentMarkdown";
+import { renderAtlasSectionByLabelToMarkdown, renderNPCHistory, renderNPCRelationships, renderNPCReferenceField } from "../../../../builder/atlasContentMarkdown";
 import { getNPCExportPortraitPath } from "../../../../../NPC/portraits/export";
 import type { TLNPC } from "../../../../../../definitions/TerraLogger";
 
@@ -20,9 +20,9 @@ function names(value: unknown): string {
   });
   return result.length ? result.join(", ") : "—";
 }
-function wiki(value: unknown): string {
+function displayName(value: unknown): string {
   const name = typeof value === "string" ? value : String((value as { name?: unknown })?.name ?? "");
-  return name ? `[[${name}]]` : "—";
+  return name || "—";
 }
 
 const frontmatter: MarkdownBlock = {
@@ -42,22 +42,24 @@ const frontmatter: MarkdownBlock = {
 };
 const title: MarkdownBlock = { id: "default.npc.title", render: ({ entity }) => `# ${stringValue(entity.fullName ?? entity.name, "Unnamed NPC")}` };
 const profile: MarkdownBlock = {
-  id: "default.npc.profile", render: ({ entity }) => [
+  id: "default.npc.profile", render: (context) => {
+    const { entity } = context;
+    return [
     "## Profile",
-    `| Field | Value |`, `|---|---|`,
-    `| Pronouns | ${names(entity.pronouns)} |`,
-    `| Pronounced | ${stringValue(entity.pronounced)} |`,
-    `| Race | ${wiki(entity.ancestry)} |`,
-    `| Heritage | ${stringValue(entity.heritage)} |`,
-    `| Gender | ${wiki(entity.gender)} |`,
-    `| Age | ${stringValue(entity.age)} |`,
-    `| Sexuality | ${stringValue(entity.sexuality)} |`,
-    `| Alignment | ${stringValue(entity.alignment)} |`,
-    `| Condition | ${stringValue(entity.condition)} |`,
-    `| Aliases | ${names(entity.aliases)} |`,
-    `| Occupation | ${wiki(entity.profession)} |`,
-    `| Location | ${wiki(entity.currentLocation)} |`,
-  ].join("\n")
+    `**Pronouns:** _${names(entity.pronouns)}_`,
+    `**Pronounced:** _${stringValue(entity.pronounced)}_`,
+    `**Race:** _${renderNPCReferenceField(context, "ancestry")}_`,
+    `**Heritage:** _${stringValue(entity.heritage)}_`,
+    `**Gender:** _${displayName(entity.gender)}_`,
+    `**Age:** _${stringValue(entity.age)}_`,
+    `**Sexuality:** _${stringValue(entity.sexuality)}_`,
+    `**Alignment:** _${stringValue(entity.alignment)}_`,
+    `**Condition:** _${stringValue(entity.condition)}_`,
+    `**Aliases:** _${names(entity.aliases)}_`,
+    `**Occupation:** _${renderNPCReferenceField(context, "profession")}_`,
+    `**Location:** _${renderNPCReferenceField(context, "currentLocation")}_`,
+  ].join("\n");
+  }
 };
 const portrait: MarkdownBlock = {
   id: "default.npc.portrait", render: ({ entity, documentPath }) => {
@@ -66,18 +68,16 @@ const portrait: MarkdownBlock = {
   }
 };
 const relationships: MarkdownBlock = {
-  id: "default.npc.relationships", render: ({ entity }) => {
-    const rows = Array.isArray(entity.relationships) ? entity.relationships as Array<Record<string, unknown>> : [];
-    if (!rows.length) return "";
-    return ["## Relationships & Acquaintances", ...rows.map((r) => `- **${stringValue(r.roleTitle ?? r.relationshipType, "Relationship")}** — [[${stringValue(r.relatedEntityId, "Unknown")}]]${r.primary ? " *(Primary)*" : ""}`)].join("\n");
-  }
+  id: "default.npc.relationships", render(context) {
+    const body = renderNPCRelationships(context);
+    return body ? `## Relationships & Acquaintances\n\n${body}` : "";
+  },
 };
 const history: MarkdownBlock = {
-  id: "default.npc.history", render: ({ entity }) => {
-    const rows = Array.isArray(entity.history) ? entity.history as Array<Record<string, unknown>> : [];
-    if (!rows.length) return "";
-    return ["## History", ...rows.map((h) => `- ${typeof h.year === "number" ? `**${h.year}:** ` : ""}${stringValue(h.title, "Event")} — ${stringValue(h.description, "")}`)].join("\n");
-  }
+  id: "default.npc.history", render(context) {
+    const body = renderNPCHistory(context);
+    return body ? `## History\n\n${body}` : "";
+  },
 };
 const authoredSections: MarkdownBlock = {
   id: "default.npc.authored", render: ({ entity, data }) => [
@@ -91,7 +91,7 @@ const authoredSections: MarkdownBlock = {
 };
 
 export function getDefaultNPCBlocks(): MarkdownBlock[] {
-  return [frontmatter, title, profile, portrait, authoredSections, relationships, history,
+  return [frontmatter, title, portrait, profile, authoredSections, relationships, history,
     createDefaultCustomAtlasSectionsBlock({
       id: "default.npc.customAtlasSections", sourceType: "npc",
       handledSectionLabels: ["Header", "Profile", "Overview", "Background", "Aspirations & Motivations", "Relationships & Acquaintances", "Public Perception", "Hidden Details", "Notes", "Portrait", "History", "Tags"],

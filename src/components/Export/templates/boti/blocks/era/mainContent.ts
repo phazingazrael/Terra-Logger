@@ -1,5 +1,5 @@
 import type { MarkdownBlock } from "../../../../builder/exportTypes";
-import { renderEraAdditionalSections, renderEraOverview, renderEraSection } from "../../../../builder/eraMarkdown";
+import { renderEraAdditionalSections, renderEraOverview, renderEraSection, renderEraTimeline } from "../../../../builder/eraMarkdown";
 
 function callout(type: string, title: string, body: string): string {
   return `> [!${type}]- ${title}\n${body.split(/\r?\n/).map((line) => line ? `> ${line}` : ">").join("\n")}`;
@@ -15,6 +15,7 @@ export const botiEraMainContentBlock: MarkdownBlock = {
       context.entity.status === "current"
         ? "Ongoing — the final recorded year is the present year."
         : "Concluded — the final year is the end of this era.",
+      renderEraTimeline(context),
       renderEraSection(context, "Chronology", "section era-chronology"),
     ].filter(Boolean).join("\n\n");
     return [

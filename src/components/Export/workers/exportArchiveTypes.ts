@@ -1,6 +1,7 @@
 import type { ErrorDetails } from "../../Util/errorDetails";
 import type {
   DataSets,
+  FileSpec,
   RenderOptions,
   TemplateMap,
 } from "../../../definitions/Export";
@@ -15,6 +16,7 @@ export type ExportArchiveRequest = {
   isBOTI: boolean;
   finalZipName: string;
   botiBaseZipPath: string;
+  icons: { files: FileSpec[]; paths: Record<string, string> };
 };
 
 export type ExportArchiveProgress = {

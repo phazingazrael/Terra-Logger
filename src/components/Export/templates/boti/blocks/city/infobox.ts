@@ -1,41 +1,7 @@
-import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+import { renderBotiInfobox } from "../../../../builder/atlasContentMarkdown";
+import type { MarkdownBlock } from "../../../../builder/exportTypes";
 
-const template = [
-  "> [!infobox]",
-  "> # City of `=this.Name`",
-  "> **Pronounced:**  \"`=this.Pronounced`\"",
-  "> ![[{{coaFilename}}]]",
-  "> ###### Info",
-  ">  |",
-  "> ---|---|",
-  "> **Alias** | `=this.Aliases` |",
-  "> **Type** | `=this.Type` |",
-  "> **Capital** | `=this.Capital` |",
-  "> **Population** | `=this.Population` |",
-  "> **Theme** | `=this.Theme` |",
-  "> **Country** | `=this.Country` |",
-  "> **Terrain** | `=this.Terrain` |",
-  "> **Features** | `=join(this.Features,\", \")` |",
-  "> **Map Link** | [City Map]({{mapLink}}) |",
-  "> ###### Politics",
-  ">  |",
-  "> ---|---|",
-  "> **Rulers** | `=this.Rulers` |",
-  "> **Leaders** | `=this.Leaders` |",
-  "> **Govt Type** | `=this.GovtType` ({{government.formName}}) |",
-  "> **Defenses** | `=this.Defenses` |",
-  "> **Religions** | `=this.Religions` |",
-  "> ###### Commerce",
-  ">  |",
-  "> ---|---|",
-  "> **Imports** | `=this.Imports` |",
-  "> **Exports** | `=this.Exports` |",
-  "> ###### Description",
-  "> {{description}}",
-  "",
-].join("\n");
-
-export const botiCityInfoboxBlock = createMustacheMarkdownBlock({
+export const botiCityInfoboxBlock: MarkdownBlock = {
   id: "boti.city.infobox",
-  template,
-});
+  render: renderBotiInfobox,
+};

@@ -10,7 +10,6 @@ const frontmatter: MarkdownBlock = {
     `name: ${JSON.stringify(readString(entity, "name"))}`,
     `short_name: ${JSON.stringify(readString(entity, "shortName"))}`,
     `status: ${JSON.stringify(readString(entity, "status"))}`,
-    `terra_id: ${JSON.stringify(readString(entity, "_id"))}`,
     `map_id: ${JSON.stringify(readString(entity, "mapId"))}`,
     `first_year: ${entity.firstYear}`,
     `final_year: ${entity.finalYear}`,
@@ -25,14 +24,15 @@ const mainContent: MarkdownBlock = {
     const { entity } = context;
     const overview = renderEraOverview(context);
     const chronology = renderEraSection(context, "Chronology", "section era-chronology");
+    const timeline = renderEraTimeline(context);
     const events = renderEraSection(context, "Notable Events", "section notable-events");
     const notes = renderEraSection(context, "Notes", "section editor-notes");
     return [
       `# ${readString(entity, "name")}`,
       "## Overview",
       overview,
-      "## Timeline",
-      renderEraTimeline(context),
+      timeline ? "## Timeline" : "",
+      timeline,
       entity.status === "current" ? "Ongoing — the final recorded year is the present year." : "Concluded — the final year is the end of this era.",
       chronology,
       "## Notable Events",

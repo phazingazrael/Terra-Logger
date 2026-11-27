@@ -1,36 +1,7 @@
-import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
+import { renderBotiInfobox } from "../../../../builder/atlasContentMarkdown";
+import type { MarkdownBlock } from "../../../../builder/exportTypes";
 
-const template = [
-	"> [!infobox]",
-	"> # Country of {{name}}",
-	"> **Pronounced:**  \"{{name}}\"",
-	"> ![[{{coaFilename}}]]",
-	"> ###### Info",
-	">  |",
-	"> ---|---|",
-	"> **Aliases** | {{name}}, {{nameFull}} |",
-	"> **Theme** | {{type}} |",
-	"> **Planet** |  |",
-	"> **Terrain** |  |",
-	"> ###### Politics",
-	">  |",
-	"> ---|---|",
-	"> **Rulers** |  |",
-	"> **Leaders** |  |",
-	"> **Govt Type** | {{political.formName}} ({{political.form}}) |",
-	"> **Religions** |  |",
-	"> ###### Population",
-	">  |",
-	"> ---|---|",
-	"  > **Rural** | {{population.rural}} |",
-	"> **Urban** | {{population.urban}} |",
-	"> **Total** | {{population.total}} |",
-	"> ###### Description",
-	"> {{description}}",
-	""
-].join("\n");
-
-export const botiCountryInfoboxBlock = createMustacheMarkdownBlock({
-	id: "boti.country.infobox",
-	template,
-});
+export const botiCountryInfoboxBlock: MarkdownBlock = {
+  id: "boti.country.infobox",
+  render: renderBotiInfobox,
+};

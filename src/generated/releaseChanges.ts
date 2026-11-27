@@ -28,45 +28,45 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.14",
-  "previousTag": "1.0.13",
-  "currentTag": "1.0.14",
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.13...1.0.14",
+  "version": "1.0.15",
+  "previousTag": "1.0.14",
+  "currentTag": null,
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.14...HEAD",
   "commitCount": 3,
   "majorChanges": [
     {
-      "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
-      "shortHash": "0e828f7",
-      "date": "2026-11-25T14:03:11-07:00",
-      "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
+      "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
+      "shortHash": "a8de67c",
+      "date": "2026-11-25T19:12:42-07:00",
+      "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.157 economy and regional developmental eras",
+      "details": "✨ support 1.158 resources and independent neutral-city governments",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
     },
     {
-      "hash": "c0699fa6570da7455bb6776e0241cd7491426663",
-      "shortHash": "c0699fa",
-      "date": "2026-11-25T14:08:43-07:00",
-      "subject": "chore(version): 🔖 prepare 1.0.14 and record 1.157 completion",
+      "hash": "d71f72e87d700d2ff7ea26bf77afb346da7f56d1",
+      "shortHash": "d71f72e",
+      "date": "2026-11-25T19:17:06-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.15 and refresh project documentation",
       "type": "chore",
       "scope": "version",
-      "details": "🔖 prepare 1.0.14 and record 1.157 completion",
+      "details": "🔖 prepare 1.0.15 and refresh project documentation",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c0699fa6570da7455bb6776e0241cd7491426663"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d71f72e87d700d2ff7ea26bf77afb346da7f56d1"
     }
   ],
   "highlightedChange": {
-    "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
-    "shortHash": "0e828f7",
-    "date": "2026-11-25T14:03:11-07:00",
-    "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
+    "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
+    "shortHash": "a8de67c",
+    "date": "2026-11-25T19:12:42-07:00",
+    "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
     "type": "feat",
     "scope": "afmg",
-    "details": "✨ support 1.157 economy and regional developmental eras",
+    "details": "✨ support 1.158 resources and independent neutral-city governments",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
   },
   "typeOptions": [
     "chore",
@@ -75,43 +75,43 @@ export const releaseChanges: ReleaseChanges = {
   ],
   "scopeOptions": [
     "afmg",
-    "ui",
+    "export",
     "version"
   ],
   "commits": [
     {
-      "hash": "c0699fa6570da7455bb6776e0241cd7491426663",
-      "shortHash": "c0699fa",
-      "date": "2026-11-25T14:08:43-07:00",
-      "subject": "chore(version): 🔖 prepare 1.0.14 and record 1.157 completion",
+      "hash": "d71f72e87d700d2ff7ea26bf77afb346da7f56d1",
+      "shortHash": "d71f72e",
+      "date": "2026-11-25T19:17:06-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.15 and refresh project documentation",
       "type": "chore",
       "scope": "version",
-      "details": "🔖 prepare 1.0.14 and record 1.157 completion",
+      "details": "🔖 prepare 1.0.15 and refresh project documentation",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/c0699fa6570da7455bb6776e0241cd7491426663"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d71f72e87d700d2ff7ea26bf77afb346da7f56d1"
     },
     {
-      "hash": "6172fc9ad93b18e3deb0f026e50153d92564f17c",
-      "shortHash": "6172fc9",
-      "date": "2026-11-25T14:04:37-07:00",
-      "subject": "fix(ui): 🐛 synchronize map selection and refine Era layouts",
+      "hash": "ead2135539ca25959098940e1a1985833269fadd",
+      "shortHash": "ead2135",
+      "date": "2026-11-25T19:14:35-07:00",
+      "subject": "fix(export): 🐛 prevent filename collisions and normalize diagnostic logs",
       "type": "fix",
-      "scope": "ui",
-      "details": "🐛 synchronize map selection and refine Era layouts",
+      "scope": "export",
+      "details": "🐛 prevent filename collisions and normalize diagnostic logs",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/6172fc9ad93b18e3deb0f026e50153d92564f17c"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ead2135539ca25959098940e1a1985833269fadd"
     },
     {
-      "hash": "0e828f775f101bb4fd3ae3335e73a77807072817",
-      "shortHash": "0e828f7",
-      "date": "2026-11-25T14:03:11-07:00",
-      "subject": "feat(afmg): ✨ support 1.157 economy and regional developmental eras",
+      "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
+      "shortHash": "a8de67c",
+      "date": "2026-11-25T19:12:42-07:00",
+      "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
       "type": "feat",
       "scope": "afmg",
-      "details": "✨ support 1.157 economy and regional developmental eras",
+      "details": "✨ support 1.158 resources and independent neutral-city governments",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/0e828f775f101bb4fd3ae3335e73a77807072817"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
     }
   ],
-  "generatedAt": "2026-11-26T02:15:16.038Z"
+  "generatedAt": "2026-11-27T00:34:43.241Z"
 };

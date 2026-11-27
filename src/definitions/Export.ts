@@ -1,3 +1,4 @@
+import type { AncestryDefinition, NPCProfessionDefinition } from "../components/NPC/types";
 import type { TLDevelopmentalEra, TLMapEra } from "./History";
 import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf, TLNPC } from "./TerraLogger";
 
@@ -13,6 +14,10 @@ import type { TLCity, TLCountry, TLCulture, TLNote, TLReligion, MapInf, TLNPC } 
  * - Religions: an array of Religion objects, which contain information about each religion (name, code, etc.)
  */
 export type DataSets = {
+  ReferenceCatalogs?: {
+    ancestries: Pick<AncestryDefinition, "id" | "name" | "description" | "rarity">[];
+    professions: Pick<NPCProfessionDefinition, "id" | "name" | "description" | "category" | "governmentCategory">[];
+  };
   MapInfo: MapInf;
   Cities: TLCity[];
   Countries: TLCountry[];
@@ -128,7 +133,7 @@ export type FileSpec = {
  */
 export type RenderOptions = {
   mapInfoFilename?: string; // default: "map info.md"
-  filenameFields?: Partial<Record<keyof Omit<DataSets, "MapInfo">, string[]>>; // default: see above
+  filenameFields?: Partial<Record<keyof Omit<DataSets, "MapInfo" | "ReferenceCatalogs">, string[]>>; // default: see above
   extension?: string; // default: ".md"
   css?: string;
   templateName?: string;

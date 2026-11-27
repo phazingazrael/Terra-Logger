@@ -35,6 +35,11 @@ export function getBotiExportPath(path: string): string {
   else if (file_path.startsWith("npcs/"))
     file_path = file_path.replace(/^npcs\//, `World/13. NPCs/`);
 
+  if (file_path.startsWith("assets/npc/placeholders/"))
+    file_path = file_path.replace(/^assets\/npc\/placeholders\//, "z_Assets/misc/placeholders/");
+  else if (file_path.startsWith("assets/npc/portraits/"))
+    file_path = file_path.replace(/^assets\/npc\/portraits\//, "z_Assets/misc/portraits/");
+
   return file_path;
 }
 
@@ -64,7 +69,7 @@ export function botiNoteFolder(note: TLNote): string {
 
   if (["reg", "regiment", "mil", "military"].includes(root))
     return `${base}/Military/`;
-  if (["marker", "poi", "pin"].includes(root))
+  if (["marker", "poi", "pin", "addedlabel"].includes(root))
     return `${base}/Points of Interest/`;
   if (["burg", "city"].includes(root)) return `${base}/City/`;
   if (["country", "state", "statelabel"].includes(root))

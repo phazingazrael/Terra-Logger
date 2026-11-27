@@ -11,16 +11,10 @@ export const defaultMapFrontmatterBlock: MarkdownBlock = {
       readString(entity, "name") ||
       readString(entity, "title");
 
-    const id =
-      readString(entity, "_id") ||
-      readString(entity, "id") ||
-      readString(entity, "mapId");
-
     const lines = [
       "---",
       "type: map",
       name ? `name: ${quoteYamlString(name)}` : "",
-      id ? `terra_id: ${quoteYamlString(id)}` : "",
       "---",
     ].filter(Boolean);
 

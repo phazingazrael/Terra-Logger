@@ -1,3 +1,4 @@
+import { createExportIconFiles } from "../svgExportUtils";
 import { restoreError } from "../../Util/errorDetails";
 import type {
   DataSets,
@@ -31,7 +32,7 @@ type RunExportArchiveWorkerResult = {
   finalZipName: string;
 };
 
-export function runExportArchiveWorker({
+export async function runExportArchiveWorker({
   data,
   templates,
   renderOptions,
@@ -41,6 +42,25 @@ export function runExportArchiveWorker({
   botiBaseZipPath,
   onProgress,
 }: RunExportArchiveWorkerArgs): Promise<RunExportArchiveWorkerResult> {
+  if (selectedExports.includes("NPCs") && !data.ReferenceCatalogs) {
+    onProgress?.({ message: "Loading race and profession reference details..." });
+    const [{ listAncestryDefinitions }, { listNPCProfessions }] = await Promise.all([
+      import("../../NPC/generator/ancestries/repository"),
+      import("../../NPC/generator/professions/repository"),
+    ]);
+    const [ancestries, professions] = await Promise.all([
+      listAncestryDefinitions({ includeDisabled: true }),
+      listNPCProfessions({ includeDisabled: true }),
+    ]);
+    data = { ...data, ReferenceCatalogs: {
+      ancestries: ancestries.map(({ id, name, description, rarity }) => ({ id, name, description, rarity })),
+      professions: professions.map(({ id, name, description, category, governmentCategory }) =>
+        ({ id, name, description, category, governmentCategory })),
+    } };
+  }
+  onProgress?.({ message: "Preparing export icons..." });
+  const icons = await createExportIconFiles(data, selectedExports, isBOTI, (label) =>
+    onProgress?.({ message: `Preparing icon: ${label}` }));
   return new Promise((resolve, reject) => {
     const id = crypto.randomUUID();
 
@@ -95,6 +115,7 @@ export function runExportArchiveWorker({
       isBOTI,
       finalZipName,
       botiBaseZipPath,
+      icons,
     };
 
     worker.onmessageerror = () => {

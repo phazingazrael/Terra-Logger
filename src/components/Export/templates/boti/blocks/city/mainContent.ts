@@ -3,7 +3,7 @@ import { createMustacheMarkdownBlock } from "../../../../builder/mustacheBlock";
 const template = [
   "# **`=this.Name`**",
   "> [!overview]- Overview",
-  "> {{description}}",
+  "{{{descriptionCallout}}}",
   "",
   "> [!districts]- Districts",
   "> ```base",
@@ -432,7 +432,7 @@ const template = [
   ">List of allied cities, rival cities, or otherworldly diplomatic ties.",
   "",
   "> [!groups]- Notable Figures & Legends",
-  "List of influential people, such as rulers, warriors, philosophers, criminals, and deities.",
+  "> List of influential people, such as rulers, warriors, philosophers, criminals, and deities.",
   "",
   "> [!guilds]- Adventurers & Mercenary Work",
   ">> [!notes]- Common Quests & Jobs",
