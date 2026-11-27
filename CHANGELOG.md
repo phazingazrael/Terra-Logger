@@ -1,21 +1,24 @@
 # Terra-Logger Changelog
 
-There have been 4 commits since last release.
+There have been 2 commits since last release.
 
 ## Major Changes since last release
 - fix(export): :bug: preserve Atlas content and restore template presentation [`037f809`](https://github.com/phazingazrael/Terra-Logger/commit/037f809e8e4403538f43279bff0a365621b698fe)
-- fix(export): :bug: prevent filename collisions and normalize diagnostic logs [`ead2135`](https://github.com/phazingazrael/Terra-Logger/commit/ead2135539ca25959098940e1a1985833269fadd)
-- feat(afmg): :sparkles: support 1.158 resources and independent neutral-city governments [`a8de67c`](https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d)
 
 ## 1.0.16
 
-[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.14...HEAD)
-
-Unreleased
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.15...1.0.16)
 
 26 November 2026
 
+- chore(version): 🔖 prepare 1.0.16 and document completed export fixes [`fd693a8`](https://github.com/phazingazrael/Terra-Logger/commit/fd693a8ac9815576a6bb5c75908aed6c18f6c49c)
 - fix(export): :bug: preserve Atlas content and restore template presentation [`037f809`](https://github.com/phazingazrael/Terra-Logger/commit/037f809e8e4403538f43279bff0a365621b698fe)
+
+## 1.0.15
+
+[Compare changes](https://github.com/phazingazrael/Terra-Logger/compare/1.0.14...1.0.15)
+
+26 November 2026
 
 25 November 2026
 

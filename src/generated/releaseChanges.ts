@@ -29,56 +29,54 @@ export type ReleaseChanges = {
 
 export const releaseChanges: ReleaseChanges = {
   "version": "1.0.16",
-  "previousTag": "1.0.14",
-  "currentTag": null,
-  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.14...HEAD",
-  "commitCount": 4,
+  "previousTag": "1.0.15",
+  "currentTag": "1.0.16",
+  "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.15...1.0.16",
+  "commitCount": 2,
   "majorChanges": [
     {
-      "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
-      "shortHash": "a8de67c",
-      "date": "2026-11-25T19:12:42-07:00",
-      "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.158 resources and independent neutral-city governments",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
-    },
-    {
-      "hash": "d71f72e87d700d2ff7ea26bf77afb346da7f56d1",
-      "shortHash": "d71f72e",
-      "date": "2026-11-25T19:17:06-07:00",
-      "subject": "chore(version): 🔖 prepare 1.0.15 and refresh project documentation",
+      "hash": "fd693a8ac9815576a6bb5c75908aed6c18f6c49c",
+      "shortHash": "fd693a8",
+      "date": "2026-11-26T18:16:17-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.16 and document completed export fixes",
       "type": "chore",
       "scope": "version",
-      "details": "🔖 prepare 1.0.15 and refresh project documentation",
+      "details": "🔖 prepare 1.0.16 and document completed export fixes",
       "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d71f72e87d700d2ff7ea26bf77afb346da7f56d1"
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/fd693a8ac9815576a6bb5c75908aed6c18f6c49c"
     }
   ],
   "highlightedChange": {
-    "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
-    "shortHash": "a8de67c",
-    "date": "2026-11-25T19:12:42-07:00",
-    "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
-    "type": "feat",
-    "scope": "afmg",
-    "details": "✨ support 1.158 resources and independent neutral-city governments",
+    "hash": "fd693a8ac9815576a6bb5c75908aed6c18f6c49c",
+    "shortHash": "fd693a8",
+    "date": "2026-11-26T18:16:17-07:00",
+    "subject": "chore(version): 🔖 prepare 1.0.16 and document completed export fixes",
+    "type": "chore",
+    "scope": "version",
+    "details": "🔖 prepare 1.0.16 and document completed export fixes",
     "breaking": false,
-    "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
+    "url": "https://github.com/phazingazrael/Terra-Logger/commit/fd693a8ac9815576a6bb5c75908aed6c18f6c49c"
   },
   "typeOptions": [
     "chore",
-    "feat",
     "fix"
   ],
   "scopeOptions": [
-    "afmg",
     "export",
     "version"
   ],
   "commits": [
+    {
+      "hash": "fd693a8ac9815576a6bb5c75908aed6c18f6c49c",
+      "shortHash": "fd693a8",
+      "date": "2026-11-26T18:16:17-07:00",
+      "subject": "chore(version): 🔖 prepare 1.0.16 and document completed export fixes",
+      "type": "chore",
+      "scope": "version",
+      "details": "🔖 prepare 1.0.16 and document completed export fixes",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/fd693a8ac9815576a6bb5c75908aed6c18f6c49c"
+    },
     {
       "hash": "037f809e8e4403538f43279bff0a365621b698fe",
       "shortHash": "037f809",
@@ -89,40 +87,7 @@ export const releaseChanges: ReleaseChanges = {
       "details": "🐛 preserve Atlas content and restore template presentation",
       "breaking": false,
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/037f809e8e4403538f43279bff0a365621b698fe"
-    },
-    {
-      "hash": "d71f72e87d700d2ff7ea26bf77afb346da7f56d1",
-      "shortHash": "d71f72e",
-      "date": "2026-11-25T19:17:06-07:00",
-      "subject": "chore(version): 🔖 prepare 1.0.15 and refresh project documentation",
-      "type": "chore",
-      "scope": "version",
-      "details": "🔖 prepare 1.0.15 and refresh project documentation",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/d71f72e87d700d2ff7ea26bf77afb346da7f56d1"
-    },
-    {
-      "hash": "ead2135539ca25959098940e1a1985833269fadd",
-      "shortHash": "ead2135",
-      "date": "2026-11-25T19:14:35-07:00",
-      "subject": "fix(export): 🐛 prevent filename collisions and normalize diagnostic logs",
-      "type": "fix",
-      "scope": "export",
-      "details": "🐛 prevent filename collisions and normalize diagnostic logs",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/ead2135539ca25959098940e1a1985833269fadd"
-    },
-    {
-      "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
-      "shortHash": "a8de67c",
-      "date": "2026-11-25T19:12:42-07:00",
-      "subject": "feat(afmg): ✨ support 1.158 resources and independent neutral-city governments",
-      "type": "feat",
-      "scope": "afmg",
-      "details": "✨ support 1.158 resources and independent neutral-city governments",
-      "breaking": false,
-      "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
     }
   ],
-  "generatedAt": "2026-11-27T01:13:51.231Z"
+  "generatedAt": "2026-11-27T01:17:17.870Z"
 };
