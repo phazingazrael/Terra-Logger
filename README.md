@@ -51,6 +51,9 @@ We have exciting plans for future versions of Terra-Logger:
 - [x] Support editing Countries.
 - [x] Support editing Cultures.
 - [x] Support editing Religions.
+- [ ] Improve Religion and Culture associations within Cities and Countries using existing AFMG `.map` data.
+- [ ] Improve links between related entities, including Religions, governments and geographic regions, using available map data.
+- [ ] Derive suggested themes for Countries, Cultures and other entities from their existing map data.
 - [x] Support editing Notes.
 - [x] Support editing NPCs, Historical Eras and Developmental Eras.
 - [ ] Support editing Militaries (converted from notes/country data)
