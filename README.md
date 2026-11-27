@@ -52,6 +52,7 @@ We have exciting plans for future versions of Terra-Logger:
 - [x] Support editing Cultures.
 - [x] Support editing Religions.
 - [x] Support editing Notes.
+- [x] Support editing NPCs, Historical Eras and Developmental Eras.
 - [ ] Support editing Militaries (converted from notes/country data)
 - [ ] Support editing Points of Interest (converted from notes data)
 - [x] Replace the legacy Markdown exporter with the Markdown Builder.

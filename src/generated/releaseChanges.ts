@@ -28,11 +28,11 @@ export type ReleaseChanges = {
 };
 
 export const releaseChanges: ReleaseChanges = {
-  "version": "1.0.15",
+  "version": "1.0.16",
   "previousTag": "1.0.14",
   "currentTag": null,
   "compareUrl": "https://github.com/phazingazrael/Terra-Logger/compare/1.0.14...HEAD",
-  "commitCount": 3,
+  "commitCount": 4,
   "majorChanges": [
     {
       "hash": "a8de67cd847783fb2cba721468cae2d3bab44e8d",
@@ -80,6 +80,17 @@ export const releaseChanges: ReleaseChanges = {
   ],
   "commits": [
     {
+      "hash": "037f809e8e4403538f43279bff0a365621b698fe",
+      "shortHash": "037f809",
+      "date": "2026-11-26T18:13:08-07:00",
+      "subject": "fix(export): 🐛 preserve Atlas content and restore template presentation",
+      "type": "fix",
+      "scope": "export",
+      "details": "🐛 preserve Atlas content and restore template presentation",
+      "breaking": false,
+      "url": "https://github.com/phazingazrael/Terra-Logger/commit/037f809e8e4403538f43279bff0a365621b698fe"
+    },
+    {
       "hash": "d71f72e87d700d2ff7ea26bf77afb346da7f56d1",
       "shortHash": "d71f72e",
       "date": "2026-11-25T19:17:06-07:00",
@@ -113,5 +124,5 @@ export const releaseChanges: ReleaseChanges = {
       "url": "https://github.com/phazingazrael/Terra-Logger/commit/a8de67cd847783fb2cba721468cae2d3bab44e8d"
     }
   ],
-  "generatedAt": "2026-11-27T00:34:43.241Z"
+  "generatedAt": "2026-11-27T01:13:51.231Z"
 };
